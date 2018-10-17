@@ -2,10 +2,3 @@ language: python
 
 script:
   - echo "Running script"
-after_success:
-before_deploy:
-  - echo "About to deploy"
-deploy:
-  - echo "Deploying"
-after_deploy:
-after_script:
