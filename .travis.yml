@@ -7,9 +7,9 @@ deploy:
   secret_access_key:
     secure: BHrsKjolPOywd5QaglnFPeWhEVSGzXYH8n6CjfkG4tezcAxCuAc2KZsYnSSpWZH/HVJw7RRlD8eVmJ6MiSEvD1KaTS9YBl2mvurhznixSJArCseX04r15lX/QKUcvE7TQ2UGOjEZKIODTy8nS2auRUDhv14NONjNypCpkmdoGvg9CMj4uEE6J5K8uaRUEiismXDNYQKkJP3YAfHU9efak6wDTCAITH5nwArvBDpJUQdcjWw+eEwTOSyAMlMIXOFgLpkYdEaC1U38E0Li6H26gPIdHtIll4GKiwbBNZSF+28h+Z12n7I3sm/+eJgZ3OPChPpXVKV2u6+Rdeb+lWxuVB7JJbfpCmmwasxRcAw4mIeAnoMf8Ns7DA8nj9FylK9VEJUyys5lXl4YA7jSv7mH7AKA16bVjJF+0btKfBfW4AmCTZKqCN78hIvlVgN1NA99npwVWoi/l5v3ziVzMaeSNg3kBRVO1jysEhpauVpeMDbmxNf4VT/F+2evEy/p0MJrPkwwFUE3oBkjqlwKctbPWEEsfUFpjSy8Gx7vdvJWhNV58MaEnbUJxYa9jYAHaF6+8HZea18B8azdeQCc1abGEvNrb9Y+Xw6XngfONfq7q4yDKOgvZ0KF8KBej0Ec4ND3xYI9Hbn/N03EWEPZF6jYnPn1MDamGY9Jp4gxdO3dfAE=
   bucket: aseaman-website
-  upload-dir: website
+  local_dir: website
   skip_cleanup: true
-  region: "us-west-2"
+  region: us-west-2
   acl: public_read
   on:
     repo: andrewseaman35/aseaman
