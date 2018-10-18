@@ -15,8 +15,21 @@
     <div>Hi</div>
     <div>
         Look at the Travis status!
-        <img src="https://travis-ci.org/andrewseaman35/aseaman.svg?branch=master" alt="Travis Status">
+        <br>
+        Master: <img id="travis-status-master" alt="Travis Master Status">
+        <br>
+        Develop: <img id="travis-status-develop" alt="Travis Develop Status">
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function (event) {
+            const cacheBuster = Date.now();
+            const travisUrlBase = "https://travis-ci.org/andrewseaman35/aseaman.svg";
+            const travisMasterUrl = `${travisUrlBase}?branch=master&cache_buster=${cacheBuster}`;
+            const travisDevelopUrl = `${travisUrlBase}?branch=develop&cache_buster=${cacheBuster}`;
+            document.getElementById("travis-status-master").src = travisMasterUrl;
+            document.getElementById("travis-status-develop").src = travisDevelopUrl;
+        });
+    </script>
 </body>
 
 </html>
