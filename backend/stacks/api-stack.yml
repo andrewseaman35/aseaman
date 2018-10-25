@@ -1,0 +1,138 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Resources:
+  LambdaAPIRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Path: "/"
+      Policies:
+        -
+          PolicyName: "logs"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "logs:*"
+                Resource: "arn:aws:logs:*:*:*"
+  LambdaAPIPolicy:
+    Type: "AWS::IAM::InstanceProfile"
+    Properties:
+      Path: "/"
+      Roles:
+        -
+          Ref: "LambdaAPIRole"
+  LambdaAPIFunction:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      Code:
+        ZipFile: !Sub |
+          import json
+
+          def lambda_handler(event,context):
+              return {
+                  "isBase64Encoded": False,
+                  "statusCode": 200,
+                  "headers": {},
+                  "multiValueHeaders": {},
+                  "body": "Hello!!!!"
+              }
+      Description: Lambda function to handle stuff
+      FunctionName: lambda_api
+      Handler: index.lambda_handler
+      Role : !GetAtt LambdaAPIRole.Arn
+      Runtime: python3.6
+      Timeout: 10
+  LambdaAPIPermission:
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      Action: "lambda:invokeFunction"
+      FunctionName:
+        Fn::GetAtt:
+          - LambdaAPIFunction
+          - Arn
+      Principal: "apigateway.amazonaws.com"
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:aws:execute-api:"
+            - Ref: "AWS::Region"
+            - ":"
+            - Ref: "AWS::AccountId"
+            - ":"
+            - Ref: "RestAPI"
+            - "/*"
+
+  RestAPI:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: API Gateway Dummy
+
+  APIResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId:
+        Ref: RestAPI
+      ParentId:
+        Fn::GetAtt:
+          - RestAPI
+          - RootResourceId
+      PathPart: storage
+  APIMethod:
+    Type: "AWS::ApiGateway::Method"
+    Properties:
+      RestApiId:
+        Ref: RestAPI
+      ResourceId:
+        Ref: APIResource
+      HttpMethod: GET
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS
+        IntegrationHttpMethod: POST
+        Uri:
+          Fn::Join:
+          - ""
+          - - "arn:aws:apigateway:"
+            - Ref: "AWS::Region"
+            - ":lambda:path/2015-03-31/functions/"
+            - Fn::GetAtt:
+              - LambdaAPIFunction
+              - Arn
+            - "/invocations"
+        IntegrationResponses:
+        - ResponseTemplates:
+            application/json: "$input.json('$.body')"
+          StatusCode: 200
+        - SelectionPattern: "^not found.*"
+          ResponseTemplates:
+            application/json: "{}"
+          StatusCode: 404
+        PassthroughBehavior: NEVER
+        RequestTemplates:
+          application/json: "{\"fun\": \"getUser\", \"parameters\": {\"userId\": \"$input.params('userId')\"}}"
+      RequestParameters:
+        method.request.path.userId: 'true'
+      MethodResponses:
+      - StatusCode: 200
+      - StatusCode: 404
+  RestAPIDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn: APIMethod
+    Properties:
+      RestApiId:
+        Ref: RestAPI
+      StageName: test
+Outputs:
+  ApiId:
+    Value:
+      Ref: RestAPI
+
