@@ -1,33 +1,43 @@
 language: python
 
 python:
-  - "3.6"
+- '3.6'
+
+before_install:
+  - pip install awscli
+  - export PATH=$PATH:$HOME/.local/bin
+  - scripts/travis_env.sh
 
 script:
-  - echo "Running script"
+- ./scripts/deploy_api.sh
 
 deploy:
-  - provider: s3
-    access_key_id: AKIAI7CIXDVSVZIVQKSA
-    secret_access_key:
-      secure: BHrsKjolPOywd5QaglnFPeWhEVSGzXYH8n6CjfkG4tezcAxCuAc2KZsYnSSpWZH/HVJw7RRlD8eVmJ6MiSEvD1KaTS9YBl2mvurhznixSJArCseX04r15lX/QKUcvE7TQ2UGOjEZKIODTy8nS2auRUDhv14NONjNypCpkmdoGvg9CMj4uEE6J5K8uaRUEiismXDNYQKkJP3YAfHU9efak6wDTCAITH5nwArvBDpJUQdcjWw+eEwTOSyAMlMIXOFgLpkYdEaC1U38E0Li6H26gPIdHtIll4GKiwbBNZSF+28h+Z12n7I3sm/+eJgZ3OPChPpXVKV2u6+Rdeb+lWxuVB7JJbfpCmmwasxRcAw4mIeAnoMf8Ns7DA8nj9FylK9VEJUyys5lXl4YA7jSv7mH7AKA16bVjJF+0btKfBfW4AmCTZKqCN78hIvlVgN1NA99npwVWoi/l5v3ziVzMaeSNg3kBRVO1jysEhpauVpeMDbmxNf4VT/F+2evEy/p0MJrPkwwFUE3oBkjqlwKctbPWEEsfUFpjSy8Gx7vdvJWhNV58MaEnbUJxYa9jYAHaF6+8HZea18B8azdeQCc1abGEvNrb9Y+Xw6XngfONfq7q4yDKOgvZ0KF8KBej0Ec4ND3xYI9Hbn/N03EWEPZF6jYnPn1MDamGY9Jp4gxdO3dfAE=
-    bucket: aseaman-website-live
-    local_dir: website
-    skip_cleanup: true
-    region: us-east-1
-    acl: public_read
-    on:
-      repo: andrewseaman35/aseaman
-      branch: master
-  - provider: s3
-    access_key_id: AKIAI7CIXDVSVZIVQKSA
-    secret_access_key:
-      secure: BHrsKjolPOywd5QaglnFPeWhEVSGzXYH8n6CjfkG4tezcAxCuAc2KZsYnSSpWZH/HVJw7RRlD8eVmJ6MiSEvD1KaTS9YBl2mvurhznixSJArCseX04r15lX/QKUcvE7TQ2UGOjEZKIODTy8nS2auRUDhv14NONjNypCpkmdoGvg9CMj4uEE6J5K8uaRUEiismXDNYQKkJP3YAfHU9efak6wDTCAITH5nwArvBDpJUQdcjWw+eEwTOSyAMlMIXOFgLpkYdEaC1U38E0Li6H26gPIdHtIll4GKiwbBNZSF+28h+Z12n7I3sm/+eJgZ3OPChPpXVKV2u6+Rdeb+lWxuVB7JJbfpCmmwasxRcAw4mIeAnoMf8Ns7DA8nj9FylK9VEJUyys5lXl4YA7jSv7mH7AKA16bVjJF+0btKfBfW4AmCTZKqCN78hIvlVgN1NA99npwVWoi/l5v3ziVzMaeSNg3kBRVO1jysEhpauVpeMDbmxNf4VT/F+2evEy/p0MJrPkwwFUE3oBkjqlwKctbPWEEsfUFpjSy8Gx7vdvJWhNV58MaEnbUJxYa9jYAHaF6+8HZea18B8azdeQCc1abGEvNrb9Y+Xw6XngfONfq7q4yDKOgvZ0KF8KBej0Ec4ND3xYI9Hbn/N03EWEPZF6jYnPn1MDamGY9Jp4gxdO3dfAE=
-    bucket: aseaman-website-test
-    local_dir: website
-    skip_cleanup: true
-    region: us-east-1
-    acl: public_read
-    on:
-      repo: andrewseaman35/aseaman
-      branch: develop
+- provider: s3
+  access_key_id: AKIAI7CIXDVSVZIVQKSA
+  secret_access_key:
+    secure: BHrsKjolPOywd5QaglnFPeWhEVSGzXYH8n6CjfkG4tezcAxCuAc2KZsYnSSpWZH/HVJw7RRlD8eVmJ6MiSEvD1KaTS9YBl2mvurhznixSJArCseX04r15lX/QKUcvE7TQ2UGOjEZKIODTy8nS2auRUDhv14NONjNypCpkmdoGvg9CMj4uEE6J5K8uaRUEiismXDNYQKkJP3YAfHU9efak6wDTCAITH5nwArvBDpJUQdcjWw+eEwTOSyAMlMIXOFgLpkYdEaC1U38E0Li6H26gPIdHtIll4GKiwbBNZSF+28h+Z12n7I3sm/+eJgZ3OPChPpXVKV2u6+Rdeb+lWxuVB7JJbfpCmmwasxRcAw4mIeAnoMf8Ns7DA8nj9FylK9VEJUyys5lXl4YA7jSv7mH7AKA16bVjJF+0btKfBfW4AmCTZKqCN78hIvlVgN1NA99npwVWoi/l5v3ziVzMaeSNg3kBRVO1jysEhpauVpeMDbmxNf4VT/F+2evEy/p0MJrPkwwFUE3oBkjqlwKctbPWEEsfUFpjSy8Gx7vdvJWhNV58MaEnbUJxYa9jYAHaF6+8HZea18B8azdeQCc1abGEvNrb9Y+Xw6XngfONfq7q4yDKOgvZ0KF8KBej0Ec4ND3xYI9Hbn/N03EWEPZF6jYnPn1MDamGY9Jp4gxdO3dfAE=
+  bucket: aseaman-website-test
+  local_dir: website
+  skip_cleanup: true
+  region: us-east-1
+  acl: public_read
+  on:
+    repo: andrewseaman35/aseaman
+    branch: deploy-lambda-on-merge
+- provider: s3
+  access_key_id: AKIAI7CIXDVSVZIVQKSA
+  secret_access_key:
+    secure: BHrsKjolPOywd5QaglnFPeWhEVSGzXYH8n6CjfkG4tezcAxCuAc2KZsYnSSpWZH/HVJw7RRlD8eVmJ6MiSEvD1KaTS9YBl2mvurhznixSJArCseX04r15lX/QKUcvE7TQ2UGOjEZKIODTy8nS2auRUDhv14NONjNypCpkmdoGvg9CMj4uEE6J5K8uaRUEiismXDNYQKkJP3YAfHU9efak6wDTCAITH5nwArvBDpJUQdcjWw+eEwTOSyAMlMIXOFgLpkYdEaC1U38E0Li6H26gPIdHtIll4GKiwbBNZSF+28h+Z12n7I3sm/+eJgZ3OPChPpXVKV2u6+Rdeb+lWxuVB7JJbfpCmmwasxRcAw4mIeAnoMf8Ns7DA8nj9FylK9VEJUyys5lXl4YA7jSv7mH7AKA16bVjJF+0btKfBfW4AmCTZKqCN78hIvlVgN1NA99npwVWoi/l5v3ziVzMaeSNg3kBRVO1jysEhpauVpeMDbmxNf4VT/F+2evEy/p0MJrPkwwFUE3oBkjqlwKctbPWEEsfUFpjSy8Gx7vdvJWhNV58MaEnbUJxYa9jYAHaF6+8HZea18B8azdeQCc1abGEvNrb9Y+Xw6XngfONfq7q4yDKOgvZ0KF8KBej0Ec4ND3xYI9Hbn/N03EWEPZF6jYnPn1MDamGY9Jp4gxdO3dfAE=
+  bucket: aseaman-website-live
+  local_dir: website
+  skip_cleanup: true
+  region: us-east-1
+  acl: public_read
+  on:
+    repo: andrewseaman35/aseaman
+    branch: master
+
+env:
+  global:
+  - secure: qyrvskLSS5g/NqbWlB9dBzXhTm5qbyOTZVftgEJ2G8ruQZCfvHcsBVLxZ3fcm8PTebUDEPYAhViJKH4DMbZNEFi8NaxCFVC990UOvE0UiaQ4iUfLFxK0x/t04jp2S+klkfopA5+O45LBs28Y7SED1Ay/I65nOLHZttwNtrlPvA0467QkY/Ht5kft9CYqQsHgaS0n9gO/xJHYt64xp4lMQfz80HR9k6y2gAWcIFnyNS0bYRsgzGZNWGpFHIhO8yn/K8gp4oDrVwLERVhqiIGdWI5n78ZTjDHDCK6+rVE5tTzehA/0gtCjZ2uwpOwD75LctnGLsQRqqYVwzJlLdpLRz1FGMtpvoYg4hJwTpsBGuJ/V25ohgxCb5LWOEegHGlM0yh8eqsUgNgIWU2zJeJja99CS+SxqleBtIqF8k7cLo43hrxS0kheTSnJ55YwP+LxkwOxpAox0DDfZO81ydpM1azKi+PrXZxnKR0edwrc2Uxl5atGDiPMxKJT8PZDXL/EL1cSNenHyd7M8CqxCWJpta2lSMIYWlGLiSeB8VMd2YdPfVw0bxEEs1Y8HfHQujTaOxeyDZLRFPrZedFy0hrDAWZS1f5eG+0Ll4aVJQ1P/c6zacOgec0rzDCAxZyvefR3OE5W1J/lI+HxiI8g4B5UXIe0p2Z18dnrMUI+ZfaB/sNk=
+  - secure: lntwyCz2qP8x5PDGiASg5iGO7X/GDSYAD+gnaEF3jbwecdRK0WFqXGdnpM3kfdRqD0RBLjD9nokgJ+0Ksdf4P4FHwJII0R80CGOcIDzbY/1cM8e709JvdHSZO+h5oI4mYP0Icok1/ZaF0Yojm/Fxxgyiy97VC6EFIgP2ttbW/S68TBNZmVW63c26npHgt3xSCfYOoSlbzQO45WvOYEhOE8BGWVd1Ll+002xDZSXSTudQ+IYwbzmJbxAA11MT7BCxtlM2zv2P/4BRsa6JUBPZz8uCl39GENsJGffLmGydI1bcIp8zwpUkJJd7+xepQOfOUiPc/wNWAXT4yQ9tslvnTfID+qrWfERrjaPbOB7rorKXrLcGSBtpAV4UbxfIXA/OGOuvVyJHWZnf8127KD/ryIZsOzsvYzFQQ7rsm7w+ghRvEAbG0DPopaUqPHQYQS7GhI0KxosG6CxQ+Tx67c3GaADfTAc9H7QHWiwEGETMpTWmtFzOJ4JAmZ1+1eXy+fyDYeu2Sgsf0zhKhT2PFG2wF8tbgWGwK0t3O0tdhyc0TJOOqniP4nC0nobDHI4KtMi5ZcvucLKVvmD17b0hu+K0M3hy56vME+g36Y778S6v3/PacVQzrBir2dUFtkXaehPlYUa7eXDmRLB43YXb/A2NCQsBf+gEtPk4CKGlMvuBkY8=
