@@ -1,8 +1,7 @@
+export
 ROOT := $(shell pwd)
-NONCE  := $(shell date +%s)
-STACK_NAME := "stack-$(DEPLOY_ENV)-$(NONCE)"
 
-DEPLOY_PARAMETERS:=ParameterKey=LambdaFunctionName,ParameterValue="lambda_api_$(NONCE)" \
+DEPLOY_PARAMETERS:=ParameterKey=LambdaFunctionName,ParameterValue="$(LAMBDA_FUNCTION_NAME)" \
 	ParameterKey=DeployEnv,ParameterValue="$(DEPLOY_ENV)" \
 	ParameterKey=Branch,ParameterValue="$(BRANCH)"
 
