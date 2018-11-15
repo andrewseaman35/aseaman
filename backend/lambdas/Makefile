@@ -16,3 +16,4 @@ upload: package
 clean:
 	rm -rf ./venv/
 	rm -rf $(PACKAGE_DIR)
+
