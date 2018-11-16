@@ -15,7 +15,8 @@ deploy_website:
 	aws s3 cp --recursive website s3://aseaman-website-$(DEPLOY_ENV)
 
 deploy_test_website:
-	aws s3 cp  --recursive website s3://aseaman-website-$(DEPLOY_ENV)/$(BRANCH)
+	aws s3 cp --recursive website s3://aseaman-website-test/$(BRANCH)
+	aws s3 cp --recursive testing_website s3://aseaman-website-test
 
 deploy: deploy_api deploy_website
 
