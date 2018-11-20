@@ -27,6 +27,7 @@ class GenerateConfig():
             config_json=json.dumps(output_data, indent=4)
         ).replace('"', "'")
 
+        os.makedirs(os.path.dirname(self.output_filename), exist_ok=True)
         with open(self.output_filename, 'w') as output_file:
             output_file.write(js_content)
 
