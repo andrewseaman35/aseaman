@@ -5,7 +5,7 @@ VALID_ENVS = {'test', 'stage', 'live'}
 
 ENV_KEY_FORMAT = '_CONFIG_{key}'
 TEMPLATE_FILE = '{root}/config/web_template.json'
-OUTPUT_FILE = '{root}/website/config/config.js'
+OUTPUT_FILE = '{root}/website/js/config/config.js'
 
 class GenerateConfig():
     def setup(self):
