@@ -1,6 +1,6 @@
 export
 ROOTDIR := $(shell pwd)
-WITH_VENV := source venv/bin/activate &&
+VENV_PYTHON := venv/bin/python
 
 NONCE ?= $(shell date +%s)
 BRANCH ?= manual
@@ -13,7 +13,7 @@ venv: requirements.txt
 	venv/bin/pip install -r requirements.txt
 
 website/js/config/config.js: venv config/web_template.json scripts/generate_config.py
-	$(WITH_VENV) python scripts/generate_config.py
+	$(VENV_PYTHON) scripts/generate_config.py
 
 website: website/js/config/config.js
 
