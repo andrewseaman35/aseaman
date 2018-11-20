@@ -1,5 +1,7 @@
 {
-    "DEPLOY_ENV": null,
-    "STACKNAME": null,
-    "BRANCH": null
+    "DEPLOY_ENV": "env",
+    "STACKNAME": "env",
+    "BRANCH": "env",
+
+    "API_ID": "stack_param"
 }
