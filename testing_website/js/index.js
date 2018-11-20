@@ -32,11 +32,11 @@ const getTravisIconForBranch = function(branch) {
 
 const IGNORE_ROOT_PATHS = new Set(['index.html', 'js']);
 const getPathsFromListContents = function(contents) {
-    const paths = [];
+    const paths = new Set();
     contents.forEach(obj => {
         const path = obj.Key.split('/')[0];
         if (!IGNORE_ROOT_PATHS.has(path)) {
-            paths.push(path);
+            paths.add(path);
         }
     }) ;
     return paths;

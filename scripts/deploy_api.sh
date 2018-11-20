@@ -1,9 +1,25 @@
 #!/bin/bash
 
+export \
+    BRANCH="$TRAVIS_BRANCH" \
+    NONCE=$(date +%s)
+
 if [ "$TRAVIS_BRANCH" == "develop" ]; then
-    DEPLOY_ENV="stage" BRANCH="$TRAVIS_BRANCH" make deploy
+    export DEPLOY_ENV="stage"
 elif [ "$TRAVIS_BRANCH" == "master" ]; then
-    DEPLOY_ENV="live" BRANCH="$TRAVIS_BRANCH" make deploy
+    export DEPLOY_ENV="live"
 else
-    DEPLOY_ENV="test" BRANCH="$TRAVIS_BRANCH" make deploy_test
+    export DEPLOY_ENV="test"
+fi
+
+export \
+    STACKNAME=stack-$DEPLOY_ENV-$NONCE \
+    LAMBDA_FUNCTION_NAME=lambda-api-$DEPLOY_ENV-$NONCE
+
+if [ "$TRAVIS_BRANCH" == "develop" ]; then
+    make deploy
+elif [ "$TRAVIS_BRANCH" == "master" ]; then
+    make deploy
+else
+    make deploy_test
 fi
