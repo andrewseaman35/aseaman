@@ -34,10 +34,16 @@ class RemoveOldStacks():
             raise ValueError("Invalid deploy env: {}".format(self.deploy_env))
 
     def run(self):
+        out = "Deleting old stacks for {}".format(deploy_env)
+        if self.deploy_env == 'test':
+            out += ", branch: {}".format(self.branch)
+        print(out)
+
         stack_summaries = self.client.list_stacks(
             StackStatusFilter=['CREATE_COMPLETE']
         )['StackSummaries']
 
+        count = 0
         regex = STACKNAME_REGEXES[self.deploy_env]
         for summary in stack_summaries:
             stack_name = summary['StackName']
@@ -47,9 +53,14 @@ class RemoveOldStacks():
             if self.deploy_env == 'test' and self.branch != match.group('branch'):
                 continue
 
+            count += 1
+            print("Deleting stack {}".format(stack_name))
             response = self.client.delete_stack(
                 StackName=stack_name,
             )
+
+        print("Deleted {} stacks".format(count))
+
 
 if __name__ == '__main__':
     RemoveOldStacks().run()

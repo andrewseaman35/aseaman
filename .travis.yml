@@ -1,15 +1,18 @@
 language: python
 
 python:
-- '3.6'
+  - '3.6'
 
 before_install:
   - pip install awscli
   - export PATH=$PATH:$HOME/.local/bin
-  - scripts/travis_env.sh
+  - ./scripts/travis_env.sh
 
 script:
-- ./scripts/deploy_api.sh
+  - ./scripts/deploy.sh
+
+after_deploy:
+  - ./scripts/
 
 env:
   global:
