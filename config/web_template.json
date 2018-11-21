@@ -1,5 +1,16 @@
 {
-    "DEPLOY_ENV": null,
-    "STACKNAME": null,
-    "BRANCH": null
+    "DEPLOY_ENV": {
+        "source": "env"
+    },
+    "STACKNAME": {
+        "source": "env"
+    },
+    "BRANCH": {
+        "source": "env"
+    },
+
+    "API_ID": {
+        "source": "stack_param",
+        "key": "ApiId"
+    }
 }
