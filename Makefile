@@ -34,9 +34,12 @@ deploy: deploy_api deploy_website
 
 deploy_test: deploy_api deploy_test_website
 
+remove_old_stacks:
+	$(VENV_PYTHON) scripts/remove_old_stacks.py
+
 clean:
 	rm -rf venv
 	rm -f website/config/config.js
 	make -C backend clean
 
-.PHONY: package deploy_api deploy_website deploy_test_website deploy deploy_test clean
+.PHONY: package deploy_api deploy_website deploy_test_website deploy deploy_test remove_old_stacks clean

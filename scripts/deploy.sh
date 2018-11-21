@@ -6,15 +6,20 @@ export \
 
 if [ "$TRAVIS_BRANCH" == "develop" ]; then
     export DEPLOY_ENV="stage"
+    export \
+        STACKNAME=stack-$DEPLOY_ENV-$NONCE \
+        LAMBDA_FUNCTION_NAME=lambda-api-$DEPLOY_ENV-$NONCE
 elif [ "$TRAVIS_BRANCH" == "master" ]; then
     export DEPLOY_ENV="live"
+    export \
+        STACKNAME=stack-$DEPLOY_ENV-$NONCE \
+        LAMBDA_FUNCTION_NAME=lambda-api-$DEPLOY_ENV-$NONCE
 else
     export DEPLOY_ENV="test"
+    export \
+        STACKNAME=stack-$DEPLOY_ENV-$BRANCH-$NONCE \
+        LAMBDA_FUNCTION_NAME=lambda-api-$DEPLOY_ENV-$BRANCH-$NONCE
 fi
-
-export \
-    STACKNAME=stack-$DEPLOY_ENV-$NONCE \
-    LAMBDA_FUNCTION_NAME=lambda-api-$DEPLOY_ENV-$NONCE
 
 if [ "$TRAVIS_BRANCH" == "develop" ]; then
     make deploy
@@ -23,3 +28,5 @@ elif [ "$TRAVIS_BRANCH" == "master" ]; then
 else
     make deploy_test
 fi
+
+make remove_old_stacks
