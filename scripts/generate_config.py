@@ -10,8 +10,7 @@ OUTPUT_FILE = '{root}/website/js/config/config.js'
 
 class GenerateConfig():
     def __init__(self):
-        dev = boto3.session.Session(profile_name='aseaman')
-        self.client = dev.client('cloudformation', region_name='us-east-1')
+        self.client = boto3.client('cloudformation', region_name='us-east-1')
 
         self.root = os.environ.get('ROOTDIR', os.getcwd())
         self.stack_name = os.environ['STACKNAME']
