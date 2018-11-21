@@ -48,13 +48,15 @@ class GenerateConfig():
         with open(self.template_file, 'r') as template_file:
             template_data = json.load(template_file)
 
-        for source in template_data.items():
-            if source not in VALID_SOURCES:
+        for item in template_data.values():
+            if item['source'] not in VALID_SOURCES:
                 raise ValueError("Invalid config source: {}".format(value))
 
         output_data = {}
-        for key, value in template_data.items():
-            output_data[key] = self.source_map[value](key)
+        for key, item in template_data.items():
+            source = item['source']
+            param_key = item.get('key', key)
+            output_data[key] = self.source_map[source](param_key)
 
         js_content = "const CONFIG = {config_json};".format(
             config_json=json.dumps(output_data, indent=4)

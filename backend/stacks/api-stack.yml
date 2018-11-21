@@ -140,7 +140,7 @@ Resources:
         Ref: RestAPI
       StageName: test
 Outputs:
-  API_ID:
+  ApiId:
     Value:
       Ref: RestAPI
 
