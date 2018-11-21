@@ -5,6 +5,7 @@ import re
 REGEX_WITH_BRANCH = r'^stack-{env}-(?P<branch>.*)-(?P<nonce>[^-]*)$'
 REGEX_WITHOUT_BRANCH = r'^stack-{env}-(?P<nonce>[^-]*)$'
 
+STATES_TO_DELETE = ['CREATE_COMPLETE', 'DELETE_FAILED']
 VALID_ENVS = {'test', 'stage', 'live'}
 STACKNAME_REGEXES = {
     'test': re.compile(REGEX_WITH_BRANCH.format(env='test')),
@@ -40,7 +41,7 @@ class RemoveOldStacks():
         print(out)
 
         stack_summaries = self.client.list_stacks(
-            StackStatusFilter=['CREATE_COMPLETE']
+            StackStatusFilter=STATES_TO_DELETE
         )['StackSummaries']
 
         count = 0
