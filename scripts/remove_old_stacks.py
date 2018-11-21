@@ -34,7 +34,7 @@ class RemoveOldStacks():
             raise ValueError("Invalid deploy env: {}".format(self.deploy_env))
 
     def run(self):
-        out = "Deleting old stacks for {}".format(deploy_env)
+        out = "Deleting old stacks for {}".format(self.deploy_env)
         if self.deploy_env == 'test':
             out += ", branch: {}".format(self.branch)
         print(out)
