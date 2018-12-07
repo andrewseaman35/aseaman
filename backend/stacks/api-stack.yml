@@ -1,6 +1,12 @@
 AWSTemplateFormatVersion: "2010-09-09"
 
 Parameters:
+  Branch:
+    Description: branch being deployed
+    Type: String
+  DeployEnv:
+    Description: environment to deploy to
+    Type: String
   LambdaFunctionName:
     Description: LambdaFunctionName
     Type: String
@@ -41,7 +47,12 @@ Resources:
     Properties:
       Code:
         S3Bucket: aseaman-lambda-functions
-        S3Key: lambda_function.zip
+        S3Key: !Join
+          - ''
+          - - !Ref DeployEnv
+            - '/'
+            - !Ref LambdaFunctionName
+            - '.zip'
       Description: Lambda function to handle stuff
       FunctionName: !Ref LambdaFunctionName
       Handler: lambda_function.lambda_handler
