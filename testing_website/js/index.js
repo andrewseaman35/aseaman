@@ -10,7 +10,7 @@ AWS.config.credentials = new AWS.CognitoIdentityCredentials({
 const s3 = new AWS.S3({region: 'us-east-1'});
 
 s3.listObjectsV2({
-    Bucket: 'aseaman-website-test',
+    Bucket: 'test.andrewcseaman.com',
 }, function(err, data) {
     if (err) {
         const el = document.getElementById('branch-list');
