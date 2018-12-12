@@ -24,9 +24,11 @@ deploy_api:
 	make -C backend deploy
 
 deploy_website: website
+	aws s3 s3 rm s3://$(DEPLOY_ENV).andrewcseaman.com --recursive
 	aws s3 cp --recursive website s3://$(DEPLOY_ENV).andrewcseaman.com
 
 deploy_test_website: website
+	aws s3 s3 rm s3://test.andrewcseaman.com/$(BRANCH) --recursive
 	aws s3 cp --recursive website s3://test.andrewcseaman.com/$(BRANCH)
 	aws s3 cp --recursive testing_website s3://test.andrewcseaman.com
 
