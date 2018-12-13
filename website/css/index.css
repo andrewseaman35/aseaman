@@ -1,0 +1,21 @@
+footer {
+    position: fixed;
+    bottom: 0;
+    padding: 5px;
+}
+
+.travis-container {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.travis-item {
+    display: flex;
+    padding: 5px;
+    justify-content: space-between;
+    font-weight: 600;
+}
+
+.travis-item > div {
+    margin-right: 10px;
+}
