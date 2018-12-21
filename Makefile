@@ -36,7 +36,7 @@ deploy: deploy_api deploy_website
 
 deploy_test: deploy_api deploy_test_website
 
-remove_old_stacks:
+remove_old_stacks: venv
 	$(VENV_PYTHON) scripts/remove_old_stacks.py
 
 clean:
