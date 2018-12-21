@@ -22,8 +22,3 @@ class RecipeAPILambdaHandler(APILambdaHandlerBase):
 
 def lambda_handler(event, context):
     return RecipeAPILambdaHandler().handle(event, context)
-
-
-if __name__ == '__main__':
-    print('Use invoke.py please!')
-    print('   python invoke.py recipes --local')
