@@ -2,6 +2,10 @@ PACKAGE_DIR = packages
 DEPLOY_ENV ?= test
 LAMBDA_FUNCTION_NAME ?= recipes
 
+deploy_venv: requirements.txt
+	virtualenv deploy_venv --python=python3 --no-site-packages
+	deploy_venv/bin/pip install -r requirements.txt
+
 venv:
 	virtualenv venv --python=python3
 
