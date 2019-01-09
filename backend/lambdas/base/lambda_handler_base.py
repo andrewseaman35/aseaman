@@ -18,6 +18,9 @@ class APILambdaHandlerBase(object):
                             else boto3.session.Session())
 
     def _parse_event(self, event):
+        print(" -- Received event --")
+        print(json.dumps(event, indent=4))
+        print(" --                --")
         self.is_local = event.get('local', False)
 
     def _before_run(self):

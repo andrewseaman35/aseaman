@@ -19,9 +19,6 @@ class RecipeAPILambdaHandler(APILambdaHandlerBase):
             raise ValueError('missing recipe_url in event')
 
     def _run(self):
-        print(" -- Received event --")
-        print(json.dumps(self.event, indent=4))
-
         response = requests.get(self.recipe_url)
 
         return {
