@@ -163,8 +163,6 @@ Resources:
             application/json: "{}"
           StatusCode: 404
         PassthroughBehavior: NEVER
-        RequestTemplates:
-          application/json: "{\"fun\": \"getUser\", \"parameters\": {\"userId\": \"$input.params('userId')\"}}"
       RequestParameters:
         method.request.path.userId: 'true'
       MethodResponses:
