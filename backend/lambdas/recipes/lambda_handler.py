@@ -25,7 +25,9 @@ class RecipeAPILambdaHandler(APILambdaHandlerBase):
             "statusCode": 200,
             "headers": {},
             "multiValueHeaders": {},
-            "body": "Recipes - {}".format(self.recipe_url)
+            "body": {
+                "received": "Recipes - {}".format(self.recipe_url)
+            }
         }
 
 
