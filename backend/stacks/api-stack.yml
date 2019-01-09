@@ -94,7 +94,7 @@ Resources:
           - RestAPI
           - RootResourceId
       PathPart: storage
-  APIMethod:
+  APIGetMethod:
     Type: "AWS::ApiGateway::Method"
     Properties:
       RestApiId:
@@ -132,9 +132,49 @@ Resources:
       MethodResponses:
       - StatusCode: 200
       - StatusCode: 404
+  APIPostMethod:
+    Type: "AWS::ApiGateway::Method"
+    Properties:
+      RestApiId:
+        Ref: RestAPI
+      ResourceId:
+        Ref: APIResource
+      HttpMethod: POST
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS
+        IntegrationHttpMethod: POST
+        Uri:
+          Fn::Join:
+          - ""
+          - - "arn:aws:apigateway:"
+            - Ref: "AWS::Region"
+            - ":lambda:path/2015-03-31/functions/"
+            - Fn::GetAtt:
+              - LambdaAPIFunction
+              - Arn
+            - "/invocations"
+        IntegrationResponses:
+        - ResponseTemplates:
+            application/json: "$input.json('$.body')"
+          StatusCode: 200
+        - SelectionPattern: "^not found.*"
+          ResponseTemplates:
+            application/json: "{}"
+          StatusCode: 404
+        PassthroughBehavior: NEVER
+        RequestTemplates:
+          application/json: "{\"fun\": \"getUser\", \"parameters\": {\"userId\": \"$input.params('userId')\"}}"
+      RequestParameters:
+        method.request.path.userId: 'true'
+      MethodResponses:
+      - StatusCode: 200
+      - StatusCode: 404
   RestAPIDeployment:
     Type: AWS::ApiGateway::Deployment
-    DependsOn: APIMethod
+    DependsOn:
+      - APIGetMethod
+      - APIPostMethod
     Properties:
       RestApiId:
         Ref: RestAPI
