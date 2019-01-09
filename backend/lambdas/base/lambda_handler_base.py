@@ -17,11 +17,19 @@ class APILambdaHandlerBase(object):
         self.aws_session = (boto3.session.Session(profile_name='aseaman') if self.is_local
                             else boto3.session.Session())
 
+    def _parse_payload(self, payload):
+        raise NotImplementedError
+
     def _parse_event(self, event):
         print(" -- Received event --")
         print(json.dumps(event, indent=4))
         print(" --                --")
+
         self.is_local = event.get('local', False)
+
+        payload = event if self.is_local else json.loads(event['body'])
+        self._parse_payload(payload)
+
 
     def _before_run(self):
         pass

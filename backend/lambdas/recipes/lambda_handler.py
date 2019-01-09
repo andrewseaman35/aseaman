@@ -12,9 +12,8 @@ class RecipeAPILambdaHandler(APILambdaHandlerBase):
         super(RecipeAPILambdaHandler, self)._init_aws()
         self.s3_client = self.aws_session.client('s3', region_name='us-east-1')
 
-    def _parse_event(self, event):
-        super(RecipeAPILambdaHandler, self)._parse_event(event)
-        self.recipe_url = event.get('recipe_url')
+    def _parse_payload(self, payload):
+        self.recipe_url = payload.get('recipe_url')
         if not self.recipe_url:
             raise ValueError('missing recipe_url in event')
 
