@@ -20,14 +20,16 @@ class RecipeAPILambdaHandler(APILambdaHandlerBase):
     def _run(self):
         response = requests.get(self.recipe_url)
 
+        response_body = {
+            "received": "Recipes - {}".format(self.recipe_url),
+            "response_length": len(response.content)
+        }
         return {
             "isBase64Encoded": False,
             "statusCode": 200,
             "headers": {},
             "multiValueHeaders": {},
-            "body": {
-                "received": "Recipes - {}".format(self.recipe_url)
-            }
+            "body": json.dumps(response_body)
         }
 
 
