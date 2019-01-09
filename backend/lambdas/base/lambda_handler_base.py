@@ -6,7 +6,13 @@ import traceback
 import boto3
 
 
-class APILambdaHandlerBase():
+class APILambdaHandlerBase(object):
+    def __init__(self):
+        self._init_aws()
+
+    def _init_aws(self):
+        raise NotImplementedError()
+
     def _parse_event(self, event):
         self.is_local = event.get('local', False)
 

@@ -17,7 +17,7 @@ class Invoke():
         self.local = self.args.local
 
         self.payload = self.args.payload
-        if not self.payload.endswith('.json'):
+        if self.payload and not self.payload.endswith('.json'):
             self.payload += '.json'
 
         if not self.args.local:
