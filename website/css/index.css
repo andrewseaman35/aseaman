@@ -2,7 +2,7 @@ html {
     font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
 }
 
-.welcome {
+.center-content {
     display: flex;
     flex-direction: column;
     justify-content: center;
