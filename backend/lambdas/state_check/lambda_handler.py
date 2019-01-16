@@ -20,7 +20,7 @@ class StateCheckAPILambdaHandler(APILambdaHandlerBase):
             raise ValueError('missing state_id in event')
 
     def _get_state_data(self):
-        common_keys = {'id': 'time_updated'}
+        common_keys = {'id', 'time_updated'}
         ddb_item = self.ddb_client.get_item(
             TableName=TABLE_NAME,
             Key={
@@ -31,7 +31,7 @@ class StateCheckAPILambdaHandler(APILambdaHandlerBase):
         )['Item']
 
         result = {
-            ddb_item.pop(key) for key in common_keys
+            key: ddb_item.pop(key)['S'] for key in common_keys
         }
         data = {
             key: value[list(value.keys())[0]] for key, value in ddb_item.items()
