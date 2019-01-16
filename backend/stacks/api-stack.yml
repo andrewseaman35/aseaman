@@ -35,10 +35,6 @@ Resources:
                 Action:
                   - "logs:*"
                 Resource: "arn:aws:logs:*:*:*"
-        -
-          PolicyName: "state_table"
-          PolicyDocument:
-              Version: "2012-10-17"
               - Effect": "Allow"
                 Action":
                   - "dynamodb:GetItem"
