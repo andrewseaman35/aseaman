@@ -35,6 +35,15 @@ Resources:
                 Action:
                   - "logs:*"
                 Resource: "arn:aws:logs:*:*:*"
+        -
+          PolicyName: "statetable"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "dynamodb:GetItem"
+                Resource: "arn:aws:dynamodb:us-east-1:560983357304:table/states"
   LambdaAPIPolicy:
     Type: "AWS::IAM::InstanceProfile"
     Properties:
@@ -55,7 +64,7 @@ Resources:
             - '.zip'
       Description: Lambda function to handle stuff
       FunctionName: !Ref LambdaFunctionName
-      Handler: lambda_function.lambda_handler
+      Handler: lambda_handler.lambda_handler
       Role : !GetAtt LambdaAPIRole.Arn
       Runtime: python3.6
       Timeout: 10
@@ -93,8 +102,8 @@ Resources:
         Fn::GetAtt:
           - RestAPI
           - RootResourceId
-      PathPart: storage
-  APIMethod:
+      PathPart: state_check
+  APIGetMethod:
     Type: "AWS::ApiGateway::Method"
     Properties:
       RestApiId:
@@ -132,9 +141,47 @@ Resources:
       MethodResponses:
       - StatusCode: 200
       - StatusCode: 404
+  APIPostMethod:
+    Type: "AWS::ApiGateway::Method"
+    Properties:
+      RestApiId:
+        Ref: RestAPI
+      ResourceId:
+        Ref: APIResource
+      HttpMethod: POST
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri:
+          Fn::Join:
+          - ""
+          - - "arn:aws:apigateway:"
+            - Ref: "AWS::Region"
+            - ":lambda:path/2015-03-31/functions/"
+            - Fn::GetAtt:
+              - LambdaAPIFunction
+              - Arn
+            - "/invocations"
+        IntegrationResponses:
+        - ResponseTemplates:
+            application/json: "$input.json('$.body')"
+          StatusCode: 200
+        - SelectionPattern: "^not found.*"
+          ResponseTemplates:
+            application/json: "{}"
+          StatusCode: 404
+        PassthroughBehavior: NEVER
+      RequestParameters:
+        method.request.path.userId: 'true'
+      MethodResponses:
+      - StatusCode: 200
+      - StatusCode: 404
   RestAPIDeployment:
     Type: AWS::ApiGateway::Deployment
-    DependsOn: APIMethod
+    DependsOn:
+      - APIGetMethod
+      - APIPostMethod
     Properties:
       RestApiId:
         Ref: RestAPI
