@@ -30,8 +30,7 @@ class StateCheckAPILambdaHandler(APILambdaHandlerBase):
         )['Item']
 
         return {
-            key: value_dict[value_dict.keys()[0]]
-            for key, value_dict in ddb_item.items()
+            key: value[list(value.keys())[0]] for key, value in ddb_item.items()
         }
 
     def _run(self):
