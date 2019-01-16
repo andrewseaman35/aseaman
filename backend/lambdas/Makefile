@@ -14,8 +14,8 @@ package_dir:
 	mkdir -p $(PACKAGE_DIR)/$(LAMBDA_FUNCTION_NAME)
 
 package: package_dir venv
-	venv/bin/pip install -r recipes/requirements.txt -t $(PACKAGE_DIR)/$(LAMBDA_FUNCTION_NAME)
-	cp -r recipes/* $(PACKAGE_DIR)/$(LAMBDA_FUNCTION_NAME)
+	venv/bin/pip install -r state_check/requirements.txt -t $(PACKAGE_DIR)/$(LAMBDA_FUNCTION_NAME)
+	cp -r state_check/* $(PACKAGE_DIR)/$(LAMBDA_FUNCTION_NAME)
 	cp -r base $(PACKAGE_DIR)/$(LAMBDA_FUNCTION_NAME)
 	cd $(PACKAGE_DIR)/$(LAMBDA_FUNCTION_NAME) && zip -r ../$(LAMBDA_FUNCTION_NAME).zip *
 
