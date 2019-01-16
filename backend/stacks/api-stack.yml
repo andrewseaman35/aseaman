@@ -35,8 +35,13 @@ Resources:
                 Action:
                   - "logs:*"
                 Resource: "arn:aws:logs:*:*:*"
-              - Effect": "Allow"
-                Action":
+        -
+          PolicyName: "statetable"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
                   - "dynamodb:GetItem"
                 Resource: "arn:aws:dynamodb:us-east-1:560983357304:table/states"
   LambdaAPIPolicy:
