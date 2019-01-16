@@ -45,7 +45,9 @@ class StateCheckAPILambdaHandler(APILambdaHandlerBase):
         return {
             "isBase64Encoded": False,
             "statusCode": 200,
-            "headers": {},
+            "headers": {
+                "Access-Control-Allow-Origin": "*"
+            },
             "multiValueHeaders": {},
             "body": json.dumps(item)
         }

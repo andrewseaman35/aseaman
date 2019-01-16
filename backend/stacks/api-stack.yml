@@ -102,7 +102,7 @@ Resources:
         Fn::GetAtt:
           - RestAPI
           - RootResourceId
-      PathPart: storage
+      PathPart: state_check
   APIGetMethod:
     Type: "AWS::ApiGateway::Method"
     Properties:
