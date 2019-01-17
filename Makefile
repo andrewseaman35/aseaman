@@ -9,8 +9,8 @@ STACKNAME ?= stack-$(DEPLOY_ENV)-$(NONCE)
 LAMBDA_FUNCTION_NAME ?= lambda-api-$(DEPLOY_ENV)-$(NONCE)
 
 venv: requirements.txt
-	virtualenv venv --python=python3
-	venv/bin/pip install -r requirements.txt
+	@virtualenv venv --python=python3
+	@venv/bin/pip install -r requirements.txt
 
 website/js/config/config.js: venv config/web_template.json scripts/generate_config.py
 	$(VENV_PYTHON) scripts/generate_config.py

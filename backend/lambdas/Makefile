@@ -21,7 +21,7 @@ package: package_dir venv
 
 upload: package
 	echo $(LAMBDA_FUNCTION_NAME)
-	aws s3 cp --recursive $(PACKAGE_DIR) s3://aseaman-lambda-functions/$(DEPLOY_ENV)
+	@aws s3 cp --recursive $(PACKAGE_DIR) s3://aseaman-lambda-functions/$(DEPLOY_ENV)
 
 clean:
 	rm -rf ./deploy_venv/
