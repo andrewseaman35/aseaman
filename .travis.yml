@@ -9,7 +9,7 @@ before_install:
   - ./scripts/travis_env.sh
 
 script:
-  - ./scripts/deploy.sh
+  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./scripts/deploy.sh; fi'
 
 after_deploy:
   - ./scripts/
