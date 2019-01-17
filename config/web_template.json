@@ -12,5 +12,10 @@
     "API_ID": {
         "source": "stack_param",
         "key": "ApiId"
+    },
+
+    "GA_TRACKING_ID": {
+        "source": "ssm",
+        "key": "ga_tracking_id"
     }
 }

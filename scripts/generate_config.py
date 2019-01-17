@@ -3,17 +3,20 @@ import json
 import os
 
 VALID_ENVS = {'test', 'stage', 'live'}
-VALID_SOURCES = {'env', 'stack_param'}
+VALID_SOURCES = {'env', 'stack_param', 'ssm'}
 
 TEMPLATE_FILE = '{root}/config/web_template.json'
 OUTPUT_FILE = '{root}/website/js/config/config.js'
 
 class GenerateConfig():
     def __init__(self):
-        self.client = boto3.client('cloudformation', region_name='us-east-1')
+        b = boto3.Session(profile_name='aseaman')
+        self.cf_client = b.client('cloudformation', region_name='us-east-1')
+        self.ssm_client = b.client('ssm', region_name='us-east-1')
 
         self.root = os.environ.get('ROOTDIR', os.getcwd())
         self.stack_name = os.environ['STACKNAME']
+        self.env = os.environ['DEPLOY_ENV']
 
         self.template_file = TEMPLATE_FILE.format(root=self.root)
         self.output_filename = OUTPUT_FILE.format(root=self.root)
@@ -22,11 +25,12 @@ class GenerateConfig():
         self.source_map = {
             'env': self.get_from_env,
             'stack_param': self.get_from_stack_export,
+            'ssm': self.get_from_ssm,
         }
 
     def get_stack_output_dict(self):
         """Get stack outputs and convert to dict."""
-        stacks = self.client.describe_stacks(StackName=self.stack_name)
+        stacks = self.cf_client.describe_stacks(StackName=self.stack_name)
         return {
             output['OutputKey']: output['OutputValue']
             for output in stacks['Stacks'][0]['Outputs']
@@ -38,6 +42,12 @@ class GenerateConfig():
             self.stack_exports = self.get_stack_output_dict()
 
         return self.stack_exports[key]
+
+    def get_from_ssm(self, key):
+        """Get value from Parameter Store."""
+        key = "{}-{}".format(key, self.env)
+        response = self.ssm_client.get_parameter(Name=key)
+        return response['Parameter']['Value']
 
     def get_from_env(self, key):
         """Use an environment variable as a config value."""
