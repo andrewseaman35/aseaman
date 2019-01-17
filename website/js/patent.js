@@ -2,7 +2,7 @@ const data = {
     state_id: 'patent_number'
 };
 
-const url = `https://${CONFIG.API_ID}.execute-api.us-east-1.amazonaws.com/test/state_check`
+const patentUrl = `https://${CONFIG.API_ID}.execute-api.us-east-1.amazonaws.com/test/state_check`
 
 const newRow = function(label, value) {
     const row = document.createElement('tr');
@@ -18,7 +18,7 @@ const newRow = function(label, value) {
 }
 
 $.post(
-    url,
+    patentUrl,
     JSON.stringify(data),
     function(response) {
         document.getElementById('patent-state-loading').style.display = "none";
