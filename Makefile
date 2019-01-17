@@ -9,8 +9,8 @@ STACKNAME ?= stack-$(DEPLOY_ENV)-$(NONCE)
 LAMBDA_FUNCTION_NAME ?= lambda-api-$(DEPLOY_ENV)-$(NONCE)
 
 venv: requirements.txt
-	virtualenv venv --python=python3
-	venv/bin/pip install -r requirements.txt
+	@virtualenv venv --python=python3
+	@venv/bin/pip install -r requirements.txt
 
 website/js/config/config.js: venv config/web_template.json scripts/generate_config.py
 	$(VENV_PYTHON) scripts/generate_config.py
@@ -24,13 +24,13 @@ deploy_api:
 	make -C backend deploy
 
 deploy_website: website
-	aws s3 rm s3://$(DEPLOY_ENV).andrewcseaman.com --recursive
-	aws s3 cp --recursive website s3://$(DEPLOY_ENV).andrewcseaman.com
+	@aws s3 rm s3://$(DEPLOY_ENV).andrewcseaman.com --recursive
+	@aws s3 cp --recursive website s3://$(DEPLOY_ENV).andrewcseaman.com
 
 deploy_test_website: website
-	aws s3 rm s3://test.andrewcseaman.com/$(BRANCH) --recursive
-	aws s3 cp --recursive website s3://test.andrewcseaman.com/$(BRANCH)
-	aws s3 cp --recursive testing_website s3://test.andrewcseaman.com
+	@aws s3 rm s3://test.andrewcseaman.com/$(BRANCH) --recursive
+	@aws s3 cp --recursive website s3://test.andrewcseaman.com/$(BRANCH)
+	@aws s3 cp --recursive testing_website s3://test.andrewcseaman.com
 
 deploy: deploy_api deploy_website
 
