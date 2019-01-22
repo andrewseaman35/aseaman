@@ -7,5 +7,6 @@ __pycache__/
 notes/
 
 website/js/config/config.js
+website/*.html
 
 notes/
