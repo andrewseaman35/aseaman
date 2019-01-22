@@ -8,14 +8,19 @@ DEPLOY_ENV ?= test
 STACKNAME ?= stack-$(DEPLOY_ENV)-$(NONCE)
 LAMBDA_FUNCTION_NAME ?= lambda-api-$(DEPLOY_ENV)-$(NONCE)
 
+LOCAL_PORT := 8123
+
 venv: requirements.txt
 	virtualenv venv --python=python3
 	venv/bin/pip install -r requirements.txt
 
+static: venv
+	$(VENV_PYTHON) scripts/compile_html.py
+
 website/js/config/config.js: venv config/web_template.json scripts/generate_config.py
 	$(VENV_PYTHON) scripts/generate_config.py
 
-website: website/js/config/config.js
+website: website/js/config/config.js static
 
 package:
 	make -C backend package
@@ -42,6 +47,10 @@ remove_old_stacks: venv
 clean:
 	rm -rf venv
 	rm -f website/config/config.js
+	rm -f website/*.html
 	make -C backend clean
 
-.PHONY: package deploy_api deploy_website deploy_test_website deploy deploy_test remove_old_stacks clean
+start_local: static
+	cd website && python3 -m http.server $(LOCAL_PORT)
+
+.PHONY: package deploy_api deploy_website deploy_test_website deploy deploy_test remove_old_stacks clean static

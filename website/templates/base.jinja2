@@ -1,0 +1,33 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>My Website</title>
+    <meta name="description" content="This will be a website">
+    <meta name="author" content="Me">
+
+    <link rel="stylesheet" type="text/css" href="css/index.css" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+
+    <script src="js/config/config.js"></script>
+    <script src="js/ga.js"></script>
+
+    {% block javascript %}{% endblock %}
+</head>
+
+<body>
+    <div class="main-content">
+        <div class="inner">
+            <div class="center-content">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+    {% include 'footer.jinja2' %}
+</body>
+
+</html>
