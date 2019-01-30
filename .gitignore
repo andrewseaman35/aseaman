@@ -6,7 +6,9 @@ __pycache__/
 
 notes/
 
-website/js/config/config.js
+website/node_modules/
+website/js/src/config.js
+website/js/bundle.js
 website/*.html
 
 notes/
