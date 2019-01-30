@@ -1,0 +1,10 @@
+{% extends 'base.jinja2' %}
+
+{% block include_js %}
+    <script>
+        window.aseaman.ready(function(exports) {
+            exports.auth();
+            window.location.replace('/');
+        });
+    </script>
+{% endblock %}

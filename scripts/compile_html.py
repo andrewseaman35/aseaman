@@ -9,7 +9,7 @@ TEMPLATE_DIRNAME = 'templates'
 WEBSITE_DIRNAME = 'website'
 PUBLIC_DIRNAME = 'public'
 
-PAGES = ['about', 'index', 'patent']
+OMIT_PAGES = ['base', 'footer']
 
 
 class CompileHTML(BaseScript):

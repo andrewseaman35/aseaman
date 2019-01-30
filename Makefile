@@ -8,6 +8,7 @@ DEPLOY_ENV ?= test
 STACKNAME ?= stack-$(DEPLOY_ENV)-$(NONCE)
 LAMBDA_FUNCTION_NAME ?= lambda-api-$(DEPLOY_ENV)-$(NONCE)
 
+LOCAL_TESTING_PORT := 8124
 LOCAL_PORT := 8123
 
 venv: requirements.txt
@@ -47,7 +48,7 @@ start_local: venv
 	cd website/public/ && python3 -m http.server $(LOCAL_PORT)
 
 start_local_test:
-	cd testing_website && python3 -m http.server $(LOCAL_PORT)
+	cd testing_website && python3 -m http.server $(LOCAL_TESTING_PORT)
 
 clean:
 	rm -rf venv
