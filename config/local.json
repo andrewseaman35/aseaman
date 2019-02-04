@@ -1,0 +1,7 @@
+{
+    "DEPLOY_ENV": "dev",
+    "STACKNAME": "local",
+    "BRANCH": "local",
+    "API_ID": "api_id",
+    "GA_TRACKING_ID": ""
+}

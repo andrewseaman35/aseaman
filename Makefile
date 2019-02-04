@@ -10,12 +10,21 @@ LAMBDA_FUNCTION_NAME ?= lambda-api-$(DEPLOY_ENV)-$(NONCE)
 
 LOCAL_PORT := 8123
 
+website/node_modules: website/package.json website/package-lock.json
+	npm -g install ./website/ --save-dev
+
+js: website/node_modules
+	browserify website/js/src/main.js -o website/js/bundle.js -d
+
 venv: requirements.txt
 	virtualenv venv --python=python3
 	venv/bin/pip install -r requirements.txt
 
-static: venv
+static: venv js
 	$(VENV_PYTHON) scripts/compile_html.py
+
+local_config: venv config/web_template.json scripts/generate_config.py
+	$(VENV_PYTHON) scripts/generate_config.py --local
 
 website/js/config/config.js: venv config/web_template.json scripts/generate_config.py
 	$(VENV_PYTHON) scripts/generate_config.py
@@ -30,7 +39,7 @@ deploy_api:
 
 deploy_website: website
 	aws s3 rm s3://$(DEPLOY_ENV).andrewcseaman.com --recursive
-	aws s3 cp --recursive website s3://$(DEPLOY_ENV).andrewcseaman.com
+	aws s3 cp --recursive --exclude=website/js/src/* website s3://$(DEPLOY_ENV).andrewcseaman.com
 
 deploy_test_website: website
 	aws s3 rm s3://test.andrewcseaman.com/$(BRANCH) --recursive
@@ -46,11 +55,13 @@ remove_old_stacks: venv
 
 clean:
 	rm -rf venv
-	rm -f website/config/config.js
+	rm -f website/js/src/config.js
+	rm website/js/bundle.js
 	rm -f website/*.html
+	rm -rf website/node_modules
 	make -C backend clean
 
-start_local: static
+start_local: local_config static
 	cd website && python3 -m http.server $(LOCAL_PORT)
 
-.PHONY: package deploy_api deploy_website deploy_test_website deploy deploy_test remove_old_stacks clean static
+.PHONY: package deploy_api deploy_website deploy_test_website deploy deploy_test remove_old_stacks clean static js
