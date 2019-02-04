@@ -1,9 +1,5 @@
 {% extends 'base.jinja2' %}
 
-{% block javascript %}
-    <script src="js/patent.js"></script>
-{% endblock %}
-
 {% block content %}
     <div class="inner">
         <div class="center-content">
@@ -42,4 +38,12 @@
             <a href="index.html">Go back home</a>
         </div>
     </div>
+{% endblock %}
+
+{% block include_js %}
+    <script>
+        window.aseaman.ready(function(exports) {
+            exports.patent(exports);
+        });
+    </script>
 {% endblock %}
