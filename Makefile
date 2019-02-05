@@ -64,4 +64,7 @@ clean:
 start_local: local_config static
 	cd website && python3 -m http.server $(LOCAL_PORT)
 
+start_local_test:
+	cd testing_website && python3 -m http.server $(LOCAL_PORT)
+
 .PHONY: package deploy_api deploy_website deploy_test_website deploy deploy_test remove_old_stacks clean static js

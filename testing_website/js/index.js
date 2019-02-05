@@ -11,6 +11,7 @@ const s3 = new AWS.S3({region: 'us-east-1'});
 
 s3.listObjectsV2({
     Bucket: 'test.andrewcseaman.com',
+    Delimiter: '/',
 }, function(err, data) {
     if (err) {
         const el = document.getElementById('branch-list');
@@ -30,11 +31,11 @@ const getTravisIconForBranch = function(branch) {
     return img;
 };
 
-const IGNORE_ROOT_PATHS = new Set(['index.html', 'js']);
+const IGNORE_ROOT_PATHS = new Set(['js']);
 const getPathsFromListContents = function(contents) {
     const paths = new Set();
     contents.forEach(obj => {
-        const path = obj.Key.split('/')[0];
+        const path = obj.Prefix.split('/')[0];
         if (!IGNORE_ROOT_PATHS.has(path)) {
             paths.add(path);
         }
@@ -58,7 +59,7 @@ const addLinksToElement = function(element, paths) {
 };
 
 const onSuccess = function(data) {
-    const paths = getPathsFromListContents(data.Contents);
+    const paths = getPathsFromListContents(data.CommonPrefixes);
     const el = document.getElementById('branch-list');
     addLinksToElement(el, paths);
 };
