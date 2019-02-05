@@ -1,6 +1,7 @@
 import boto3
-import os
 import re
+
+from base import BaseScript
 
 REGEX_WITH_BRANCH = r'^stack-{env}-(?P<branch>.*)-(?P<nonce>[^-]*)$'
 REGEX_WITHOUT_BRANCH = r'^stack-{env}-(?P<nonce>[^-]*)$'
@@ -14,7 +15,7 @@ STACKNAME_REGEXES = {
 }
 
 
-class RemoveOldStacks():
+class RemoveOldStacks(BaseScript):
     """
     Deletes old stacks.
 
@@ -23,18 +24,34 @@ class RemoveOldStacks():
         STACKNAME: name of currently deployed stack in environment (is not deleted)
         BRANCH: if DEPLOY_ENV == 'test', branch to delete stacks for
     """
-    def __init__(self):
-        self.client = boto3.client('cloudformation', region_name='us-east-1')
 
-        self.stack_name = os.environ['STACKNAME']
-        self.deploy_env = os.environ['DEPLOY_ENV']
+    def _setup_parser(self):
+        super(RemoveOldStacks, self)._setup_parser()
+        self.parser.add_argument("--stack-name", dest="stack_name", help="cloudformation stack name")
+        self.parser.add_argument("--deploy-env", dest="deploy_env", help="test, stage, live")
+        self.parser.add_argument("--branch", dest="branch", help="test, stage, live")
+
+    def _validate_args(self):
+        super(RemoveOldStacks, self)._validate_args()
+        self.stack_name = self.args.stack_name
+        self.deploy_env = self.args.deploy_env
+        if self.stack_name is None:
+            raise ValueError("--stack-name is required")
+        if self.deploy_env is None:
+            raise ValueError("--deploy-env is required")
         if self.deploy_env == 'test':
-            self.branch = os.environ['BRANCH']
+            self.branch = self.args.branch
+            if self.branch is None:
+                raise ValueError("--branch is required when deploy_env is test")
 
         if self.deploy_env not in VALID_ENVS:
             raise ValueError("Invalid deploy env: {}".format(self.deploy_env))
 
-    def run(self):
+    def _init_aws(self):
+        super(RemoveOldStacks, self)._init_aws()
+        self.client = self.aws_session.client('cloudformation', region_name='us-east-1')
+
+    def _run(self):
         out = "Deleting old stacks for {}".format(self.deploy_env)
         if self.deploy_env == 'test':
             out += ", branch: {}".format(self.branch)
