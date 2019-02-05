@@ -27,7 +27,7 @@ local_config: venv config/web_template.json scripts/generate_config.py
 	$(VENV_PYTHON) scripts/generate_config.py --local
 
 website/js/config/config.js: venv config/web_template.json scripts/generate_config.py
-	$(VENV_PYTHON) scripts/generate_config.py
+	$(VENV_PYTHON) scripts/generate_config.py --root-dir=${ROOTDIR} --stack-name=${STACKNAME} --deploy-env=${DEPLOY_ENV}
 
 website: website/js/config/config.js static
 
@@ -51,7 +51,7 @@ deploy: deploy_api deploy_website
 deploy_test: deploy_api deploy_test_website
 
 remove_old_stacks: venv
-	$(VENV_PYTHON) scripts/remove_old_stacks.py
+	$(VENV_PYTHON) scripts/remove_old_stacks.py --stack-name=${STACKNAME} --deploy-env=${DEPLOY_ENV} --branch=${BRANCH}
 
 clean:
 	rm -rf venv
@@ -63,5 +63,8 @@ clean:
 
 start_local: local_config static
 	cd website && python3 -m http.server $(LOCAL_PORT)
+
+start_local_test:
+	cd testing_website && python3 -m http.server $(LOCAL_PORT)
 
 .PHONY: package deploy_api deploy_website deploy_test_website deploy deploy_test remove_old_stacks clean static js

@@ -3,6 +3,8 @@ import boto3
 import json
 import os
 
+from base import BaseScript
+
 VALID_ENVS = {'test', 'stage', 'live'}
 VALID_SOURCES = {'env', 'stack_param', 'ssm'}
 
@@ -10,19 +12,9 @@ LOCAL_FILE = '{root}/config/local.json'
 TEMPLATE_FILE = '{root}/config/web_template.json'
 OUTPUT_FILE = '{root}/website/js/src/config.js'
 
-class GenerateConfig():
+class GenerateConfig(BaseScript):
     def __init__(self):
-        self.parser = argparse.ArgumentParser()
-        self._setup_parser()
-        self.args = self.parser.parse_args()
-        self.local = self.args.local
-
-        self.cf_client = boto3.client('cloudformation', region_name='us-east-1')
-        self.ssm_client = boto3.client('ssm', region_name='us-east-1')
-
-        self.root = os.environ.get('ROOTDIR', os.getcwd())
-        self.stack_name = os.environ['STACKNAME']
-        self.env = os.environ['DEPLOY_ENV']
+        super(GenerateConfig, self).__init__()
 
         self.local_file = LOCAL_FILE.format(root=self.root)
         self.template_file = TEMPLATE_FILE.format(root=self.root)
@@ -36,7 +28,28 @@ class GenerateConfig():
         }
 
     def _setup_parser(self):
-        self.parser.add_argument("--local", help="add if running locally", action='store_true')
+        super(GenerateConfig, self)._setup_parser()
+        self.parser.add_argument("--root-dir", dest="root_dir", help="repo root directory")
+        self.parser.add_argument("--stack-name", dest="stack_name", help="cloudformation stack name")
+        self.parser.add_argument("--deploy-env", dest="deploy_env", help="test, stage, live")
+
+    def _validate_args(self):
+        super(GenerateConfig, self)._validate_args()
+        self.root = self.args.root_dir or os.getcwd()
+        self.stack_name = self.args.stack_name
+        self.deploy_env = self.args.deploy_env
+        if not self.local:
+            if self.stack_name is None:
+                raise ValueError("--stack-name is required")
+            if self.deploy_env is None:
+                raise ValueError("--deploy-env is required")
+            if self.deploy_env not in VALID_ENVS:
+                raise ValueError("Invalid deploy_env")
+
+    def _init_aws(self):
+        super(GenerateConfig, self)._init_aws()
+        self.cf_client = self.aws_session.client('cloudformation', region_name='us-east-1')
+        self.ssm_client = self.aws_session.client('ssm', region_name='us-east-1')
 
     def get_stack_output_dict(self):
         """Get stack outputs and convert to dict."""
@@ -55,7 +68,7 @@ class GenerateConfig():
 
     def get_from_ssm(self, key):
         """Get value from Parameter Store."""
-        key = "{}-{}".format(key, self.env)
+        key = "{}-{}".format(key, self.deploy_env)
         response = self.ssm_client.get_parameter(Name=key)
         return response['Parameter']['Value']
 
@@ -86,7 +99,7 @@ class GenerateConfig():
 
         return output_data
 
-    def run(self):
+    def _run(self):
         if self.local:
             output_data = self.get_local_data()
         else:
