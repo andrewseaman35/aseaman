@@ -11,7 +11,7 @@ function loadScript(url, callback) {
     head.appendChild(script);
 }
 
-const loadGAScript = function(CONFIG) {
+const loadGAScript = function() {
     const googleTagManagerUrl = `https://www.googletagmanager.com/gtag/js?id=${CONFIG.GA_TRACKING_ID}`;
     loadScript(googleTagManagerUrl, function() {
         window.dataLayer = window.dataLayer || [];
