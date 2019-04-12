@@ -1,14 +1,19 @@
 import jinja2
 import os
 
+from base import BaseScript
+
 TEMPLATE_DIRNAME = 'templates'
 WEBSITE_DIRNAME = 'website'
 
 PAGES = ['about', 'index', 'patent']
 
 
-class CompileHTML():
+class CompileHTML(BaseScript):
+    aws_enabled = False
+
     def __init__(self):
+        super(CompileHTML, self).__init__()
         script_dir = os.path.dirname(os.path.realpath(__file__))
         self.website_dir = os.path.join(os.path.dirname(script_dir), WEBSITE_DIRNAME)
         self.template_dir = os.path.join(self.website_dir, TEMPLATE_DIRNAME)
@@ -28,7 +33,7 @@ class CompileHTML():
         with open(os.path.join(self.website_dir, html_file_name), 'w') as html_file:
             html_file.write(page_content)
 
-    def run(self):
+    def _run(self):
         for page in PAGES:
             self.render_html(page)
             print("{} rendered".format(page))

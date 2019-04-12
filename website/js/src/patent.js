@@ -1,5 +1,8 @@
 const $ = require('jquery');
 
+const CONFIG = require('./config');
+
+
 const data = {
     state_id: 'patent_number'
 };
@@ -17,8 +20,8 @@ const newRow = function(label, value) {
     return row;
 };
 
-const updatePatentTable = function(modules) {
-    const patentUrl = `https://${modules.config.API_ID}.execute-api.us-east-1.amazonaws.com/test/state_check`;
+const updatePatentTable = function() {
+    const patentUrl = `https://${CONFIG.API_ID}.execute-api.us-east-1.amazonaws.com/test/state_check`;
     $.post(
         patentUrl,
         JSON.stringify(data),
