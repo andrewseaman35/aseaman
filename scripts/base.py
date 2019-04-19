@@ -1,5 +1,6 @@
 import argparse
 import subprocess
+import time
 
 import boto3
 
@@ -20,6 +21,10 @@ class BaseScript(object):
 
         if self.aws_enabled:
             self._init_aws()
+
+    def log(self, t):
+        timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+        print('{}: {}'.format(timestamp, t))
 
     def _setup_parser(self):
         if self.aws_enabled:
