@@ -29,13 +29,11 @@ class GenerateConfig(BaseScript):
 
     def _setup_parser(self):
         super(GenerateConfig, self)._setup_parser()
-        self.parser.add_argument("--root-dir", dest="root_dir", help="repo root directory")
         self.parser.add_argument("--stack-name", dest="stack_name", help="cloudformation stack name")
         self.parser.add_argument("--deploy-env", dest="deploy_env", help="test, stage, live")
 
     def _validate_args(self):
         super(GenerateConfig, self)._validate_args()
-        self.root = self.args.root_dir or os.getcwd()
         self.stack_name = self.args.stack_name
         self.deploy_env = self.args.deploy_env
         if not self.local:
