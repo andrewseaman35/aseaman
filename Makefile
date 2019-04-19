@@ -17,7 +17,7 @@ venv: requirements.txt
 package:
 	make -C backend package
 
-website:
+website: venv
 	make -C website
 
 deploy_api:
@@ -51,4 +51,4 @@ clean:
 	make -C backend clean
 	make -C website clean
 
-.PHONY: package deploy_api deploy_website deploy_test_website deploy deploy_test remove_old_stacks clean static js
+.PHONY: package deploy_api deploy_website deploy_test_website deploy deploy_test remove_old_stacks clean website
