@@ -1,12 +1,15 @@
 *.zip
 *.pyc
+
 __pycache__/
+.sass-cache/
 
 **/venv/
 
 notes/
 
 website/node_modules/
+website/css/
 website/js/src/config.js
 website/js/bundle.js
 website/*.html

@@ -20,7 +20,11 @@ venv: requirements.txt
 	virtualenv venv --python=python3
 	venv/bin/pip install -r requirements.txt
 
-static: venv js
+website/css/main.css:
+	mkdir -p website/css/
+	sass website/scss/main.scss website/css/main.css
+
+static: venv js website/css/main.css
 	$(VENV_PYTHON) scripts/compile_html.py
 
 local_config: venv config/web_template.json scripts/generate_config.py
@@ -59,6 +63,7 @@ clean:
 	rm website/js/bundle.js
 	rm -f website/*.html
 	rm -rf website/node_modules
+	rm -rf website/css/
 	make -C backend clean
 
 start_local: local_config static
