@@ -61,6 +61,12 @@ class RunWatchers(BaseScript):
         thread = threading.Thread(name=name, target=watcher.watch)
         return thread
 
+    def trigger_jinja_build(self):
+        try:
+            self.compile_html.run()
+        except Exception as e:
+            print("Error while build HTML: {}".format(e))
+
     def trigger_scss_build(self):
         subprocess.call(['sass', self.scss_input, self.scss_output])
 
@@ -68,7 +74,7 @@ class RunWatchers(BaseScript):
         subprocess.call(['browserify', self.js_input, '-o', self.js_output, '-d'])
 
     def _run(self):
-        self.jinja_thread = self._new_watcher_thread('jinja', self.jinja_dir, self.compile_html.run)
+        self.jinja_thread = self._new_watcher_thread('jinja', self.jinja_dir, self.trigger_jinja_build)
         self.scss_thread = self._new_watcher_thread('scss', self.scss_dir, self.trigger_scss_build)
         self.js_thread = self._new_watcher_thread('js', self.js_dir, self.trigger_js_build)
 
