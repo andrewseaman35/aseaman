@@ -8,6 +8,12 @@ from compile_html import CompileHTML
 
 
 class Watcher(object):
+    """
+    A simple file watch that calls a function whenever files within a given
+    directory are updated.
+
+    NOTE: Currently does not update on files within folders.
+    """
     POLL_TIME = 2
 
     def __init__(self, name, watched_dir, on_update):
@@ -18,10 +24,10 @@ class Watcher(object):
 
     def log(self, t):
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
-        print('{}: {}'.format(timestamp, t))
+        print('{}: {} watcher - {}'.format(timestamp, self.name, t))
 
     def watch(self):
-        self.log("{} watcher started".format(self.name))
+        self.log("started")
         while True:
             with os.scandir(self.watched_dir) as entries:
                 for entry in entries:
@@ -29,7 +35,7 @@ class Watcher(object):
                     if entry.path not in self.modification_times:
                         self.modification_times[entry.path] = modification_time
                     elif modification_time > self.modification_times[entry.path]:
-                        self.log("Detected change in {}, rebuild {}".format(entry.name, self.name))
+                        self.log("Detected change in {}".format(entry.name))
                         self.on_update()
                         self.modification_times = {}
             time.sleep(self.POLL_TIME)
@@ -66,11 +72,8 @@ class RunWatchers(BaseScript):
         self.scss_thread = self._new_watcher_thread('scss', self.scss_dir, self.trigger_scss_build)
         self.js_thread = self._new_watcher_thread('js', self.js_dir, self.trigger_js_build)
 
-        self.log("Starting Jinja2 watcher")
         self.jinja_thread.start()
-        self.log("Starting SCSS watcher")
         self.scss_thread.start()
-        self.log("Starting JavaScript watcher")
         self.js_thread.start()
 
 
