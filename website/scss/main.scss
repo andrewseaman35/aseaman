@@ -1,0 +1,6 @@
+@import "helpers.scss";
+@import "layout.scss";
+
+body.patent {
+    @import "patent.scss";
+}

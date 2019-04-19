@@ -1,0 +1,13 @@
+#state-table {
+    padding: 40px;
+}
+
+#state-table tr>td {
+    text-align: left;
+    padding: 5px 0;
+}
+
+#state-table tr>td:first-child {
+    font-weight: 700;
+    width: 25%;
+}
