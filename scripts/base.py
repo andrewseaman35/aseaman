@@ -1,4 +1,5 @@
 import argparse
+import subprocess
 
 import boto3
 
@@ -11,6 +12,11 @@ class BaseScript(object):
 
         self.args = self.parser.parse_args()
         self._validate_args()
+
+        self.root = subprocess.Popen(
+            ['git', 'rev-parse', '--show-toplevel'],
+            stdout=subprocess.PIPE
+        ).communicate()[0].rstrip().decode('utf-8')
 
         if self.aws_enabled:
             self._init_aws()
