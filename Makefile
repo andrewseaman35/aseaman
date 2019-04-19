@@ -39,6 +39,9 @@ deploy_test: deploy_api deploy_test_website
 remove_old_stacks: venv
 	$(VENV_PYTHON) scripts/remove_old_stacks.py --stack-name=${STACKNAME} --deploy-env=${DEPLOY_ENV} --branch=${BRANCH}
 
+watch: venv
+	make -C website watch
+
 start_local: venv
 	make -C website local
 	cd website/public/ && python3 -m http.server $(LOCAL_PORT)
