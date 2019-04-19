@@ -9,7 +9,7 @@
     <meta name="description" content="This will be a website">
     <meta name="author" content="Me">
 
-    <link rel="stylesheet" type="text/css" href="css/index.css" />
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
 
     <script>
         (function() {
@@ -27,7 +27,7 @@
     <script src="js/bundle.js"></script>
 </head>
 
-<body>
+<body class="{% block body_class %}{% endblock %}">
     <div class="main-content">
         <div class="inner">
             <div class="center-content">
