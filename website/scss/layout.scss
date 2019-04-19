@@ -6,6 +6,31 @@ body {
     margin: 0
 }
 
+header {
+    display: none;
+    .nav-bar {
+        td {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        td+td {
+            border-left: solid 1px;
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+        tr {
+            border: none;
+        }
+    }
+
+    .container {
+        flex-direction: row-reverse;
+    }
+
+}
+
 footer {
     position: fixed;
     width: auto;
