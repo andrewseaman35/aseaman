@@ -9,7 +9,6 @@ TEMPLATE_DIRNAME = 'templates'
 WEBSITE_DIRNAME = 'website'
 PUBLIC_DIRNAME = 'public'
 
-POLL_TIME = 2
 PAGES = ['about', 'index', 'patent']
 
 
@@ -25,10 +24,6 @@ class CompileHTML(BaseScript):
         self.modification_times = {}
 
         self.template_env = self._init_template_env()
-
-    def _setup_parser(self):
-        super(CompileHTML, self)._setup_parser()
-        self.parser.add_argument("--watch", dest="watch", action="store_true", help="run with watcher")
 
     def _init_template_env(self):
         template_loader = jinja2.FileSystemLoader(searchpath=self.template_dir)
@@ -54,26 +49,8 @@ class CompileHTML(BaseScript):
         for page in PAGES:
             self._render_html(page)
 
-    def _run_watcher(self):
-        print()
-        print("-- Watcher enabled --")
-        while True:
-            with os.scandir(self.template_dir) as entries:
-                for entry in entries:
-                    modification_time = entry.stat().st_mtime
-                    if entry.path not in self.modification_times:
-                        self.modification_times[entry.path] = modification_time
-                    elif modification_time > self.modification_times[entry.path]:
-                        self.log("Detected change in {}".format(entry.name))
-                        self.render_all()
-                        self.modification_times = {}
-            time.sleep(POLL_TIME)
-
     def _run(self):
-        if self.args.watch:
-            self._run_watcher()
-        else:
-            self.render_all()
+        self.render_all()
 
 
 if __name__ == '__main__':
