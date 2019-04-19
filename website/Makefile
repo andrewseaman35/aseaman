@@ -19,9 +19,6 @@ config: $(CONFIG)/web_template.json $(SCRIPTS)/generate_config.py
 node_modules: package.json package-lock.json
 	npm -g install . --save-dev
 
-watch: $(SCRIPTS)/compile_html.py
-	$(VENV_PYTHON) $(SCRIPTS)/compile_html.py --watch
-
 html: $(SCRIPTS)/compile_html.py
 	$(VENV_PYTHON) $(SCRIPTS)/compile_html.py
 
