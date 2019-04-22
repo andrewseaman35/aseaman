@@ -38,8 +38,10 @@ header {
 
 .main-content {
     position: fixed;
-    padding: $main-content-padding;
+    padding: 0 $main-content-padding;
+    overflow: scroll;
     width: calc(100% - (2 * #{$main-content-padding}));
+    height: calc(100% - (#{$header-height} + #{$footer-height}));
 }
 
 footer {
