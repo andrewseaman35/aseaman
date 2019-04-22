@@ -36,6 +36,12 @@ header {
 
 }
 
+.main-content {
+    position: fixed;
+    padding: $main-content-padding;
+    width: calc(100% - (2 * #{$main-content-padding}));
+}
+
 footer {
     position: fixed;
     width: auto;
