@@ -17,5 +17,15 @@
     "GA_TRACKING_ID": {
         "source": "ssm",
         "key": "ga_tracking_id"
+    },
+
+    "CLIENT_ID": {
+        "source": "public",
+        "key": "client_id"
+    },
+
+    "ROOT_URL": {
+        "source": "public",
+        "key": "root_url"
     }
 }
