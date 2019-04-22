@@ -1,7 +1,9 @@
 {
-    "DEPLOY_ENV": "dev",
-    "STACKNAME": "local",
-    "BRANCH": "local",
     "API_ID": "api_id",
-    "GA_TRACKING_ID": ""
+    "BRANCH": "local",
+    "DEPLOY_ENV": "dev",
+    "CLIENT_ID": "22phtro4ouj069mou9o94a9tnm",
+    "GA_TRACKING_ID": "",
+    "STACKNAME": "local",
+    "ROOT_URL": "http://localhost:8123/"
 }

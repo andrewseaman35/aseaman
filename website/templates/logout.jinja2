@@ -1,0 +1,11 @@
+{% extends 'base.jinja2' %}
+
+{% block page_id %}logout{% endblock %}
+
+{% block include_js %}
+    <script>
+        window.aseaman.ready(function(exports) {
+            exports.auth.logout();
+        });
+    </script>
+{% endblock %}

@@ -6,25 +6,30 @@ import os
 from base import BaseScript
 
 VALID_ENVS = {'test', 'stage', 'live'}
-VALID_SOURCES = {'env', 'stack_param', 'ssm'}
+VALID_SOURCES = {'env', 'stack_param', 'ssm', 'public'}
 
-LOCAL_FILE = '{root}/config/local.json'
-TEMPLATE_FILE = '{root}/config/web_template.json'
-OUTPUT_FILE = '{root}/website/js/src/config.js'
+PUBLICS_FILENAME_FORMAT = '{root}/config/publics.json'
+
+LOCAL_FILENAME_FORMAT = '{root}/config/local.json'
+TEMPLATE_FILENAME_FORMAT = '{root}/config/web_template.json'
+OUTPUT_FILENAME_FORMAT = '{root}/website/js/src/config.js'
 
 class GenerateConfig(BaseScript):
     def __init__(self):
         super(GenerateConfig, self).__init__()
 
-        self.local_file = LOCAL_FILE.format(root=self.root)
-        self.template_file = TEMPLATE_FILE.format(root=self.root)
-        self.output_filename = OUTPUT_FILE.format(root=self.root)
+        self.local_file = LOCAL_FILENAME_FORMAT.format(root=self.root)
+        self.template_file = TEMPLATE_FILENAME_FORMAT.format(root=self.root)
+        self.output_file = OUTPUT_FILENAME_FORMAT.format(root=self.root)
+        self.publics_file = PUBLICS_FILENAME_FORMAT.format(root=self.root)
 
         self.stack_exports = None
+        self.publics = None
         self.source_map = {
             'env': self.get_from_env,
             'stack_param': self.get_from_stack_export,
             'ssm': self.get_from_ssm,
+            'public': self.get_public,
         }
 
     def _setup_parser(self):
@@ -81,13 +86,20 @@ class GenerateConfig(BaseScript):
 
         return local_data
 
+    def get_public(self, key):
+        """Use a public constant defined in publics.json."""
+        if self.publics is None:
+            with open(self.publics_file, 'r') as publics_file:
+                self.publics = json.load(publics_file)
+        return self.publics[self.deploy_env][key]
+
     def get_data(self):
         with open(self.template_file, 'r') as template_file:
             template_data = json.load(template_file)
 
         for item in template_data.values():
             if item['source'] not in VALID_SOURCES:
-                raise ValueError("Invalid config source: {}".format(value))
+                raise ValueError("Invalid config source: {}".format(item))
 
         output_data = {}
         for key, item in template_data.items():
@@ -107,13 +119,13 @@ class GenerateConfig(BaseScript):
             config_json=json.dumps(output_data, indent=4)
         ).replace('"', "'")
 
-        os.makedirs(os.path.dirname(self.output_filename), exist_ok=True)
-        with open(self.output_filename, 'w') as output_file:
+        os.makedirs(os.path.dirname(self.output_file), exist_ok=True)
+        with open(self.output_file, 'w') as output_file:
             output_file.write(js_content)
             output_file.write("\n")
             output_file.write("module.exports = CONFIG;")
 
-        return self.output_filename
+        return self.output_file
 
 
 if __name__ == '__main__':

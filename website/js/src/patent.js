@@ -2,7 +2,6 @@ const $ = require('jquery');
 
 const CONFIG = require('./config');
 
-
 const data = {
     state_id: 'patent_number'
 };
