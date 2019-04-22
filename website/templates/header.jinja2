@@ -2,10 +2,18 @@
     <div class="container">
         <table class="nav-bar">
             <tr>
-                <td>Item 1</td>
-                <td>Item 2</td>
-                <td>Item 3</td>
+                <td id="nav-index"><a href="index.html">Home</a></td>
+                <td id="nav-about"><a href="about.html">About</a></td>
+                <td id="nav-patent"><a href="patent.html">Patent</a></td>
             </tr>
         </table>
     </div>
 </header>
+<script>
+    document.addEventListener("DOMContentLoaded", function (event) {
+        const navId = '#nav-' + document.body.id;
+        const navItem = document.querySelector(navId);
+        navItem.parentNode.removeChild(navItem);
+        const otherNavItems = document.querySelector('.nav-bar').style.visibility = 'visible';
+    });
+</script>

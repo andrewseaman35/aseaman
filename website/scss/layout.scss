@@ -7,21 +7,26 @@ body {
 }
 
 header {
-    display: none;
-    .nav-bar {
+    padding: 10px 20px;
+
+    a {
+        text-decoration: none;
+        color: $base-text-color;
+    }
+
+    table.nav-bar {
+        border-collapse: collapse;
+        visibility: hidden;
+
+        tr {
+            border: none;
+        }
         td {
-            padding: 5px 10px;
+            padding: 0 10px;
             cursor: pointer;
         }
         td+td {
             border-left: solid 1px;
-        }
-
-        table {
-            border-collapse: collapse;
-        }
-        tr {
-            border: none;
         }
     }
 
@@ -29,6 +34,12 @@ header {
         flex-direction: row-reverse;
     }
 
+}
+
+.main-content {
+    position: fixed;
+    padding: $main-content-padding;
+    width: calc(100% - (2 * #{$main-content-padding}));
 }
 
 footer {
