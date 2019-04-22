@@ -65,7 +65,7 @@ class RunWatchers(BaseScript):
         try:
             self.compile_html.run()
         except Exception as e:
-            print("Error while build HTML: {}".format(e))
+            print("Error while building HTML: {}".format(e))
 
     def trigger_scss_build(self):
         subprocess.call(['sass', self.scss_input, self.scss_output])
@@ -81,6 +81,10 @@ class RunWatchers(BaseScript):
         self.jinja_thread.start()
         self.scss_thread.start()
         self.js_thread.start()
+
+        self.trigger_jinja_build()
+        self.trigger_scss_build()
+        self.trigger_js_build()
 
 
 if __name__ == '__main__':

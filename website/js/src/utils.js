@@ -9,6 +9,10 @@ function setCookie(name, value, expiration) {
     document.cookie = name + '=' + (value || '') + expires + '; path=/';
 }
 
+function unsetCookie(name) {
+    document.cookie = name + '=; Max-Age=-99999999;';
+}
+
 function getCookie(name) {
     var nameEQ = name + '=';
     var cookies = document.cookie.split(';');
@@ -24,4 +28,4 @@ function getCookie(name) {
     return null;
 }
 
-module.exports = { setCookie, getCookie };
+module.exports = { setCookie, getCookie, unsetCookie };

@@ -5,15 +5,15 @@
                 <td id="nav-index"><a href="index.html">Home</a></td>
                 <td id="nav-about"><a href="about.html">About</a></td>
                 <td id="nav-patent"><a href="patent.html">Patent</a></td>
+                <td id="nav-login"><a class="log-in-link">Log In</a></id>
             </tr>
         </table>
     </div>
 </header>
-<script>
-    document.addEventListener("DOMContentLoaded", function (event) {
-        const navId = '#nav-' + document.body.id;
-        const navItem = document.querySelector(navId);
-        navItem.parentNode.removeChild(navItem);
-        const otherNavItems = document.querySelector('.nav-bar').style.visibility = 'visible';
-    });
-</script>
+{% block include_js %}
+    <script>
+        window.aseaman.ready(function(exports) {
+            exports.header();
+        });
+    </script>
+{% endblock %}

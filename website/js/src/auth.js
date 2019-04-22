@@ -9,6 +9,10 @@ const getToken = function() {
     return utils.getCookie('id_token');
 };
 
+const unsetToken = function() {
+    utils.unsetCookie('id_token');
+};
+
 const extractAuthComponents = function(authUrl) {
     const splitPath = authUrl.split('#');
     if (splitPath.length !== 2) {
@@ -25,13 +29,19 @@ const extractAuthComponents = function(authUrl) {
 
 };
 
-const auth = function() {
+const authenticate = function() {
     const url = window.location.href;
     const components = extractAuthComponents(url);
     if (!components) {
         return false;
     }
     setToken(components.id_token);
+    window.location.replace('/');
 };
 
-module.exports = auth;
+const logout = function() {
+    unsetToken();
+    window.location.replace('/');
+};
+
+module.exports = { authenticate, setToken, getToken, logout };

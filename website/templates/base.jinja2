@@ -22,9 +22,6 @@
                     window.aseaman._js.push(callback);
                 };
             })();
-            window.aseaman.ready(function(exports) {
-                exports.login(exports);
-            })
         </script>
 
         {% block include_js %}{% endblock %}
@@ -35,9 +32,6 @@
     <body id="{% block page_id %}id{% endblock %}" class="{% block body_class %}{% endblock %}">
         {% include 'header.jinja2' %}
         <div class="main-content">
-            <div class="header">
-                <a class="log-in-link">Log In</a>
-            </div>
             {% block content %}{% endblock %}
         </div>
         {% include 'footer.jinja2' %}
