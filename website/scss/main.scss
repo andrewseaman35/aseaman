@@ -2,6 +2,12 @@
 @import "helpers.scss";
 @import "layout.scss";
 
+header {
+    padding: 10px 20px;
+
+    @import "header.scss";
+}
+
 body {
     &.patent {
         @import "patent.scss";
