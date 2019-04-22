@@ -1,0 +1,18 @@
+{
+    "local": {
+        "client_id": "22phtro4ouj069mou9o94a9tnm",
+        "root_url": "localhost:8123/"
+    },
+    "test": {
+        "client_id": "7649gv2c7jqjoa9nlk4cf84p26",
+        "root_url": "https://test.andrewcseaman.com/"
+    },
+    "stage": {
+        "client_id": "5a5q0rb1et7ninjdj6806ct66h",
+        "root_url": "https://stage.andrewcseaman.com/"
+    },
+    "live": {
+        "client_id": "32p1h4qr9fi25q5tmbg1muv58s",
+        "root_url": "https://live.andrewcseaman.com/"
+    }
+}

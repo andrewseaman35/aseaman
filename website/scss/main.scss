@@ -2,6 +2,11 @@
 @import "helpers.scss";
 @import "layout.scss";
 
-body.patent {
-    @import "patent.scss";
+body {
+    &.patent {
+        @import "patent.scss";
+    }
+    &.pipeline {
+        @import "pipeline.scss";
+    }
 }
