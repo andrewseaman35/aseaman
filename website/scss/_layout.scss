@@ -6,12 +6,29 @@ body {
     margin: 0
 }
 
+.inner {
+    padding: 0 32px;
+    @include screen-sm {
+        padding: 0 60px;
+    }
+    @include screen-med {
+        padding: 0 100px;
+    }
+    @include screen-lg {
+        padding: 0 120px;
+    }
+}
+
 .main-content {
     position: fixed;
     padding: 0 $main-content-padding;
     overflow: scroll;
     width: calc(100% - (2 * #{$main-content-padding}));
-    height: calc(100% - (#{$header-height} + #{$footer-height}));
+    height: calc(100% - (#{$header-height} + #{$mobile-footer-height}));
+
+    @include screen-med {
+        height: calc(100% - (#{$header-height} + #{$footer-height}));
+    }
 }
 
 footer {
@@ -21,6 +38,16 @@ footer {
     right: 0;
     bottom: 0;
     padding: 5px 20px;
+
+    .container {
+        flex-direction: column-reverse;
+        justify-content: center;
+        align-items: center;
+        @include screen-med {
+            flex-direction: row;
+            justify-content: space-between;
+        }
+    }
 
     .travis-container {
         display: flex;
