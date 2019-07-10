@@ -43,7 +43,7 @@ class Invoke():
             'local_dir': self.lambda_function_name,
         }
         if self.payload:
-            with open(os.path.join(TEST_PAYLOAD_DIRECTORY, self.lambda_function_name, self.payload)) as json_file:
+            with open(os.path.join(TEST_PAYLOAD_DIRECTORY, self.payload)) as json_file:
                 additional_payload = json.load(json_file)
             payload.update(additional_payload)
 
@@ -55,8 +55,9 @@ class Invoke():
             'FunctionName': self.lambda_function_name
         }
         if payload:
-            kwargs['Payload'] = json.dumps(payload)
+            kwargs['Payload'] = json.dumps({'body': json.dumps(payload)})
         response = self.lambda_client.invoke(**kwargs)
+        print(response['Payload'].read())
 
     def run(self):
         payload = self._get_payload()

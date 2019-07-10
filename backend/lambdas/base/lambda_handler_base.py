@@ -10,8 +10,9 @@ class APILambdaHandlerBase(object):
     def __init__(self, event, context):
         self.event = event
         self.context = context
+        self.is_local = event.get('local', False)
         self._init_aws()
-        self._parse_event(self.event)
+        self.__parse_event(self.event)
 
     def _init_aws(self):
         self.aws_session = (boto3.session.Session(profile_name='aseaman') if self.is_local
@@ -25,17 +26,19 @@ class APILambdaHandlerBase(object):
             "body": json.dumps({})
         }
 
+    def __parse_payload(self, payload):
+        pass
+
     def _parse_payload(self, payload):
         raise NotImplementedError
 
-    def _parse_event(self, event):
+    def __parse_event(self, event):
         print(" -- Received event --")
         print(json.dumps(event, indent=4))
         print(" --                --")
 
-        self.is_local = event.get('local', False)
-
         payload = event if self.is_local else json.loads(event['body'])
+        self.__parse_payload(payload)
         self._parse_payload(payload)
 
     def _before_run(self):
