@@ -7,11 +7,6 @@ class AuthedAPILambdaHandlerBase(APILambdaHandlerBase):
     def __init__(self, event, context):
         self.api_key = None
         super(AuthedAPILambdaHandlerBase, self).__init__(event, context)
-        self._validate_api_key()
-
-    def _validate_api_key(self):
-        if not self.api_key == self._api_key:
-            raise ValueError('invalid api key')
 
     def _init_aws(self):
         super(AuthedAPILambdaHandlerBase, self)._init_aws()
@@ -21,6 +16,8 @@ class AuthedAPILambdaHandlerBase(APILambdaHandlerBase):
         self.api_key = payload.get('api_key')
         if not self.api_key:
             raise ValueError('missing api_key in event')
+        if not self.api_key == self._api_key:
+            raise ValueError('invalid api key')
 
     @property
     def _api_key(self):
