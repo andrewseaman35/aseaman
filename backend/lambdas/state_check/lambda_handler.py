@@ -1,18 +1,14 @@
 import json
-import os
 
-import boto3
-import requests
-
-# from base.lambda_handler_base import APILambdaHandlerBase
-from base.authed_lambda_handler_base import AuthedAPILambdaHandlerBase
+from base.lambda_handler_base import APILambdaHandlerBase
 
 TABLE_NAME = 'states'
 
 
-class StateCheckAPILambdaHandler(AuthedAPILambdaHandlerBase):
+class StateCheckAPILambdaHandler(APILambdaHandlerBase):
+    # REQUIRE_AUTH = False
+
     def _init_aws(self):
-        super(StateCheckAPILambdaHandler, self)._init_aws()
         self.ddb_client = self.aws_session.client('dynamodb', region_name='us-east-1')
 
     def _parse_payload(self, payload):

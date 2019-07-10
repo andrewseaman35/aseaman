@@ -6,17 +6,34 @@ import traceback
 import boto3
 
 
+SSM_API_KEY = 'lambda-api-key'
+
 class APILambdaHandlerBase(object):
+    REQUIRE_AUTH = True
+
     def __init__(self, event, context):
         self.event = event
         self.context = context
+
         self.is_local = event.get('local', False)
-        self._init_aws()
+
+        self.__init_aws()
         self.__parse_event(self.event)
 
-    def _init_aws(self):
+    def __init_aws(self):
         self.aws_session = (boto3.session.Session(profile_name='aseaman') if self.is_local
                             else boto3.session.Session())
+        self.ssm_client = self.aws_session.client('ssm', region_name='us-east-1')
+        self._init_aws()
+
+    def _init_aws(self):
+        pass
+
+    @property
+    def __api_key(self):
+        response = self.ssm_client.get_parameter(Name=SSM_API_KEY)
+        value = response['Parameter']['Value']
+        return value
 
     def _empty_response(self):
         return {
@@ -27,7 +44,14 @@ class APILambdaHandlerBase(object):
         }
 
     def __parse_payload(self, payload):
-        pass
+        if self.REQUIRE_AUTH:
+            self.api_key = payload.get('api_key')
+            if not self.api_key:
+                raise ValueError('missing api_key in event')
+            if not self.__api_key or not self.api_key == self.__api_key:
+                raise ValueError('invalid api key')
+
+        self._parse_payload(payload)
 
     def _parse_payload(self, payload):
         raise NotImplementedError
@@ -39,7 +63,6 @@ class APILambdaHandlerBase(object):
 
         payload = event if self.is_local else json.loads(event['body'])
         self.__parse_payload(payload)
-        self._parse_payload(payload)
 
     def _before_run(self):
         pass
