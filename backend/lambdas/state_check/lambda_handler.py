@@ -6,7 +6,7 @@ TABLE_NAME = 'states'
 
 
 class StateCheckAPILambdaHandler(APILambdaHandlerBase):
-    # REQUIRE_AUTH = False
+    REQUIRE_AUTH = False
 
     def _init_aws(self):
         self.ddb_client = self.aws_session.client('dynamodb', region_name='us-east-1')
