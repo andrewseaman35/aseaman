@@ -10,8 +10,8 @@ class APILambdaHandlerBase(object):
     def __init__(self, event, context):
         self.event = event
         self.context = context
-        self._parse_event(self.event)
         self._init_aws()
+        self._parse_event(self.event)
 
     def _init_aws(self):
         self.aws_session = (boto3.session.Session(profile_name='aseaman') if self.is_local
