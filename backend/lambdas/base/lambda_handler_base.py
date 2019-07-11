@@ -9,7 +9,7 @@ import boto3
 SSM_API_KEY = 'lambda-api-key'
 
 class APILambdaHandlerBase(object):
-    REQUIRE_AUTH = True
+    require_auth = True
 
     def __init__(self, event, context):
         self.event = event
@@ -17,6 +17,7 @@ class APILambdaHandlerBase(object):
 
         self.is_local = event.get('local', False)
 
+        self._init()
         self.__init_aws()
         self.__parse_event(self.event)
 
@@ -25,6 +26,9 @@ class APILambdaHandlerBase(object):
                             else boto3.session.Session())
         self.ssm_client = self.aws_session.client('ssm', region_name='us-east-1')
         self._init_aws()
+
+    def _init(self):
+        pass
 
     def _init_aws(self):
         pass
@@ -44,14 +48,13 @@ class APILambdaHandlerBase(object):
         }
 
     def __parse_payload(self, payload):
-        if self.REQUIRE_AUTH:
+        self._parse_payload(payload)
+        if self.require_auth:
             self.api_key = payload.get('api_key')
             if not self.api_key:
                 raise ValueError('missing api_key in event')
             if not self.__api_key or not self.api_key == self.__api_key:
                 raise ValueError('invalid api key')
-
-        self._parse_payload(payload)
 
     def _parse_payload(self, payload):
         raise NotImplementedError
