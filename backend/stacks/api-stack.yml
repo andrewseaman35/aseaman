@@ -7,11 +7,11 @@ Parameters:
   DeployEnv:
     Description: environment to deploy to
     Type: String
-  LambdaFunctionName:
-    Description: LambdaFunctionName
+  StateApiName:
+    Description: State API Lambda function name
     Type: String
   WhiskyApiName:
-    Description: WhiskyApiName
+    Description: Whisky API Lambda function name
     Type: String
 
 Resources:
@@ -72,10 +72,10 @@ Resources:
           - ''
           - - !Ref DeployEnv
             - '/'
-            - !Ref LambdaFunctionName
+            - !Ref StateApiName
             - '.zip'
       Description: State API Lambda function
-      FunctionName: !Ref LambdaFunctionName
+      FunctionName: !Ref StateApiName
       Handler: lambda_handler.lambda_handler
       Role : !GetAtt StateAPIRole.Arn
       Runtime: python3.6
