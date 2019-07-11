@@ -305,7 +305,7 @@ Resources:
             - Fn::GetAtt:
               - WhiskyAPIFunction
               - Arn
-            - "/whisky"
+            - "/invocations"
         IntegrationResponses:
         - ResponseTemplates:
             application/json: "$input.json('$.body')"
@@ -343,7 +343,7 @@ Resources:
             - Fn::GetAtt:
               - WhiskyAPIFunction
               - Arn
-            - "/whisky"
+            - "/invocations"
         IntegrationResponses:
         - ResponseTemplates:
             application/json: "$input.json('$.body')"
