@@ -10,16 +10,19 @@ SSM_API_KEY = 'lambda-api-key'
 
 class APILambdaHandlerBase(object):
     require_auth = True
+    validation_actions = {}
 
     def __init__(self, event, context):
         self.event = event
         self.context = context
 
         self.is_local = event.get('local', False)
+        self.action = None
 
         self._init()
         self.__init_aws()
         self.__parse_event(self.event)
+        self.__validate_event()
 
     def __init_aws(self):
         self.aws_session = (boto3.session.Session(profile_name='aseaman') if self.is_local
@@ -66,6 +69,12 @@ class APILambdaHandlerBase(object):
 
         payload = event if self.is_local else json.loads(event['body'])
         self.__parse_payload(payload)
+
+    def __validate_event(self):
+        if not self.action:
+            return
+        validate = self.validation_actions.get(self.action, lambda: True)
+        validate()
 
     def _before_run(self):
         pass

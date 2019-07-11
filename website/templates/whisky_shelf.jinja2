@@ -1,0 +1,26 @@
+{% extends 'base.jinja2' %}
+
+{% block page_id %}whisky_shelf{% endblock %}
+{% block body_class %}whisky_shelf{% endblock %}
+
+
+{% block content %}
+    <div class="inner">
+        <div class="left-content">
+            {# <h3>My Whisky Shelf</h3> #}
+            <div id="whisky-shelf">
+                <div id="whisky-shelf-loading">Loading...</div>
+                <table id="whisky-shelf-table"></table>
+            </div>
+            <a href="index.html">Go back home</a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block include_js %}
+    <script>
+        window.aseaman.ready(function(exports) {
+            exports.whiskyShelf();
+        });
+    </script>
+{% endblock %}

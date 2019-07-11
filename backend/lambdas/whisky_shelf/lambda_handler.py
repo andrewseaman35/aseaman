@@ -8,6 +8,8 @@ TABLE_NAME = 'whisky_shelf'
 class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
     auth_actions = {
         'get_current_shelf': False,
+        'add_to_shelf': True,
+        'remove_from_shelf': True,
     }
 
     @property
@@ -16,7 +18,13 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
 
     def _init(self):
         self.actions = {
-            'get_current_shelf': self._get_current_shelf
+            'get_current_shelf': self._get_current_shelf,
+            'add_to_shelf': self._add_to_shelf,
+            'remove_from_shelf': self._remove_from_shelf,
+        }
+        self.validation_actions = {
+            'add_to_shelf': self._validate_add_to_shelf,
+            'remove_from_shelf': self._validate_remove_from_shelf,
         }
 
     def _init_aws(self):
@@ -29,6 +37,83 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
         self.action = self.action.lower()
         if self.action not in self.actions:
             raise ValueError('invalid action')
+        self.payload = payload.get('payload')
+
+    def _validate_add_to_shelf(self):
+        self.distillery = self.payload.get('distillery')
+        assert self.distillery is not None
+        self.internal_name = self.payload.get('internal_name')
+        assert self.internal_name is not None
+
+    def _validate_remove_from_shelf(self):
+        self.distillery = self.payload.get('distillery')
+        assert self.distillery is not None
+        self.internal_name = self.payload.get('internal_name')
+        assert self.internal_name is not None
+
+    def _get_item(self, distillery, internal_name):
+        result = self.ddb_client.get_item(
+            TableName=TABLE_NAME,
+            Key={
+                'distillery': {
+                    'S': distillery,
+                },
+                'internal_name': {
+                    'S': internal_name,
+                },
+            }
+        )
+
+        return result.get('Item')
+
+    def _update_current_state(self, distillery, internal_name, current):
+        self.ddb_client.update_item(
+            TableName=TABLE_NAME,
+            Key={
+                'distillery': {
+                    'S': distillery,
+                },
+                'internal_name': {
+                    'S': internal_name,
+                },
+            },
+            ExpressionAttributeNames={
+                '#cur': 'current',
+            },
+            ExpressionAttributeValues={
+                ':cur': { 'BOOL': current }
+            },
+            UpdateExpression='SET #cur = :cur',
+        )
+
+    def _add_to_shelf(self):
+        item = self._get_item(self.distillery, self.internal_name)
+        if item is None:
+            print("Adding new item to shelf: {} {}".format(self.distillery, self.internal_name))
+            self.ddb_client.put_item(
+                TableName=TABLE_NAME,
+                Item={
+                    'distillery': {
+                        'S': self.distillery,
+                    },
+                    'internal_name': {
+                        'S': self.internal_name,
+                    },
+                    'current': {
+                        'BOOL': True,
+                    }
+                }
+            )
+        elif not item['current']['BOOL']:
+            print("Setting to current: {} {}".format(self.distillery, self.internal_name))
+            self._update_current_state(self.distillery, self.internal_name, True)
+        else:
+            print("Already on current shelf: {} {}".format(self.distillery, self.internal_name))
+
+    def _remove_from_shelf(self):
+        item = self._get_item(self.distillery, self.internal_name)
+        if item is not None and item['current']['BOOL']:
+            self._update_current_state(self.distillery, self.internal_name, False)
 
     def _get_current_shelf(self):
         ddb_items = self.ddb_client.scan(
