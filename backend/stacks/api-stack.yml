@@ -130,6 +130,8 @@ Resources:
               - Effect: "Allow"
                 Action:
                   - "dynamodb:GetItem"
+                  - "dynamodb:PutItem"
+                  - "dynamodb:UpdateItem"
                   - "dynamodb:Scan"
                 Resource: "arn:aws:dynamodb:us-east-1:560983357304:table/whisky_shelf"
         -
@@ -159,7 +161,7 @@ Resources:
             - '/'
             - !Ref WhiskyApiName
             - '.zip'
-      Description: Lambda function for whisky API
+      Description: Lambda function for Whisky API
       FunctionName: !Ref WhiskyApiName
       Handler: lambda_handler.lambda_handler
       Role : !GetAtt WhiskyAPIRole.Arn

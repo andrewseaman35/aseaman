@@ -9,6 +9,7 @@ const auth = require('./auth');
 const header = require('./header');
 
 const patent = require('./patent');
+const whiskyShelf = require('./whisky_shelf');
 
 const modules = {
     auth,
@@ -16,6 +17,7 @@ const modules = {
     constants,
     header,
     patent,
+    whiskyShelf,
     utils,
 };
 
