@@ -15,7 +15,7 @@ Parameters:
     Type: String
 
 Resources:
-  LambdaAPIRole:
+  StateAPIRole:
     Type: "AWS::IAM::Role"
     Properties:
       AssumeRolePolicyDocument:
@@ -56,14 +56,14 @@ Resources:
                 Action:
                   - "ssm:GetParameter"
                 Resource: "arn:aws:ssm:us-east-1:560983357304:parameter/*"
-  LambdaAPIPolicy:
+  StateAPIPolicy:
     Type: "AWS::IAM::InstanceProfile"
     Properties:
       Path: "/"
       Roles:
         -
-          Ref: "LambdaAPIRole"
-  LambdaAPIFunction:
+          Ref: "StateAPIRole"
+  StateAPIFunction:
     Type: "AWS::Lambda::Function"
     Properties:
       Code:
@@ -74,19 +74,19 @@ Resources:
             - '/'
             - !Ref LambdaFunctionName
             - '.zip'
-      Description: Lambda function to handle stuff
+      Description: State API Lambda function
       FunctionName: !Ref LambdaFunctionName
       Handler: lambda_handler.lambda_handler
-      Role : !GetAtt LambdaAPIRole.Arn
+      Role : !GetAtt StateAPIRole.Arn
       Runtime: python3.6
       Timeout: 10
-  LambdaAPIPermission:
+  StateAPIPermission:
     Type: "AWS::Lambda::Permission"
     Properties:
       Action: "lambda:invokeFunction"
       FunctionName:
         Fn::GetAtt:
-          - LambdaAPIFunction
+          - StateAPIFunction
           - Arn
       Principal: "apigateway.amazonaws.com"
       SourceArn:
@@ -190,9 +190,15 @@ Resources:
   RestAPI:
     Type: AWS::ApiGateway::RestApi
     Properties:
-      Name: API Gateway Dummy
+      Name:
+        Fn::Join:
+          - ""
+          - - "aseaman-website-api-"
+            - !Ref DeployEnv
+            - "-"
+            - !Ref Branch
 
-  APIResource:
+  StateAPIResource:
     Type: AWS::ApiGateway::Resource
     Properties:
       RestApiId:
@@ -202,13 +208,13 @@ Resources:
           - RestAPI
           - RootResourceId
       PathPart: state_check
-  APIGetMethod:
+  StateAPIGetMethod:
     Type: "AWS::ApiGateway::Method"
     Properties:
       RestApiId:
         Ref: RestAPI
       ResourceId:
-        Ref: APIResource
+        Ref: StateAPIResource
       HttpMethod: GET
       AuthorizationType: NONE
       Integration:
@@ -221,7 +227,7 @@ Resources:
             - Ref: "AWS::Region"
             - ":lambda:path/2015-03-31/functions/"
             - Fn::GetAtt:
-              - LambdaAPIFunction
+              - StateAPIFunction
               - Arn
             - "/invocations"
         IntegrationResponses:
@@ -240,13 +246,13 @@ Resources:
       MethodResponses:
       - StatusCode: 200
       - StatusCode: 404
-  APIPostMethod:
+  StateAPIPostMethod:
     Type: "AWS::ApiGateway::Method"
     Properties:
       RestApiId:
         Ref: RestAPI
       ResourceId:
-        Ref: APIResource
+        Ref: StateAPIResource
       HttpMethod: POST
       AuthorizationType: NONE
       Integration:
@@ -259,7 +265,7 @@ Resources:
             - Ref: "AWS::Region"
             - ":lambda:path/2015-03-31/functions/"
             - Fn::GetAtt:
-              - LambdaAPIFunction
+              - StateAPIFunction
               - Arn
             - "/invocations"
         IntegrationResponses:
@@ -365,8 +371,8 @@ Resources:
   RestAPIDeployment:
     Type: AWS::ApiGateway::Deployment
     DependsOn:
-      - APIGetMethod
-      - APIPostMethod
+      - StateAPIGetMethod
+      - StateAPIPostMethod
       - WhiskyAPIGetMethod
       - WhiskyAPIPostMethod
     Properties:
