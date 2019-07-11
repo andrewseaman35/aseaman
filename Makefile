@@ -29,7 +29,7 @@ deploy_website: website
 
 deploy_test_website: website
 	aws s3 rm s3://test.andrewcseaman.com/$(BRANCH) --recursive
-	aws s3 cp --recursive website/public/ s3://test.andrewcseaman.com/$(BRANCH)
+	aws s3 cp --recursive website/public/ s3://test.andrewcseaman.com/sandboxes/$(BRANCH)
 	aws s3 cp --recursive testing_website s3://test.andrewcseaman.com
 
 deploy: deploy_api deploy_website

@@ -11,6 +11,7 @@ const s3 = new AWS.S3({region: 'us-east-1'});
 
 s3.listObjectsV2({
     Bucket: 'test.andrewcseaman.com',
+    Prefix: 'sandboxes/',
     Delimiter: '/',
 }, function(err, data) {
     if (err) {
@@ -35,7 +36,7 @@ const IGNORE_ROOT_PATHS = new Set(['js']);
 const getPathsFromListContents = function(contents) {
     const paths = new Set();
     contents.forEach(obj => {
-        const path = obj.Prefix.split('/')[0];
+        const path = obj.Prefix.split('/')[1];
         if (!IGNORE_ROOT_PATHS.has(path)) {
             paths.add(path);
         }
@@ -49,7 +50,7 @@ const addLinksToElement = function(element, paths) {
         const li = document.createElement('li');
         const item = document.createElement('a');
         const travisIcon = getTravisIconForBranch(path);
-        item.href = `./${path}/index.html`;
+        item.href = `./sandboxes/${path}/index.html`;
         item.innerHTML = path;
         li.append(item);
         li.append(travisIcon);
