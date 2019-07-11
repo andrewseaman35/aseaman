@@ -82,8 +82,8 @@
             <p>
                 To solve this, I updated my Travis script to deploy feature branches to a location
                 in S3 prefixed with the branch name. For example, pushing `index.html` in branch
-                called `my-branch` would be uploaded to `test-bucket/my-branch/index.html` instead
-                of `test-bucket/index.html` as it was formally. This enabled the existence of
+                called `my-branch` would be uploaded to `test-bucket/sandboxes/my-branch/index.html`
+                instead of `test-bucket/index.html` as it was formally. This enabled the existence of
                 multiple copies of the website at different URL paths.
             </p>
             <p>
