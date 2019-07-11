@@ -6,7 +6,6 @@ NONCE ?= $(shell date +%s)
 BRANCH ?= manual
 DEPLOY_ENV ?= test
 STACKNAME ?= stack-$(DEPLOY_ENV)-$(NONCE)
-LAMBDA_FUNCTION_NAME ?= lambda-api-$(DEPLOY_ENV)-$(NONCE)
 
 LOCAL_TESTING_PORT := 8124
 LOCAL_PORT := 8123
