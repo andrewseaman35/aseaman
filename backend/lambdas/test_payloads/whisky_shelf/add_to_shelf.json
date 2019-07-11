@@ -1,0 +1,8 @@
+{
+    "api_key": "a4b471653ac849648a69724f2bd9882f",
+    "action": "add_to_shelf",
+    "payload": {
+        "distillery": "Lagavulin",
+        "internal_name": "16"
+    }
+}
