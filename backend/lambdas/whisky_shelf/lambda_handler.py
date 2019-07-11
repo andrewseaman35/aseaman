@@ -89,7 +89,7 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
     def _add_to_shelf(self):
         item = self._get_item(self.distillery, self.internal_name)
         if item is None:
-            print "Adding new item to shelf: {} {}".format(self.distillery, self.internal_name)
+            print("Adding new item to shelf: {} {}".format(self.distillery, self.internal_name))
             self.ddb_client.put_item(
                 TableName=TABLE_NAME,
                 Item={
@@ -105,10 +105,10 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
                 }
             )
         elif not item['current']['BOOL']:
-            print "Setting to current: {} {}".format(self.distillery, self.internal_name)
+            print("Setting to current: {} {}".format(self.distillery, self.internal_name))
             self._update_current_state(self.distillery, self.internal_name, True)
         else:
-            print "Already on current shelf: {} {}".format(self.distillery, self.internal_name)
+            print("Already on current shelf: {} {}".format(self.distillery, self.internal_name))
 
     def _remove_from_shelf(self):
         item = self._get_item(self.distillery, self.internal_name)
