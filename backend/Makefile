@@ -3,7 +3,8 @@ ROOT := $(shell pwd)
 
 DEPLOY_PARAMETERS:=ParameterKey=LambdaFunctionName,ParameterValue="$(LAMBDA_FUNCTION_NAME)" \
 	ParameterKey=DeployEnv,ParameterValue="$(DEPLOY_ENV)" \
-	ParameterKey=Branch,ParameterValue="$(BRANCH)"
+	ParameterKey=Branch,ParameterValue="$(BRANCH)" \
+	ParameterKey=WhiskyApiName,ParameterValue="$(WHISKY_API_NAME)"
 
 package:
 	make -C lambdas package

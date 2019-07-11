@@ -10,6 +10,9 @@ Parameters:
   LambdaFunctionName:
     Description: LambdaFunctionName
     Type: String
+  WhiskyApiName:
+    Description: WhiskyApiName
+    Type: String
 
 Resources:
   LambdaAPIRole:
@@ -84,6 +87,91 @@ Resources:
       FunctionName:
         Fn::GetAtt:
           - LambdaAPIFunction
+          - Arn
+      Principal: "apigateway.amazonaws.com"
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:aws:execute-api:"
+            - Ref: "AWS::Region"
+            - ":"
+            - Ref: "AWS::AccountId"
+            - ":"
+            - Ref: "RestAPI"
+            - "/*"
+  WhiskyAPIRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Path: "/"
+      Policies:
+        -
+          PolicyName: "logs"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "logs:*"
+                Resource: "arn:aws:logs:*:*:*"
+        -
+          PolicyName: "whisky-shelf-table"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "dynamodb:GetItem"
+                  - "dynamodb:Scan"
+                Resource: "arn:aws:dynamodb:us-east-1:560983357304:table/whisky_shelf"
+        -
+          PolicyName: "ssm"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "ssm:GetParameter"
+                Resource: "arn:aws:ssm:us-east-1:560983357304:parameter/*"
+  WhiskyAPIPolicy:
+    Type: "AWS::IAM::InstanceProfile"
+    Properties:
+      Path: "/"
+      Roles:
+        -
+          Ref: "WhiskyAPIRole"
+  WhiskyAPIFunction:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      Code:
+        S3Bucket: aseaman-lambda-functions
+        S3Key: !Join
+          - ''
+          - - !Ref DeployEnv
+            - '/'
+            - !Ref WhiskyApiName
+            - '.zip'
+      Description: Lambda function for whisky API
+      FunctionName: !Ref WhiskyApiName
+      Handler: lambda_handler.lambda_handler
+      Role : !GetAtt WhiskyAPIRole.Arn
+      Runtime: python3.6
+      Timeout: 10
+  WhiskyAPIPermission:
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      Action: "lambda:invokeFunction"
+      FunctionName:
+        Fn::GetAtt:
+          - WhiskyAPIFunction
           - Arn
       Principal: "apigateway.amazonaws.com"
       SourceArn:
@@ -186,11 +274,99 @@ Resources:
       MethodResponses:
       - StatusCode: 200
       - StatusCode: 404
+
+  WhiskyAPIResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId:
+        Ref: RestAPI
+      ParentId:
+        Fn::GetAtt:
+          - RestAPI
+          - RootResourceId
+      PathPart: whisky
+  WhiskyAPIGetMethod:
+    Type: "AWS::ApiGateway::Method"
+    Properties:
+      RestApiId:
+        Ref: RestAPI
+      ResourceId:
+        Ref: WhiskyAPIResource
+      HttpMethod: GET
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS
+        IntegrationHttpMethod: POST
+        Uri:
+          Fn::Join:
+          - ""
+          - - "arn:aws:apigateway:"
+            - Ref: "AWS::Region"
+            - ":lambda:path/2015-03-31/functions/"
+            - Fn::GetAtt:
+              - WhiskyAPIFunction
+              - Arn
+            - "/invocations"
+        IntegrationResponses:
+        - ResponseTemplates:
+            application/json: "$input.json('$.body')"
+          StatusCode: 200
+        - SelectionPattern: "^not found.*"
+          ResponseTemplates:
+            application/json: "{}"
+          StatusCode: 404
+        PassthroughBehavior: NEVER
+        RequestTemplates:
+          application/json: "{\"fun\": \"getUser\", \"parameters\": {\"userId\": \"$input.params('userId')\"}}"
+      RequestParameters:
+        method.request.path.userId: 'true'
+      MethodResponses:
+      - StatusCode: 200
+      - StatusCode: 404
+  WhiskyAPIPostMethod:
+    Type: "AWS::ApiGateway::Method"
+    Properties:
+      RestApiId:
+        Ref: RestAPI
+      ResourceId:
+        Ref: WhiskyAPIResource
+      HttpMethod: POST
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri:
+          Fn::Join:
+          - ""
+          - - "arn:aws:apigateway:"
+            - Ref: "AWS::Region"
+            - ":lambda:path/2015-03-31/functions/"
+            - Fn::GetAtt:
+              - WhiskyAPIFunction
+              - Arn
+            - "/invocations"
+        IntegrationResponses:
+        - ResponseTemplates:
+            application/json: "$input.json('$.body')"
+          StatusCode: 200
+        - SelectionPattern: "^not found.*"
+          ResponseTemplates:
+            application/json: "{}"
+          StatusCode: 404
+        PassthroughBehavior: NEVER
+      RequestParameters:
+        method.request.path.userId: 'true'
+      MethodResponses:
+      - StatusCode: 200
+      - StatusCode: 404
+
   RestAPIDeployment:
     Type: AWS::ApiGateway::Deployment
     DependsOn:
       - APIGetMethod
       - APIPostMethod
+      - WhiskyAPIGetMethod
+      - WhiskyAPIPostMethod
     Properties:
       RestApiId:
         Ref: RestAPI
