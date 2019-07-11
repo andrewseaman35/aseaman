@@ -69,9 +69,9 @@ const addToShelf = function() {
 
 const initWhiskyShelf = function() {
     getCurrentShelf();
-    document.getElementById('js-add').addEventListener('click', function() {
-        addToShelf();
-    });
+    // document.getElementById('js-add').addEventListener('click', function() {
+    //     addToShelf();
+    // });
 };
 
 module.exports = initWhiskyShelf;
