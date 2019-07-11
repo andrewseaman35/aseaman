@@ -283,7 +283,7 @@ Resources:
         Fn::GetAtt:
           - RestAPI
           - RootResourceId
-      PathPart: state_check
+      PathPart: whisky
   WhiskyAPIGetMethod:
     Type: "AWS::ApiGateway::Method"
     Properties:
