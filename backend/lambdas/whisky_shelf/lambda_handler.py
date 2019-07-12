@@ -119,8 +119,6 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
         ddb_items = self.ddb_client.scan(
             TableName=TABLE_NAME,
             ExpressionAttributeNames={
-                '#dist': 'distillery',
-                '#in': 'internal_name',
                 '#cur': 'current',
             },
             ExpressionAttributeValues={
@@ -129,7 +127,6 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
                 }
             },
             FilterExpression='#cur = :true',
-            ProjectionExpression='#dist, #in'
         )['Items']
         items = [
             {

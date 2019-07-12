@@ -17,4 +17,7 @@ body {
     &.pipeline {
         @import "pipeline.scss";
     }
+    &.whisky_shelf {
+        @import "whisky_shelf.scss";
+    }
 }
