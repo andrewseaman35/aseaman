@@ -99,13 +99,19 @@ class APILambdaHandlerBase(object):
             result = self._run()
             self.__after_run(result)
         except APIException as e:
-            self._handle_error(e)
+            self._handle_api_error(e)
             result = e.to_json_response()
         except Exception as e:
             self._handle_error(e)
+            result = APIException().to_json_response()
         finally:
             print (result)
             return result
+
+    def _handle_api_error(self, e):
+        print('API error!')
+        print("API error: {}".format(e))
+        traceback.print_exc()
 
     def _handle_error(self, e):
         print('Uh oh, error!')

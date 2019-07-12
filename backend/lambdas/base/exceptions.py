@@ -15,7 +15,9 @@ class BaseAPIException(Exception):
 
     @property
     def headers(self):
-        return {}
+        return {
+            "Access-Control-Allow-Origin": "*"
+        }
 
     def to_json_response(self):
         return {
