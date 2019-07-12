@@ -46,6 +46,18 @@ class APILambdaHandlerBase(object):
             "body": json.dumps({})
         }
 
+    def _preflight_response(self):
+        return {
+            "isBase64Encoded": False,
+            "statusCode": 200,
+            "headers": {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers',
+            },
+            "body": json.dumps({})
+        }
+
     def __parse_payload(self, payload):
         self._parse_payload(payload)
         if self.require_auth:
@@ -93,6 +105,10 @@ class APILambdaHandlerBase(object):
         print("result: {}".format(result))
 
     def handle(self):
+        self.is_preflight = self.event.get('httpMethod') == 'OPTIONS'
+        if self.is_preflight:
+            return self._preflight_response()
+
         result = self._empty_response()
         try:
             self.__before_run()
