@@ -55,6 +55,11 @@ const getCurrentShelf = function() {
             const table = document.getElementById('whisky-shelf-table');
 
             table.appendChild(headerRow());
+            whiskies.sort(function(a, b) {
+                if(a.distillery < b.distillery) { return -1; }
+                return 1;
+            });
+
             whiskies.forEach(function (whisky) {
                 const row = newRow(whisky);
                 table.appendChild(row);
