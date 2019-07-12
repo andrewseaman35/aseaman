@@ -12,6 +12,12 @@ const headerRow = function() {
     distilleryCell.innerHTML = 'Distillery';
     const nameCell = document.createElement('th');
     nameCell.innerHTML = 'Name (internal)';
+    const typeCell = document.createElement('th');
+    typeCell.innerHTML = 'Type';
+    const regionCell = document.createElement('th');
+    regionCell.innerHTML = 'Region';
+    row.appendChild(typeCell);
+    row.appendChild(regionCell);
     row.appendChild(distilleryCell);
     row.appendChild(nameCell);
 
@@ -25,6 +31,14 @@ const newRow = function(whisky) {
     const internalNameCell = document.createElement('td');
     internalNameCell.innerHTML = whisky.internal_name;
 
+    const regionCell = document.createElement('td');
+    regionCell.innerHTML = whisky.region || '';
+
+    const typeCell = document.createElement('td');
+    typeCell.innerHTML = whisky.type || '';
+
+    row.appendChild(typeCell);
+    row.appendChild(regionCell);
     row.appendChild(distilleryCell);
     row.appendChild(internalNameCell);
 
