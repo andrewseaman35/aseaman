@@ -1,6 +1,7 @@
 import json
 
 from base.lambda_handler_base import APILambdaHandlerBase
+from base.api_exceptions import BadRequestException, UnauthorizedException
 
 TABLE_NAME = 'whisky_shelf'
 
@@ -33,23 +34,29 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
     def _parse_payload(self, payload):
         self.action = payload.get('action')
         if not self.action:
-            raise ValueError('action required')
+            raise BadRequestException('action parameter required')
         self.action = self.action.lower()
         if self.action not in self.actions:
-            raise ValueError('invalid action')
+            raise BadRequestException('invalid action')
         self.payload = payload.get('payload')
 
     def _validate_add_to_shelf(self):
         self.distillery = self.payload.get('distillery')
-        assert self.distillery is not None
+        if self.distillery is not None:
+            raise BadRequestException('distillery parameter required')
+
         self.internal_name = self.payload.get('internal_name')
-        assert self.internal_name is not None
+        if self.internal_name is not None:
+            raise BadRequestException('internal_name parameter required')
 
     def _validate_remove_from_shelf(self):
         self.distillery = self.payload.get('distillery')
-        assert self.distillery is not None
+        if self.distillery is not None:
+            raise BadRequestException('distillery parameter required')
+
         self.internal_name = self.payload.get('internal_name')
-        assert self.internal_name is not None
+        if self.internal_name is not None:
+            raise BadRequestException('internal_name parameter required')
 
     def _get_item(self, distillery, internal_name):
         result = self.ddb_client.get_item(
