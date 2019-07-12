@@ -16,10 +16,10 @@ const headerRow = function() {
     typeCell.innerHTML = 'Type';
     const regionCell = document.createElement('th');
     regionCell.innerHTML = 'Region';
-    row.appendChild(typeCell);
-    row.appendChild(regionCell);
     row.appendChild(distilleryCell);
     row.appendChild(nameCell);
+    row.appendChild(typeCell);
+    row.appendChild(regionCell);
 
     return row;
 };
@@ -37,10 +37,10 @@ const newRow = function(whisky) {
     const typeCell = document.createElement('td');
     typeCell.innerHTML = whisky.type || '';
 
-    row.appendChild(typeCell);
-    row.appendChild(regionCell);
     row.appendChild(distilleryCell);
     row.appendChild(internalNameCell);
+    row.appendChild(typeCell);
+    row.appendChild(regionCell);
 
     return row;
 };
