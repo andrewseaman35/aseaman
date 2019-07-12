@@ -42,20 +42,20 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
 
     def _validate_add_to_shelf(self):
         self.distillery = self.payload.get('distillery')
-        if self.distillery not None:
+        if self.distillery is not None:
             raise BadRequestException('distillery parameter required')
 
         self.internal_name = self.payload.get('internal_name')
-        if self.internal_name not None:
+        if self.internal_name is not None:
             raise BadRequestException('internal_name parameter required')
 
     def _validate_remove_from_shelf(self):
         self.distillery = self.payload.get('distillery')
-        if self.distillery not None:
+        if self.distillery is not None:
             raise BadRequestException('distillery parameter required')
 
         self.internal_name = self.payload.get('internal_name')
-        if self.internal_name not None:
+        if self.internal_name is not None:
             raise BadRequestException('internal_name parameter required')
 
     def _get_item(self, distillery, internal_name):
