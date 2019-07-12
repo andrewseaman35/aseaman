@@ -3,8 +3,9 @@ import json
 class BaseAPIException(Exception):
     DEFAULT_MESSAGE = 'error'
 
-    def __init__(self):
-        super(BaseAPIException, self).__init__(self.DEFAULT_MESSAGE)
+    def __init__(self, message=None):
+        message = message or self.DEFAULT_MESSAGE
+        super(BaseAPIException, self).__init__(message)
 
     @property
     def body(self):
