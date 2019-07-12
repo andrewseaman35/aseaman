@@ -5,7 +5,7 @@ import traceback
 
 import boto3
 
-from .exceptions import APIException, BadRequestException, UnauthorizedException, BaseAPIException
+from .api_exceptions import APIException, BadRequestException, UnauthorizedException, BaseAPIException
 
 
 SSM_API_KEY = 'lambda-api-key'

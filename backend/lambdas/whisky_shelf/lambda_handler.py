@@ -1,7 +1,7 @@
 import json
 
 from base.lambda_handler_base import APILambdaHandlerBase
-from base.exceptions import BadRequestException, UnauthorizedException
+from base.api_exceptions import BadRequestException, UnauthorizedException
 
 TABLE_NAME = 'whisky_shelf'
 

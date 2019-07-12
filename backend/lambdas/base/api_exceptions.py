@@ -4,7 +4,7 @@ class BaseAPIException(Exception):
     DEFAULT_MESSAGE = 'error'
 
     def __init__(self, message=None):
-        message = message or self.DEFAULT_MESSAGE
+        self.message = message or self.DEFAULT_MESSAGE
         super(BaseAPIException, self).__init__(message)
 
     @property
