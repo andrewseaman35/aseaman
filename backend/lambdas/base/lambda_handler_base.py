@@ -5,7 +5,7 @@ import traceback
 
 import boto3
 
-from .exceptions import APIException, BadRequestException, UnauthorizedException
+from .exceptions import APIException, BadRequestException, UnauthorizedException, BaseAPIException
 
 
 SSM_API_KEY = 'lambda-api-key'
@@ -104,9 +104,9 @@ class APILambdaHandlerBase(object):
         except Exception as e:
             self._handle_error(e)
             result = APIException().to_json_response()
-        finally:
-            print (result)
-            return result
+
+        print (result)
+        return result
 
     def _handle_api_error(self, e):
         print('API error!')

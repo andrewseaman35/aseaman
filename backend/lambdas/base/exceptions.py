@@ -39,5 +39,5 @@ class BadRequestException(BaseAPIException):
 
 
 class UnauthorizedException(BaseAPIException):
-    SETATUS_CODE = 401
+    STATUS_CODE = 401
     DEFAULT_MESSAGE = 'unauthorized'
