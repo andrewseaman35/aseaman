@@ -98,7 +98,7 @@ class APILambdaHandlerBase(object):
             self.__before_run()
             result = self._run()
             self.__after_run(result)
-        except APIException as e:
+        except BaseAPIException as e:
             self._handle_api_error(e)
             result = e.to_json_response()
         except Exception as e:
