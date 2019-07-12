@@ -5,6 +5,8 @@ import traceback
 
 import boto3
 
+from .exceptions import APIException, BadRequestException, UnauthorizedException
+
 
 SSM_API_KEY = 'lambda-api-key'
 
@@ -15,14 +17,8 @@ class APILambdaHandlerBase(object):
     def __init__(self, event, context):
         self.event = event
         self.context = context
-
-        self.is_local = event.get('local', False)
         self.action = None
-
-        self._init()
-        self.__init_aws()
-        self.__parse_event(self.event)
-        self.__validate_event()
+        self.api_key = None
 
     def __init_aws(self):
         self.aws_session = (boto3.session.Session(profile_name='aseaman') if self.is_local
@@ -55,9 +51,9 @@ class APILambdaHandlerBase(object):
         if self.require_auth:
             self.api_key = payload.get('api_key')
             if not self.api_key:
-                raise ValueError('missing api_key in event')
+                raise UnauthorizedException('api_key parameter required')
             if not self.__api_key or not self.api_key == self.__api_key:
-                raise ValueError('invalid api key')
+                raise UnauthorizedException('invalid api key')
 
     def _parse_payload(self, payload):
         raise NotImplementedError
@@ -76,11 +72,22 @@ class APILambdaHandlerBase(object):
         validate = self.validation_actions.get(self.action, lambda: True)
         validate()
 
+    def __before_run(self):
+        self.is_local = self.event.get('local', False)
+        self._init()
+        self.__init_aws()
+        self.__parse_event(self.event)
+        self.__validate_event()
+        self._before_run()
+
     def _before_run(self):
         pass
 
     def _run(self):
         raise NotImplementedError()
+
+    def __after_run(self, result):
+        self._after_run(result)
 
     def _after_run(self, result):
         print("result: {}".format(result))
@@ -88,15 +95,20 @@ class APILambdaHandlerBase(object):
     def handle(self):
         result = self._empty_response()
         try:
-            self._before_run()
+            self.__before_run()
             result = self._run()
-            self._after_run(result)
-        except Exception as e:
-            print('Uh oh, error!')
+            self.__after_run(result)
+        except APIException as e:
             self._handle_error(e)
-            traceback.print_exc()
+            result = e.to_json_response()
+        except Exception as e:
+            self._handle_error(e)
         finally:
+            print (result)
             return result
 
     def _handle_error(self, e):
+        print('Uh oh, error!')
         print("error: {}".format(e))
+        traceback.print_exc()
+
