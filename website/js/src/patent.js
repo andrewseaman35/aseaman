@@ -27,7 +27,7 @@ const updatePatentTable = function() {
         function(response) {
             document.getElementById('patent-state-loading').style.display = 'none';
             const table = document.getElementById('state-table');
-            const patentExists = response.data.available ? 'YES!' : 'no :(';
+            const patentExists = response.data.available ? ' YES!' : ' no :(';
             const status = response.data.app_status;
             const lastUpdated = response.data.last_updated;
             const patentNumber = response.data.available ? response.data.patent_number : 'not yet';
