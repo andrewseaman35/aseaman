@@ -7,11 +7,20 @@ Parameters:
   DeployEnv:
     Description: environment to deploy to
     Type: String
+  ApiUrl:
+    Description: API Url for custom domain and DNS record set
+    Type: String
   StateApiName:
     Description: State API Lambda function name
     Type: String
   WhiskyApiName:
     Description: Whisky API Lambda function name
+    Type: String
+  HostedZoneId:
+    Description: Hosted zone id
+    Type: String
+  ApiCertificateId:
+    Description: Certificate id for API
     Type: String
 
 Resources:
@@ -46,7 +55,9 @@ Resources:
               - Effect: "Allow"
                 Action:
                   - "dynamodb:GetItem"
-                Resource: "arn:aws:dynamodb:us-east-1:560983357304:table/states"
+                Resource: !Sub
+                  - "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${StateTable}"
+                  - { StateTable: "states" }
         -
           PolicyName: "ssm"
           PolicyDocument:
@@ -55,7 +66,7 @@ Resources:
               - Effect: "Allow"
                 Action:
                   - "ssm:GetParameter"
-                Resource: "arn:aws:ssm:us-east-1:560983357304:parameter/*"
+                Resource: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/*"
   StateAPIPolicy:
     Type: "AWS::IAM::InstanceProfile"
     Properties:
@@ -133,7 +144,9 @@ Resources:
                   - "dynamodb:PutItem"
                   - "dynamodb:UpdateItem"
                   - "dynamodb:Scan"
-                Resource: "arn:aws:dynamodb:us-east-1:560983357304:table/whisky_shelf"
+                Resource: !Sub
+                    - "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${WhiskyTable}"
+                    - { WhiskyTable: "whisky_shelf" }
         -
           PolicyName: "ssm"
           PolicyDocument:
@@ -142,7 +155,7 @@ Resources:
               - Effect: "Allow"
                 Action:
                   - "ssm:GetParameter"
-                Resource: "arn:aws:ssm:us-east-1:560983357304:parameter/*"
+                Resource: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/*"
   WhiskyAPIPolicy:
     Type: "AWS::IAM::InstanceProfile"
     Properties:
@@ -282,6 +295,43 @@ Resources:
       MethodResponses:
       - StatusCode: 200
       - StatusCode: 404
+  StateAPIOptionsMethod:
+    Type: "AWS::ApiGateway::Method"
+    Properties:
+      RestApiId:
+        Ref: RestAPI
+      ResourceId:
+        Ref: StateAPIResource
+      HttpMethod: OPTIONS
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri:
+          Fn::Join:
+          - ""
+          - - "arn:aws:apigateway:"
+            - Ref: "AWS::Region"
+            - ":lambda:path/2015-03-31/functions/"
+            - Fn::GetAtt:
+              - StateAPIFunction
+              - Arn
+            - "/invocations"
+        IntegrationResponses:
+        - ResponseTemplates:
+            application/json: "$input.json('$.body')"
+          StatusCode: 200
+        - SelectionPattern: "^not found.*"
+          ResponseTemplates:
+            application/json: "{}"
+          StatusCode: 404
+        PassthroughBehavior: NEVER
+      RequestParameters:
+        method.request.path.userId: 'true'
+      MethodResponses:
+      - StatusCode: 200
+      - StatusCode: 403
+      - StatusCode: 404
 
   WhiskyAPIResource:
     Type: AWS::ApiGateway::Resource
@@ -367,20 +417,92 @@ Resources:
       MethodResponses:
       - StatusCode: 200
       - StatusCode: 404
+  WhiskyAPIOptionsMethod:
+    Type: "AWS::ApiGateway::Method"
+    Properties:
+      RestApiId:
+        Ref: RestAPI
+      ResourceId:
+        Ref: WhiskyAPIResource
+      HttpMethod: OPTIONS
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri:
+          Fn::Join:
+          - ""
+          - - "arn:aws:apigateway:"
+            - Ref: "AWS::Region"
+            - ":lambda:path/2015-03-31/functions/"
+            - Fn::GetAtt:
+              - WhiskyAPIFunction
+              - Arn
+            - "/invocations"
+        IntegrationResponses:
+        - ResponseTemplates:
+            application/json: "$input.json('$.body')"
+          StatusCode: 200
+        - SelectionPattern: "^not found.*"
+          ResponseTemplates:
+            application/json: "{}"
+          StatusCode: 404
+        PassthroughBehavior: NEVER
+      RequestParameters:
+        method.request.path.userId: 'true'
+      MethodResponses:
+      - StatusCode: 200
+      - StatusCode: 403
+      - StatusCode: 404
 
   RestAPIDeployment:
     Type: AWS::ApiGateway::Deployment
     DependsOn:
       - StateAPIGetMethod
       - StateAPIPostMethod
+      - StateAPIOptionsMethod
       - WhiskyAPIGetMethod
       - WhiskyAPIPostMethod
+      - WhiskyAPIOptionsMethod
     Properties:
       RestApiId:
         Ref: RestAPI
       StageName: test
+
+  RestAPICustomDomainName:
+    Type: 'AWS::ApiGateway::DomainName'
+    Properties:
+      RegionalCertificateArn: !Sub "arn:aws:acm:${AWS::Region}:${AWS::AccountId}:certificate/${ApiCertificateId}"
+      DomainName: !Ref ApiUrl
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+
+  RestAPIBasePathMapping:
+    Type: 'AWS::ApiGateway::BasePathMapping'
+    Properties:
+      BasePath: "v1"
+      DomainName: !Ref RestAPICustomDomainName
+      RestApiId: !Ref RestAPI
+    DependsOn:
+      - RestAPI
+
+  RestAPIDNSRecordSet:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      Name: !Ref ApiUrl
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt [RestAPICustomDomainName, RegionalDomainName]
+        EvaluateTargetHealth: false
+        HostedZoneId: !GetAtt [RestAPICustomDomainName, RegionalHostedZoneId]
+      HostedZoneId: !Ref HostedZoneId
+
 Outputs:
   ApiId:
     Value:
       Ref: RestAPI
+  ApiUrl:
+    Value:
+      Ref: RestAPIDNSRecordSet
 

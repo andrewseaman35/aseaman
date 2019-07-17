@@ -1,5 +1,6 @@
 {
     "API_ID": "4azfmjyeyl",
+    "LOCAL": true,
     "BRANCH": "local",
     "DEPLOY_ENV": "dev",
     "CLIENT_ID": "22phtro4ouj069mou9o94a9tnm",

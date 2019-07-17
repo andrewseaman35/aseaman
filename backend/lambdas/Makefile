@@ -1,3 +1,5 @@
+export FLASK_APP := local_backend.py
+
 PACKAGE_DIR = packages
 DEPLOY_ENV ?= test
 STATE_API_NAME ?= state_api
@@ -28,6 +30,16 @@ package: package_dir venv
 upload: package
 	echo $(STATE_API_NAME) $(WHISKY_API_NAME)
 	aws s3 cp --recursive $(PACKAGE_DIR) s3://aseaman-lambda-functions/$(DEPLOY_ENV)
+
+local_venv: local_requirements.txt
+	virtualenv local_venv --python=python3 --no-site-packages
+	local_venv/bin/pip install -r local_requirements.txt
+
+freeze_local_venv:
+	local_venv/bin/pip freeze > local_requirements.txt
+
+start_local:
+	local_venv/bin/python local_backend.py
 
 clean:
 	rm -rf ./deploy_venv/
