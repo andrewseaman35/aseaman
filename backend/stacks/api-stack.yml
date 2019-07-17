@@ -472,9 +472,7 @@ Resources:
   RestAPICustomDomainName:
     Type: 'AWS::ApiGateway::DomainName'
     Properties:
-      RegionalCertificateArn:
-        - !Sub "arn:aws:acm:${AWS::Region}:${AWS::AccountId}:certificate/${ApiCertId}"
-        - { ApiCertId: !Ref ApiCertificateId }
+      RegionalCertificateArn: !Sub "arn:aws:acm:${AWS::Region}:${AWS::AccountId}:certificate/${ApiCertificateId}"
       DomainName: !Ref ApiUrl
       EndpointConfiguration:
         Types:
