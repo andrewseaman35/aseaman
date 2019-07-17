@@ -19,7 +19,7 @@ function getCookie(name) {
     for (var i = 0; i < cookies.length; i++) {
         var cookie = cookies[i];
         while (cookie.charAt(0) == ' ') {
-            cookie = cookie.substring(1, cookie.length);''
+            cookie = cookie.substring(1, cookie.length);
         }
         if (cookie.indexOf(nameEQ) == 0) {
             return cookie.substring(nameEQ.length, cookie.length);

@@ -2,6 +2,9 @@ const $ = require('jquery');
 
 const CONFIG = require('./config');
 
+const patentUrl = CONFIG.LOCAL ? 'http://localhost:8099/state_check' : `https://${CONFIG.API_URL}/v1/test/state_check`;
+
+
 const data = {
     state_id: 'patent_number'
 };
@@ -20,11 +23,12 @@ const newRow = function(label, value) {
 };
 
 const updatePatentTable = function() {
-    const patentUrl = `https://${CONFIG.API_ID}.execute-api.us-east-1.amazonaws.com/test/state_check`;
-    $.post(
-        patentUrl,
-        JSON.stringify(data),
-        function(response) {
+    $.ajax({
+        type: 'POST',
+        url: patentUrl,
+        data: JSON.stringify(data),
+        contentType: 'application/json',
+        success: function(response) {
             document.getElementById('patent-state-loading').style.display = 'none';
             const table = document.getElementById('state-table');
             const patentExists = response.data.available ? ' YES!' : ' no :(';
@@ -39,7 +43,7 @@ const updatePatentTable = function() {
             table.appendChild(newRow('Latest status', status));
             table.appendChild(newRow('Last updated', lastUpdated));
         }
-    );
+    });
 };
 
 module.exports = updatePatentTable;
