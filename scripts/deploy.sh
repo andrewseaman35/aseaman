@@ -19,7 +19,7 @@ elif [ "$TRAVIS_BRANCH" == "master" ]; then
         STACKNAME=stack-$DEPLOY_ENV-$NONCE \
         API_URL=api-$NONCE.live.andrewcseaman.com \
         STATE_API_NAME=state-api-$DEPLOY_ENV-$NONCE \
-        WHISKY_API_NAME=whisky-api-$DEPLOY_ENV-$NONCE
+        WHISKY_API_NAME=whisky-api-$DEPLOY_ENV-$NONCE \
         HOSTED_ZONE_ID=Z1NTL75ESDHPUU \
         API_CERTIFICATE_ID=bc74e242-e6b1-4d85-9c7e-318c328340fb
 else
