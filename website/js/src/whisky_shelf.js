@@ -2,9 +2,7 @@ const $ = require('jquery');
 
 const CONFIG = require('./config');
 
-const data = {
-    action: 'get_current_shelf'
-};
+const whiskyApiUrl = CONFIG.LOCAL ? 'http://0.0.0.0:8099/whisky' : `https://${CONFIG.API_URL}/v1/test/whisky`;
 
 const headerRow = function() {
     const row = document.createElement('tr');
@@ -46,11 +44,14 @@ const newRow = function(whisky) {
 };
 
 const getCurrentShelf = function() {
-    const whiskyApiUrl = `https://${CONFIG.API_ID}.execute-api.us-east-1.amazonaws.com/test/whisky`;
-    $.post(
-        whiskyApiUrl,
-        JSON.stringify(data),
-        function(whiskies) {
+    $.ajax({
+        type: 'POST',
+        url: whiskyApiUrl,
+        data: JSON.stringify({
+            action: 'get_current_shelf'
+        }),
+        contentType: 'application/json',
+        success: function(whiskies) {
             document.getElementById('whisky-shelf-loading').style.display = 'none';
             const table = document.getElementById('whisky-shelf-table');
 
@@ -65,25 +66,26 @@ const getCurrentShelf = function() {
                 table.appendChild(row);
             });
         }
-    );
+    });
 };
 
 const addToShelf = function() {
-    const whiskyApiUrl = `https://${CONFIG.API_ID}.execute-api.us-east-1.amazonaws.com/test/whisky`;
     const postData = {
         action: 'add_to_shelf',
         distillery: 'Lagavulin',
         internal_name: '16'
     };
-    $.post(
-        whiskyApiUrl,
-        JSON.stringify(postData),
-        function() {
+    $.ajax({
+        type: 'POST',
+        url: whiskyApiUrl,
+        data: JSON.stringify(postData),
+        contentType: 'application/json',
+        success: function() {
             const table = document.getElementById('whisky-shelf-table');
             const row = newRow(postData);
             table.appendChild(row);
         }
-    );
+    });
 };
 
 const initWhiskyShelf = function() {

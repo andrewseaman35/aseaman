@@ -1,4 +1,5 @@
 packages/
 
 deploy_venv/
+local_venv/
 venv/
