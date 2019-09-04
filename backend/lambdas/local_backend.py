@@ -1,7 +1,7 @@
 import importlib
 import json
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 
 # from whisky_shelf import lambda_handler as whisky_api
@@ -16,8 +16,11 @@ def make_lambda_request(function_name, payload):
     return response
 
 
-def make_response(result):
-    return jsonify(json.loads(result['body']))
+def convert_to_response(result):
+    body = jsonify(json.loads(result['body']))
+    status = result['statusCode']
+    headers = result['headers']
+    return make_response((body, status, headers))
 
 
 def get_payload(request):
@@ -30,14 +33,14 @@ def get_payload(request):
 def whisky():
     payload = get_payload(request)
     result = make_lambda_request('whisky_shelf', payload)
-    return make_response(result)
+    return convert_to_response(result)
 
 
 @app.route('/state_check', methods=['POST'])
 def state_check():
     payload = get_payload(request)
     result = make_lambda_request('state_check', payload)
-    return make_response(result)
+    return convert_to_response(result)
 
 
 if __name__ == '__main__':

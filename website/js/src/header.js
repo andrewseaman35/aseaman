@@ -43,6 +43,26 @@ const appendLoginItem = function($nav) {
     navItem({id: 'login', href: linkUrl, label: text}).appendTo($nav);
 };
 
+const appendApiKeyItem = function($nav) {
+    const hasApiKey = AUTH.getApiKey() !== null;
+    const text = hasApiKey ? 'Clear key' : 'Set key';
+    if (!hasApiKey) {
+        const textInput = $('<input id="api-key-input" type=text placeholder="api key"></input>');
+        textInput.appendTo($nav);
+    }
+    const item = navItem({id: 'api-key', href: '#', label: text});
+    item.on('click', function() {
+        if (hasApiKey) {
+            AUTH.unsetApiKey();
+        } else {
+            const newKey = $('#api-key-input').val();
+            AUTH.setApiKey(newKey);
+        }
+        window.location.replace('/');
+    });
+    item.appendTo($nav);
+};
+
 const header = function() {
     const $navRow = $('.nav-bar');
     NAV_STRUCTURE.forEach(function(item) {
@@ -57,6 +77,7 @@ const header = function() {
         $navItem.appendTo($navRow);
     });
     appendLoginItem($navRow);
+    appendApiKeyItem($navRow);
     $('.nav-bar').css('visibility', 'visible');
 };
 

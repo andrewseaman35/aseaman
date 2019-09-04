@@ -1,8 +1,11 @@
 const $ = require('jquery');
 
 const CONFIG = require('./config');
+const AUTH = require('./auth');
 
 const whiskyApiUrl = CONFIG.LOCAL ? 'http://0.0.0.0:8099/whisky' : `https://${CONFIG.API_URL}/v1/test/whisky`;
+
+let currentWhiskies;
 
 const headerRow = function() {
     const row = document.createElement('tr');
@@ -35,6 +38,47 @@ const newRow = function(whisky) {
     const typeCell = document.createElement('td');
     typeCell.innerHTML = whisky.type || '';
 
+
+    row.appendChild(distilleryCell);
+    row.appendChild(internalNameCell);
+    row.appendChild(typeCell);
+    row.appendChild(regionCell);
+    if (AUTH.getApiKey()) {
+        const deleteCell = document.createElement('td');
+        const deleteButton = document.createElement('button');
+        deleteButton.innerHTML = 'X';
+        deleteButton.addEventListener('click', function() {
+            removeFromShelf(whisky.distillery, whisky.internal_name);
+        });
+        deleteCell.appendChild(deleteButton);
+        row.appendChild(deleteCell);
+    }
+
+    return row;
+};
+
+const inputRow = function() {
+    const row = document.createElement('tr');
+    const distilleryCell = document.createElement('td');
+    const distilleryInput = document.createElement('input');
+    distilleryInput.id = 'distillery-input';
+    distilleryCell.appendChild(distilleryInput);
+
+    const internalNameCell = document.createElement('td');
+    const internalNameInput = document.createElement('input');
+    internalNameInput.id = 'internal-name-input';
+    internalNameCell.appendChild(internalNameInput);
+
+    const regionCell = document.createElement('td');
+    const regionInput = document.createElement('input');
+    regionInput.id = 'region-input';
+    regionCell.appendChild(regionInput);
+
+    const typeCell = document.createElement('td');
+    const typeInput = document.createElement('input');
+    typeInput.id = 'type-input';
+    typeCell.appendChild(typeInput);
+
     row.appendChild(distilleryCell);
     row.appendChild(internalNameCell);
     row.appendChild(typeCell);
@@ -52,28 +96,22 @@ const getCurrentShelf = function() {
         }),
         contentType: 'application/json',
         success: function(whiskies) {
-            document.getElementById('whisky-shelf-loading').style.display = 'none';
-            const table = document.getElementById('whisky-shelf-table');
-
-            table.appendChild(headerRow());
-            whiskies.sort(function(a, b) {
-                if(a.distillery < b.distillery) { return -1; }
-                return 1;
-            });
-
-            whiskies.forEach(function (whisky) {
-                const row = newRow(whisky);
-                table.appendChild(row);
-            });
+            currentWhiskies = whiskies;
+            renderWhiskyTable(currentWhiskies);
         }
     });
 };
 
-const addToShelf = function() {
+const addToShelf = function(distillery, internalName, type, region) {
     const postData = {
         action: 'add_to_shelf',
-        distillery: 'Lagavulin',
-        internal_name: '16'
+        api_key: AUTH.getApiKey(),
+        payload: {
+            distillery: distillery,
+            internal_name: internalName,
+            type: type,
+            region: region,
+        }
     };
     $.ajax({
         type: 'POST',
@@ -81,18 +119,74 @@ const addToShelf = function() {
         data: JSON.stringify(postData),
         contentType: 'application/json',
         success: function() {
-            const table = document.getElementById('whisky-shelf-table');
-            const row = newRow(postData);
-            table.appendChild(row);
+            currentWhiskies.push({distillery: distillery, internal_name: internalName});
+            renderWhiskyTable(currentWhiskies);
         }
     });
 };
 
+const removeFromShelf = function(distillery, internalName) {
+    console.log(distillery, internalName);
+    const postData = {
+        action: 'remove_from_shelf',
+        api_key: AUTH.getApiKey(),
+        payload: {
+            distillery: distillery,
+            internal_name: internalName
+        }
+    };
+    $.ajax({
+        type: 'POST',
+        url: whiskyApiUrl,
+        data: JSON.stringify(postData),
+        contentType: 'application/json',
+        success: function() {
+            currentWhiskies = currentWhiskies.filter(function(whisky) {return whisky.distillery !== distillery && whisky.internal_name !== internalName;});
+            renderWhiskyTable(currentWhiskies);
+        }
+    });
+};
+
+const renderWhiskyTable = function(whiskies) {
+    document.getElementById('whisky-shelf-loading').style.display = 'none';
+    const table = document.getElementById('whisky-shelf-table');
+    table.innerHTML = '';
+
+    table.appendChild(headerRow());
+    whiskies.sort(function(a, b) {
+        if(a.distillery < b.distillery) { return -1; }
+        return 1;
+    });
+
+    whiskies.forEach(function (whisky) {
+        const row = newRow(whisky);
+        table.appendChild(row);
+    });
+    if (AUTH.getApiKey()) {
+        table.appendChild(inputRow());
+
+        const addButtonRow = document.createElement('tr');
+        const addButtonCell = document.createElement('td');
+        const addButton = document.createElement('button');
+        addButton.innerHTML = 'add';
+        addButton.addEventListener('click', function() {
+            const distillery = document.getElementById('distillery-input').value;
+            const internalName = document.getElementById('internal-name-input').value;
+            const type = document.getElementById('type-input').value;
+            const region = document.getElementById('region-input').value;
+            if (distillery && internalName && type && region) {
+                addToShelf(distillery, internalName, type, region);
+            }
+
+        });
+        addButtonCell.appendChild(addButton);
+        addButtonRow.appendChild(addButtonCell);
+        table.appendChild(addButtonRow);
+    }
+};
+
 const initWhiskyShelf = function() {
     getCurrentShelf();
-    // document.getElementById('js-add').addEventListener('click', function() {
-    //     addToShelf();
-    // });
 };
 
 module.exports = initWhiskyShelf;
