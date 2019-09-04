@@ -108,7 +108,9 @@ const addToShelf = function(distillery, internalName, type, region) {
         api_key: AUTH.getApiKey(),
         payload: {
             distillery: distillery,
-            internal_name: internalName
+            internal_name: internalName,
+            type: type,
+            region: region,
         }
     };
     $.ajax({

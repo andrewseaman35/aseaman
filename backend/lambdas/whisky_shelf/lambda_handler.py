@@ -49,6 +49,9 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
         if self.internal_name is None:
             raise BadRequestException('internal_name parameter required')
 
+        self.type = self.payload.get('type')
+        self.region = self.payload.get('region')
+
     def _validate_remove_from_shelf(self):
         self.distillery = self.payload.get('distillery')
         if self.distillery is None:
@@ -96,20 +99,25 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
     def _add_to_shelf(self):
         item = self._get_item(self.distillery, self.internal_name)
         if item is None:
-            print("Adding new item to shelf: {} {}".format(self.distillery, self.internal_name))
+            print("Adding new item to shelf: {} {}".format(self.distillery, self.internal_name, self.type, self.region))
+            ddbItem = {
+                'distillery': {
+                    'S': self.distillery,
+                },
+                'internal_name': {
+                    'S': self.internal_name,
+                },
+                'current': {
+                    'BOOL': True,
+                }
+            }
+            if self.type:
+                ddbItem['type'] = { 'S': self.type }
+            if self.region:
+                ddbItem['region'] = { 'S': self.region }
             self.ddb_client.put_item(
                 TableName=TABLE_NAME,
-                Item={
-                    'distillery': {
-                        'S': self.distillery,
-                    },
-                    'internal_name': {
-                        'S': self.internal_name,
-                    },
-                    'current': {
-                        'BOOL': True,
-                    }
-                }
+                Item=ddbItem,
             )
         elif not item['current']['BOOL']:
             print("Setting to current: {} {}".format(self.distillery, self.internal_name))
