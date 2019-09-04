@@ -141,7 +141,7 @@ const removeFromShelf = function(distillery, internalName) {
         data: JSON.stringify(postData),
         contentType: 'application/json',
         success: function() {
-            currentWhiskies = currentWhiskies.filter(function(whisky) {return whisky.distiller !== distillery && whisky.internal_name !== internalName;});
+            currentWhiskies = currentWhiskies.filter(function(whisky) {return whisky.distillery !== distillery && whisky.internal_name !== internalName;});
             renderWhiskyTable(currentWhiskies);
         }
     });
