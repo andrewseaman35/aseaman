@@ -38,19 +38,21 @@ const newRow = function(whisky) {
     const typeCell = document.createElement('td');
     typeCell.innerHTML = whisky.type || '';
 
-    const deleteCell = document.createElement('td');
-    const deleteButton = document.createElement('button');
-    deleteButton.innerHTML = 'X';
-    deleteButton.addEventListener('click', function() {
-        removeFromShelf(whisky.distillery, whisky.internal_name);
-    });
-    deleteCell.appendChild(deleteButton);
 
     row.appendChild(distilleryCell);
     row.appendChild(internalNameCell);
     row.appendChild(typeCell);
     row.appendChild(regionCell);
-    row.appendChild(deleteCell);
+    if (AUTH.getApiKey()) {
+        const deleteCell = document.createElement('td');
+        const deleteButton = document.createElement('button');
+        deleteButton.innerHTML = 'X';
+        deleteButton.addEventListener('click', function() {
+            removeFromShelf(whisky.distillery, whisky.internal_name);
+        });
+        deleteCell.appendChild(deleteButton);
+        row.appendChild(deleteCell);
+    }
 
     return row;
 };
@@ -122,7 +124,7 @@ const addToShelf = function(distillery, internalName, type, region) {
 };
 
 const removeFromShelf = function(distillery, internalName) {
-    console.log(distillery, internalName)
+    console.log(distillery, internalName);
     const postData = {
         action: 'remove_from_shelf',
         api_key: AUTH.getApiKey(),
@@ -158,32 +160,31 @@ const renderWhiskyTable = function(whiskies) {
         const row = newRow(whisky);
         table.appendChild(row);
     });
-    table.appendChild(inputRow());
+    if (AUTH.getApiKey()) {
+        table.appendChild(inputRow());
 
-    const addButtonRow = document.createElement('tr');
-    const addButtonCell = document.createElement('td');
-    const addButton = document.createElement('button');
-    addButton.innerHTML = 'add';
-    addButton.addEventListener('click', function() {
-        const distillery = document.getElementById('distillery-input').value;
-        const internalName = document.getElementById('internal-name-input').value;
-        const type = document.getElementById('type-input').value;
-        const region = document.getElementById('region-input').value;
-        if (distillery && internalName && type && region) {
-            addToShelf(distillery, internalName, type, region);
-        }
+        const addButtonRow = document.createElement('tr');
+        const addButtonCell = document.createElement('td');
+        const addButton = document.createElement('button');
+        addButton.innerHTML = 'add';
+        addButton.addEventListener('click', function() {
+            const distillery = document.getElementById('distillery-input').value;
+            const internalName = document.getElementById('internal-name-input').value;
+            const type = document.getElementById('type-input').value;
+            const region = document.getElementById('region-input').value;
+            if (distillery && internalName && type && region) {
+                addToShelf(distillery, internalName, type, region);
+            }
 
-    });
-    addButtonCell.appendChild(addButton);
-    addButtonRow.appendChild(addButtonCell);
-    table.appendChild(addButtonRow);
+        });
+        addButtonCell.appendChild(addButton);
+        addButtonRow.appendChild(addButtonCell);
+        table.appendChild(addButtonRow);
+    }
 };
 
 const initWhiskyShelf = function() {
     getCurrentShelf();
-    // document.getElementById('js-add').addEventListener('click', function() {
-    //     addToShelf();
-    // });
 };
 
 module.exports = initWhiskyShelf;
