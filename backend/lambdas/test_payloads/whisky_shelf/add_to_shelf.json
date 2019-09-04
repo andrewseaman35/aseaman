@@ -3,6 +3,8 @@
     "action": "add_to_shelf",
     "payload": {
         "distillery": "d",
-        "internal_name": "in"
+        "internal_name": "in",
+        "type": "ty",
+        "region": "re"
     }
 }
