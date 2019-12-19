@@ -37,6 +37,7 @@ class Watcher(object):
                     elif modification_time > self.modification_times[entry.path]:
                         self.log("Detected change in {}".format(entry.name))
                         self.on_update()
+                        self.log("Files updated")
                         self.modification_times = {}
             time.sleep(self.POLL_TIME)
 
@@ -49,10 +50,9 @@ class RunWatchers(BaseScript):
         self.scss_dir = os.path.join(self.website_dir, 'scss')
         self.js_dir = os.path.join(self.website_dir, 'js', 'src')
 
-        self.js_input = os.path.join(self.website_dir, 'js', 'src', 'main.js')
-        self.js_output = os.path.join(self.website_dir, 'public', 'js', 'bundle.js')
-        self.scss_input = os.path.join(self.website_dir, 'scss', 'main.scss')
-        self.scss_output = os.path.join(self.website_dir, 'public', 'css', 'main.css')
+        self.jinja_thread = None
+        self.scss_thread = None
+        self.js_thread = None
 
         self.compile_html = CompileHTML()
 
@@ -68,10 +68,10 @@ class RunWatchers(BaseScript):
             print("Error while building HTML: {}".format(e))
 
     def trigger_scss_build(self):
-        subprocess.call(['sass', self.scss_input, self.scss_output])
+        subprocess.check_output(['make', '-C', 'website', 'css'])
 
     def trigger_js_build(self):
-        subprocess.call(['browserify', self.js_input, '-o', self.js_output, '-d'])
+        subprocess.check_output(['make', '-C', 'website', 'build_js'])
 
     def _run(self):
         self.jinja_thread = self._new_watcher_thread('jinja', self.jinja_dir, self.trigger_jinja_build)
