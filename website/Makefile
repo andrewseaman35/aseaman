@@ -16,15 +16,18 @@ local_config: $(CONFIG)/web_template.json $(SCRIPTS)/generate_config.py
 config: $(CONFIG)/web_template.json $(SCRIPTS)/generate_config.py
 	$(VENV_PYTHON) $(SCRIPTS)/generate_config.py --stack-name=${STACKNAME} --deploy-env=${DEPLOY_ENV}
 
+package-lock.json: package.json
+	npm update
+
 node_modules: package.json package-lock.json
-	npm -g install . --save-dev
+	npm -g install . --only=dev
 
 html: $(SCRIPTS)/compile_html.py
 	$(VENV_PYTHON) $(SCRIPTS)/compile_html.py
 
 build_js:
 	mkdir -p public/js/
-	npx babel js/src --out-dir public/lib
+	./node_modules/.bin/babel js/src --out-dir public/lib
 	browserify public/lib/main.js -o public/js/bundle.js -d
 
 js: node_modules build_js
@@ -38,6 +41,6 @@ assets:
 
 clean:
 	rm -rf public/
-	rm -rf node_modules
+	rm -rf node_modules/
 
 .PHONY: package deploy_api deploy_website deploy_test_website deploy deploy_test remove_old_stacks clean static js
