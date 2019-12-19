@@ -8,10 +8,12 @@ const loadGA = require('./ga');
 const auth = require('./auth');
 const header = require('./header');
 
+const initAbout = require('./about');
 const patent = require('./patent');
 const whiskyShelf = require('./whisky_shelf');
 
 const modules = {
+    initAbout,
     auth,
     config,
     constants,
