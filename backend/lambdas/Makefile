@@ -46,3 +46,5 @@ clean:
 	rm -rf ./venv/
 	rm -rf $(PACKAGE_DIR)
 
+.PHONY: package package_dir upload clean
+

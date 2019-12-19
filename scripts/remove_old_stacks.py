@@ -77,7 +77,7 @@ class RemoveOldStacks(BaseScript):
                 StackName=stack_name,
             )
 
-        print("Deleted {} stacks".format(count))
+        print("Deleted {} stack{}".format(count, '' if count == 1 else 's'))
 
 
 if __name__ == '__main__':
