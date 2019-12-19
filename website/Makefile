@@ -22,9 +22,12 @@ node_modules: package.json package-lock.json
 html: $(SCRIPTS)/compile_html.py
 	$(VENV_PYTHON) $(SCRIPTS)/compile_html.py
 
-js: node_modules
+build_js:
 	mkdir -p public/js/
-	browserify js/src/main.js -o public/js/bundle.js -d
+	npx babel js/src --out-dir public/lib
+	browserify public/lib/main.js -o public/js/bundle.js -d
+
+js: node_modules build_js
 
 css:
 	mkdir -p public/css/

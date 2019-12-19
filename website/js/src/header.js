@@ -65,11 +65,11 @@ const appendApiKeyItem = function($nav) {
 
 const header = function() {
     const $navRow = $('.nav-bar');
-    NAV_STRUCTURE.forEach(function(item) {
+    NAV_STRUCTURE.forEach((item) => {
         const $navItem = navItem(item);
         if (item.items.length > 0) {
             const $nestedNav = $('<div class="nested-nav"></div>');
-            item.items.forEach(function(nestedItem) {
+            item.items.forEach((nestedItem) => {
                 nestedNavItem(nestedItem).appendTo($nestedNav);
             });
             $nestedNav.appendTo($navItem);
