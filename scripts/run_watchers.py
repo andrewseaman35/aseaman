@@ -9,10 +9,8 @@ from compile_html import CompileHTML
 
 class Watcher(object):
     """
-    A simple file watch that calls a function whenever files within a given
+    A simple file watcher that calls a function whenever files within a given
     directory are updated.
-
-    NOTE: Currently does not update on files within folders.
     """
     POLL_TIME = 2
 
@@ -20,25 +18,29 @@ class Watcher(object):
         self.name = name
         self.watched_dir = watched_dir
         self.on_update = on_update
-        self.modification_times = {}
+        self.last_modification_time = None
 
     def log(self, t):
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
         print('{}: {} watcher - {}'.format(timestamp, self.name, t))
 
+    def get_last_update_time(self):
+        return max(
+            ((filename, os.stat(os.path.join(subdirectory, filename)).st_mtime)
+            for (subdirectory, _, filenames) in os.walk(self.watched_dir)
+            for filename in filenames),
+            key=lambda x: x[1]
+        )
+
     def watch(self):
         self.log("started")
         while True:
-            with os.scandir(self.watched_dir) as entries:
-                for entry in entries:
-                    modification_time = entry.stat().st_mtime
-                    if entry.path not in self.modification_times:
-                        self.modification_times[entry.path] = modification_time
-                    elif modification_time > self.modification_times[entry.path]:
-                        self.log("Detected change in {}".format(entry.name))
-                        self.on_update()
-                        self.log("Files updated")
-                        self.modification_times = {}
+            modified_file, modification_time = self.get_last_update_time()
+            if not self.last_modification_time or modification_time > self.last_modification_time:
+                self.log("Detected change in {}".format(modified_file))
+                self.on_update()
+                self.log("Files updated")
+                self.last_modification_time = modification_time
             time.sleep(self.POLL_TIME)
 
 
@@ -81,10 +83,6 @@ class RunWatchers(BaseScript):
         self.jinja_thread.start()
         self.scss_thread.start()
         self.js_thread.start()
-
-        self.trigger_jinja_build()
-        self.trigger_scss_build()
-        self.trigger_js_build()
 
 
 if __name__ == '__main__':

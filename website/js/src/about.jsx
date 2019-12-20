@@ -4,8 +4,8 @@ import ReactDOM from 'react-dom';
 class About extends React.Component {
     render() {
         return (
-            <div class="inner">
-                <div class="left-content">
+            <div className="inner">
+                <div className="left-content">
                     <h3>What is this?</h3>
                     <p>
                         This website is an ongoing project on mine that I'm using as a way to mess around and learn new things. It doesn't really
