@@ -9,6 +9,7 @@ const auth = require('./auth');
 const header = require('./header');
 
 const initAbout = require('./about');
+const initPatent = require('./patent');
 const patent = require('./patent');
 const whiskyShelf = require('./whisky_shelf');
 
@@ -16,6 +17,7 @@ import { reactFooter } from './components';
 
 const modules = {
     initAbout,
+    initPatent,
     auth,
     config,
     constants,
