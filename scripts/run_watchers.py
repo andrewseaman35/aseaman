@@ -73,7 +73,7 @@ class RunWatchers(BaseScript):
         subprocess.check_output(['make', '-C', 'website', 'css'])
 
     def trigger_js_build(self):
-        subprocess.check_output(['make', '-C', 'website', 'build_js'])
+        subprocess.check_output(['make', '-C', 'website', 'build_local_js'])
 
     def _run(self):
         self.jinja_thread = self._new_watcher_thread('jinja', self.jinja_dir, self.trigger_jinja_build)
