@@ -10,6 +10,7 @@ install:
   - gem install sass
   - npm update
   - npm install -g browserify
+  - npm install -g uglify-js
   - npm install -g ./website/ --save-dev
   - export PATH=$PATH:$HOME/.local/bin
   - ./scripts/travis_env.sh
