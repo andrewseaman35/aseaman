@@ -28,7 +28,7 @@ html: $(SCRIPTS)/compile_html.py
 build_js:
 	mkdir -p public/js/
 	./node_modules/.bin/babel js/src --out-dir public/lib
-	browserify public/lib/main.js -o public/js/bundle.js -d
+	browserify public/lib/main.js -d | uglifyjs -cm > public/js/bundle.js
 
 js: node_modules build_js
 
