@@ -23,8 +23,6 @@ const modules = {
     patent,
     whiskyShelf,
     utils,
-
-    reactFooter,
 };
 
 $(window).ready(function() {
@@ -32,5 +30,8 @@ $(window).ready(function() {
     for (const i in window.aseaman._js) {
         window.aseaman._js[i](modules);
     }
+
+    // `footer-container` is the id of the footer container defined in `base.jinja2`
+    reactFooter('footer-container');
 });
 
