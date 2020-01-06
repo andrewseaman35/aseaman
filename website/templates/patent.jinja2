@@ -4,50 +4,13 @@
 {% block body_class %}patent{% endblock %}
 
 {% block content %}
-    <div class="inner">
-        <div class="left-content">
-            <h3>Patent</h3>
-            <p>
-                This page was initially set up for me to track the status of a patent application
-                that I had open. Since I set it up, the application was approved (yay!) so this page
-                is somewhat useless. Admittedly, it wasn't terribly useful before.
-            </p>
-            <p>
-                For this to work, I had set up a Lambda function that checks the status of the
-                application once a day.
-                I don't have a page up yet, but eventually I'll have some information about
-                the little framework I've built that allows me to easily set up these sorts of
-                things. Until then, you can check out the source
-                <a
-                    href="https://github.com/andrewseaman35/automations/tree/master/lambda_crons"
-                    rel="noopener noreferrer"
-                    target="_blank"
-                >here</a>.
-            </p>
-            <p>
-                This little table down here shows the most updated status that I've retrieved.
-            </p>
-            <div id="patent-state">
-                <div id="patent-state-loading">Loading...</div>
-                <table id="state-table"></table>
-            </div>
-            <p>
-                If you're interested, you can look at the patent
-                <a
-                    href="http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO1&Sect2=HITOFF&d=PALL&p=1&u=%2Fnetahtml%2FPTO%2Fsrchnum.htm&r=1&f=G&l=50&s1=10304298.PN.&OS=PN/10304298&RS=PN/10304298"
-                    rel="noopener noreferrer"
-                    target="_blank"
-                >here</a>.
-            </p>
-            <a href="index.html">Go back home</a>
-        </div>
-    </div>
+    <div id="patent-container" class="inner"></div>
 {% endblock %}
 
 {% block include_js %}
     <script>
         window.aseaman.ready(function(exports) {
-            exports.patent();
+            exports.initPatent('patent-container');
         });
     </script>
 {% endblock %}
