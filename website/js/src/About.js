@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 class About extends React.Component {
     render() {
@@ -22,11 +21,4 @@ class About extends React.Component {
     }
 }
 
-function initAbout() {
-    ReactDOM.render(
-        <About />,
-        document.getElementById('about-container'),
-    );
-}
-
-module.exports = initAbout;
+module.exports = About;
