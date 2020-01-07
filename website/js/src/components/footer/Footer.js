@@ -59,11 +59,11 @@ class Footer extends React.Component {
     }
 }
 
-function reactFooter(containerId) {
+function initFooter(containerId) {
     ReactDOM.render(
         <Footer />,
         document.getElementById(containerId),
     );
 }
 
-module.exports = { reactFooter };
+module.exports = { initFooter };

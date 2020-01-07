@@ -9,8 +9,6 @@
         <div class="left-content">
             {# <h3>My Whisky Shelf</h3> #}
             <div id="whisky-shelf">
-                <div id="whisky-shelf-loading">Loading...</div>
-                <table id="whisky-shelf-table"></table>
             </div>
             <a href="index.html">Go back home</a>
         </div>
@@ -20,7 +18,7 @@
 {% block include_js %}
     <script>
         window.aseaman.ready(function(exports) {
-            exports.whiskyShelf();
+            exports.initWhiskyShelf('whisky-shelf');
         });
     </script>
 {% endblock %}

@@ -1,8 +1,7 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import $ from 'jquery';
 
-import { LOCAL, API_URL }  from './config';
+import { getAPIUrl } from './utils';
 
 
 class Patent extends React.Component {
@@ -11,7 +10,7 @@ class Patent extends React.Component {
         this.renderStatusTable = this.renderStatusTable.bind(this);
         this.retrievePatentStatus = this.retrievePatentStatus.bind(this);
 
-        this.patentUrl = LOCAL ? 'http://localhost:8099/state_check' : `https://${API_URL}/v1/test/state_check`;
+        this.patentUrl = getAPIUrl('state_check');
         this.parentQueryData = {
             state_id: 'patent_number',
         };
@@ -53,7 +52,7 @@ class Patent extends React.Component {
 
     renderError() {
         return (
-            <p className="error-msg">Something happened while retrieving the patent status!</p>
+            <p className="error-message">Something happened while retrieving the patent status!</p>
         )
     }
 
@@ -142,11 +141,5 @@ class Patent extends React.Component {
     }
 }
 
-function initPatent(elementId) {
-    ReactDOM.render(
-        <Patent />,
-        document.getElementById(elementId),
-    );
-}
 
-module.exports = initPatent;
+module.exports = Patent;

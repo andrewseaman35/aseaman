@@ -8,21 +8,26 @@ const loadGA = require('./ga');
 const auth = require('./auth');
 const header = require('./header');
 
-const initAbout = require('./about');
-const initPatent = require('./patent');
-const patent = require('./patent');
 const whiskyShelf = require('./whisky_shelf');
 
-import { reactFooter } from './components';
+import {
+    initAbout,
+    initPatent,
+} from './entry';
+
+import {
+    initFooter,
+    initWhiskyShelf,
+} from './components';
 
 const modules = {
     initAbout,
     initPatent,
+    initWhiskyShelf,
     auth,
     config,
     constants,
     header,
-    patent,
     whiskyShelf,
     utils,
 };
@@ -34,6 +39,6 @@ $(window).ready(function() {
     }
 
     // `footer-container` is the id of the footer container defined in `base.jinja2`
-    reactFooter('footer-container');
+    initFooter('footer-container');
 });
 

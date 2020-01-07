@@ -1,3 +1,12 @@
+import CONFIG from './config';
+
+function getAPIUrl(path) {
+    if (CONFIG.LOCAL) {
+        return `http://0.0.0.0:8099/${path}`;
+    }
+    return `https://${CONFIG.API_URL}/v1/test/${path}`;
+}
+
 function setCookie(name, value, expiration) {
     // Sets a cookie. Expiration in seconds.
     var expires = '';
@@ -28,4 +37,9 @@ function getCookie(name) {
     return null;
 }
 
-module.exports = { setCookie, getCookie, unsetCookie };
+module.exports = {
+    getAPIUrl,
+    setCookie,
+    getCookie,
+    unsetCookie,
+};

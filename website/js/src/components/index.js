@@ -1,5 +1,7 @@
-import { reactFooter } from './footer/Footer';
+import { initFooter } from './footer/Footer';
+import { initWhiskyShelf } from './whisky/WhiskyShelf';
 
 module.exports = {
-    reactFooter,
+    initFooter,
+    initWhiskyShelf,
 };
