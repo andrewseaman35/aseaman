@@ -2,26 +2,20 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
 
-import { getAPIUrl } from '../../utils';
+import WhiskyRow from './WhiskyRow';
 
-const TABLE_COLUMN_ORDER = [
-    'distillery',
-    'internal_name',
-    'region',
-    'type',
-];
-const TABLE_COLUMN_HEADER_LABELS = {
-    distillery: 'Distillery',
-    internal_name: 'Name (internal)',
-    region: 'Region',
-    type: 'Type',
-};
+import { TABLE_COLUMN_ORDER, TABLE_COLUMN_HEADER_LABELS } from './constants';
+import { getAPIUrl } from '../../utils';
 
 
 class WhiskyShelf extends React.Component {
     constructor() {
         super();
         this.state = {
+            editing: {
+                enabled: false,
+                index: null,
+            },
             loading: true,
             failed: false,
             items: null,
@@ -42,6 +36,11 @@ class WhiskyShelf extends React.Component {
         this.retrieveCurrentShelf()
             .then(
                 (response) => {
+                    response.sort((a, b) => {
+                        let aKey = a.distillery + a.internal_name;
+                        let bKey = b.distillery + b.internal_name;
+                        return aKey < bKey ? -1 : 1;
+                    })
                     this.setState({
                         loading: false,
                         items: response,
@@ -96,18 +95,16 @@ class WhiskyShelf extends React.Component {
     }
 
     renderTableBody() {
-        const { items } = this.state;
+        const { editing, items } = this.state;
         return (
             <tbody>
                 {
                     items.map((item, index) => (
-                        <tr key={index}>
-                            {
-                                TABLE_COLUMN_ORDER.map((columnKey, columnKeyIndex) => (
-                                    <td key={columnKeyIndex}>{item[columnKey]}</td>
-                                ))
-                            }
-                        </tr>
+                        <WhiskyRow
+                            editable={editing.index === index}
+                            item={item}
+                            key={index}
+                        />
                     ))
                 }
             </tbody>
