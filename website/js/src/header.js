@@ -1,5 +1,5 @@
 
-const $ = require('jquery');
+import $ from 'jquery';
 
 const AUTH = require('./auth');
 const CONSTANTS = require('./constants');
@@ -58,7 +58,7 @@ const appendApiKeyItem = function($nav) {
             const newKey = $('#api-key-input').val();
             AUTH.setApiKey(newKey);
         }
-        window.location.replace('/');
+        window.location.replace(window.location.pathname);
     });
     item.appendTo($nav);
 };
