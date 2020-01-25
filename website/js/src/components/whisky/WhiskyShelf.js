@@ -1,8 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 import $ from 'jquery';
 
 import WhiskyRow from './WhiskyRow';
+import WhiskyForm from './WhiskyForm';
 
 import { TABLE_COLUMN_ORDER, TABLE_COLUMN_HEADER_LABELS } from './constants';
 import { getAPIUrl } from '../../utils';
@@ -11,59 +13,8 @@ import { getAPIUrl } from '../../utils';
 class WhiskyShelf extends React.Component {
     constructor() {
         super();
-        this.state = {
-            editing: {
-                enabled: false,
-                index: null,
-            },
-            loading: true,
-            failed: false,
-            items: null,
-        };
-
-        this.url = getAPIUrl('whisky');
-        this.initializeShelf = this.initializeShelf.bind(this);
-        this.retrieveCurrentShelf = this.retrieveCurrentShelf.bind(this);
         this.renderTableBody = this.renderTableBody.bind(this);
         this.renderTableHeader = this.renderTableHeader.bind(this);
-    }
-
-    componentDidMount() {
-        this.initializeShelf();
-    }
-
-    initializeShelf() {
-        this.retrieveCurrentShelf()
-            .then(
-                (response) => {
-                    response.sort((a, b) => {
-                        let aKey = a.distillery + a.internal_name;
-                        let bKey = b.distillery + b.internal_name;
-                        return aKey < bKey ? -1 : 1;
-                    })
-                    this.setState({
-                        loading: false,
-                        items: response,
-                    })
-                },
-                () => {
-                    this.setState({
-                        loading: false,
-                        failed: true,
-                    })
-                }
-            );
-    }
-
-    retrieveCurrentShelf() {
-        return $.ajax({
-            type: 'POST',
-            url: this.url,
-            data: JSON.stringify({
-                action: 'get_current_shelf'
-            }),
-            contentType: 'application/json',
-        }).promise();
     }
 
     renderLoading() {
@@ -95,13 +46,18 @@ class WhiskyShelf extends React.Component {
     }
 
     renderTableBody() {
-        const { editing, items } = this.state;
+        const { loading, items } = this.props;
+        const sortedItems = items.concat().sort((a, b) => {
+            let aKey = a.distillery.toLowerCase() + a.internal_name.toLowerCase();
+            let bKey = b.distillery.toLowerCase() + b.internal_name.toLowerCase();
+            return aKey < bKey ? -1 : 1;
+        });
         return (
             <tbody>
                 {
-                    items.map((item, index) => (
+                    sortedItems.map((item, index) => (
                         <WhiskyRow
-                            editable={editing.index === index}
+                            editable={false}
                             item={item}
                             key={index}
                         />
@@ -121,10 +77,10 @@ class WhiskyShelf extends React.Component {
     }
 
     render() {
-        if (this.state.loading) {
+        if (this.props.loading) {
             return this.renderLoading();
         }
-        if (this.state.failed) {
+        if (this.props.failed) {
             return this.renderError();
         }
 
@@ -136,12 +92,11 @@ class WhiskyShelf extends React.Component {
     }
 }
 
-function initWhiskyShelf(elementId) {
-    ReactDOM.render(
-        <WhiskyShelf />,
-        document.getElementById(elementId),
-    );
+WhiskyShelf.propTypes = {
+    loading: PropTypes.bool.isRequired,
+    failed: PropTypes.bool.isRequired,
+    items: PropTypes.array,
 }
 
 
-module.exports = { initWhiskyShelf };
+module.exports = WhiskyShelf;

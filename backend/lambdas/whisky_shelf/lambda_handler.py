@@ -4,7 +4,7 @@ from base.lambda_handler_base import APILambdaHandlerBase
 from base.api_exceptions import BadRequestException, UnauthorizedException
 
 TABLE_NAME = 'whisky_shelf'
-
+LOCAL_TABLE_NAME = 'whisky_shelf_local'
 
 class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
     auth_actions = {
@@ -18,6 +18,7 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
         return self.auth_actions[self.action]
 
     def _init(self):
+        self.table_name = LOCAL_TABLE_NAME if self.is_local else TABLE_NAME
         self.actions = {
             'get_current_shelf': self._get_current_shelf,
             'add_to_shelf': self._add_to_shelf,
@@ -63,7 +64,7 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
 
     def _get_item(self, distillery, internal_name):
         result = self.ddb_client.get_item(
-            TableName=TABLE_NAME,
+            TableName=self.table_name,
             Key={
                 'distillery': {
                     'S': distillery,
@@ -78,7 +79,7 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
 
     def _update_current_state(self, distillery, internal_name, current):
         self.ddb_client.update_item(
-            TableName=TABLE_NAME,
+            TableName=self.table_name,
             Key={
                 'distillery': {
                     'S': distillery,
@@ -116,9 +117,16 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
             if self.region:
                 ddbItem['region'] = { 'S': self.region }
             self.ddb_client.put_item(
-                TableName=TABLE_NAME,
+                TableName=self.table_name,
                 Item=ddbItem,
             )
+            return {
+                'distillery': self.distillery,
+                'internal_name': self.internal_name,
+                'current': True,
+                'type': self.type,
+                'region': self.region,
+            }
         elif not item['current']['BOOL']:
             print("Setting to current: {} {}".format(self.distillery, self.internal_name))
             self._update_current_state(self.distillery, self.internal_name, True)
@@ -132,7 +140,7 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
 
     def _get_current_shelf(self):
         ddb_items = self.ddb_client.scan(
-            TableName=TABLE_NAME,
+            TableName=self.table_name,
             ExpressionAttributeNames={
                 '#cur': 'current',
             },

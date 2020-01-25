@@ -1,3 +1,7 @@
+table {
+    min-width: 800px;
+}
+
 th,
 tr>td {
     text-align: left;
@@ -6,4 +10,80 @@ tr>td {
 
 th {
     min-width: 100px;
+    padding-bottom: 12px;
+}
+
+.left-content {
+    align-items: center;
+}
+
+.whisky-shelf {
+    padding: 32px 0;
+}
+
+.action-bar {
+    padding: 32px;
+}
+
+.whisky-form {
+    position: fixed;
+    top: 20%;
+    background-color: white;
+    max-width: 80%;
+    padding: 32px 48px;
+    border: black solid 1px;
+    box-shadow: 5px 10px 10px #888888;
+
+    h3 {
+        margin-top: 0;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        padding: 8px 0;
+        width: 300px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    input[type=submit] {
+        border-radius: 0;
+        padding: 12px;
+        width: 70px;
+        align-self: center;
+        margin-top: 20px;
+    }
+
+    .button-container {
+        top: 0;
+        right: 0;
+        position: absolute;
+        padding: 14px;
+
+        .button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: black solid 1px;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .button:hover {
+            background-color: #000000;
+            color: white;
+            border-color: white;
+        }
+    }
+
+    .error-message {
+        max-width: 300px;
+        margin-top: 12px;
+    }
 }

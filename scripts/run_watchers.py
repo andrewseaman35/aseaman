@@ -38,8 +38,12 @@ class Watcher(object):
             modified_file, modification_time = self.get_last_update_time()
             if not self.last_modification_time or modification_time > self.last_modification_time:
                 self.log("Detected change in {}".format(modified_file))
-                self.on_update()
-                self.log("Files updated")
+                try:
+                    self.on_update()
+                except:
+                    self.log("Update failed!")
+                else:
+                    self.log("Files updated")
                 self.last_modification_time = modification_time
             time.sleep(self.POLL_TIME)
 
