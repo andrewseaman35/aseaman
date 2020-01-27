@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { addWhisky } from './api';
-import { TABLE_COLUMN_ORDER } from './constants';
+import { TABLE_COLUMN_ORDER, ERROR_MESSAGE_BY_CODE } from './constants';
+
 
 class WhiskyForm extends React.Component {
     constructor() {
@@ -34,20 +35,20 @@ class WhiskyForm extends React.Component {
          *
          * If submission is valid, returns `null`, otherwise, returns an error message string.
          */
-         const {
+        const {
             distillery, name, country, region, type, style, age
-         } = this.state.item;
+        } = this.state.item;
 
-         if (distillery.length === 0 || name.length === 0) {
+        if (distillery.length === 0 || name.length === 0) {
             return "Distillery and name must not be empty";
-         }
+        }
         return null;
     }
 
     handleClose() {
-         const {
+        const {
             distillery, name, country, region, type, style, age
-         } = this.state.item;
+        } = this.state.item;
         const hasInput = !!(distillery + name + country + region + type + style + age.toString()).length;
 
         if (hasInput) {
@@ -80,8 +81,13 @@ class WhiskyForm extends React.Component {
 
         addWhisky(item).then(
             (response) => {
-                this.props.onWhiskyAdded(response);
-                this.props.onHideWhiskyForm();
+                if (response.errorCode) {
+                    const errorMessage = ERROR_MESSAGE_BY_CODE[response.errorCode] || 'error!';
+                    this.setState({ errorMessage: errorMessage });
+                } else {
+                    this.props.onWhiskyAdded(response);
+                    this.props.onHideWhiskyForm();
+                }
             },
             (errorResponse) => {
                 this.setState({ errorMessage: "Error!" });

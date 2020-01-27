@@ -11,6 +11,7 @@ const NAV_STRUCTURE = [
         { id: 'pipeline', label: 'pipeline', href: 'pipeline.html' },
     ]},
     { id: 'patent', label: 'Patent', href: 'patent.html', items: [] },
+    { id: 'whisky', label: 'My Whisky Shelf', href: 'whisky_shelf.html', items: [] },
 ];
 
 const loginUrl = function(redirectURI) {
