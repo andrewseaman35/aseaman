@@ -28,7 +28,6 @@ package: package_dir venv
 	cd $(PACKAGE_DIR)/$(WHISKY_API_NAME) && zip -r ../$(WHISKY_API_NAME).zip *
 
 upload: package
-	echo $(STATE_API_NAME) $(WHISKY_API_NAME)
 	aws s3 cp --recursive $(PACKAGE_DIR) s3://aseaman-lambda-functions/$(DEPLOY_ENV)
 
 local_venv: local_requirements.txt

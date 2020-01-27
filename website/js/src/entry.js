@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 
 import About from './About';
 import Patent from './Patent';
+import Whisky from './Whisky';
 
 
 function initAbout(elementId) {
@@ -20,7 +21,16 @@ function initPatent(elementId) {
     );
 }
 
+
+function initWhisky(elementId) {
+    ReactDOM.render(
+        <Whisky />,
+        document.getElementById(elementId),
+    );
+}
+
 module.exports = {
     initAbout,
     initPatent,
+    initWhisky,
 };
