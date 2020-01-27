@@ -23,12 +23,6 @@ def convert_to_response(result):
     return make_response((body, status, headers))
 
 
-def get_local_context():
-    return {
-        'local': True,
-    }
-
-
 def get_payload(request):
     payload = request.json or {}
     payload.update({'local': True})
@@ -37,17 +31,15 @@ def get_payload(request):
 
 @app.route('/whisky', methods=['POST'])
 def whisky():
-    context = get_local_context()
     payload = get_payload(request)
-    result = make_lambda_request('whisky_shelf', payload, context)
+    result = make_lambda_request('whisky_shelf', payload, None)
     return convert_to_response(result)
 
 
 @app.route('/state_check', methods=['POST'])
 def state_check():
-    context = get_local_context()
     payload = get_payload(request)
-    result = make_lambda_request('state_check', payload, context)
+    result = make_lambda_request('state_check', payload, None)
     return convert_to_response(result)
 
 

@@ -85,7 +85,7 @@ class APILambdaHandlerBase(object):
         validate()
 
     def __before_run(self):
-        self.is_local = self.context.get('local', False)
+        self.is_local = self.event.get('local', False)
         self._init()
         self.__init_aws()
         self.__parse_event(self.event)
