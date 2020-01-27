@@ -11,7 +11,12 @@ const TABLE_COLUMN_HEADER_LABELS = {
     type: 'Type',
 };
 
+const ERROR_MESSAGE_BY_CODE = {
+    already_current: 'Distillery and internal name are already current',
+}
+
 module.exports = {
+    ERROR_MESSAGE_BY_CODE,
     TABLE_COLUMN_ORDER,
     TABLE_COLUMN_HEADER_LABELS,
 }

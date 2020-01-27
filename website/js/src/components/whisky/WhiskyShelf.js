@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import $ from 'jquery';
 
+import AUTH from '../../auth';
+
 import WhiskyRow from './WhiskyRow';
 import WhiskyForm from './WhiskyForm';
 
@@ -13,6 +15,8 @@ import { getAPIUrl } from '../../utils';
 class WhiskyShelf extends React.Component {
     constructor() {
         super();
+        this.isAuthed = AUTH.getApiKey();
+
         this.renderTableBody = this.renderTableBody.bind(this);
         this.renderTableHeader = this.renderTableHeader.bind(this);
     }
@@ -29,6 +33,15 @@ class WhiskyShelf extends React.Component {
         )
     }
 
+    renderActionHeaderItem() {
+        if (!this.isAuthed) {
+            return null;
+        }
+        return (
+            <th className="actions" key={Object.keys(TABLE_COLUMN_ORDER).length}></th>
+        )
+    }
+
     renderTableHeader() {
         return (
             <thead>
@@ -40,6 +53,7 @@ class WhiskyShelf extends React.Component {
                             </th>
                         ))
                     }
+                    { this.renderActionHeaderItem() }
                 </tr>
             </thead>
         )
@@ -57,7 +71,7 @@ class WhiskyShelf extends React.Component {
                 {
                     sortedItems.map((item, index) => (
                         <WhiskyRow
-                            editable={false}
+                            onWhiskyRemoved={this.props.onWhiskyRemoved}
                             item={item}
                             key={index}
                         />
@@ -93,6 +107,7 @@ class WhiskyShelf extends React.Component {
 }
 
 WhiskyShelf.propTypes = {
+    onWhiskyRemoved: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
     failed: PropTypes.bool.isRequired,
     items: PropTypes.array,

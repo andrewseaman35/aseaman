@@ -7,11 +7,13 @@ import WhiskyForm from './components/whisky/WhiskyForm';
 
 import { getCurrentShelf } from './components/whisky/api';
 
+
 class Whisky extends React.Component {
     constructor() {
         super();
 
         this.onWhiskyAdded = this.onWhiskyAdded.bind(this);
+        this.onWhiskyRemoved = this.onWhiskyRemoved.bind(this);
         this.onShowWhiskyForm = this.onShowWhiskyForm.bind(this);
         this.onHideWhiskyForm = this.onHideWhiskyForm.bind(this);
         this.isAuthed = AUTH.getApiKey();
@@ -47,6 +49,13 @@ class Whisky extends React.Component {
         }))
     }
 
+    onWhiskyRemoved(distillery, internalName) {
+        const filteredItems = this.state.items.filter(whisky => (
+            whisky.distillery !== distillery || whisky.internal_name !== internalName)
+        );
+        this.setState({ items: filteredItems });
+    }
+
     onShowWhiskyForm() {
         this.setState({ whiskyFormDisplayed: true });
     }
@@ -74,6 +83,7 @@ class Whisky extends React.Component {
                 failed={this.state.failed}
                 loading={this.state.loadingShelf}
                 items={this.state.items}
+                onWhiskyRemoved={this.onWhiskyRemoved}
             />
         )
     }
