@@ -10,9 +10,9 @@ app = Flask(__name__)
 CORS(app)
 
 
-def make_lambda_request(function_name, payload):
+def make_lambda_request(function_name, payload, context):
     handler = importlib.import_module("{}.lambda_handler".format(function_name))
-    response = handler.lambda_handler(payload, None)
+    response = handler.lambda_handler(payload, context)
     return response
 
 
@@ -32,14 +32,14 @@ def get_payload(request):
 @app.route('/whisky', methods=['POST'])
 def whisky():
     payload = get_payload(request)
-    result = make_lambda_request('whisky_shelf', payload)
+    result = make_lambda_request('whisky_shelf', payload, None)
     return convert_to_response(result)
 
 
 @app.route('/state_check', methods=['POST'])
 def state_check():
     payload = get_payload(request)
-    result = make_lambda_request('state_check', payload)
+    result = make_lambda_request('state_check', payload, None)
     return convert_to_response(result)
 
 

@@ -13,6 +13,7 @@ const whiskyShelf = require('./whisky_shelf');
 import {
     initAbout,
     initPatent,
+    initWhisky,
 } from './entry';
 
 import {
@@ -23,6 +24,7 @@ import {
 const modules = {
     initAbout,
     initPatent,
+    initWhisky,
     initWhiskyShelf,
     auth,
     config,
