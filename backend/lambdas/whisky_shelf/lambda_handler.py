@@ -130,8 +130,18 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
         elif not item['current']['BOOL']:
             print("Setting to current: {} {}".format(self.distillery, self.internal_name))
             self._update_current_state(self.distillery, self.internal_name, True)
+            return {
+                'distillery': item['distillery']['S'],
+                'internal_name': item['internal_name']['S'],
+                'current': item.get('current', {}).get('BOOL'),
+                'type': item.get('type', {}).get('S'),
+                'region': item.get('region', {}).get('S'),
+            }
         else:
             print("Already on current shelf: {} {}".format(self.distillery, self.internal_name))
+            return {
+                'errorCode': 'already_current',
+            }
 
     def _remove_from_shelf(self):
         item = self._get_item(self.distillery, self.internal_name)
