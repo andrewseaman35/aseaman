@@ -2,8 +2,7 @@ import React from 'react';
 
 import AUTH from './auth';
 
-import WhiskyShelf from './components/whisky/WhiskyShelf';
-import WhiskyForm from './components/whisky/WhiskyForm';
+import { Modal, WhiskyForm, WhiskyShelf } from './components/';
 
 import { getCurrentShelf } from './components/whisky/api';
 
@@ -68,12 +67,15 @@ class Whisky extends React.Component {
         if (!this.state.whiskyFormDisplayed || !this.isAuthed) {
             return null;
         }
+
         return (
-            <WhiskyForm
-                onWhiskyAdded={this.onWhiskyAdded}
-                onHideWhiskyForm={this.onHideWhiskyForm}
-                onShowWhiskyForm={this.onShowWhiskyForm}
-            />
+            <Modal>
+                <WhiskyForm
+                    onWhiskyAdded={this.onWhiskyAdded}
+                    onHideWhiskyForm={this.onHideWhiskyForm}
+                    onShowWhiskyForm={this.onShowWhiskyForm}
+                />
+            </Modal>
         )
     }
 
