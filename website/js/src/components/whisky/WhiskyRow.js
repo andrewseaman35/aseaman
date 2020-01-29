@@ -5,6 +5,7 @@ import AUTH from '../../auth';
 
 import { removeWhisky } from './api';
 import { TABLE_COLUMN_ORDER } from './constants';
+import Icon from '../icon/Icon';
 
 
 class WhiskyRow extends React.Component {
@@ -36,11 +37,21 @@ class WhiskyRow extends React.Component {
         return (
             <td key={Object.keys(TABLE_COLUMN_ORDER).length} className="actions">
                 <button
+                    className="button-icon whisky-action"
+                    data-distillery={item.distillery}
+                    data-internal-name={item.internal_name}
+                    disabled
+                >
+                    <Icon icon="pencil" size={24} />
+                </button>
+
+                <button
+                    className="button-icon whisky-action"
                     data-distillery={item.distillery}
                     data-internal-name={item.internal_name}
                     onClick={this.handleRemove}
                 >
-                    Remove
+                    <Icon icon="trashcan" size={24} />
                 </button>
             </td>
         )
