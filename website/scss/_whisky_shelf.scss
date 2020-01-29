@@ -1,6 +1,10 @@
 table {
-    min-width: 800px;
     border-collapse: collapse;
+
+    min-width: 90%;
+    @include screen-med {
+        min-width: 800px;
+    }
 }
 
 th,
@@ -48,18 +52,6 @@ tr {
 }
 
 .whisky-form {
-    position: fixed;
-    top: 20%;
-    background-color: white;
-    max-width: 80%;
-    padding: 32px 48px;
-    border: black solid 1px;
-    box-shadow: 5px 10px 10px #888888;
-
-    h3 {
-        margin-top: 0;
-    }
-
     form {
         display: flex;
         flex-direction: column;

@@ -8,8 +8,6 @@ const loadGA = require('./ga');
 const auth = require('./auth');
 const header = require('./header');
 
-const whiskyShelf = require('./whisky_shelf');
-
 import {
     initAbout,
     initPatent,
@@ -30,7 +28,6 @@ const modules = {
     config,
     constants,
     header,
-    whiskyShelf,
     utils,
 };
 
