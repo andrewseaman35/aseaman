@@ -2,7 +2,7 @@ import React from 'react';
 
 import AUTH from './auth';
 
-import { Modal, WhiskyForm, WhiskyShelf } from './components/';
+import { Icon, Modal, WhiskyForm, WhiskyShelf } from './components/';
 
 import { getCurrentShelf } from './components/whisky/api';
 
@@ -96,7 +96,9 @@ class Whisky extends React.Component {
         }
         return (
             <div className="action-bar">
-                <button onClick={this.onShowWhiskyForm}>Add</button>
+                <button className="button-icon" onClick={this.onShowWhiskyForm}>
+                    <Icon icon="plus" size={32} />
+                </button>
             </div>
         )
     }
