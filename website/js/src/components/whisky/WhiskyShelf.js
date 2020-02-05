@@ -7,8 +7,13 @@ import AUTH from '../../auth';
 
 import WhiskyRow from './WhiskyRow';
 import WhiskyForm from './WhiskyForm';
+import Icon from '../icon/Icon';
 
-import { TABLE_COLUMN_ORDER, TABLE_COLUMN_HEADER_LABELS } from './constants';
+import {
+    SORT,
+    TABLE_COLUMN_ORDER,
+    TABLE_COLUMN_HEADER_LABELS,
+} from './constants';
 import { getAPIUrl } from '../../utils';
 
 
@@ -17,8 +22,43 @@ class WhiskyShelf extends React.Component {
         super();
         this.isAuthed = AUTH.getApiKey();
 
+        this.getSortedItems = this.getSortedItems.bind(this);
+        this.onHeaderItemClick = this.onHeaderItemClick.bind(this);
         this.renderTableBody = this.renderTableBody.bind(this);
         this.renderTableHeader = this.renderTableHeader.bind(this);
+
+        this.state = {
+            sort: {
+                key: 'distillery',
+                reversed: false,
+            }
+        }
+    }
+
+    getSortedItems() {
+        const { sort } = this.state;
+        const order = SORT[sort.key];
+        const sortKey = (item) => (
+            order.map(key => item[key] && item[key].toLowerCase())
+        )
+        const reverseMultiplier = sort.reversed ? -1 : 1;
+        return this.props.items.concat().sort((a, b) => (
+            sortKey(a) < sortKey(b) ? (-1 * reverseMultiplier) : (1 * reverseMultiplier)
+        ));
+    }
+
+    onHeaderItemClick(event) {
+        const { sort } = this.state;
+        const newSortKey = event.currentTarget.dataset.sortKey;
+        if (newSortKey in SORT) {
+            const sameHeaderClicked = newSortKey === sort.key;
+            this.setState({
+                sort: {
+                    key: newSortKey,
+                    reversed: sameHeaderClicked ? !sort.reversed : false,
+                }
+            })
+        }
     }
 
     renderLoading() {
@@ -47,11 +87,23 @@ class WhiskyShelf extends React.Component {
             <thead>
                 <tr>
                     {
-                        TABLE_COLUMN_ORDER.map((item, index) => (
-                            <th key={index}>
-                                {TABLE_COLUMN_HEADER_LABELS[item]}
-                            </th>
-                        ))
+                        TABLE_COLUMN_ORDER.map((item, index) => {
+                            const isSorted = this.state.sort.key === item;
+                            const icon = this.state.sort.reversed ? 'caretDown' : 'caretUp';
+                            return (
+                                <th onClick={this.onHeaderItemClick} key={index} data-sort-key={item}>
+                                    {TABLE_COLUMN_HEADER_LABELS[item]}
+                                    {
+                                        isSorted && (
+                                            <Icon
+                                                icon={icon}
+                                                size={16}
+                                            />
+                                        )
+                                    }
+                                </th>
+                            );
+                        })
                     }
                     { this.renderActionHeaderItem() }
                 </tr>
@@ -61,11 +113,7 @@ class WhiskyShelf extends React.Component {
 
     renderTableBody() {
         const { loading, items } = this.props;
-        const sortedItems = items.concat().sort((a, b) => {
-            let aKey = a.distillery.toLowerCase() + a.internal_name.toLowerCase();
-            let bKey = b.distillery.toLowerCase() + b.internal_name.toLowerCase();
-            return aKey < bKey ? -1 : 1;
-        });
+        const sortedItems = this.getSortedItems();
         return (
             <tbody>
                 {
