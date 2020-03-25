@@ -48,9 +48,9 @@ class Whisky extends React.Component {
         }))
     }
 
-    onWhiskyRemoved(distillery, internalName) {
+    onWhiskyRemoved(distillery, name) {
         const filteredItems = this.state.items.filter(whisky => (
-            whisky.distillery !== distillery || whisky.internal_name !== internalName)
+            whisky.distillery !== distillery || whisky.name !== name)
         );
         this.setState({ items: filteredItems });
     }
@@ -105,12 +105,27 @@ class Whisky extends React.Component {
 
     render() {
         return (
-            <div className="left-content">
-                {this.renderWhiskyForm()}
-                {this.renderWhiskyShelf()}
-                {this.renderActionBar()}
+            <div className="inner">
+                <div className="header">
+                    <h3>My Whisky Shelf</h3>
+                    <p>
+                        This is an up-to-date list of the whiskies that I currently have on my
+                        whisky shelf at home. I use this to track what I have so I can check
+                        it when I'm out, which is useful if I'm deciding on a new bottle to get.
+                    </p>
+                    <p>
+                        This is backed by DynamoDB and uses API Gateway in front of Lamdbda as a
+                        serverless API. I'm planning on writing up something about how it's set up.
+                        We'll see if I get to it :)
+                    </p>
+                </div>
+                <div className="left-content">
+                    {this.renderWhiskyForm()}
+                    {this.renderWhiskyShelf()}
+                    {this.renderActionBar()}
 
-                <a href="index.html">Go back home</a>
+                    <a href="index.html">Go back home</a>
+                </div>
             </div>
         )
     }

@@ -146,7 +146,7 @@ Resources:
                   - "dynamodb:Scan"
                 Resource: !Sub
                     - "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${WhiskyTable}"
-                    - { WhiskyTable: "whisky_shelf" }
+                    - { WhiskyTable: "whisky" }
         -
           PolicyName: "ssm"
           PolicyDocument:

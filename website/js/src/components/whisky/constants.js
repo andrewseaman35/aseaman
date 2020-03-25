@@ -1,25 +1,34 @@
 const TABLE_COLUMN_ORDER = [
     'distillery',
-    'internal_name',
+    'name',
     'region',
+    'country',
     'type',
+    'style',
+    'age',
 ];
 const TABLE_COLUMN_HEADER_LABELS = {
     distillery: 'Distillery',
-    internal_name: 'Name (internal)',
+    name: 'Name',
     region: 'Region',
+    country: 'Country',
     type: 'Type',
+    style: 'Style',
+    age: 'Age',
 };
 
 const ERROR_MESSAGE_BY_CODE = {
-    already_current: 'Distillery and internal name are already current',
+    already_current: 'Distillery and name are already current',
 }
 
 const SORT = {
-    distillery: ['distillery', 'internal_name', 'region', 'type'],
-    internal_name: ['internal_name', 'distillery', 'region', 'type'],
-    region: ['region', 'distillery', 'internal_name', 'type'],
-    type: ['type', 'distillery', 'internal_name', 'region'],
+    distillery: ['distillery', 'name', 'region', 'country', 'type', 'style', 'age'],
+    name: ['name', 'distillery', 'region', 'country', 'type', 'style', 'age'],
+    region: ['region', 'country', 'distillery', 'name', 'type', 'style', 'age'],
+    country: ['country', 'region', 'distillery', 'name', 'type', 'style', 'age'],
+    type: ['type', 'distillery', 'name', 'region', 'country', 'style', 'age'],
+    style: ['style', 'distillery', 'name', 'region', 'country', 'type', 'age'],
+    age: ['age', 'distillery', 'name', 'region', 'country', 'type', 'style'],
 }
 
 module.exports = {

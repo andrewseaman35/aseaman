@@ -24,9 +24,12 @@ function addWhisky(item) {
         api_key: AUTH.getApiKey(),
         payload: {
             distillery: distillery,
-            internal_name: name,
+            name: name,
             type: type,
             region: region,
+            country: country,
+            style: style,
+            age: age,
         }
     };
 
@@ -38,15 +41,15 @@ function addWhisky(item) {
     }).promise();
 };
 
-function removeWhisky(distillery, internalName) {
-    console.log('removing', distillery, internalName);
+function removeWhisky(distillery, name) {
+    console.log('removing', distillery, name);
 
     const postData = {
         action: 'remove_from_shelf',
         api_key: AUTH.getApiKey(),
         payload: {
             distillery: distillery,
-            internal_name: internalName
+            name: name
         }
     };
     return $.ajax({
