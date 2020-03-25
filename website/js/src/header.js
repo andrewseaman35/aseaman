@@ -11,7 +11,8 @@ const NAV_STRUCTURE = [
         { id: 'pipeline', label: 'pipeline', href: 'pipeline.html' },
     ]},
     { id: 'patent', label: 'Patent', href: 'patent.html', items: [] },
-    { id: 'whisky', label: 'My Whisky Shelf', href: 'whisky_shelf.html', items: [] },
+    { id: 'whisky', label: 'Whisky Shelf', href: 'whisky_shelf.html', items: [] },
+    { id: 'project_car', label: 'Project Car', href: 'project_car.html', items: [] },
 ];
 
 const loginUrl = function(redirectURI) {
