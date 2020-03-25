@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { getImageSrc } from './utils';
+
 class ProjectCar extends React.Component {
     render() {
         return (
@@ -11,6 +13,9 @@ class ProjectCar extends React.Component {
                         learning how to work on cars. My plan is to update this space with some
                         of the projects and work that I've performed and things I've learned.
                     </p>
+                    <div className="top-img-container">
+                        <img src={getImageSrc('images/project_car/fiat-front.jpg')}></img>
+                    </div>
                     <p>
                         Check back later! There might be more stuff here!
                     </p>

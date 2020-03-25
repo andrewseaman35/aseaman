@@ -6,5 +6,6 @@
     "CLIENT_ID": "22phtro4ouj069mou9o94a9tnm",
     "GA_TRACKING_ID": "",
     "STACKNAME": "local",
-    "ROOT_URL": "http://localhost:8123/"
+    "ROOT_URL": "http://localhost:8123/",
+    "PUBLIC_BUCKET_URL": "./local_data/"
 }

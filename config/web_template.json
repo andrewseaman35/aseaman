@@ -28,6 +28,11 @@
         "key": "ga_tracking_id"
     },
 
+    "PUBLIC_BUCKET_URL": {
+        "source": "ssm",
+        "key": "public_bucket_url"
+    },
+
     "CLIENT_ID": {
         "source": "public",
         "key": "client_id"
@@ -37,4 +42,5 @@
         "source": "public",
         "key": "root_url"
     }
+
 }
