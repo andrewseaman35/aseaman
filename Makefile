@@ -24,13 +24,15 @@ deploy_api:
 	make -C backend deploy
 
 deploy_website: website
-	aws s3 rm s3://$(DEPLOY_ENV).andrewcseaman.com --recursive
-	aws s3 cp --recursive --exclude=website/js/src/* website/public/ s3://$(DEPLOY_ENV).andrewcseaman.com
+	echo "Updating website S3 files"
+	aws s3 rm s3://$(DEPLOY_ENV).andrewcseaman.com --recursive > /dev/null
+	aws s3 cp --recursive --exclude=website/js/src/* website/public/ s3://$(DEPLOY_ENV).andrewcseaman.com > /dev/null
 
 deploy_test_website: website
-	aws s3 rm s3://test.andrewcseaman.com/$(BRANCH) --recursive
-	aws s3 cp --recursive website/public/ s3://test.andrewcseaman.com/sandboxes/$(BRANCH)
-	aws s3 cp --recursive testing_website s3://test.andrewcseaman.com
+	echo "Updating test website S3 files"
+	aws s3 rm s3://test.andrewcseaman.com/$(BRANCH) --recursive > /dev/null
+	aws s3 cp --recursive website/public/ s3://test.andrewcseaman.com/sandboxes/$(BRANCH) > /dev/null
+	aws s3 cp --recursive testing_website s3://test.andrewcseaman.com > /dev/null
 
 deploy: deploy_api deploy_website
 
