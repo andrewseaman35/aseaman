@@ -37,9 +37,14 @@ function getCookie(name) {
     return null;
 }
 
+function getImageSrc(path) {
+    return CONFIG.PUBLIC_BUCKET_URL + 'aseaman/' + path;
+}
+
 module.exports = {
     getAPIUrl,
     setCookie,
     getCookie,
+    getImageSrc,
     unsetCookie,
 };
