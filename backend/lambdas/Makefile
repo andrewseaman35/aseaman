@@ -18,17 +18,19 @@ package_dir:
 	mkdir -p $(PACKAGE_DIR)/$(WHISKY_API_NAME)
 
 package: package_dir venv
+	echo "Packaging backend lambda functions"
 	venv/bin/pip install -r state_check/requirements.txt -t $(PACKAGE_DIR)/$(STATE_API_NAME)
 	venv/bin/pip install -r whisky_shelf/requirements.txt -t $(PACKAGE_DIR)/$(WHISKY_API_NAME)
 	cp -r state_check/* $(PACKAGE_DIR)/$(STATE_API_NAME)
 	cp -r whisky_shelf/* $(PACKAGE_DIR)/$(WHISKY_API_NAME)
 	cp -r base $(PACKAGE_DIR)/$(STATE_API_NAME)
 	cp -r base $(PACKAGE_DIR)/$(WHISKY_API_NAME)
-	cd $(PACKAGE_DIR)/$(STATE_API_NAME) && zip -r ../$(STATE_API_NAME).zip *
-	cd $(PACKAGE_DIR)/$(WHISKY_API_NAME) && zip -r ../$(WHISKY_API_NAME).zip *
+	cd $(PACKAGE_DIR)/$(STATE_API_NAME) && zip -r ../$(STATE_API_NAME).zip * > /dev/null
+	cd $(PACKAGE_DIR)/$(WHISKY_API_NAME) && zip -r ../$(WHISKY_API_NAME).zip * > /dev/null
 
 upload: package
-	aws s3 cp --recursive $(PACKAGE_DIR) s3://aseaman-lambda-functions/$(DEPLOY_ENV)
+	echo "Uploading lambda functions"
+	aws s3 cp --recursive $(PACKAGE_DIR) s3://aseaman-lambda-functions/$(DEPLOY_ENV) >> /dev/null
 
 local_venv: local_requirements.txt
 	virtualenv local_venv --python=python3 --no-site-packages
