@@ -18,11 +18,11 @@ class WhiskyRow extends React.Component {
 
     handleRemove(event) {
         const distillery = event.currentTarget.dataset.distillery;
-        const internalName = event.currentTarget.dataset.internalName;
+        const name = event.currentTarget.dataset.name;
 
-        removeWhisky(distillery, internalName).then(
+        removeWhisky(distillery, name).then(
             () => {
-                this.props.onWhiskyRemoved(distillery, internalName);
+                this.props.onWhiskyRemoved(distillery, name);
             },
             (errorResponse) => {
                 console.log(errorResponse);
@@ -39,7 +39,7 @@ class WhiskyRow extends React.Component {
                 <button
                     className="button-icon whisky-action"
                     data-distillery={item.distillery}
-                    data-internal-name={item.internal_name}
+                    data-name={item.name}
                     disabled
                 >
                     <Icon icon="pencil" size={24} />
@@ -48,7 +48,7 @@ class WhiskyRow extends React.Component {
                 <button
                     className="button-icon whisky-action"
                     data-distillery={item.distillery}
-                    data-internal-name={item.internal_name}
+                    data-name={item.name}
                     onClick={this.handleRemove}
                 >
                     <Icon icon="trashcan" size={24} />
