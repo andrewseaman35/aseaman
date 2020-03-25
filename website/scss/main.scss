@@ -5,6 +5,7 @@
 @import "typography.scss";
 @import "buttons.scss";
 @import "icon.scss";
+@import "image.scss";
 
 @import "modal.scss";
 
@@ -24,5 +25,8 @@ body {
     }
     #whisky-container {
         @import "whisky_shelf.scss";
+    }
+    #project-car-container {
+        @import "project_car.scss";
     }
 }
