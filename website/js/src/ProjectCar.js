@@ -13,12 +13,16 @@ class ProjectCar extends React.Component {
                         learning how to work on cars. My plan is to update this space with some
                         of the projects and work that I've performed and things I've learned.
                     </p>
-                    <div className="top-img-container">
+                    <div className="list">
+                        <div className="list-header">Projects</div>
+                        <ul>
+                            <li><a href="/project_car_cooling_system.html">Cooling system replacement</a></li>
+                            <li>More coming soon!</li>
+                        </ul>
+                    </div>
+                    <div className="img-container">
                         <img src={getImageSrc('images/project_car/fiat-front.jpg')}></img>
                     </div>
-                    <p>
-                        Check back later! There might be more stuff here!
-                    </p>
                     <a href="index.html">Go back home</a>
                 </div>
             </div>
