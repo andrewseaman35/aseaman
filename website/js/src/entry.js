@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import About from './About';
 import Patent from './Patent';
 import ProjectCar from './ProjectCar';
+import ProjectCarCoolingSystem from './project_car/ProjectCarCoolingSystem'
 import Whisky from './Whisky';
 
 
@@ -31,6 +32,14 @@ function initProjectCar(elementId) {
 }
 
 
+function initProjectCarCoolingSystem(elementId) {
+    ReactDOM.render(
+        <ProjectCarCoolingSystem />,
+        document.getElementById(elementId),
+    );
+}
+
+
 function initWhisky(elementId) {
     ReactDOM.render(
         <Whisky />,
@@ -42,5 +51,6 @@ module.exports = {
     initAbout,
     initPatent,
     initProjectCar,
+    initProjectCarCoolingSystem,
     initWhisky,
 };
