@@ -1,3 +1,26 @@
 img {
     border-radius: 10px;
 }
+
+.img-container {
+    display: flex;
+    flex-direction: column;
+
+    img {
+        max-width: 450px;
+        align-self: center;
+
+        &.medium {
+            max-width: 300px;
+        }
+    }
+
+    .img-caption {
+        align-self: center;
+        padding: 4px;
+        font-size: 14px;
+        font-weight: 800;
+    }
+}
+
+

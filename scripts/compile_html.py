@@ -9,7 +9,7 @@ TEMPLATE_DIRNAME = 'templates'
 WEBSITE_DIRNAME = 'website'
 PUBLIC_DIRNAME = 'public'
 
-PAGES = ['about', 'index', 'patent', 'auth_callback', 'logout' ,'pipeline', 'whisky_shelf', 'project_car']
+PAGES = ['about', 'index', 'patent', 'auth_callback', 'logout' ,'pipeline', 'whisky_shelf', 'project_car', 'project_car_cooling_system']
 
 
 class CompileHTML(BaseScript):
