@@ -5,19 +5,28 @@ img {
 .img-container {
     display: flex;
     flex-direction: column;
+    margin: 36px 0 24px;
 
     img {
-        max-width: 450px;
+        max-width: 100%;
         align-self: center;
 
+        @include screen-lg {
+            max-width: 500px;
+        }
+
         &.medium {
-            max-width: 300px;
+            max-width: 75%;
+
+            @include screen-lg {
+                max-width: 350px;
+            }
         }
     }
 
     .img-caption {
         align-self: center;
-        padding: 4px;
+        padding: 10px 0 4px;
         font-size: 14px;
         font-weight: 800;
     }

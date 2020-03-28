@@ -16,6 +16,7 @@ tr>td {
 th {
     min-width: 100px;
     padding-bottom: 12px;
+    white-space: nowrap;
 
     &.actions {
         display: flex;

@@ -5,103 +5,102 @@
 
 {% block content %}
     <div class="inner">
-        <div class="left-content">
-            <h3>My Development Pipeline</h3>
-            <h4>Tools</h4>
-            <div class="tools">
-                <ul>
-                    <li><a href="https://travis-ci.org/" target="_blank" rel="noopener noreferrer">Travis</a></li>
-                    <li><a href="https://aws.amazon.com/cloudformation/" target="_blank" rel="noopener noreferrer">Cloudformation</a></li>
-                    <li><a href="https://aws.amazon.com/s3/" target="_blank" rel="noopener noreferrer">S3</a></li>
-                    <li><a href="https://aws.amazon.com/lambda" target="_blank" rel="noopener noreferrer">AWS Lambda</a></li>
-                    <li><a href="https://aws.amazon.com/api-gateway/" target="_blank" rel="noopener noreferrer">API Gateway</a></li>
-                </ul>
-            </div>
-
-            <h4>Goal</h4>
-            <p>
-                I wanted this project to have a somewhat sustainable and reasonably quick
-                development pipeline. I wanted most processes to be automated after a commit
-                so I could spend most of my time working on the website and less of my time
-                figuring out how to deploy environments to test out my changes.
-            </p>
-            <p>
-                My desired developer workflow was something of the following:
-            </p>
-
-            <ol>
-                <li>Check out repo</li>
-                <li>Make feature branch off of develop branch</li>
-                <li>Make changes, test locally, and push changes</li>
-                <li>Test changes on automatically deployed test environment</li>
-                <li>Open PR, merge feature branch into develop</li>
-                <li>Test changes on automatically deployed stage environment</li>
-                <li>Open PR, merge develop into master</li>
-                <li>Changes automatically deployed to live</li>
-            </ol>
-
-            <p>
-                This workflow is obviously over the top for a project with a single developer
-                but I thought it'd be a fun learning experience to build.
-            </p>
-
-            <h4>This is what I did</h4>
-            <p>
-                I first set up three environments, `live`, `stage`, and `test`. The `test`
-                environment ended up being a little bit different, but I'll get to this later.
-                For each environment, I made an S3 bucket. I wrote a quick `index.html`,
-                uploaded, and I was live!
-            </p>
-
-            <!--** Include Picture: site_1.png **-->
-
-            <p>
-                I was planning on setting up most of the AWS infrastructure and eventual backend
-                through AWS Cloudformation. I chose to use Cloudformation mostly because I don't
-                have too much experience with Cloudformation (as opposed to
-                <a href="https://www.terraform.io/" target="_blank" rel="noopener noreferrer">Terraform</a>,
-                which is wonderful). Through Travis, I set up S3 deploys to `live`, `stage`,
-                and `test` based on the
-                branch name, `master` goes to `live`, `develop` to `stage` and everything else to
-                `test`. On top of this, I set up a Cloudformation template that would deploy a
-                simple serverless stack pointing to a stubbed Lambda function. At this point,
-                each commit would do the following:
-            </p>
-
-            <ol>
-                <li>Create a Cloudformation stack with a unique name with a Lambda function and associated API Gateway</li>
-                <li>Upload the static website files to the S3 bucket associated with the given branch</li>
-            </ol>
-
-            <p>
-                This wasn't enough. I didn't like how if I had multiple branches for features
-                at the same time, only one would be able to exist in my `test` bucket at a time.
-                This wasn't _actually_ an issue since, again, I'm the only one working on the
-                website, but it sounded like a fun problem to solve.
-            </p>
-            <p>
-                To solve this, I updated my Travis script to deploy feature branches to a location
-                in S3 prefixed with the branch name. For example, pushing `index.html` in branch
-                called `my-branch` would be uploaded to `test-bucket/sandboxes/my-branch/index.html`
-                instead of `test-bucket/index.html` as it was formally. This enabled the existence of
-                multiple copies of the website at different URL paths.
-            </p>
-            <p>
-                I then set up a basic frontend for the homepage of the test site. On load,
-                this page listed all the keys in the root of the `test` S3 bucket and provided
-                links to all of the available paths. My own little
-                <a href="http://test.andrewcseaman.com">testing hub</a> with updated
-                environments available on every push -- sweet.
-            </p>
-
-            <!--** Include Picture: testing_hub_1.png **-->
-            <p>
-                Add some deletion of the old stacks that correspond to the environment and
-                branch that is being deployed, add some lifecycle rules to the buckets that host
-                the static files, and we have a sustainable development pipeline!
-            </p>
-
-            <a href="/">Go back home</a>
+        <h1>This Website</h1>
+        <h2>My Development Pipeline</h2>
+        <h4>Tools</h4>
+        <div class="tools">
+            <ul>
+                <li><a href="https://travis-ci.org/" target="_blank" rel="noopener noreferrer">Travis</a></li>
+                <li><a href="https://aws.amazon.com/cloudformation/" target="_blank" rel="noopener noreferrer">Cloudformation</a></li>
+                <li><a href="https://aws.amazon.com/s3/" target="_blank" rel="noopener noreferrer">S3</a></li>
+                <li><a href="https://aws.amazon.com/lambda" target="_blank" rel="noopener noreferrer">AWS Lambda</a></li>
+                <li><a href="https://aws.amazon.com/api-gateway/" target="_blank" rel="noopener noreferrer">API Gateway</a></li>
+            </ul>
         </div>
+
+        <h4>Goal</h4>
+        <p>
+            I wanted this project to have a somewhat sustainable and reasonably quick
+            development pipeline. I wanted most processes to be automated after a commit
+            so I could spend most of my time working on the website and less of my time
+            figuring out how to deploy environments to test out my changes.
+        </p>
+        <p>
+            My desired developer workflow was something of the following:
+        </p>
+
+        <ol>
+            <li>Check out repo</li>
+            <li>Make feature branch off of develop branch</li>
+            <li>Make changes, test locally, and push changes</li>
+            <li>Test changes on automatically deployed test environment</li>
+            <li>Open PR, merge feature branch into develop</li>
+            <li>Test changes on automatically deployed stage environment</li>
+            <li>Open PR, merge develop into master</li>
+            <li>Changes automatically deployed to live</li>
+        </ol>
+
+        <p>
+            This workflow is obviously over the top for a project with a single developer
+            but I thought it'd be a fun learning experience to build.
+        </p>
+
+        <h4>This is what I did</h4>
+        <p>
+            I first set up three environments, `live`, `stage`, and `test`. The `test`
+            environment ended up being a little bit different, but I'll get to this later.
+            For each environment, I made an S3 bucket. I wrote a quick `index.html`,
+            uploaded, and I was live!
+        </p>
+
+        <!--** Include Picture: site_1.png **-->
+
+        <p>
+            I was planning on setting up most of the AWS infrastructure and eventual backend
+            through AWS Cloudformation. I chose to use Cloudformation mostly because I don't
+            have too much experience with Cloudformation (as opposed to
+            <a href="https://www.terraform.io/" target="_blank" rel="noopener noreferrer">Terraform</a>,
+            which is wonderful). Through Travis, I set up S3 deploys to `live`, `stage`,
+            and `test` based on the
+            branch name, `master` goes to `live`, `develop` to `stage` and everything else to
+            `test`. On top of this, I set up a Cloudformation template that would deploy a
+            simple serverless stack pointing to a stubbed Lambda function. At this point,
+            each commit would do the following:
+        </p>
+
+        <ol>
+            <li>Create a Cloudformation stack with a unique name with a Lambda function and associated API Gateway</li>
+            <li>Upload the static website files to the S3 bucket associated with the given branch</li>
+        </ol>
+
+        <p>
+            This wasn't enough. I didn't like how if I had multiple branches for features
+            at the same time, only one would be able to exist in my `test` bucket at a time.
+            This wasn't _actually_ an issue since, again, I'm the only one working on the
+            website, but it sounded like a fun problem to solve.
+        </p>
+        <p>
+            To solve this, I updated my Travis script to deploy feature branches to a location
+            in S3 prefixed with the branch name. For example, pushing `index.html` in branch
+            called `my-branch` would be uploaded to `test-bucket/sandboxes/my-branch/index.html`
+            instead of `test-bucket/index.html` as it was formally. This enabled the existence of
+            multiple copies of the website at different URL paths.
+        </p>
+        <p>
+            I then set up a basic frontend for the homepage of the test site. On load,
+            this page listed all the keys in the root of the `test` S3 bucket and provided
+            links to all of the available paths. My own little
+            <a href="http://test.andrewcseaman.com">testing hub</a> with updated
+            environments available on every push -- sweet.
+        </p>
+
+        <!--** Include Picture: testing_hub_1.png **-->
+        <p>
+            Add some deletion of the old stacks that correspond to the environment and
+            branch that is being deployed, add some lifecycle rules to the buckets that host
+            the static files, and we have a sustainable development pipeline!
+        </p>
+
+        <a href="/">Go back home</a>
     </div>
 {% endblock %}
