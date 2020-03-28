@@ -12,7 +12,7 @@
         <meta name="description" content="This will be a website">
         <meta name="author" content="Me">
 
-        <link rel="stylesheet" type="text/css" href="/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="{{ ROOT_URL }}css/main.css" />
 
         <script src="https://sdk.amazonaws.com/js/aws-sdk-2.283.1.min.js"></script>
 
@@ -29,7 +29,7 @@
 
         {% block include_js %}{% endblock %}
 
-        <script src="/js/bundle.js"></script>
+        <script src="{{ ROOT_URL }}js/bundle.js"></script>
     </head>
 
     <body id="{% block page_id %}id{% endblock %}" class="{% block body_class %}{% endblock %}">

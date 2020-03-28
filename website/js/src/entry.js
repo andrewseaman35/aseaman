@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 
 import About from './About';
 import Patent from './Patent';
-import ProjectCarTestThermo from './project_car/ProjectCarTestThermo'
 import Whisky from './Whisky';
 
 
@@ -23,14 +22,6 @@ function initPatent(elementId) {
 }
 
 
-function initProjectCarTestThermo(elementId) {
-    ReactDOM.render(
-        <ProjectCarTestThermo />,
-        document.getElementById(elementId),
-    );
-}
-
-
 function initWhisky(elementId) {
     ReactDOM.render(
         <Whisky />,
@@ -41,6 +32,5 @@ function initWhisky(elementId) {
 module.exports = {
     initAbout,
     initPatent,
-    initProjectCarTestThermo,
     initWhisky,
 };
