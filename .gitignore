@@ -7,13 +7,3 @@ __pycache__/
 **/venv/
 
 notes/
-
-website/node_modules/
-website/css/
-website/js/lib/
-website/js/src/config.js
-website/js/bundle.js
-website/public/
-website/*.html
-
-notes/

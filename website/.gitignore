@@ -1,0 +1,9 @@
+js/lib/
+js/src/config.js
+js/bundle.js
+
+node_modules/
+public/
+local_data/
+
+config.json

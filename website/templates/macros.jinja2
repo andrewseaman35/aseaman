@@ -1,0 +1,21 @@
+{% macro link_to(path, text) -%}
+    <a href="{{ ROOT_URL }}{{ path }}" title="{{ text }}">{{text}}</a>
+{%- endmacro %}
+
+{% macro image_url(path) -%}
+    {{ PUBLIC_BUCKET_URL }}aseaman/images/{{ path }}
+{%- endmacro %}
+
+{% macro captioned_image(image_path, caption, alt=None, class=None) -%}
+    <div class="img-container">
+        <img
+            src="{{ image_url(image_path) }}"
+            alt="{% if alt is not none %}{{ alt }}{% else %}{{ caption }}{% endif %}"
+            {% if class is not none %}class="{{ class }}"{% endif %}
+        >
+            <div class="img-caption">
+                {{ caption }}
+            </div>
+        </img>
+    </div>
+{%- endmacro %}

@@ -1,29 +1,33 @@
+{% from "macros.jinja2" import link_to with context %}
+
 <header>
     <div class="container">
         <div class="nav-bar">
             <div class="nav-item">
-                <a href="index.html">Home</a>
+                {{ link_to('index.html', 'Home') }}
             </div>
             <div class="nav-item">
-                <a href="about.html">About</a>
+                {{ link_to('about/index.html', 'About') }}
                 <div class="nested-nav">
-                    <div class="nested-nav-item"><a href="pipeline.html">pipeline</a></div>
+                    <div class="nested-nav-item">
+                        {{ link_to('about/pipeline.html', 'Pipeline') }}
+                    </div>
                 </div>
             </div>
             <div class="nav-item">
-                <a href="patent.html">Patent</a>
+                {{ link_to('patent.html', 'Patent') }}
             </div>
             <div class="nav-item">
-                <a href="whisky_shelf.html">Whisky Shelf</a>
+                {{ link_to('whisky_shelf.html', 'Whisky Shelf') }}
             </div>
             <div class="nav-item">
-                <a href="project_car.html">Project Car</a>
+                {{ link_to('project_car/index.html', 'Project Car') }}
                 <div class="nested-nav">
                     <div class="nested-nav-item">
-                        <a href="project_car_cooling_system.html">Cooling system replacement</a>
+                        {{ link_to('project_car/cooling_system.html', 'Cooling system replacement') }}
                     </div>
                     <div class="nested-nav-item">
-                        <a href="project_car_test_thermo.html">Testing the thermostat</a>
+                        {{ link_to('project_car/test_thermo.html', 'Testing the thermostat') }}
                     </div>
                 </div>
             </div>
