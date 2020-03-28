@@ -16,7 +16,7 @@ img {
         }
 
         &.medium {
-            max-width: 75%;
+            max-width: 100%;
 
             @include screen-lg {
                 max-width: 350px;

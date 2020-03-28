@@ -11,6 +11,7 @@ a {
 
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     visibility: hidden;
     overflow: auto;
     z-index: $z-index-nav;
@@ -31,6 +32,9 @@ a {
 
 .nav-item {
     padding: 0 12px;
+    @include screen-sm {
+        padding: 4px 12px;
+    }
     &:hover .nested-nav {
         display: block;
     }
@@ -54,4 +58,14 @@ a {
 
 .container {
     flex-direction: row-reverse;
+}
+
+#api-key-input,
+#nav-api-key {
+    @include screen-sm {
+        display: none;
+    }
+    @include screen-med {
+        display: none;
+    }
 }
