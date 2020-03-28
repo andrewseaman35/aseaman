@@ -32,12 +32,12 @@
 
     <body id="{% block page_id %}id{% endblock %}" class="{% block body_class %}{% endblock %}">
         {% include 'header.jinja2' %}
+
         <div class="main-content">
             {% block content %}{% endblock %}
         </div>
-        <footer>
-            <div id="footer-container" class="container"></div>
-        </footer>
+
+        {% include 'footer.jinja2' %}
     </body>
 
 </html>

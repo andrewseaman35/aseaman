@@ -38,13 +38,9 @@ footer {
     background-color: $white;
 
     .container {
-        flex-direction: column-reverse;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
-        @include screen-med {
-            flex-direction: row;
-            justify-content: space-between;
-        }
     }
 
     .travis-container {

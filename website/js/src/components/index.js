@@ -1,4 +1,3 @@
-import { initFooter } from './footer/Footer';
 import { initWhiskyShelf } from './whisky/WhiskyShelf';
 
 import Icon from './icon/Icon';
@@ -12,6 +11,5 @@ module.exports = {
     WhiskyForm,
     WhiskyShelf,
 
-    initFooter,
     initWhiskyShelf,
 };

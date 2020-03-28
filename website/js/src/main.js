@@ -18,7 +18,6 @@ import {
 } from './entry';
 
 import {
-    initFooter,
     initWhiskyShelf,
 } from './components';
 
@@ -42,8 +41,5 @@ $(window).ready(function() {
     for (const i in window.aseaman._js) {
         window.aseaman._js[i](modules);
     }
-
-    // `footer-container` is the id of the footer container defined in `base.jinja2`
-    initFooter('footer-container');
 });
 
