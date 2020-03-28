@@ -1,8 +1,10 @@
 from collections import defaultdict
 import errno
-import jinja2
+import json
 import os
 import time
+
+import jinja2
 
 from base import BaseScript
 
@@ -11,9 +13,7 @@ WEBSITE_DIRNAME = 'website'
 PUBLIC_DIRNAME = 'public'
 PAGES_DIRNAME = 'pages'
 
-PAGES = ['about', 'index', 'patent', 'auth_callback', 'logout' ,'pipeline',
-         'whisky_shelf', 'project_car', 'project_car_cooling_system',
-         'project_car_test_thermo']
+CONFIG_FILENAME = 'config.json'
 
 
 class CompileHTML(BaseScript):
@@ -30,16 +30,22 @@ class CompileHTML(BaseScript):
 
         self.template_env = self._init_template_env()
 
+    def _load_config(self):
+        config_file = os.path.join(self.website_dir, CONFIG_FILENAME)
+        with open(config_file, 'r') as f:
+            config = json.load(f)
+        return config
+
     def _init_template_env(self):
         template_loader = jinja2.FileSystemLoader(self.template_dir)
         template_env = jinja2.Environment(loader=template_loader)
         return template_env
 
-    def _render_html(self, relative_path, template_filename, output_directory):
+    def _render_html(self, relative_path, template_filename, output_directory, context):
         html_filename = template_filename.replace('jinja2', 'html')
 
         template_filepath = os.path.join('./pages', os.path.join(relative_path, template_filename))
-        page_content = self.template_env.get_template(template_filepath).render()
+        page_content = self.template_env.get_template(template_filepath).render(context)
 
         html_filepath = os.path.join(self.public_dir, os.path.join(relative_path, html_filename))
         with open(html_filepath, 'w') as html_file:
@@ -61,15 +67,21 @@ class CompileHTML(BaseScript):
         for relative_directory in relative_directories:
             os.makedirs(os.path.join(self.public_dir, relative_directory), exist_ok=True)
 
+    def _get_context(self):
+        config = self._load_config()
+        return config
+
     def render_all(self):
         template_path_by_directory = self._find_template_path_by_directory()
         self._generate_output_directory_structure(template_path_by_directory.keys())
+
+        context = self._get_context()
 
         for relative_directory, filepaths in template_path_by_directory.items():
             output_directory = os.path.join(self.public_dir, relative_directory)
             for filepath in filepaths:
                 filename = os.path.basename(filepath)
-                self._render_html(relative_directory, filename, output_directory)
+                self._render_html(relative_directory, filename, output_directory, context)
 
     def _run(self):
         self.render_all()
