@@ -20,7 +20,7 @@ package-lock.json: package.json
 	npm update
 
 node_modules: package.json package-lock.json
-	npm -g install . --only=dev
+	npm -g install . --all
 
 html: $(SCRIPTS)/compile_html.py
 	$(VENV_PYTHON) $(SCRIPTS)/compile_html.py
@@ -43,6 +43,7 @@ css:
 
 assets:
 	cp -r img public/img/
+	cp -r local_data public/local_data/
 
 clean:
 	rm -rf public/

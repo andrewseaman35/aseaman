@@ -61,7 +61,7 @@ class ProjectCarCoolingSystem extends React.Component {
                     As a part of disconnecting all the hoses, I removed the coolant thermostat and the
                     thermostat housing. I did this because I wanted to make sure that it was working before
                     I finished the replacement. You can read about how I tested it on
-                    my page about <a href="/project_car_test_thermo.html">testing the thermostat</a>.
+                    my page about <a href="/project_car/test_thermo.html">testing the thermostat</a>.
                 </p>
                 <p>
                     After disconnecting all the coolant hoses, I removed the radiator filler hose,
@@ -176,7 +176,7 @@ class ProjectCarCoolingSystem extends React.Component {
                     pretty straight forward and I didn't come across any problems that I wasn't able to solve.
                 </p>
                 <p className="still-interested"><strong>
-                    Still interested? Go back to the <a href="/project_car.html">Project Car page</a> and check out
+                    Still interested? Go back to the <a href="/project_car/index.html">Project Car page</a> and check out
                     something else I've done!
                 </strong></p>
             </div>

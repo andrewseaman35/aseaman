@@ -42,14 +42,14 @@ class Footer extends React.Component {
                     {
                         this.renderSocialItem(
                             "https://www.linkedin.com/in/andrewseaman/",
-                            "img/linkedin_logo_black_48px.png",
+                            "/img/linkedin_logo_black_48px.png",
                             "LinkedIn",
                         )
                     }
                     {
                         this.renderSocialItem(
                             "https://github.com/andrewseaman35/",
-                            "img/github_logo_64px.png",
+                            "/img/github_logo_64px.png",
                             "GitHub",
                         )
                     }

@@ -12,7 +12,7 @@ class ProjectCarTestThermo extends React.Component {
                     <h2>Project: Testing the Thermostat</h2>
                 </div>
                 <p>
-                    While performing the <a href="/project_car_cooling_system.html">
+                    While performing the <a href="/project_car/cooling_system.html">
                     cooling system replacement</a>, I removed the cooling system thermostat and
                     housing in order to test it. I wanted to make sure that it was functioning
                     properly as a part of the cooling system replacement.
@@ -61,12 +61,12 @@ class ProjectCarTestThermo extends React.Component {
                     You can see that the valve on the right (post-heat) is opened a little bit, meaning that
                     it's working properly. There's also a spec for how much it should open, so I measured the
                     width of the opening and confirmed that as well. Once this was done, I could confidently
-                    put it back in the car to to finish off the <a href="/project_car_cooling_system.html">
+                    put it back in the car to to finish off the <a href="/project_car/cooling_system.html">
                     cooling system replacement</a>!
                 </p>
 
                 <p className="still-interested"><strong>
-                    Still interested? Go back to the <a href="/project_car.html">Project Car page</a> and check out
+                    Still interested? Go back to the <a href="/project_car/index.html">Project Car page</a> and check out
                     something else I've done!
                 </strong></p>
             </div>
