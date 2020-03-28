@@ -1,0 +1,7 @@
+{% macro link_to(path, text) -%}
+    <a href="{{ ROOT_URL }}{{ path }}" title="{{ text }}">{{text}}</a>
+{%- endmacro %}
+
+{% macro image_url(path) -%}
+    {{ PUBLIC_BUCKET_URL }}aseaman/images/{{ path }}
+{%- endmacro %}

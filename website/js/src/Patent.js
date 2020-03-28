@@ -75,7 +75,7 @@ class Patent extends React.Component {
                         <tbody>
                             <tr>
                                 <td>Patent exists?</td>
-                                <td>{this.state.patentStatusData.available ? 'yes!' : 'no'}</td>
+                                <td>{this.state.patentStatusData.available ? ' yes!' : ' no'}</td>
                             </tr>
                             <tr>
                                 <td>Patent Number</td>
