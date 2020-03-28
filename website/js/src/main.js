@@ -11,7 +11,6 @@ const header = require('./header');
 import {
     initAbout,
     initPatent,
-    initProjectCarCoolingSystem,
     initProjectCarTestThermo,
     initWhisky,
 } from './entry';
@@ -23,7 +22,6 @@ import {
 const modules = {
     initAbout,
     initPatent,
-    initProjectCarCoolingSystem,
     initProjectCarTestThermo,
     initWhisky,
     initWhiskyShelf,
