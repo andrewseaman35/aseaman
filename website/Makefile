@@ -43,7 +43,7 @@ css:
 
 assets:
 	cp -r img public/img/
-	cp -r local_data public/local_data/ || :
+	cp -r local_data public/ || :
 
 clean:
 	rm -rf public/
