@@ -107,7 +107,7 @@ class Whisky extends React.Component {
         return (
             <div className="inner">
                 <div className="header">
-                    <h3>Whisky Shelf</h3>
+                    <h1>Whisky Shelf</h1>
                     <p>
                         This is an up-to-date list of the whiskies that I currently have on my
                         whisky shelf at home. I use this to track what I have so I can check

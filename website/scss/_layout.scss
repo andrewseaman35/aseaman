@@ -7,15 +7,12 @@ body {
 }
 
 .inner {
-    padding: 0 32px;
-    @include screen-sm {
-        padding: 0;
-    }
-    @include screen-med {
-        padding: 0 100px;
-    }
+    padding: 0 0 60px 0;
+    max-width: 1000px;
+    margin: auto;
+
     @include screen-lg {
-        padding: 0 120px;
+        padding: 40px 0;
     }
 }
 
@@ -38,6 +35,7 @@ footer {
     right: 0;
     bottom: 0;
     padding: 5px 20px;
+    background-color: $white;
 
     .container {
         flex-direction: column-reverse;

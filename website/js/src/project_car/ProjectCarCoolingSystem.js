@@ -6,10 +6,10 @@ import { getImageSrc } from '../utils';
 class ProjectCarCoolingSystem extends React.Component {
     render() {
         return (
-            <div className="inner">
-                <div>
-                    <h3>Project Car</h3>
-                    <h4>Project: Cooling System Replacement</h4>
+            <div>
+                <div className="project-header">
+                    <h1>Project Car</h1>
+                    <h2>Project: Cooling System Replacement</h2>
                 </div>
                 <p>
                     My first project was to replace the cooling system. The radiator itself was
@@ -175,7 +175,7 @@ class ProjectCarCoolingSystem extends React.Component {
                     This ended up being a great first project and introduction to working on the car! Everything was
                     pretty straight forward and I didn't come across any problems that I wasn't able to solve.
                 </p>
-                <p><strong>
+                <p className="still-interested"><strong>
                     Still interested? Go back to the <a href="/project_car.html">Project Car page</a> and check out
                     something else I've done!
                 </strong></p>

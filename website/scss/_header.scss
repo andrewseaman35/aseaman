@@ -4,6 +4,11 @@ a {
 }
 
 .nav-bar {
+    @include screen-sm {
+        width: 100%;
+        justify-content: center;
+    }
+
     display: flex;
     flex-direction: row;
     visibility: hidden;

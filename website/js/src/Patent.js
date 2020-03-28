@@ -100,7 +100,7 @@ class Patent extends React.Component {
         return (
             <div className="inner">
                 <div className="left-content">
-                    <h3>Patent</h3>
+                    <h1>Patent</h1>
                     <p>
                         This page was initially set up for me to track the status of a patent application
                         that I had open. Since I set it up, the application was approved (yay!) so this page

@@ -7,7 +7,7 @@ class ProjectCar extends React.Component {
         return (
             <div className="inner">
                 <div className="left-content">
-                    <h3>Project Car</h3>
+                    <h1>Project Car</h1>
                     <p>
                         I have a 1972 Fiat 124 Sport Spider that I've been fixing up with the goal of
                         learning how to work on cars. My plan is to update this space with some

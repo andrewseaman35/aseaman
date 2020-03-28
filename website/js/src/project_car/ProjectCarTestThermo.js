@@ -6,10 +6,10 @@ import { getImageSrc } from '../utils';
 class ProjectCarTestThermo extends React.Component {
     render() {
         return (
-            <div className="inner">
-                <div>
-                    <h3>Project Car</h3>
-                    <h4>Project: Testing the Thermostat</h4>
+            <div>
+                <div className="project-header">
+                    <h1>Project Car</h1>
+                    <h2>Project: Testing the Thermostat</h2>
                 </div>
                 <p>
                     While performing the <a href="/project_car_cooling_system.html">
@@ -65,7 +65,7 @@ class ProjectCarTestThermo extends React.Component {
                     cooling system replacement</a>!
                 </p>
 
-                <p><strong>
+                <p className="still-interested"><strong>
                     Still interested? Go back to the <a href="/project_car.html">Project Car page</a> and check out
                     something else I've done!
                 </strong></p>
