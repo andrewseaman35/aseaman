@@ -51,12 +51,17 @@ class ProjectCarCoolingSystem extends React.Component {
                     so this was unnecessary.
                 </p>
                 <p>
-                    The second step is to remove the radiator. To do this, we'll need to disconnect
-                    all the hoses that are connected to it first. I started with the hose on the
-                    bottom by the petcock by loosening the hose clamp on the radiator side and making
-                    sure to catch any remaining coolant in the drain pan. I found that it was easier to
-                    detach the hose that was connected to the water pump from the water pump side instead
-                    of the radiator side.
+                    The second step is to disconnect all the hoses that are connected to the radiator.
+                    I started with the hose on the bottom by the petcock by loosening the hose clamp
+                    on the radiator side and making sure to catch any remaining coolant in the drain pan. I
+                    found that it was easier to detach the hose that was connected to the water pump from
+                    the water pump side instead of the radiator side.
+                </p>
+                <p>
+                    As a part of disconnecting all the hoses, I removed the coolant thermostat and the
+                    thermostat housing. I did this because I wanted to make sure that it was working before
+                    I finished the replacement. You can read about how I tested it on
+                    my page about <a href="/project_car_test_thermo.html">testing the thermostat</a>.
                 </p>
                 <p>
                     After disconnecting all the coolant hoses, I removed the radiator filler hose,

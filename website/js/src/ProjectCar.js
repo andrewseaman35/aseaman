@@ -17,6 +17,7 @@ class ProjectCar extends React.Component {
                         <div className="list-header">Projects</div>
                         <ul>
                             <li><a href="/project_car_cooling_system.html">Cooling system replacement</a></li>
+                            <li><a href="/project_car_test_thermo.html">Testing the thermostat</a></li>
                             <li>More coming soon!</li>
                         </ul>
                     </div>

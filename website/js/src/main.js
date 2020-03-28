@@ -13,6 +13,7 @@ import {
     initPatent,
     initProjectCar,
     initProjectCarCoolingSystem,
+    initProjectCarTestThermo,
     initWhisky,
 } from './entry';
 
@@ -26,6 +27,7 @@ const modules = {
     initPatent,
     initProjectCar,
     initProjectCarCoolingSystem,
+    initProjectCarTestThermo,
     initWhisky,
     initWhiskyShelf,
     auth,
