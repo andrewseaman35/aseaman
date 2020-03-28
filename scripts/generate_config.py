@@ -13,6 +13,7 @@ PUBLICS_FILENAME_FORMAT = '{root}/config/publics.json'
 LOCAL_FILENAME_FORMAT = '{root}/config/local.json'
 TEMPLATE_FILENAME_FORMAT = '{root}/config/web_template.json'
 OUTPUT_FILENAME_FORMAT = '{root}/website/js/src/config.js'
+TEMPLATE_CONFIG_FILENAME_FORMAT = '{root}/website/config.json'
 
 class GenerateConfig(BaseScript):
     def __init__(self):
@@ -21,6 +22,7 @@ class GenerateConfig(BaseScript):
         self.local_file = LOCAL_FILENAME_FORMAT.format(root=self.root)
         self.template_file = TEMPLATE_FILENAME_FORMAT.format(root=self.root)
         self.output_file = OUTPUT_FILENAME_FORMAT.format(root=self.root)
+        self.template_config_file = TEMPLATE_CONFIG_FILENAME_FORMAT.format(root=self.root)
         self.publics_file = PUBLICS_FILENAME_FORMAT.format(root=self.root)
 
         self.stack_exports = None
@@ -48,6 +50,8 @@ class GenerateConfig(BaseScript):
                 raise ValueError("--deploy-env is required")
             if self.deploy_env not in VALID_ENVS:
                 raise ValueError("Invalid deploy_env")
+        else:
+            self.deploy_env = 'local'
 
     def _init_aws(self):
         super(GenerateConfig, self)._init_aws()
@@ -109,17 +113,29 @@ class GenerateConfig(BaseScript):
 
         return output_data
 
+    def run_postprocess(self, data):
+        # Append the sandbox prefix for the testing hub
+        if self.deploy_env == 'test':
+            data['ROOT_URL'] = '{ROOT_URL}sandboxes/{BRANCH}/'.format(**data)
+
+        return data
+
     def _run(self):
         if self.local:
             output_data = self.get_local_data()
         else:
             output_data = self.get_data()
 
+        output_data = self.run_postprocess(output_data)
+
         js_content = "const CONFIG = {config_json};".format(
             config_json=json.dumps(output_data, indent=4)
         ).replace('"', "'")
 
         os.makedirs(os.path.dirname(self.output_file), exist_ok=True)
+        with open(self.template_config_file, 'w') as output_file:
+            output_file.write(json.dumps(output_data, indent=4))
+
         with open(self.output_file, 'w') as output_file:
             output_file.write(js_content)
             output_file.write("\n")

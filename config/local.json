@@ -7,5 +7,5 @@
     "GA_TRACKING_ID": "",
     "STACKNAME": "local",
     "ROOT_URL": "http://localhost:8123/",
-    "PUBLIC_BUCKET_URL": "./local_data/"
+    "PUBLIC_BUCKET_URL": "/local_data/"
 }

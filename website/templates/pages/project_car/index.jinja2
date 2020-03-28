@@ -1,0 +1,36 @@
+{% extends 'base.jinja2' %}
+
+{% block page_id %}project-car{% endblock %}
+{% block body_class %}project-car{% endblock %}
+
+{% block content %}
+<div class="inner">
+    <div>
+        <h1>
+            Project Car
+        </h1>
+        <p>
+            I have a 1972 Fiat 124 Sport Spider that I've been fixing up with the goal of
+            learning how to work on cars. My plan is to update this space with some
+            of the projects and work that I've performed and things I've learned.
+        </p>
+        <div class="list">
+            <div class="list-header">Projects</div>
+            <ul>
+                <li>
+                    {{ macros.link_to('project_car/cooling_system.html', 'Cooling system replacement') }}
+                </li>
+                <li>
+                    {{ macros.link_to('project_car/test_thermo.html', 'Testing the thermostat') }}
+                </li>
+                <li>
+                    More coming soon!
+                </li>
+            </ul>
+        </div>
+        <div class="img-container">
+            <img src="{{ macros.image_url('project_car/fiat-front.jpg') }}" />
+        </div>
+    </div>
+</div>
+{% endblock %}
