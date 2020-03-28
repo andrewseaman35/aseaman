@@ -5,15 +5,6 @@ const AUTH = require('./auth');
 const CONSTANTS = require('./constants');
 const CONFIG = require('./config');
 
-const NAV_STRUCTURE = [
-    { id: 'index', label: 'Home', href: 'index.html', items: [] },
-    { id: 'about', label: 'About', href: 'about.html', items: [
-        { id: 'pipeline', label: 'pipeline', href: 'pipeline.html' },
-    ]},
-    { id: 'patent', label: 'Patent', href: 'patent.html', items: [] },
-    { id: 'whisky', label: 'Whisky Shelf', href: 'whisky_shelf.html', items: [] },
-    { id: 'project_car', label: 'Project Car', href: 'project_car.html', items: [] },
-];
 
 const loginUrl = function(redirectURI) {
     return `${CONSTANTS.LOGIN_DOMAIN}login?response_type=token&client_id=${CONFIG.CLIENT_ID}&redirect_uri=${redirectURI}`;
@@ -29,10 +20,6 @@ const navElement = function(className, item) {
 
 const navItem = function(item) {
     return navElement('nav-item', item);
-};
-
-const nestedNavItem = function(item) {
-    return navElement('nested-nav-item', item);
 };
 
 const appendLoginItem = function($nav) {
@@ -67,18 +54,6 @@ const appendApiKeyItem = function($nav) {
 
 const header = function() {
     const $navRow = $('.nav-bar');
-    NAV_STRUCTURE.forEach((item) => {
-        const $navItem = navItem(item);
-        if (item.items.length > 0) {
-            const $nestedNav = $('<div class="nested-nav"></div>');
-            item.items.forEach((nestedItem) => {
-                nestedNavItem(nestedItem).appendTo($nestedNav);
-            });
-            $nestedNav.appendTo($navItem);
-        }
-        $navItem.appendTo($navRow);
-    });
-    appendLoginItem($navRow);
     appendApiKeyItem($navRow);
     $('.nav-bar').css('visibility', 'visible');
 };

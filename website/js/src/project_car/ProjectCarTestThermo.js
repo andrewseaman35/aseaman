@@ -38,24 +38,24 @@ class ProjectCarTestThermo extends React.Component {
                     it opens within the spec. I wanted to put the spec here, but I don't have my manual
                     as I'm writing this. Hopefully, I'll remember to come back and update it.
                 </p>
-                <div class="img-container">
+                <div className="img-container">
                     <img
                         src={getImageSrc('images/project_car/cooling_system/thermostat_test.jpg')}
                         alt="Thermostat in pot on hot plate"
                     ></img>
-                    <div class="img-caption">Starting to test the thermostat</div>
+                    <div className="img-caption">Starting to test the thermostat</div>
                 </div>
                 <p>
                     I tracked the temperature of the water and made sure that the valve opened at a
                     temperature within the spec. The image below shows a comparison of the thermostat
                     before and after the test.
                 </p>
-                <div class="img-container">
+                <div className="img-container">
                     <img
                         src={getImageSrc('images/project_car/cooling_system/thermo_comparison.png')}
                         alt="Thermostat comparison before and after test"
                     ></img>
-                    <div class="img-caption">Cold thermostat on left, hot on right</div>
+                    <div className="img-caption">Cold thermostat on left, hot on right</div>
                 </div>
                 <p>
                     You can see that the valve on the right (post-heat) is opened a little bit, meaning that

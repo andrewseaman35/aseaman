@@ -18,12 +18,12 @@ class ProjectCarCoolingSystem extends React.Component {
                     so this had to be replaced as well. Since I was doing these two, I figured that
                     I might as well replace all the coolant hoses as well.
                 </p>
-                <div class="img-container">
-                    <img  class="medium" src={getImageSrc('images/project_car/cooling_system/melted_coolant_overflow_tank.jpg')} alt="Melted coolant overflow tank"></img>
-                    <div class="img-caption">Poor overflow tank :(</div>
+                <div className="img-container">
+                    <img  className="medium" src={getImageSrc('images/project_car/cooling_system/melted_coolant_overflow_tank.jpg')} alt="Melted coolant overflow tank"></img>
+                    <div className="img-caption">Poor overflow tank :(</div>
                 </div>
-                <div class="list">
-                    <div class="list-header">Replacement Parts</div>
+                <div className="list">
+                    <div className="list-header">Replacement Parts</div>
                     <ul>
                         <li>Radiator</li>
                         <li>Radiator lower support pad</li>
@@ -39,9 +39,9 @@ class ProjectCarCoolingSystem extends React.Component {
                     drain it using the petcock. On mine, the petcock was on the driver side at the
                     bottom corner.
                 </p>
-                <div class="img-container">
+                <div className="img-container">
                     <img src={getImageSrc('images/project_car/cooling_system/petcock_location.jpg')} alt="Radiator petcock location"></img>
-                    <div class="img-caption">Petcock location</div>
+                    <div className="img-caption">Petcock location</div>
                 </div>
                 <p>
                     Place the drain pan under the petcock and open it. I had to use pliers to get
@@ -75,9 +75,9 @@ class ProjectCarCoolingSystem extends React.Component {
                     It is used to turn the fan on when the radiator requires additional airflow to
                     properly cool the coolant.
                 </p>
-                <div class="img-container">
+                <div className="img-container">
                     <img src={getImageSrc('images/project_car/cooling_system/plugs_to_unplug.jpg')} alt="Wires to disconnect"></img>
-                    <div class="img-caption">Brass plug and fan wiring to disconnect</div>
+                    <div className="img-caption">Brass plug and fan wiring to disconnect</div>
                 </div>
                 <p>
                     Around here there is also a wire connection that needs to be disconnected. I believe
@@ -88,13 +88,13 @@ class ProjectCarCoolingSystem extends React.Component {
                     radiator. There are just two 10mm bolts towards the top corners. Once these are removed
                     the radiator and can fan can be lifted upwards together and out of the engine bay.
                 </p>
-                <div class="img-container">
+                <div className="img-container">
                     <img src={getImageSrc('images/project_car/cooling_system/radiator_removed.jpg')} alt="Engine bay without radiator"></img>
-                    <div class="img-caption">No more radiator!</div>
+                    <div className="img-caption">No more radiator!</div>
                 </div>
-                <div class="img-container">
+                <div className="img-container">
                     <img src={getImageSrc('images/project_car/cooling_system/removed_radiator.jpg')} alt="Removed radiator"></img>
-                    <div class="img-caption">Ready to retire</div>
+                    <div className="img-caption">Ready to retire</div>
                 </div>
                 <p>
                     Once the radiator and fan have been removed, the fan should be disconnected from the
@@ -103,9 +103,9 @@ class ProjectCarCoolingSystem extends React.Component {
                     bolt on the right that attach the fan. Remove these, and mount the fan on the new
                     radiator using the same mounting points.
                 </p>
-                <div class="img-container">
+                <div className="img-container">
                     <img src={getImageSrc('images/project_car/cooling_system/fan_on_new_radiator.jpg')} alt="New radiator with fan mounted"></img>
-                    <div class="img-caption">Ready for action!</div>
+                    <div className="img-caption">Ready for action!</div>
                 </div>
                 <p>
                     We're almost ready to drop the new radiator in! I first attached the new lower support
@@ -114,9 +114,9 @@ class ProjectCarCoolingSystem extends React.Component {
                     the radiator up a little bit too high to be able to mount it properly, so I had to trim
                     off some of the height with a knife.
                 </p>
-                <div class="img-container">
+                <div className="img-container">
                     <img src={getImageSrc('images/project_car/cooling_system/old_support_pad.jpg')} alt="Support pad of old radiator"></img>
-                    <div class="img-caption">Old support pad needed replacing</div>
+                    <div className="img-caption">Old support pad needed replacing</div>
                 </div>
                 <p>
 
@@ -149,18 +149,18 @@ class ProjectCarCoolingSystem extends React.Component {
                     temperature, I expected to see the fan turn on, but it didn't. This made me quite nervous. I let
                     it run for a little while longer before killing it to investigate.
                 </p>
-                <div class="img-container">
+                <div className="img-container">
                     <img src={getImageSrc('images/project_car/cooling_system/temp_gauge.jpg')} alt="Temperuate gauge above normal operating temperature"></img>
-                    <div class="img-caption">Getting nervous...</div>
+                    <div className="img-caption">Getting nervous...</div>
                 </div>
                 <p>
                     With a little bit of investigating, I found the problem. The wires that connected the brass
                     temperature switch to the radiator had broken! This was hidden before because there was a sleeve
                     that fit over the switch connections that was holding it in place.
                 </p>
-                <div class="img-container">
+                <div className="img-container">
                     <img src={getImageSrc('images/project_car/cooling_system/broken_fan_wires.jpg')} alt="Broken fan switch wires"></img>
-                    <div class="img-caption">These seem neceesary</div>
+                    <div className="img-caption">These seem neceesary</div>
                 </div>
                 <p>
                     Fortunately, this was an easy problem to solve. All I had to do was strip the wires a bit, open
