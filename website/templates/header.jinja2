@@ -1,8 +1,36 @@
 <header>
     <div class="container">
-        <div class="nav-bar"></div>
+        <div class="nav-bar">
+            <div class="nav-item">
+                <a href="index.html">Home</a>
+            </div>
+            <div class="nav-item">
+                <a href="about.html">About</a>
+                <div class="nested-nav">
+                    <div class="nested-nav-item"><a href="pipeline.html">pipeline</a></div>
+                </div>
+            </div>
+            <div class="nav-item">
+                <a href="patent.html">Patent</a>
+            </div>
+            <div class="nav-item">
+                <a href="whisky_shelf.html">Whisky Shelf</a>
+            </div>
+            <div class="nav-item">
+                <a href="project_car.html">Project Car</a>
+                <div class="nested-nav">
+                    <div class="nested-nav-item">
+                        <a href="project_car_cooling_system.html">Cooling system replacement</a>
+                    </div>
+                    <div class="nested-nav-item">
+                        <a href="project_car_test_thermo.html">Testing the thermostat</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </header>
+
 {% block include_js %}
     <script>
         window.aseaman.ready(function(exports) {
