@@ -14,11 +14,12 @@ class WhiskyRow extends React.Component {
         this.isAuthed = AUTH.getApiKey();
 
         this.handleRemove = this.handleRemove.bind(this);
+        this.onEditClicked = this.onEditClicked.bind(this);
     }
 
-    handleRemove(event) {
-        const distillery = event.currentTarget.dataset.distillery;
-        const name = event.currentTarget.dataset.name;
+    handleRemove(item) {
+        const distillery = item.distillery;
+        const name = item.name;
 
         removeWhisky(distillery, name).then(
             () => {
@@ -30,6 +31,10 @@ class WhiskyRow extends React.Component {
         );
     }
 
+    onEditClicked(item) {
+        this.props.onStartEditWhisky(item.distillery, item.name);
+    }
+
     renderActionDataItem(item) {
         if (!this.isAuthed) {
             return null;
@@ -38,18 +43,14 @@ class WhiskyRow extends React.Component {
             <td key={Object.keys(TABLE_COLUMN_ORDER).length} className="actions">
                 <button
                     className="button-icon whisky-action"
-                    data-distillery={item.distillery}
-                    data-name={item.name}
-                    disabled
+                    onClick={() => this.onEditClicked(item)}
                 >
                     <Icon icon="pencil" size={24} />
                 </button>
 
                 <button
                     className="button-icon whisky-action"
-                    data-distillery={item.distillery}
-                    data-name={item.name}
-                    onClick={this.handleRemove}
+                    onClick={() => this.handleRemove(item)}
                 >
                     <Icon icon="trashcan" size={24} />
                 </button>
@@ -80,6 +81,7 @@ class WhiskyRow extends React.Component {
 
 WhiskyRow.propTypes = {
     onWhiskyRemoved: PropTypes.func.isRequired,
+    onStartEditWhisky: PropTypes.func.isRequired,
     item: PropTypes.object,
 }
 

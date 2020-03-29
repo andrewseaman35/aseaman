@@ -1,9 +1,8 @@
 import React from 'react';
+import _ from 'lodash';
 
 import AUTH from './auth';
-
 import { Icon, Modal, WhiskyForm, WhiskyShelf } from './components/';
-
 import { getCurrentShelf } from './components/whisky/api';
 
 
@@ -12,13 +11,22 @@ class Whisky extends React.Component {
         super();
 
         this.onWhiskyAdded = this.onWhiskyAdded.bind(this);
+        this.onWhiskyUpdated = this.onWhiskyUpdated.bind(this);
         this.onWhiskyRemoved = this.onWhiskyRemoved.bind(this);
         this.onShowWhiskyForm = this.onShowWhiskyForm.bind(this);
         this.onHideWhiskyForm = this.onHideWhiskyForm.bind(this);
+        this.onStartEditWhisky = this.onStartEditWhisky.bind(this);
+
+        this.getSelectedWhisky = this.getSelectedWhisky.bind(this);
         this.isAuthed = AUTH.getApiKey();
 
         this.state = {
+            whiskiesByDistAndName: {},
             whiskyFormDisplayed: false,
+            selectedWhisky: {
+                distillery: null,
+                name: null,
+            },
             failed: false,
             loadingShelf: true,
             items: null,
@@ -32,7 +40,9 @@ class Whisky extends React.Component {
                     this.setState({
                         loadingShelf: false,
                         items: response,
-                    })
+                    }, () => {
+                        this.refreshWhiskiesByDistAndName();
+                    });
                 },
                 () => {
                     this.setState({
@@ -42,10 +52,48 @@ class Whisky extends React.Component {
                 });
     }
 
+    getSelectedWhisky() {
+        const selectedWhisky = this.state.selectedWhisky;
+        if (!selectedWhisky || !selectedWhisky.distillery || !selectedWhisky.name) {
+            return null;
+        }
+
+        const { distillery, name } = selectedWhisky;
+        if (this.state.whiskiesByDistAndName[distillery]) {
+            if (this.state.whiskiesByDistAndName[distillery][name]) {
+                return this.state.whiskiesByDistAndName[distillery][name];
+            }
+        }
+        return null;
+    }
+
+    refreshWhiskiesByDistAndName() {
+        const whiskiesByDistAndName = {};
+        this.state.items.forEach((item) => {
+            const distWhiskies = whiskiesByDistAndName[item.distillery];
+            if (!distWhiskies || !Object.keys(distWhiskies).length) {
+                whiskiesByDistAndName[item.distillery] = {};
+            }
+            whiskiesByDistAndName[item.distillery][item.name] = item;
+        });
+        this.setState({ whiskiesByDistAndName });
+    }
+
+    onWhiskyUpdated(updated) {
+        const filtered = _.filter(this.state.items, (item) => (
+            !(updated.distillery === item.distillery && updated.name === item.name)
+        ));
+        this.setState({
+            items: [...filtered, updated]
+        });
+        this.refreshWhiskiesByDistAndName();
+    }
+
     onWhiskyAdded(item) {
         this.setState(prevState => ({
             items: [...prevState.items, item]
         }))
+        this.refreshWhiskiesByDistAndName();
     }
 
     onWhiskyRemoved(distillery, name) {
@@ -53,6 +101,14 @@ class Whisky extends React.Component {
             whisky.distillery !== distillery || whisky.name !== name)
         );
         this.setState({ items: filteredItems });
+        this.refreshWhiskiesByDistAndName();
+    }
+
+    onStartEditWhisky(distillery, name) {
+        this.setState({
+            selectedWhisky: { distillery, name },
+            whiskyFormDisplayed: true,
+        });
     }
 
     onShowWhiskyForm() {
@@ -60,7 +116,13 @@ class Whisky extends React.Component {
     }
 
     onHideWhiskyForm() {
-        this.setState({ whiskyFormDisplayed: false });
+        this.setState({
+            selectedWhisky: {
+                distillery: null,
+                name: null,
+            },
+            whiskyFormDisplayed: false,
+        });
     }
 
     renderWhiskyForm() {
@@ -68,12 +130,15 @@ class Whisky extends React.Component {
             return null;
         }
 
+        const selectedWhisky = this.getSelectedWhisky();
+
         return (
             <Modal>
                 <WhiskyForm
+                    selectedWhisky={selectedWhisky}
                     onWhiskyAdded={this.onWhiskyAdded}
+                    onWhiskyUpdated={this.onWhiskyUpdated}
                     onHideWhiskyForm={this.onHideWhiskyForm}
-                    onShowWhiskyForm={this.onShowWhiskyForm}
                 />
             </Modal>
         )
@@ -86,6 +151,7 @@ class Whisky extends React.Component {
                 loading={this.state.loadingShelf}
                 items={this.state.items}
                 onWhiskyRemoved={this.onWhiskyRemoved}
+                onStartEditWhisky={this.onStartEditWhisky}
             />
         )
     }
@@ -119,7 +185,7 @@ class Whisky extends React.Component {
                         We'll see if I get to it :)
                     </p>
                 </div>
-                <div className="left-content">
+                <div>
                     {this.renderWhiskyForm()}
                     {this.renderWhiskyShelf()}
                     {this.renderActionBar()}
