@@ -80,7 +80,35 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
 
         return result.get('Item')
 
-    def _update_current_state(self, distillery, name, current):
+    def _update_item(self, distillery, name, current):
+        expression_attribute_names = {
+            '#cur': 'current',
+        }
+        expression_attribute_values = {
+            ':cur': { 'BOOL': current }
+        }
+        update_expression_list = ['SET #cur = :cur']
+        if getattr(self, 'type', None):
+            expression_attribute_names['#typ'] = 'type'
+            expression_attribute_values[':typ'] = { 'S': self.type }
+            update_expression_list.append('#typ = :typ')
+        if getattr(self, 'region', None):
+            expression_attribute_names['#reg'] = 'region'
+            expression_attribute_values[':reg'] = { 'S': self.region }
+            update_expression_list.append('#reg = :reg')
+        if getattr(self, 'country', None):
+            expression_attribute_names['#cou'] = 'country'
+            expression_attribute_values[':cou'] = { 'S': self.country }
+            update_expression_list.append('#cou = :cou')
+        if getattr(self, 'style', None):
+            expression_attribute_names['#sty'] = 'style'
+            expression_attribute_values[':sty'] = { 'S': self.style }
+            update_expression_list.append('#sty = :sty')
+        if getattr(self, 'age', None):
+            expression_attribute_names['#age'] = 'age'
+            expression_attribute_values[':age'] = { 'S': self.age }
+            update_expression_list.append('#age = :age')
+
         self.ddb_client.update_item(
             TableName=self.table_name,
             Key={
@@ -91,13 +119,9 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
                     'S': name,
                 },
             },
-            ExpressionAttributeNames={
-                '#cur': 'current',
-            },
-            ExpressionAttributeValues={
-                ':cur': { 'BOOL': current }
-            },
-            UpdateExpression='SET #cur = :cur',
+            ExpressionAttributeNames=expression_attribute_names,
+            ExpressionAttributeValues=expression_attribute_values,
+            UpdateExpression=','.join(update_expression_list),
         )
 
     def _add_to_shelf(self):
@@ -143,9 +167,9 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
                 'style': self.style,
                 'age': self.age,
             }
-        elif not item['current']['BOOL']:
-            print("Setting to current: {} {}".format(self.distillery, self.name))
-            self._update_current_state(self.distillery, self.name, True)
+        else:
+            print("Updating: {} {}".format(self.distillery, self.name))
+            self._update_item(self.distillery, self.name, True)
             return {
                 'distillery': item['distillery']['S'],
                 'name': item['name']['S'],
@@ -156,16 +180,11 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
                 'style': item.get('style', {}).get('S'),
                 'age': item.get('age', {}).get('N'),
             }
-        else:
-            print("Already on current shelf: {} {}".format(self.distillery, self.name))
-            return {
-                'errorCode': 'already_current',
-            }
 
     def _remove_from_shelf(self):
         item = self._get_item(self.distillery, self.name)
         if item is not None and item['current']['BOOL']:
-            self._update_current_state(self.distillery, self.name, False)
+            self._update_item(self.distillery, self.name, False)
 
     def _get_current_shelf(self):
         ddb_items = self.ddb_client.scan(
