@@ -120,6 +120,7 @@ class WhiskyShelf extends React.Component {
                     sortedItems.map((item, index) => (
                         <WhiskyRow
                             onWhiskyRemoved={this.props.onWhiskyRemoved}
+                            onStartEditWhisky={this.props.onStartEditWhisky}
                             item={item}
                             key={index}
                         />
@@ -156,6 +157,7 @@ class WhiskyShelf extends React.Component {
 
 WhiskyShelf.propTypes = {
     onWhiskyRemoved: PropTypes.func.isRequired,
+    onStartEditWhisky: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
     failed: PropTypes.bool.isRequired,
     items: PropTypes.array,

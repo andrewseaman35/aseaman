@@ -8,19 +8,20 @@ import { TABLE_COLUMN_ORDER, ERROR_MESSAGE_BY_CODE } from './constants';
 
 
 class WhiskyForm extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
+        const { selectedWhisky } = props;
         this.state = {
             errorMessage: null,
             item: {
-                distillery: '',
-                name: '',
-                country: '',
-                region: '',
-                type: '',
-                style: '',
-                age: '',
+                distillery: selectedWhisky ? selectedWhisky.distillery : '',
+                name: selectedWhisky ? selectedWhisky.name : '',
+                country: selectedWhisky && selectedWhisky.country ? selectedWhisky.country : '',
+                region: selectedWhisky && selectedWhisky.region ? selectedWhisky.region : '',
+                type: selectedWhisky && selectedWhisky.type ? selectedWhisky.type : '',
+                style: selectedWhisky && selectedWhisky.style ? selectedWhisky.style : '',
+                age: selectedWhisky && selectedWhisky.age ? selectedWhisky.age : '',
             },
         }
 
@@ -87,7 +88,11 @@ class WhiskyForm extends React.Component {
                     const errorMessage = ERROR_MESSAGE_BY_CODE[response.errorCode] || 'error!';
                     this.setState({ errorMessage: errorMessage });
                 } else {
-                    this.props.onWhiskyAdded(response);
+                    if (!!this.props.selectedWhisky) {
+                        this.props.onWhiskyUpdated(response);
+                    } else {
+                        this.props.onWhiskyAdded(response);
+                    }
                     this.props.onHideWhiskyForm();
                 }
             },
@@ -106,12 +111,12 @@ class WhiskyForm extends React.Component {
         )
     }
 
-    renderInputField(label, key, type) {
+    renderInputField(label, key, type, disabled) {
         const value = this.state.item[key];
         return (
             <label>
                 <span>{label}:</span>
-                <input type={type} value={value} name={key} onChange={this.handleChange} />
+                <input type={type} value={value} name={key} onChange={this.handleChange} disabled={disabled}/>
             </label>
         )
     }
@@ -127,20 +132,21 @@ class WhiskyForm extends React.Component {
     }
 
     render() {
+        const isEditing = !!this.props.selectedWhisky;
         return (
             <div className='whisky-form'>
                 { this.renderButtonContainer() }
-                <h3>New Whisky</h3>
+                <h3>{ isEditing ? 'Edit Whisky' : 'New Whisky' }</h3>
                 <form onSubmit={this.handleSubmit}>
-                    { this.renderInputField('Distillery', 'distillery', 'text') }
-                    { this.renderInputField('Name', 'name', 'text') }
+                    { this.renderInputField('Distillery', 'distillery', 'text', isEditing) }
+                    { this.renderInputField('Name', 'name', 'text', isEditing) }
                     { this.renderInputField('Country', 'country', 'text') }
                     { this.renderInputField('Region', 'region', 'text') }
                     { this.renderInputField('Type', 'type', 'text') }
                     { this.renderInputField('Style', 'style', 'text') }
                     { this.renderInputField('Age', 'age', 'number') }
                     { this.renderErrorMessage() }
-                    <input type="submit" value="Add" />
+                    <input type="submit" value="Save" />
                 </form>
             </div>
         )
@@ -148,7 +154,9 @@ class WhiskyForm extends React.Component {
 }
 
 WhiskyForm.propTypes = {
+    selectedWhisky: PropTypes.object,
     onWhiskyAdded: PropTypes.func.isRequired,
+    onWhiskyUpdated: PropTypes.func.isRequired,
     onHideWhiskyForm: PropTypes.func.isRequired,
 }
 

@@ -5,18 +5,13 @@
 
     position: fixed;
     padding: 20px;
-    top: 80px;
-    height: 100%;
-    width: calc(100% - 40px);
-    max-width: 100%;
-
-    @include screen-med {
-        padding: 32px 48px;
-        top: 20%;
-        max-width: 80%;
-        width: auto;
-        height: auto;
-    }
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: fit-content;
+    height: fit-content;
 
     h3 {
         margin-top: 0;
