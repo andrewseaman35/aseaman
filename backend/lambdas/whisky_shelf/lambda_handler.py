@@ -109,7 +109,7 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
             expression_attribute_values[':age'] = { 'S': self.age }
             update_expression_list.append('#age = :age')
 
-        self.ddb_client.update_item(
+        return self.ddb_client.update_item(
             TableName=self.table_name,
             Key={
                 'distillery': {
@@ -122,7 +122,8 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
             ExpressionAttributeNames=expression_attribute_names,
             ExpressionAttributeValues=expression_attribute_values,
             UpdateExpression=','.join(update_expression_list),
-        )
+            ReturnValues='ALL_NEW',
+        )['Attributes']
 
     def _add_to_shelf(self):
         item = self._get_item(self.distillery, self.name)
@@ -169,16 +170,16 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
             }
         else:
             print("Updating: {} {}".format(self.distillery, self.name))
-            self._update_item(self.distillery, self.name, True)
+            updated_item = self._update_item(self.distillery, self.name, True)
             return {
-                'distillery': item['distillery']['S'],
-                'name': item['name']['S'],
-                'current': item.get('current', {}).get('BOOL'),
-                'type': item.get('type', {}).get('S'),
-                'region': item.get('region', {}).get('S'),
-                'country': item.get('country', {}).get('S'),
-                'style': item.get('style', {}).get('S'),
-                'age': item.get('age', {}).get('N'),
+                'distillery': updated_item['distillery']['S'],
+                'name': updated_item['name']['S'],
+                'current': updated_item.get('current', {}).get('BOOL'),
+                'type': updated_item.get('type', {}).get('S'),
+                'region': updated_item.get('region', {}).get('S'),
+                'country': updated_item.get('country', {}).get('S'),
+                'style': updated_item.get('style', {}).get('S'),
+                'age': updated_item.get('age', {}).get('N'),
             }
 
     def _remove_from_shelf(self):
