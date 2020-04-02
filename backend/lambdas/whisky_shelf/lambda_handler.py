@@ -87,27 +87,29 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
         expression_attribute_values = {
             ':cur': { 'BOOL': current }
         }
-        update_expression_list = ['SET #cur = :cur']
-        if getattr(self, 'type', None):
-            expression_attribute_names['#typ'] = 'type'
-            expression_attribute_values[':typ'] = { 'S': self.type }
-            update_expression_list.append('#typ = :typ')
-        if getattr(self, 'region', None):
-            expression_attribute_names['#reg'] = 'region'
-            expression_attribute_values[':reg'] = { 'S': self.region }
-            update_expression_list.append('#reg = :reg')
-        if getattr(self, 'country', None):
-            expression_attribute_names['#cou'] = 'country'
-            expression_attribute_values[':cou'] = { 'S': self.country }
-            update_expression_list.append('#cou = :cou')
-        if getattr(self, 'style', None):
-            expression_attribute_names['#sty'] = 'style'
-            expression_attribute_values[':sty'] = { 'S': self.style }
-            update_expression_list.append('#sty = :sty')
-        if getattr(self, 'age', None):
-            expression_attribute_names['#age'] = 'age'
-            expression_attribute_values[':age'] = { 'S': self.age }
-            update_expression_list.append('#age = :age')
+        set_update_expression_list = ['#cur = :cur']
+        delete_update_expression_list = []
+
+        def _add_to_request_params(key):
+            val = getattr(self, key, None)
+            if val is not None:
+                name = '#{}'.format(key)
+                value = ':{}'.format(key)
+                expression_attribute_names[name] = key
+                if val:
+                    expression_attribute_values[value] = { 'S': val }
+                    set_update_expression_list.append('{} = {}'.format(name, value))
+                else:
+                    delete_update_expression_list.append(name)
+
+        _add_to_request_params('type')
+        _add_to_request_params('region')
+        _add_to_request_params('country')
+        _add_to_request_params('style')
+
+        update_expression = 'SET {}'.format(', '.join(set_update_expression_list))
+        if delete_update_expression_list:
+            update_expression += ' REMOVE {}'.format(', '.join(delete_update_expression_list))
 
         return self.ddb_client.update_item(
             TableName=self.table_name,
@@ -121,7 +123,7 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
             },
             ExpressionAttributeNames=expression_attribute_names,
             ExpressionAttributeValues=expression_attribute_values,
-            UpdateExpression=','.join(update_expression_list),
+            UpdateExpression=update_expression,
             ReturnValues='ALL_NEW',
         )['Attributes']
 
