@@ -9,6 +9,7 @@ class DrawJasper extends React.Component {
     constructor() {
         super();
 
+        this.initializeCanvas = this.initializeCanvas.bind(this);
         this.renderMatch = this.renderMatch.bind(this);
         this.clearCanvas = this.clearCanvas.bind(this);
         this.saveCanvas = this.saveCanvas.bind(this);
@@ -23,18 +24,7 @@ class DrawJasper extends React.Component {
     }
 
     componentDidMount() {
-        this.canvas = document.getElementById('jas-canvas');
-        this.ctx = this.canvas.getContext("2d");
-        this.ctx.fillStyle = "#FFFFFF";
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-        this.ctx.fillStyle = "#000000";
-        this.canvasTop = this.canvas.getBoundingClientRect().y;
-        this.canvasLeft = this.canvas.getBoundingClientRect().x;
-        this.dragStart = null;
-        this.previousPos = null;
-
-        this.initializeEventListeners();
+        this.initializeCanvas();
     }
 
     initializeEventListeners() {
@@ -49,17 +39,32 @@ class DrawJasper extends React.Component {
         }, false);
     }
 
+    initializeCanvas() {
+        this.canvas = document.getElementById('jas-canvas');
+        this.ctx = this.canvas.getContext("2d");
+        this.ctx.fillStyle = "#FFFFFF";
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+        this.ctx.fillStyle = "#000000";
+        this.dragStart = null;
+        this.previousPos = null;
+        this.initializeEventListeners();
+    }
+
     getMouseCoords(e) {
-        const x = e.clientX - this.canvasLeft;
-        const y = e.clientY - this.canvasTop;
+        const x = e.clientX - this.canvas.getBoundingClientRect().x;
+        const y = e.clientY - this.canvas.getBoundingClientRect().y;
         return { x, y };
     }
 
     clearCanvas() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.setState({
+            imgSrc: null,
+            rankings: null,
             drawingInProgress: false,
             finishedDrawing: false,
+        }, () => {
+            this.initializeCanvas();
         });
     }
 
@@ -100,6 +105,7 @@ class DrawJasper extends React.Component {
     }
 
     handleDown(e) {
+        console.log(this.state)
         if (this.state.finishedDrawing) {
             return;
         }
