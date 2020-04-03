@@ -13,6 +13,9 @@ Parameters:
   StateApiName:
     Description: State API Lambda function name
     Type: String
+  DrawJasperApiName:
+    Description: DrawJasper API Lambda function name
+    Type: String
   WhiskyApiName:
     Description: Whisky API Lambda function name
     Type: String
@@ -199,7 +202,90 @@ Resources:
             - ":"
             - Ref: "RestAPI"
             - "/*"
-
+  DrawJasperAPIRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+    Path: "/"
+      Policies:
+        -
+          PolicyName: "logs"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "logs:*"
+                Resource: "arn:aws:logs:*:*:*"
+        -
+          PolicyName: "ssm"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "ssm:GetParameter"
+                Resource: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/*"
+        -
+          PolicyName: "s3"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "s3:PutObject"
+                Resource: !Sub "arn:aws:s3:::aseaman-public-bucket"
+  DrawJasperAPIPolicy:
+    Type: "AWS::IAM::InstanceProfile"
+    Properties:
+      Path: "/"
+      Roles:
+        -
+          Ref: "DrawJasperAPIRole"
+  DrawJasperAPIFunction:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      Code:
+        S3Bucket: aseaman-lambda-functions
+        S3Key: !Join
+          - ''
+          - - !Ref DeployEnv
+            - '/'
+            - !Ref DrawJasperApiName
+            - '.zip'
+      Description: DrawJaser API Lambda function
+      FunctionName: !Ref DrawJaserApiName
+      Handler: lambda_handler.lambda_handler
+      Role : !GetAtt DrawJasperAPIRole.Arn
+      Runtime: python3.6
+      Timeout: 10
+  DrawJasperAPIPermission:
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      Action: "lambda:invokeFunction"
+      FunctionName:
+        Fn::GetAtt:
+          - DrawJasperAPIFunction
+          - Arn
+      Principal: "apigateway.amazonaws.com"
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:aws:execute-api:"
+            - Ref: "AWS::Region"
+            - ":"
+            - Ref: "AWS::AccountId"
+            - ":"
+            - Ref: "RestAPI"
+            - "/*"
   RestAPI:
     Type: AWS::ApiGateway::RestApi
     Properties:
@@ -315,6 +401,128 @@ Resources:
             - ":lambda:path/2015-03-31/functions/"
             - Fn::GetAtt:
               - StateAPIFunction
+              - Arn
+            - "/invocations"
+        IntegrationResponses:
+        - ResponseTemplates:
+            application/json: "$input.json('$.body')"
+          StatusCode: 200
+        - SelectionPattern: "^not found.*"
+          ResponseTemplates:
+            application/json: "{}"
+          StatusCode: 404
+        PassthroughBehavior: NEVER
+      RequestParameters:
+        method.request.path.userId: 'true'
+      MethodResponses:
+      - StatusCode: 200
+      - StatusCode: 403
+      - StatusCode: 404
+
+  DrawJasperAPIResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId:
+        Ref: RestAPI
+      ParentId:
+        Fn::GetAtt:
+          - RestAPI
+          - RootResourceId
+      PathPart: draw_jasper
+  DrawJasperAPIGetMethod:
+    Type: "AWS::ApiGateway::Method"
+    Properties:
+      RestApiId:
+        Ref: RestAPI
+      ResourceId:
+        Ref: DrawJasperAPIResource
+      HttpMethod: GET
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS
+        IntegrationHttpMethod: POST
+        Uri:
+          Fn::Join:
+          - ""
+          - - "arn:aws:apigateway:"
+            - Ref: "AWS::Region"
+            - ":lambda:path/2015-03-31/functions/"
+            - Fn::GetAtt:
+              - DrawJasperAPIFunction
+              - Arn
+            - "/invocations"
+        IntegrationResponses:
+        - ResponseTemplates:
+            application/json: "$input.json('$.body')"
+          StatusCode: 200
+        - SelectionPattern: "^not found.*"
+          ResponseTemplates:
+            application/json: "{}"
+          StatusCode: 404
+        PassthroughBehavior: NEVER
+        RequestTemplates:
+          application/json: "{\"fun\": \"getUser\", \"parameters\": {\"userId\": \"$input.params('userId')\"}}"
+      RequestParameters:
+        method.request.path.userId: 'true'
+      MethodResponses:
+      - StatusCode: 200
+      - StatusCode: 404
+  DrawJasperAPIPostMethod:
+    Type: "AWS::ApiGateway::Method"
+    Properties:
+      RestApiId:
+        Ref: RestAPI
+      ResourceId:
+        Ref: DrawJasperAPIResource
+      HttpMethod: POST
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri:
+          Fn::Join:
+          - ""
+          - - "arn:aws:apigateway:"
+            - Ref: "AWS::Region"
+            - ":lambda:path/2015-03-31/functions/"
+            - Fn::GetAtt:
+              - DrawJasperAPIFunction
+              - Arn
+            - "/invocations"
+        IntegrationResponses:
+        - ResponseTemplates:
+            application/json: "$input.json('$.body')"
+          StatusCode: 200
+        - SelectionPattern: "^not found.*"
+          ResponseTemplates:
+            application/json: "{}"
+          StatusCode: 404
+        PassthroughBehavior: NEVER
+      RequestParameters:
+        method.request.path.userId: 'true'
+      MethodResponses:
+      - StatusCode: 200
+      - StatusCode: 404
+  DrawJasperAPIOptionsMethod:
+    Type: "AWS::ApiGateway::Method"
+    Properties:
+      RestApiId:
+        Ref: RestAPI
+      ResourceId:
+        Ref: DrawJasperAPIResource
+      HttpMethod: OPTIONS
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri:
+          Fn::Join:
+          - ""
+          - - "arn:aws:apigateway:"
+            - Ref: "AWS::Region"
+            - ":lambda:path/2015-03-31/functions/"
+            - Fn::GetAtt:
+              - DrawJasperAPIFunction
               - Arn
             - "/invocations"
         IntegrationResponses:
@@ -461,6 +669,9 @@ Resources:
       - StateAPIGetMethod
       - StateAPIPostMethod
       - StateAPIOptionsMethod
+      - DrawJasperAPIGetMethod
+      - DrawJasperAPIPostMethod
+      - DrawJasperAPIOptionsMethod
       - WhiskyAPIGetMethod
       - WhiskyAPIPostMethod
       - WhiskyAPIOptionsMethod

@@ -9,6 +9,7 @@ const auth = require('./auth');
 const header = require('./header');
 
 import {
+    initDrawJasper,
     initPatent,
     initWhisky,
 } from './entry';
@@ -18,6 +19,7 @@ import {
 } from './components';
 
 const modules = {
+    initDrawJasper,
     initPatent,
     initWhisky,
     initWhiskyShelf,
