@@ -242,7 +242,11 @@ Resources:
               - Effect: "Allow"
                 Action:
                   - "s3:PutObject"
-                Resource: !Sub "arn:aws:s3:::aseaman-public-bucket"
+                  - "s3:ListBucket"
+                  - "s3:GetObject"
+                Resource:
+                  - !Sub "arn:aws:s3:::aseaman-public-bucket"
+                  - !Sub "arn:aws:s3:::aseaman-public-bucket/aseaman/images/jasper/*"
   DrawJasperAPIPolicy:
     Type: "AWS::IAM::InstanceProfile"
     Properties:
