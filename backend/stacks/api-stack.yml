@@ -261,8 +261,8 @@ Resources:
             - '/'
             - !Ref DrawJasperApiName
             - '.zip'
-      Description: DrawJaser API Lambda function
-      FunctionName: !Ref DrawJaserApiName
+      Description: DrawJasper API Lambda function
+      FunctionName: !Ref DrawJasperApiName
       Handler: lambda_handler.lambda_handler
       Role : !GetAtt DrawJasperAPIRole.Arn
       Runtime: python3.6
