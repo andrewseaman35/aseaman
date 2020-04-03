@@ -1,7 +1,7 @@
 import React from 'react';
 import $ from 'jquery';
 
-import AUTH from '../../auth';
+import AUTH from './auth';
 import { getAPIUrl, getImageSrc } from './utils';
 
 
