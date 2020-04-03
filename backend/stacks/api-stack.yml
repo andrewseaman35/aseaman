@@ -266,7 +266,7 @@ Resources:
       Handler: lambda_handler.lambda_handler
       Role : !GetAtt DrawJasperAPIRole.Arn
       Runtime: python3.6
-      Timeout: 10
+      Timeout: 30
   DrawJasperAPIPermission:
     Type: "AWS::Lambda::Permission"
     Properties:
