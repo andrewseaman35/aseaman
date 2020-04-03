@@ -17,7 +17,7 @@ LOCAL_TABLE_NAME = 'whisky_local'
 max_workers = 5
 
 class DrawJasperLambdaHandler(APILambdaHandlerBase):
-    require_auth = False
+    require_auth = True
 
     def _init(self):
         self.id = uuid.uuid4().hex
