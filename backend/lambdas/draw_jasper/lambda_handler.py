@@ -7,7 +7,7 @@ import tempfile
 
 from base.lambda_handler_base import APILambdaHandlerBase
 from base.api_exceptions import BadRequestException, UnauthorizedException
-from .run_comparison import compare_outlines
+from run_comparison import compare_outlines
 
 BUCKET_NAME = "aseaman-public-bucket"
 JASPER_PREFIX = "aseaman/images/jasper"
