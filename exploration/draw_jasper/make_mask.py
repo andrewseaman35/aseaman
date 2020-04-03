@@ -1,5 +1,6 @@
 import cv2
 import os
+import h5py
 import numpy as np
 
 
@@ -22,6 +23,14 @@ def resize_with_aspect_ratio(image, width=None, height=None, inter=cv2.INTER_ARE
 
     return cv2.resize(image, dim, interpolation=inter)
 
+def crop_to_content(img, invert=True):
+    """
+    Crops image to fit content
+    """
+    inverted_image = cv2.bitwise_not(img) if invert else img  # invert image -- black background (zeroes)
+    coords = cv2.findNonZero(inverted_image)  # find coordinates of all non-zero values
+    x, y, w, h = cv2.boundingRect(coords)  # find bounding box of non-zero coordinates
+    return img[y:y+h, x:x+w]  # return image, cropped
 
 def get_outine(image_file):
     original = imread_resize(image_file, width=1000)
@@ -56,12 +65,22 @@ def convert_to_mask(image_file):
 
 numbered_file_format = './jas_outlined/{}.png'
 mask_file_format = './masks/{}.png'
+mask_dataset_file = './mask_data/dataset.hdf5'
 
-for i in range(1,26):
-    print(numbered_file_format.format(i))
-    mask = convert_to_mask(numbered_file_format.format(i))
+data = {}
+with h5py.File(mask_dataset_file, "w") as f:
+    for i in range(1,25):
+        print(numbered_file_format.format(i))
+        mask = convert_to_mask(numbered_file_format.format(i))
+        cropped = crop_to_content(mask, invert=False)
+        dset = f.create_dataset(str(i), data=cropped)
+
+h5f = h5py.File(mask_dataset_file, 'r')
+    # b = h5f['mask'][:]
+    # h5f.close()
+import pdb; pdb.set_trace()
     # cv2.imshow('image', mask)
-    cv2.imwrite(mask_file_format.format(i), mask)
+    # cv2.imwrite(mask_file_format.format(i), mask)
     # cv2.waitKey(0)
     # cv2.destroyAllWindows()
 

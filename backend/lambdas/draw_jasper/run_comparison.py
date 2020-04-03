@@ -28,6 +28,10 @@ def crop_to_content(img, invert=True):
     x, y, w, h = cv2.boundingRect(coords)  # find bounding box of non-zero coordinates
     return img[y:y+h, x:x+w]  # return image, cropped
 
+def resize_to_match(image_to_resize, image_to_match, inter=cv2.INTER_AREA):
+    (h, w) = image_to_match.shape[:2]
+    return cv2.resize(image_to_resize, (w, h), interpolation=inter)
+
 def convert_to_black_and_white(img):
     """
     """
@@ -49,6 +53,7 @@ def getShapesForComparison(theirs, ours):
     # (this has to be before converting to black and white, I think there are interpolation issues)
     height = cropped_their_drawing.shape[:2][0]
     sized_our_drawing = resize_with_aspect_ratio(cropped_our_outline, height)
+    # sized_our_drawing = resize_to_match(cropped_our_outline, cropped_their_drawing)
     sized_their_drawing = cropped_their_drawing
 
     # Make their drawing black and white
@@ -60,7 +65,6 @@ def getShapesForComparison(theirs, ours):
 def compare_outlines(their_file, our_file):
     their_drawing = cv2.imread(their_file, cv2.IMREAD_GRAYSCALE)
     our_outline = cv2.imread(our_file, cv2.IMREAD_GRAYSCALE)
-
     theirs_cropped = crop_to_content(their_drawing)
     ours_cropped = crop_to_content(our_outline, invert=False)
 
@@ -73,7 +77,7 @@ def compare_outlines(their_file, our_file):
     theirs_sized = theirs_cropped
 
     # Make their drawing black and white
-    # their_drawing_bw = convert_to_black_and_white(theirs_sized)
+    their_drawing_bw = convert_to_black_and_white(theirs_sized)
     theirs_sized = fillOutline(their_drawing_bw)
 
     (ours_height, ours_width) = ours_sized.shape[:2]
@@ -108,18 +112,18 @@ def compare_outlines(their_file, our_file):
 #     diff, count = compare_outlines(input_file, mask_file)
 #     print('{} - {}'.format(i, count))
 #     counts.append((count, i))
-#     cv2.imshow("diff{}".format(i), diff)
-#     cv2.waitKey(0)
-#     cv2.destroyAllWindows()
+# cv2.imshow("diff{}".format(i), diff)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
 
 
 
 # print(min(counts))
 
 
-# cv2.imshow("theirs", theirs)
-# cv2.imshow("ours", ours)
-# cv2.imshow("difference", difference)
-# cv2.imshow("difference_2", difference_2)
-# cv2.imshow("a", a)
+# # cv2.imshow("theirs", theirs)
+# # cv2.imshow("ours", ours)
+# # cv2.imshow("difference", difference)
+# # cv2.imshow("difference_2", difference_2)
+# # cv2.imshow("a", a)
 # cv2.destroyAllWindows()

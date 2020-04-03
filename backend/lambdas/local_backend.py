@@ -43,5 +43,12 @@ def state_check():
     return convert_to_response(result)
 
 
+@app.route('/draw_jasper', methods=['POST'])
+def draw_jasper():
+    payload = get_payload(request)
+    result = make_lambda_request('draw_jasper', payload, None)
+    return convert_to_response(result)
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8099)

@@ -29,4 +29,7 @@ body {
     .project-car {
         @import "project_car.scss";
     }
+    &.jasper {
+        @import "jasper.scss";
+    }
 }

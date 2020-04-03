@@ -1,8 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import DrawJasper from './DrawJasper';
 import Patent from './Patent';
 import Whisky from './Whisky';
+
+
+function initDrawJasper(elementId) {
+    ReactDOM.render(
+        <DrawJasper />,
+        document.getElementById(elementId),
+    );
+}
 
 
 function initPatent(elementId) {
@@ -20,7 +29,9 @@ function initWhisky(elementId) {
     );
 }
 
+
 module.exports = {
+    initDrawJasper,
     initPatent,
     initWhisky,
 };
