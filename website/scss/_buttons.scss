@@ -1,5 +1,23 @@
+input[type="submit"],
 button {
     cursor: pointer;
+
+    padding: 8px 24px;
+    background-color: white;
+    border-radius: 3px;
+    font-family: monospace;
+    border: 1px solid black;
+
+    &:hover {
+        border: 1px solid white;
+        color: white;
+        background-color: #888888;
+        fill: #888888;
+    }
+
+    &:disabled {
+        fill: #AAAAAA;
+    }
 
     &.button-icon {
         padding: 0;

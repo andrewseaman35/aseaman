@@ -40,7 +40,7 @@ def convert_to_black_and_white(img):
         inverted, 1, 255, cv2.THRESH_BINARY_INV)  # apply threshold
     return cv2.bitwise_not(thresholded)
 
-def fillOutline(img):
+def fill_outline(img):
     x,y,w,h = cv2.boundingRect(img)
     cv2.floodFill(img, None, (int(x + w / 2), int(y + h / 2)), 255)
     return img
@@ -58,7 +58,7 @@ def getShapesForComparison(theirs, ours):
 
     # Make their drawing black and white
     # their_drawing_bw = convert_to_black_and_white(sized_their_drawing)
-    # their_filled = fillOutline(their_drawing_bw)
+    # their_filled = fill_outline(their_drawing_bw)
 
     return (sized_their_drawing, sized_our_drawing)
 
@@ -78,7 +78,7 @@ def compare_outlines(their_file, our_file):
 
     # Make their drawing black and white
     their_drawing_bw = convert_to_black_and_white(theirs_sized)
-    theirs_sized = fillOutline(their_drawing_bw)
+    theirs_sized = fill_outline(their_drawing_bw)
 
     (ours_height, ours_width) = ours_sized.shape[:2]
 

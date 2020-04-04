@@ -20,6 +20,7 @@ class DrawJasper extends React.Component {
             finishedDrawing: false,
             imgSrc: null,
             rankings: null,
+            awaitingResponse: false,
         };
     }
 
@@ -76,7 +77,7 @@ class DrawJasper extends React.Component {
 
     uploadImage(e) {
         e.preventDefault();
-
+        this.setState({ awaitingResponse: true });
         $.ajax({
           type: "POST",
           url: getAPIUrl('draw_jasper'),
@@ -88,6 +89,7 @@ class DrawJasper extends React.Component {
         }).promise().then((success) => {
             this.setState({
                 rankings: success.results,
+                awaitingResponse: false,
             });
         })
     }
@@ -138,8 +140,8 @@ class DrawJasper extends React.Component {
         this.setState({
             drawingInProgress: false,
             finishedDrawing: true,
-        })
-
+            imgSrc: this.canvas.toDataURL("image/png"),
+        });
     }
 
     renderMatch() {
@@ -150,23 +152,39 @@ class DrawJasper extends React.Component {
         )
     }
 
+    renderActions() {
+        if (!this.state.imgSrc) {
+            return null;
+        }
+        const disabled = this.state.awaitingResponse;
+        return (
+            <div className="action-bar">
+                <button disabled={disabled} onClick={this.clearCanvas}>Clear</button>
+                <input disabled={disabled} onClick={this.uploadImage} type="submit" name="upload" value="Upload" />
+            </div>
+        )
+    }
+
     renderImageForm() {
         return (
-            <form name="drawing" id="imageUploadForm" encType="multipart/form-data" method="post">
-                <input type="file" id="ImageBrowse" hidden="hidden" name="image" size="30"/>
-                <input onClick={this.uploadImage} type="submit" name="upload" value="Upload" />
+            <React.Fragment>
                 <img id="drawing-image" src={this.state.imgSrc} />
-            </form>
+                <form name="drawing" id="imageUploadForm" encType="multipart/form-data" method="post">
+                    <input type="file" id="ImageBrowse" hidden="hidden" name="image" size="30"/>
+                </form>
+            </React.Fragment>
         )
     }
 
     renderCanvas() {
         return (
-            <canvas
-                id="jas-canvas"
-                width="800"
-                height="400"
-            />
+            <div className="canvas-container">
+                <canvas
+                    id="jas-canvas"
+                    width="800"
+                    height="400"
+                />
+            </div>
         )
     }
 
@@ -175,10 +193,7 @@ class DrawJasper extends React.Component {
             <div>
                 { this.state.rankings ? this.renderMatch() : null}
                 { this.state.imgSrc ? this.renderImageForm() : this.renderCanvas() }
-                <div className="action-bar">
-                    <button onClick={this.clearCanvas}>Clear</button>
-                    <button onClick={this.saveCanvas}>Save</button>
-                </div>
+                { this.renderActions() }
             </div>
         )
     }
