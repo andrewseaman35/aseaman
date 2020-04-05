@@ -1,6 +1,8 @@
 $white: #FFFFFF;
+$light-gray: #EEEEEE;
+$blackish: #111111;
 
-$base-text-color: #111111;
+$base-text-color: $blackish;
 $link-color: #0000EE;
 
 $z-index-nav: 10;
@@ -11,3 +13,5 @@ $mobile-footer-height: 80px;
 
 $inner-padding: 24%;
 $main-content-padding: 32px;
+
+$default-image-border: 1px solid $blackish;

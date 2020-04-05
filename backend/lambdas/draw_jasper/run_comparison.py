@@ -45,7 +45,7 @@ def fill_outline(img):
     cv2.floodFill(img, None, (int(x + w / 2), int(y + h / 2)), 255)
     return img
 
-def getShapesForComparison(theirs, ours):
+def get_shapes_for_comparison(theirs, ours):
     # Crop both to content
     cropped_their_drawing = crop_to_content(theirs)
     cropped_our_outline = crop_to_content(ours, invert=False)

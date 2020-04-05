@@ -22,6 +22,10 @@ img {
                 max-width: 350px;
             }
         }
+
+        &.bordered {
+            border: $default-image-border;
+        }
     }
 
     .img-caption {
@@ -32,4 +36,17 @@ img {
     }
 }
 
+.image-row {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
 
+    @include screen-lg {
+        flex-direction: row;
+    }
+
+    .img-container {
+        width: fit-content;
+    }
+}
