@@ -16,6 +16,7 @@ PAGES_DIRNAME = 'pages'
 CONFIG_FILENAME = 'config.json'
 
 
+
 class CompileHTML(BaseScript):
     aws_enabled = False
 

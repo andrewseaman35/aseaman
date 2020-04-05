@@ -19,6 +19,14 @@ def resize_with_aspect_ratio(image, width=None, height=None, inter=cv2.INTER_ARE
 
     return cv2.resize(image, dim, interpolation=inter)
 
+def resize_by_height_with_aspect_ratio(image, height):
+    (h, w) = image.shape[:2]
+    ratio = height / float(h)
+    mult = (int(w * ratio), height)
+
+    return cv2.resize(image, mult, interpolation=cv2.INTER_AREA)
+
+
 def crop_to_content(img, invert=True):
     """
     Crops image to fit content
@@ -69,11 +77,13 @@ def compare_outlines(their_file, our_file):
     (theirs_height, theirs_width) = theirs_cropped.shape[:2]
 
     # Make ours the height of theirs, maintaining aspect ratio
-    ours_sized = resize_with_aspect_ratio(ours_cropped, height=theirs_height)
+    ours_sized = resize_by_height_with_aspect_ratio(ours_cropped, theirs_height)
     theirs_sized = theirs_cropped
 
     # Make their drawing black and white
     # their_drawing_bw = convert_to_black_and_white(theirs_sized)
+    their_drawing_bw = inverted = cv2.bitwise_not(theirs_sized)
+
     theirs_sized = fillOutline(their_drawing_bw)
 
     (ours_height, ours_width) = ours_sized.shape[:2]
@@ -89,28 +99,46 @@ def compare_outlines(their_file, our_file):
     else:
         theirs_padded = cv2.copyMakeBorder(theirs_sized, 0, 0, padding_left, padding_right, cv2.BORDER_CONSTANT, value=[0,0,0])
         ours_padded = ours_sized
+
     difference = cv2.subtract(ours_padded, theirs_padded)
     difference_2 = cv2.subtract(theirs_padded, ours_padded)
     both_differences = cv2.add(difference, difference_2)
     non_zero_count = cv2.countNonZero(both_differences)
 
+    out = './out/{}'
+    cv2.imshow("1", ours_padded)
+    cv2.imshow("2", theirs_padded)
+    cv2.imshow("3", difference)
+    cv2.imshow("4", difference_2)
+    cv2.imshow("5", both_differences)
+
+    saves = [
+        ('ours.png', ours_padded),
+        ('theirs.png', theirs_padded),
+        ('difference.png', difference),
+        ('difference2.png', difference_2),
+        ('both_difference.png', both_differences),
+    ]
+    for (fname, f) in saves:
+        with open(out.format(fname), "wb") as fh:
+            img_bytes = cv2.imencode('.png', f)[1].tobytes()
+            fh.write(img_bytes)
+
     return both_differences, non_zero_count
 
-# name = "input_drawing"
-# input_file_format = './inputs/{}.png'
-# mask_file_format = './masks/{}.png'
+name = "input_drawing"
+input_file_format = './inputs/{}.png'
+mask_file_format = './masks/{}.png'
+out = './out/{}.png'
 
-# input_file = input_file_format.format(name)
-# counts = []
+input_file = input_file_format.format(name)
+counts = []
 # for i in range(16, 17):
-#     mask_file = mask_file_format.format(i)
-#     print(mask_file)
-#     diff, count = compare_outlines(input_file, mask_file)
-#     print('{} - {}'.format(i, count))
-#     counts.append((count, i))
-#     cv2.imshow("diff{}".format(i), diff)
-#     cv2.waitKey(0)
-#     cv2.destroyAllWindows()
+mask_file = mask_file_format.format("7499f6d7df98472ca9d15836f8f7f9c1")
+print(mask_file)
+diff, count = compare_outlines(input_file, mask_file)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
 
 
 

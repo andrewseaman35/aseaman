@@ -1,0 +1,200 @@
+{% extends 'base.jinja2' %}
+
+{% block page_id %}project-car{% endblock %}
+{% block body_class %}project-car{% endblock %}
+
+{% block content %}
+<div class="inner">
+    <div>
+        <div class="project-header">
+            <h1>Comparing Jasper to shapes</h1>
+        </div>
+        <p>
+            I threw
+            {{ macros.link_to("jasper/index.html", "this little tool") }}
+            together as a personal introduction to OpenCV with Python. There's no
+            real motivation behind this project besides learning some things while
+            the COVID-19 pandemic is keeping everyone isolated.
+        </p>
+        <p>
+            Anyways, this is what it does.
+        </p>
+        <p>
+            Someone (most likely just me) draws a shape on the webpage. I'm currently
+            requiring that this shape is closed, and I'm filling it on the frontend
+            to save the trouble in the backend. I first send the image data to a
+            Lambda endpoint that runs some validation on the image file and stores
+            it to S3.
+        </p>
+        {{ macros.captioned_image("jasper/example/input_drawing.png", "Input drawing", "Drawing example", "bordered") }}
+        <p>
+            We use OpenCV to load the image so we can start messing around with it.
+            The first thing we do with the drawing is crop it to the content. Since we've
+            forced the image to be a single, closed shape and always be black on white, this
+            is relatively easy to do.
+        </p>
+        <p>
+            Grayscale images are represented as 2D Numpy arrays where the indexing represents
+            pixel coordinates of the image. The corresponding value is an integer from 0-255
+            which represents the grayscale intensity at that location where 0 is black and 255
+            is white.
+        </p>
+        <p>
+            I first invert the image to be white on black. I do this because it's easier to,
+            with with the non-zero values representing the image as opposed to the zero values
+            representing the image. Once this is done, we can find the bounding submatrix of the
+            non-zero values and take that as the bounding box of the content. We can return the
+            submatrix of the original, non-inverted image to get a cropped version of the
+            original image. In this case, we'll just use the inverted image, since that'll be
+            easier when we run the actual comparison.
+        </p>
+        <div class="code-block">
+def crop_to_content(img_file_path):
+    image = cv2.imread(img_file_path, cv2.IMREAD_GRAYSCALE)
+
+    # invert image to be white on black
+    inverted_image = cv2.bitwise_not(image)
+
+    # find coordinates of all non-zero values
+    coords = cv2.findNonZero(inverted_image)
+
+    # find bounding box of non-zero coordinates
+    x, y, w, h = cv2.boundingRect(coords)
+
+    # return submatrix of image based on bounding box of nonzero values
+    return image[y:y+h, x:x+w]
+        </div>
+        {{ macros.captioned_image("jasper/example/cropped_drawing.png", "Input drawing, cropped", None, "bordered") }}
+        <p>
+            Previous to this, I had created mask images for each of the photos of my cat, Jasper.
+            This ended up being a manual step since I couldn't find a consistent way to
+            automate it. I needed to extract the shape of Jasper in that image. The difficulty I
+            found while trying to automate this was due to the fact that Jasper has a broad
+            spectrum of colors and he is on things that are similar colors in many of the pictures
+            that I have of him. Here are some examples of the particularly difficult ones.
+        </p>
+        <div class="image-row">
+            {{ macros.captioned_image("jasper/example/jas-color-1.jpg", "Jasper over Jasper-colored blanket", None, "medium") }}
+            {{ macros.captioned_image("jasper/example/jas-color-2.jpg", "Practically invisible", None, "medium") }}
+        </div>
+        <p>
+            Hopefully, as I get better at working with images, I'll be able to find a way to
+            extract Jasper's outline from the image. I'll make another page with some of the
+            things that I tried and the issues I cam across.
+        </p>
+        <p>
+            Until I find a better way, I have to manually make a mask for each of the photos
+            of Jasper. I simply made a red block around him directly on the image can extract
+            this blob with OpenCV in order to made a black and white image similar to the
+            drawing.
+        </p>
+        <div class="image-row">
+            {{ macros.captioned_image("jasper/example/jas-color-1-blob.png", "Jasper as blob", None, "medium") }}
+            {{ macros.captioned_image("jasper/example/jas-color-2-blob.png", "Jasper as a different blob", None, "medium") }}
+        </div>
+        <p>
+            I wrote a script with OpenCV that takes these blobbed photos of Jasper, finds
+            the red, and extracts it to a black and white image. The process here is very
+            similar to how we cropped the input drawing. Since we know what shade of red
+            the blob is, we can identify the pixels of that color using `inRange` to form a
+            mask. The mask, by default, is exactly what we need for the comparison -- a
+            white on black shape representing where Jasper is on the photo.
+        </p>
+        <div class="image-row">
+            {{ macros.captioned_image("jasper/example/jas-bw-1.png", "Mask of Jasper blob", None, "medium") }}
+            {{ macros.captioned_image("jasper/example/jas-bw-2.png", "Another mask of Jasper blob", None, "medium") }}
+        </div>
+        <p>
+            At this point, we have many shapes, all white on black. One of these is the input
+            drawing and the rest are the Jasper blobs that we want to compare the drawing with.
+            We want to make them the same size so we can run comparisons. Since the drawing will
+            be compared with all of the Jasper blobs, we'll resize all the Jasper blobs to match
+            the size of the input drawing.
+        </p>
+        <p>
+            We first crop the Jasper blob images to fit just the content using the same method
+            as before. We then get the height of the input drawing and scale a Jasper blob to
+            match the height while maintaining the Jasper blob's aspect ratio.
+        </p>
+        <div class="code-block">
+def resize_by_height_with_aspect_ratio(image, height):
+    (h, w) = image.shape[:2]
+    ratio = height / float(h)
+    mult = (int(w * ratio), height)
+
+    return cv2.resize(image, mult)
+        </div>
+        <p>
+            After, we take the widths of the two images (that are now the same height) and
+            determine the difference in width. We add side padding to the less wide of the two
+            with the `copyMakeBorder` function, making sure that the result is two images of the
+            exact same dimensions.
+        </p>
+        <div class="code-block">
+padding_left = math.floor((larger_width - smaller_width) / 2)
+padding_right = math.ceil((larger_width - smaller_width) / 2)
+smaller_padded = cv2.copyMakeBorder(
+    smaller_image,
+    0,
+    0,
+    padding_left,
+    padding_right,
+    cv2.BORDER_CONSTANT,
+    value=[0,0,0],
+)
+        </div>
+        <p>
+            Once we have two images of the same size, we can compare them by subtracting the
+            images from one other in both directions and summing the two differences. We then
+            count the non-zero values in the resulting image and use this as the total difference
+            between the two images. Across all of the Jas blobs, we take the Jas blob with the
+            minimum non-zero value. This number represents how much white area there is on the
+            image.
+        </p>
+        <div class="image-row">
+            {{ macros.captioned_image("jasper/example/difference_1.png", "Blob difference", None, "medium") }}
+            {{ macros.captioned_image("jasper/example/difference_2.png", "Blob difference", None, "medium") }}
+        </div>
+        <p>
+            At the end of all of this, we end up with a single image of Jasper where the Jasper's
+            shape is most like the input drawing we're comparing to!
+        </p>
+        <div class="image-row">
+            {{ macros.captioned_image("jasper/example/input_drawing.png", "Input drawing", None, "medium") }}
+            {{ macros.captioned_image("jasper/example/selected_blob.png", "Selected blob", None, "medium") }}
+        </div>
+        <div class="image-row">
+            {{ macros.captioned_image("jasper/example/selected_difference.png", "Final difference", None, "medium") }}
+            {{ macros.captioned_image("jasper/example/example_final.jpg", "Final selection", None, "medium") }}
+        </div>
+        <p>
+            In this example, I clearly tried to match a specific image of Jasper, but it's kind of
+            fun to draw random things to see which one is found in the comparison. Here are some
+            other examples!
+        </p>
+        <div class="image-row">
+            {{ macros.captioned_image("jasper/example/input-1.png", "Example input 1", None, "medium") }}
+            {{ macros.captioned_image("jasper/example/output-1.jpg", "Example output 1", None, "medium") }}
+        </div>
+        <div class="image-row">
+            {{ macros.captioned_image("jasper/example/input-2.png", "Example input 2", None, "medium") }}
+            {{ macros.captioned_image("jasper/example/output-2.jpg", "Example output 2", None, "medium") }}
+        </div>
+        <div class="image-row">
+            {{ macros.captioned_image("jasper/example/input-3.png", "Example input 3", None, "medium") }}
+            {{ macros.captioned_image("jasper/example/output-3.jpg", "Example output 3", None, "medium") }}
+        </div>
+        <p>
+            Next steps are to extract the outline of Jasper through OpenCV. Once I am able to do
+            this, I'll be able to add new photos of Jasper from the selection library much more
+            easily. Until then, there are around 25 that I've added manually.
+        </p>
+        <p class="still-interested">
+            <strong>
+                Wanna try it out? Check it out
+                {{ macros.link_to("jasper/index.html", "here") }}!
+            </strong>
+        </p>
+    </div>
+</div>
+{% endblock %}
