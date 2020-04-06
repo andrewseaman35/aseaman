@@ -1,5 +1,11 @@
 canvas {
-    border: 1px solid;
+    border: 1px solid $blackish;
+    border-radius: 5px;
+}
+
+#draw-container {
+    display: flex;
+    flex-direction: column;
 }
 
 .canvas-container {
@@ -18,3 +24,41 @@ canvas {
     }
 }
 
+.match-image,
+.input-drawing {
+    margin: 0 auto;
+    display: block;
+    border: 1px solid $blackish;
+    border-radius: 5px;
+}
+
+.loading {
+    position: absolute;
+    max-width: 900px;
+    height: 400px;
+    margin: 0 auto;
+    display: block;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+
+    .text-box {
+        padding: 8px;
+        border-radius: 5px;
+        background-color: white;
+        border: 1px solid $blackish;
+    }
+}
+
+.after-match {
+    margin-bottom: 24px;
+    img {
+        margin: 12px auto;
+    }
+    button {
+        display: block;
+        margin: 0 auto;
+    }
+}

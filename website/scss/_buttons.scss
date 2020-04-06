@@ -1,12 +1,12 @@
 input[type="submit"],
 button {
+    color: $blackish;
     cursor: pointer;
-
     padding: 8px 24px;
-    background-color: white;
+    background-color: $white;
     border-radius: 3px;
     font-family: monospace;
-    border: 1px solid black;
+    border: 1px solid $blackish;
 
     &:hover {
         border: 1px solid white;
@@ -17,6 +17,17 @@ button {
 
     &:disabled {
         fill: #AAAAAA;
+        cursor: auto;
+        color: $blackish;
+        border: 1px solid $blackish;
+        background-color: #AAAAAA;
+
+        &:hover {
+            color: $blackish;
+            border: 1px solid $blackish;
+            background-color: #AAAAAA;
+            fill: #AAAAAA;
+        }
     }
 
     &.button-icon {
