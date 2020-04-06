@@ -36,6 +36,14 @@
             </div>
             <div class="nav-item">
                 {{ link_to('jasper/index.html', 'My Cat') }}
+                <div class="nested-nav">
+                    <div class="nested-nav-item">
+                        {{ link_to('jasper/index.html', 'Drawing Jasper') }}
+                    </div>
+                    <div class="nested-nav-item">
+                        {{ link_to('jasper/comparing.html', 'Comparing jasper to shapes') }}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
