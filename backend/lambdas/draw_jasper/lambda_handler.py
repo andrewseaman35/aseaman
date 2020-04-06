@@ -12,7 +12,7 @@ import tempfile
 
 from base.lambda_handler_base import APILambdaHandlerBase
 from base.api_exceptions import BadRequestException, UnauthorizedException
-from .run_comparison import (
+from run_comparison import (
     crop_to_content, resize_with_aspect_ratio, convert_to_black_and_white,
     fill_outline,
 )
