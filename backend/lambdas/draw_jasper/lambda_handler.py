@@ -4,7 +4,7 @@ import cv2
 import datetime
 import json
 import math
-import numpy
+import numpy as np
 import uuid
 import os
 import sys
@@ -12,10 +12,6 @@ import tempfile
 
 from base.lambda_handler_base import APILambdaHandlerBase
 from base.api_exceptions import BadRequestException, UnauthorizedException
-from run_comparison import (
-    crop_to_content, resize_with_aspect_ratio, convert_to_black_and_white,
-    fill_outline,
-)
 
 BUCKET_NAME = "aseaman-public-bucket"
 JASPER_PREFIX = "aseaman/images/jasper"
@@ -27,6 +23,24 @@ RESPONSE_COUNT = 3
 
 IMG_SHAPE = (400, 800)
 IMG_MAX_SIZE = 15000
+
+
+def resize_by_height(image, height):
+    (h, w) = image.shape[:2]
+    ratio = height / float(h)
+    mult = (int(w * ratio), height)
+    return cv2.resize(image, mult, interpolation=cv2.INTER_AREA)
+
+
+def crop_to_content(img, invert=True):
+    """
+    Crops image to fit content
+    """
+    inverted_image = cv2.bitwise_not(img) if invert else img  # invert image -- black background (zeroes)
+    coords = cv2.findNonZero(inverted_image)  # find coordinates of all non-zero values
+    x, y, w, h = cv2.boundingRect(coords)  # find bounding box of non-zero coordinates
+    return img[y:y+h, x:x+w]  # return image, cropped
+
 
 class DrawJasperLambdaHandler(APILambdaHandlerBase):
     require_auth = False
@@ -56,7 +70,7 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
         self.img_bytes = base64.b64decode(payload['img'].split(',')[1])
 
     def _validate_uploaded_image(self):
-        numpy_array = numpy.fromstring(self.img_bytes, numpy.uint8)
+        numpy_array = np.fromstring(self.img_bytes, np.uint8)
         img = cv2.imdecode(numpy_array, cv2.IMREAD_GRAYSCALE)
         if not img.shape == IMG_SHAPE:
             raise BadRequestException('bad image dimensions')
@@ -126,12 +140,8 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
         (drawing_height, drawing_width) = drawing_cropped.shape[:2]
 
         # Make ours the height of theirs, maintaining aspect ratio
-        mask_sized = resize_with_aspect_ratio(mask_cropped, height=drawing_height)
-        drawing_sized = drawing_cropped
-
-        # Make their drawing black and white
-        drawing_bw = convert_to_black_and_white(drawing_sized)
-        drawing_sized = fill_outline(drawing_bw)
+        mask_sized = resize_by_height(mask_cropped, drawing_height)
+        drawing_sized = cv2.bitwise_not(drawing_cropped)
 
         (_, mask_width) = mask_sized.shape[:2]
 
