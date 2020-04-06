@@ -3,9 +3,22 @@ canvas {
     border-radius: 5px;
 }
 
+.mobile-notification {
+    text-align: center;
+    padding: 24px 0 0;
+
+    @include screen-lg {
+        display: none;
+    }
+}
+
 #draw-container {
     display: flex;
     flex-direction: column;
+
+    @include screen-sm {
+        display: none;
+    }
 }
 
 .canvas-container {
