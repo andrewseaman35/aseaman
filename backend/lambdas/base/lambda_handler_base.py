@@ -12,12 +12,12 @@ SSM_API_KEY = 'lambda-api-key'
 
 class APILambdaHandlerBase(object):
     require_auth = True
+    action = None
     validation_actions = {}
 
     def __init__(self, event, context):
         self.event = event
         self.context = context
-        self.action = None
         self.api_key = None
 
     def __init_aws(self):

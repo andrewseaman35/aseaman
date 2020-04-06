@@ -41,10 +41,15 @@ function getImageSrc(path) {
     return CONFIG.PUBLIC_BUCKET_URL + 'aseaman/' + path;
 }
 
+function getUrlTo(path) {
+    return CONFIG.ROOT_URL + path;
+}
+
 module.exports = {
     getAPIUrl,
     setCookie,
     getCookie,
     getImageSrc,
+    getUrlTo,
     unsetCookie,
 };

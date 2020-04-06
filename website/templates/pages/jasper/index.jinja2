@@ -6,19 +6,18 @@
 {% block content %}
     <div class="inner">
         <h1>
-            Jas
+            Drawing Jasper
         </h1>
         <p>
             This is a stupid little thing I threw together as a personal introduction to
             image processing with OpenCV in Python. It takes a shape that's drawn (by you)
             on the canvas below, and compares it to a bunch of pictures that I have of my cat.
-            It compares the shape to the shape of my cat in each photo and and shows you
-            the photo that is most shaped like the shape you drew. Useless, right?
+            It compares the shape to the shape of my cat in each photo and returns
+            the photo where Jasper is the  most shaped like the shape you drew. Useless, right?
         </p>
         <p>
             Anyways, if you're interested about how this works, you can check out my page
-            on <a href="/jasper/comparing.html">comparing my cat to shapes</a>. Otherwise,
-            go ahead and try it out!
+            on {{ macros.link_to("jasper/comparing.html", "comparing my cat to shapes") }}. Otherwise, go ahead and try it out. <strong>Draw a shape below!</strong>
         </p>
         <div id="draw-container"></div>
     </div>

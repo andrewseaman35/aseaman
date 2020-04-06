@@ -4,8 +4,10 @@ import cv2
 import datetime
 import json
 import math
+import numpy
 import uuid
 import os
+import sys
 import tempfile
 
 from base.lambda_handler_base import APILambdaHandlerBase
@@ -23,8 +25,12 @@ LOCAL_TABLE_NAME = 'whisky_local'
 MAX_WORKERS = 10
 RESPONSE_COUNT = 3
 
+IMG_SHAPE = (400, 800)
+IMG_MAX_SIZE = 15000
+
 class DrawJasperLambdaHandler(APILambdaHandlerBase):
-    require_auth = True
+    require_auth = False
+    action = 'handle_upload'
 
     def _init(self):
         self.id = uuid.uuid4().hex
@@ -35,6 +41,9 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
             id=self.id,
         )
         self.s3_key_format = self.s3_key_prefix + '/{}'
+        self.validation_actions = {
+            'handle_upload': self._validate_uploaded_image,
+        }
 
     def _init_aws(self):
         self.ddb_client = self.aws_session.client('dynamodb', region_name='us-east-1')
@@ -44,7 +53,15 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
         # return
         if not payload.get('img'):
             raise BadRequestException('img parameter required')
-        self.imgBytes = base64.b64decode(payload['img'].split(',')[1])
+        self.img_bytes = base64.b64decode(payload['img'].split(',')[1])
+
+    def _validate_uploaded_image(self):
+        numpy_array = numpy.fromstring(self.img_bytes, numpy.uint8)
+        img = cv2.imdecode(numpy_array, cv2.IMREAD_GRAYSCALE)
+        if not img.shape == IMG_SHAPE:
+            raise BadRequestException('bad image dimensions')
+        if not sys.getsizeof(self.img_bytes) <= IMG_MAX_SIZE:
+            raise BadRequestException('image too big')
 
     def _download(self, key):
         tmpdir = tempfile.gettempdir()
@@ -79,20 +96,22 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
         tmpdir = tempfile.gettempdir()
         local_filename = os.path.join(tmpdir, filename)
         with open(local_filename, "wb") as fh:
-            fh.write(self.imgBytes)
+            fh.write(self.img_bytes)
 
         return local_filename
 
     def _save_image_to_s3(self, img_bytes, filename):
+        key = self.s3_key_format.format(filename)
         self.s3_client.put_object(
             Body=img_bytes,
             Bucket=BUCKET_NAME,
-            Key=self.s3_key_format.format(filename),
+            Key=key,
         )
+        return key.split('aseaman/')[1]
 
     def _save_cv2_image_to_s3(self, cv2_image, filename, ext=".png"):
         img_bytes = cv2.imencode(ext, cv2_image)[1].tobytes()
-        self._save_image_to_s3(img_bytes, filename)
+        return self._save_image_to_s3(img_bytes, filename)
 
     def _run_comparison(self, drawing_file, mask_file):
         drawing = cv2.imread(drawing_file, cv2.IMREAD_GRAYSCALE)
@@ -100,7 +119,7 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
         drawing_cropped = crop_to_content(drawing)
         mask_cropped = crop_to_content(mask, invert=False)
 
-        self._save_cv2_image_to_s3(drawing_cropped, 'cropped_drawing.png')
+        cropped_return_path = self._save_cv2_image_to_s3(drawing_cropped, 'cropped_drawing.png')
 
         # Match their drawing size to ours
         # (this has to be before converting to black and white, I think there are interpolation issues)
@@ -132,18 +151,25 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
         both_differences = cv2.add(difference, difference_2)
         non_zero_count = cv2.countNonZero(both_differences)
 
-        self._save_cv2_image_to_s3(both_differences, 'difference.png')
+        difference_return_path = self._save_cv2_image_to_s3(both_differences, 'difference.png')
 
-        return both_differences, non_zero_count
+        return {
+            'non_zero_count': non_zero_count,
+            'differences': difference_return_path,
+            'cropped_return_path': cropped_return_path,
+            'difference_return_path': difference_return_path,
+        }
 
 
     def _run(self):
-        self._save_image_to_s3(self.imgBytes, "input_drawing.png")
+        input_drawing_path = self._save_image_to_s3(self.img_bytes, "input_drawing.png")
         user_drawing_filename = self._save_file_to_local_temp()
         results = []
         for (key, filepath) in self._download_all_masks():
-            res, nzc = self._run_comparison(user_drawing_filename, filepath)
-            results.append((nzc, key))
+            comparison = self._run_comparison(user_drawing_filename, filepath)
+            non_zero_count = comparison['non_zero_count']
+            comparison['matchId'] = key
+            results.append((non_zero_count, comparison))
 
         result = {
             'results': sorted(results),

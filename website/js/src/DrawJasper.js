@@ -2,7 +2,7 @@ import React from 'react';
 import $ from 'jquery';
 
 import AUTH from './auth';
-import { getAPIUrl, getImageSrc } from './utils';
+import { getAPIUrl, getImageSrc, getUrlTo } from './utils';
 
 
 class DrawJasper extends React.Component {
@@ -10,7 +10,6 @@ class DrawJasper extends React.Component {
         super();
 
         this.initializeCanvas = this.initializeCanvas.bind(this);
-        this.renderMatch = this.renderMatch.bind(this);
         this.clearCanvas = this.clearCanvas.bind(this);
         this.saveCanvas = this.saveCanvas.bind(this);
         this.uploadImage = this.uploadImage.bind(this);
@@ -144,14 +143,6 @@ class DrawJasper extends React.Component {
         });
     }
 
-    renderMatch() {
-        console.log(this.state.rankings)
-        const matchId = this.state.rankings[0][1];
-        return (
-            <img width="400px" src={getImageSrc(`images/jasper/data/original/${matchId}.jpg`)} />
-        )
-    }
-
     renderActions() {
         if (!this.state.imgSrc) {
             return null;
@@ -165,10 +156,23 @@ class DrawJasper extends React.Component {
         )
     }
 
+    renderLoading() {
+        if (!this.state.awaitingResponse) {
+            return null;
+        }
+
+        return (
+            <div className="loading">
+                <div className="text-box">Loading...</div>
+            </div>
+        )
+    }
+
     renderImageForm() {
         return (
             <React.Fragment>
-                <img id="drawing-image" src={this.state.imgSrc} />
+                { this.renderLoading() }
+                <img className="input-drawing" id="drawing-image" src={this.state.imgSrc} />
                 <form name="drawing" id="imageUploadForm" encType="multipart/form-data" method="post">
                     <input type="file" id="ImageBrowse" hidden="hidden" name="image" size="30"/>
                 </form>
@@ -177,24 +181,67 @@ class DrawJasper extends React.Component {
     }
 
     renderCanvas() {
+        if (this.state.imgSrc) {
+            return (
+                <React.Fragment>
+                    { this.renderLoading() }
+                    <img className="input-drawing" id="drawing-image" src={this.state.imgSrc} />
+                    <form name="drawing" id="imageUploadForm" encType="multipart/form-data" method="post">
+                        <input type="file" id="ImageBrowse" hidden="hidden" name="image" size="30"/>
+                    </form>
+                </React.Fragment>
+            )
+        }
         return (
             <div className="canvas-container">
-                <canvas
-                    id="jas-canvas"
-                    width="800"
-                    height="400"
-                />
+                <canvas id="jas-canvas" width="800" height="400" />
+            </div>
+        )
+    }
+
+    renderBeforeMatch() {
+        return (
+            <React.Fragment>
+                { this.renderCanvas() }
+                { this.renderActions() }
+            </React.Fragment>
+        )
+    }
+
+    renderAfterMatch() {
+        const match = this.state.rankings[0][1];
+        const matchId = match.matchId;
+        return (
+            <div className="after-match">
+                <div class="img-container">
+                    <img className="input-drawing" id="drawing-image" src={this.state.imgSrc} />
+                    <div className="img-caption">Your drawing!</div>
+                </div>
+                <div class="img-container">
+                    <img className="match-image" width="400px" src={getImageSrc(`images/jasper/data/original/${matchId}.jpg`)} />
+                    <div className="img-caption">Your match!</div>
+                </div>
+                <button onClick={this.clearCanvas}>Try again!</button>
             </div>
         )
     }
 
     render() {
         return (
-            <div>
-                { this.state.rankings ? this.renderMatch() : null}
-                { this.state.imgSrc ? this.renderImageForm() : this.renderCanvas() }
-                { this.renderActions() }
-            </div>
+            <React.Fragment>
+                { !this.state.rankings && this.renderBeforeMatch() }
+                { this.state.rankings && this.renderAfterMatch() }
+                <p className="still-interested">
+                    <strong>
+                        Think this is kinda cool? Check out how it works on this page
+                        on <a
+                            href={getUrlTo("jasper/comparing.html")}
+                        >
+                            comparing Jasper to shapes
+                        </a>!
+                    </strong>
+                </p>
+            </React.Fragment>
         )
     }
 }
