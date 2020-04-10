@@ -12,10 +12,10 @@ DEPLOY_PARAMETERS:= \
 	ParameterKey=ApiCertificateId,ParameterValue="$(API_CERTIFICATE_ID)"
 
 package:
-	make -C lambdas package
+	make -C api package
 
 deploy:
-	make -C lambdas upload
+	make -C api upload
 	aws cloudformation create-stack \
 		--template-body file://$(ROOT)/stacks/api-stack.yml \
 		--stack-name $(STACKNAME) \
@@ -27,6 +27,6 @@ deploy:
 		--region=us-east-1
 
 clean:
-	make -C lambdas clean
+	make -C api clean
 
 .PHONY: package deploy clean
