@@ -42,7 +42,7 @@ css:
 	sass scss/main.scss public/css/main.css
 
 assets:
-	cp -r img public/img/
+	cp -r img/ public/img/
 	cp -r local_data public/ || :
 
 clean:
