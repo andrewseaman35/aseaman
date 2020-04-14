@@ -11,6 +11,7 @@ const header = require('./header');
 import {
     initDrawJasper,
     initPatent,
+    initSaltLevel,
     initWhisky,
 } from './entry';
 
@@ -21,6 +22,7 @@ import {
 const modules = {
     initDrawJasper,
     initPatent,
+    initSaltLevel,
     initWhisky,
     initWhiskyShelf,
     auth,
