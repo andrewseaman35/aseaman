@@ -33,4 +33,7 @@ body {
     &.jasper {
         @import "jasper.scss";
     }
+    &.resume {
+        @import "resume.scss";
+    }
 }
