@@ -1,0 +1,7 @@
+{
+    "action": "create",
+    "payload": {
+        "water_softener_id": "softener_one",
+        "sensor_one": 15
+    }
+}
