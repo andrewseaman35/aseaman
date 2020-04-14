@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 
 import DrawJasper from './DrawJasper';
 import Patent from './Patent';
+import SaltLevel from './SaltLevel';
 import Whisky from './Whisky';
 
 
@@ -30,8 +31,17 @@ function initWhisky(elementId) {
 }
 
 
+function initSaltLevel(elementId) {
+    ReactDOM.render(
+        <SaltLevel />,
+        document.getElementById(elementId),
+    );
+}
+
+
 module.exports = {
     initDrawJasper,
     initPatent,
+    initSaltLevel,
     initWhisky,
 };

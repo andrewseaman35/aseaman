@@ -27,6 +27,7 @@ class SaltLevelLambdaHandler(APILambdaHandlerBase):
         }
         self.validation_actions = {
             'create': self._validate_create,
+            'list': self._validate_list,
         }
 
     def _init_aws(self):
@@ -49,6 +50,9 @@ class SaltLevelLambdaHandler(APILambdaHandlerBase):
         self.sensor_one = self.payload.get('sensor_one')
         if self.sensor_one is None:
             raise BadRequestException('sensor_one parameter required')
+
+    def _validate_list(self):
+        self.water_softener_id = self.payload.get('water_softener_id')
 
     def _build_key(self, water_softener_id):
         return {
@@ -83,10 +87,27 @@ class SaltLevelLambdaHandler(APILambdaHandlerBase):
             'timestamp': ddbItem['timestamp'],
         }
 
-    def _list(self):
-        ddb_items = self.ddb_client.scan(
+    def _scan_all(self):
+        return self.ddb_client.scan(
             TableName=self.table_name,
         )['Items']
+
+    def _scan_by_water_softener_id(self):
+        return self.ddb_client.scan(
+            TableName=self.table_name,
+            ExpressionAttributeNames={
+                '#wsid': 'water_softener_id',
+            },
+            ExpressionAttributeValues={
+                ':wsid': {
+                    'S': self.water_softener_id,
+                },
+            },
+            FilterExpression='#wsid = :wsid',
+        )['Items']
+
+    def _list(self):
+        ddb_items = self._scan_by_water_softener_id() if self.water_softener_id else self._scan_all()
         items = [
             {
                 key: value[list(value.keys())[0]]
