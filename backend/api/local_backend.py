@@ -50,5 +50,12 @@ def draw_jasper():
     return convert_to_response(result)
 
 
+@app.route('/salt_level', methods=['POST'])
+def salt_level():
+    payload = get_payload(request)
+    result = make_lambda_request('salt_level', payload, None)
+    return convert_to_response(result)
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8099)
