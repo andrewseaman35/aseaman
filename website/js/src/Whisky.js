@@ -181,8 +181,9 @@ class Whisky extends React.Component {
                     </p>
                     <p>
                         This is backed by DynamoDB and uses API Gateway in front of Lamdbda as a
-                        serverless API. I'm planning on writing up something about how it's set up.
-                        We'll see if I get to it :)
+                        serverless API. It's set to up to allow me to write to the table through
+                        the website, but that's not open to the public. I'm planning on writing
+                        up something about how it's set up. We'll see if I get to that :)
                     </p>
                 </div>
                 <div>
