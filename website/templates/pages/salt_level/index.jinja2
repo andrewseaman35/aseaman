@@ -26,9 +26,17 @@
             of the data. I'd like to be able to track the rate of salt consumption over time which
             could give me insight into how I can tweak the water softener parameters.
         </p>
-        <p>
-            As I build the system, I'll be adding pages about the things I've built. Stay tuned!
-        </p>
+        <div class="list">
+            <div class="list-header">Here's what I have so far:</div>
+            <ul>
+                <li>
+                    {{ macros.link_to('salt_level/architecture.html', '(intended) System architecture') }}
+                </li>
+                <li>
+                    More coming soon!
+                </li>
+            </ul>
+        </div>
     </div>
     <div id="salt-level-container"></div>
 {% endblock %}
