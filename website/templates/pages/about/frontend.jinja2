@@ -1,0 +1,45 @@
+{% extends 'base.jinja2' %}
+
+{% block page_id %}frontend{% endblock %}
+{% block body_class %}frontend{% endblock %}
+
+{% block content %}
+    <div class="inner">
+        <h1>This Website</h1>
+        <h2>Front-End Development</h2>
+        <h4>Tools</h4>
+        <p>
+            This page outlines the front-end development environment and some of the tooling I've
+            build to make it easier. I've listed some of the main tools and technologies that
+            I'm using below. I'll try to keep this list updated as I add more things.
+        </p>
+        <div class="tools">
+            <ul>
+                <li><a href="https://reactjs.org/" target="_blank" rel="noopener noreferrer">React</a></li>
+                <li><a href="https://jinja.palletsprojects.com/en/2.11.x/" target="_blank" rel="noopener noreferrer">Jinja</a></li>
+                <li><a href="https://sass-lang.com/" target="_blank" rel="noopener noreferrer">SASS</a></li>
+                <li><a href="https://www.python.org/" target="_blank" rel="noopener noreferrer">Python</a></li>
+                <li><a href="https://babeljs.io/" target="_blank" rel="noopener noreferrer">Babel</a></li>
+                <li><a href="http://browserify.org/" target="_blank" rel="noopener noreferrer">Browserify</a></li>
+                <li><a href="https://www.npmjs.com/package/uglify-js" target="_blank" rel="noopener noreferrer">Uglify</a></li>
+            </ul>
+        </div>
+
+        <p>
+            One of the first things I knew I would need after my development pipeline was built
+            was an easy to use front-end development environment. I started with getting a nice
+            developer flow going for HTML, CSS, and JavaScript, and I did this through templates
+            with Jinja, SASS, and vanilla JavaScript (to start).
+        </p>
+        <h4>Jinja and HTML</h4>
+        <p>in progress</p>
+
+        <h4>SASS and CSS</h4>
+        <p>in progress</p>
+
+        <h4>JavaScript</h4>
+        <p>in progress</p>
+
+        {{ macros.link_to("index.html", "Go back home")}}
+    </div>
+{% endblock %}
