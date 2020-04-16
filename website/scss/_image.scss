@@ -23,6 +23,12 @@ img {
             }
         }
 
+        &.large {
+            @include screen-lg {
+                max-width: 700px;
+            }
+        }
+
         &.bordered {
             border: $default-image-border;
         }
