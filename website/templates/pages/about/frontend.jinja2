@@ -6,11 +6,11 @@
 {% block content %}
     <div class="inner">
         <h1>This Website</h1>
-        <h2>Front-End Development</h2>
+        <h2>Front End Development</h2>
         <h4>Tools</h4>
         <p>
-            This page outlines the front-end development environment and some of the tooling I've
-            build to make it easier. I've listed some of the main tools and technologies that
+            This page outlines the front end development environment and some of the tooling I've
+            built to make it easier. I've listed some of the main tools and technologies that
             I'm using below. I'll try to keep this list updated as I add more things.
         </p>
         <div class="tools">
@@ -27,7 +27,7 @@
 
         <p>
             One of the first things I knew I would need after my development pipeline was built
-            was an easy to use front-end development environment. I started with getting a nice
+            was an easy to use front end development environment. I started with getting a nice
             developer flow going for HTML, CSS, and JavaScript, and I did this through templates
             with Jinja, SASS, and vanilla JavaScript (to start).
         </p>
@@ -41,7 +41,7 @@
         <h4>Watchers</h4>
         <a href="https://github.com/andrewseaman35/aseaman/blob/master/scripts/run_watchers.py" target="_blank">Source</a>
         <p>
-            In order to make development as smooth as possible, I wrote a script that runs three watchers: one for Jinja templates, one for JavaScript files, and one for SCSS file. When I
+            In order to make development as smooth as possible, I wrote a script that runs threaded watchers: one for Jinja templates, one for JavaScript files, and one for SCSS file. When I
             develop, I run these in the background by executing `make watch` in the `website/` directory.
             When they detect a change to any of the associated files, it'll automatically rebuild that
             set of files. For example, if the Jinja watcher detects a change to and .jinja2 file, it'll
@@ -76,6 +76,12 @@
             the pages is the same as the path to the file.
         </p>
 
-        {{ macros.link_to("index.html", "Go back home")}}
+        <p class="still-interested">
+            <strong>
+                Still interested? Go back to the
+                {{ macros.link_to("about/index.html", "page about this website")}}
+                and check out how other things work!
+            </strong>
+        </p>
     </div>
 {% endblock %}
