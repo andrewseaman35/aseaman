@@ -1,0 +1,52 @@
+{% extends 'base.jinja2' %}
+
+{% block page_id %}data-collection{% endblock %}
+{% block body_class %}data-collection{% endblock %}
+
+{% block content %}
+    <div class="inner">
+        <h1>Water Softener Tracker</h1>
+        <h2>Data Collection</h2>
+        <h4>Tools and Technologies</h4>
+        <div class="tools">
+            <ul>
+                <li><a href="https://store.arduino.cc/usa/mkr-wifi-1010/" target="_blank" rel="noopener noreferrer">Arduino MKR WiFi 1010</a></li>
+                <li><a href="https://www.sainsmart.com/products/ultrasonic-ranging-detector-mod-hc-sr04-distance-sensor/" target="_blank" rel="noopener noreferrer">SainSmart HC-SR04 Distance Sensor</a></li>
+                <li><a href="https://aws.amazon.com/iot-core/" target="_blank" rel="noopener noreferrer">AWS IoT Core</a></li>
+                <li><a href="https://aws.amazon.com/dynamodb/" target="_blank" rel="noopener noreferrer">DynamoDB</a></li>
+                <li><a href="http://mqtt.org/" target="_blank" rel="noopener noreferrer">MQTT</a></li>
+            </ul>
+        </div>
+
+        <p>
+            If you haven't yet, it might be worth taking a look at the
+            {{ macros.link_to('salt_level/architecture.html', 'System architecture page') }} before
+            checking out this page.
+            This covers the data collection segment of the system. The purpose of this subsection
+            is check the level of the salt in the water softener tank and store it so it is usable
+            by the other subsections.
+        </p>
+        <h4>Data Collection Module</h4>
+        <a href="https://github.com/andrewseaman35/automations/blob/master/salt_level/salt_level_sensor/salt_level_sensor.ino" target="_blank">Source</a>
+        <p>
+            The data collection module consists of two main components, the Arduino MKR WiFi 1010 and
+            the SainSmart HC-SR04. The SainSmart is used for measuring distance. It will be mounted to
+            the inside of the salt tank, with the distance sensor facing downwards towards the salt.
+            Regularly, the Arduino will use it to measure the distance to the salt and that is the
+            distance that we will store in DynamoDB. Since the salt level will not go down at the same
+            rate across the entire surface, I will have several HC-SR04s measuring at the same time
+            in order to take an average.
+        </p>
+
+        <h4>This page is still in progress... come back later and there might be more here!</h4>
+
+
+        <p class="still-interested">
+            <strong>
+                Still interested? Go back to the
+                {{ macros.link_to("about/index.html", "page about this website")}}
+                and check out how other things work!
+            </strong>
+        </p>
+    </div>
+{% endblock %}
