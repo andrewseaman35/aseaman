@@ -30,7 +30,7 @@
         <div class="requirements">
             <ul>
                 <li>Securely fit a SainSmart HC-SR04 Distance Sensor</li>
-                <li>Provide access for a 4 pin DuPont wire</li>
+                <li>Provide access for a 4 pin Dupont wire</li>
                 <li>Somehow mount to the underside of the water softener tank</li>
             </ul>
         </div>
@@ -40,19 +40,44 @@
         </p>
         {{ macros.captioned_image("salt_level/sensor_render.png", "Sensor Rendering", None, "large") }}
         <p>
-            The black volume that's extending from the image on the left is meant to be the DuPont wire
+            The black volume that's extending from the image on the left is meant to be the Dupont wire
             that I'll be using to hook each sensor up to the central Arduino.
         </p>
         <p>
-            The renderings below show what I ended up with for the housing. I have no idea what I'm doing :)
+            The renderings below show what I ended up with for the housing.
         </p>
         {{ macros.captioned_image("salt_level/housing_front.png", "Housing Front Rendering", None, "large") }}
         {{ macros.captioned_image("salt_level/housing_back.png", "Housing Back Rendering", None, "large") }}
         <p>
-            On the front rendering, you can see where the DuPont connection sticks out a little bit. On the
-            bottom renders, the hole in the center face is meant to be a mounting point for a bolt. The tab
-            with the hole is meant to keep the two pieces together
+            On the front rendering, you can see where the Dupont connection is meant to be connected through.
+            On the bottom renderings, the hole in the center face is meant to be a mounting point for a bolt.
+            This bolt will attach the housing directly to the lid of the water softener tank and point the
+            sensor face directly downwards at the salt itself. The tab with the hole is meant to keep the two
+            pieces together.
         </p>
+        {{ macros.captioned_image("salt_level/split_v1.png", "Housing Top and Bottom", None, "large") }}
+        <p>
+            The renderings above show the internals of the top and bottom halves of the housing. The left
+            rendering shows two tabs that are meant to be latched onto by the other piece. This, in
+            conjunction with the bolt on the tab should keep the two pieces together and in place.
+            The small ledges on the sides of the left rendering are meant to support the sensor board itself
+            to ensure the proper sitting within the housing.
+        </p>
+        {{ macros.captioned_image("salt_level/enclosed.png", "Sensor Fitting", None, "large") }}
+        <p>
+            The rendering above how the board is meant to sit within the housing if everything goes as it should.
+            Fortunately, I have a friend with both a 3D printer and modeling experience who was able to take a
+            quick look over the designs to make sure they're reasonable and print them for me. Thanks Jake!
+        </p>
+
+        <h4>Minor iteration: internal connection sizing</h4>
+        <p>
+            After a initial print of the design, we found that the the internal latch connections needed more
+            tolerance in order to fit together. I made the following changes to the smaller of the two pieces
+            to allow more space between the pieces as well as an easier connection.
+        </p>
+        {{ macros.captioned_image("salt_level/connection_changes.png", "Sizing Iteration", None, "large") }}
+
 
         <h4>This page is still in progress... come back later and there might be more here!</h4>
 

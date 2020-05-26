@@ -1,0 +1,75 @@
+{% extends 'base.jinja2' %}
+
+{% block page_id %}salt-level-dupont{% endblock %}
+{% block body_class %}salt-level{% endblock %}
+
+{% block content %}
+    <div class="inner">
+        <h1>Water Softener Tracker</h1>
+        <h2>Dupont Wires</h2>
+
+        <p>
+            Each of the sensors will be connected to the central Arduino via a Dupont wire.
+            I have a bunch of single pin Dupont wires for breadboarding which would've worked,
+            but I wanted a nice four pin. I figured this would be a good time to learn how to
+            crimp them myself
+        </p>
+
+        <p>
+            I started with a some cable and separated out four wires. I cut a length of 8 inches
+            which is a couple inches more than I expect to need when I mount the devices in the
+            salt tank. I separate the wires from one another a little bit and stripped off around
+            2mm of insulation.
+        </p>
+        {{ macros.captioned_image("salt_level/dupont/cut_wire.jpg", "Wire", container_class="half") }}
+        {{ macros.captioned_image("salt_level/dupont/stripped_wire.jpg", "Stripped Wire", container_class="half") }}
+
+        <p>
+            The next thing I did was take the connecty bit and put a small bead of solder in it.
+            This would allow me to connect the wire to the connecty bit before I crimp the two.
+            I found that it was pretty difficult for me to crimp the connecty bit without doing
+            this, as the wire would just slip out most of the time.
+        </p>
+        {{ macros.captioned_image("salt_level/dupont/connecty_bit.jpg", "Connecty Bit", container_class="half") }}
+        {{ macros.captioned_image("salt_level/dupont/connecty_bit_with_solder.jpg", "Connecty Bit with Solder", container_class="half") }}
+
+        <p>
+            With a bit of solder in the connecty bit, I was easily able to attach the wire so
+            it could hold itself in place before I crimped. The images below show the connection
+            before and after crimping. I'm not really familiar with what a good crimp looks like,
+            but I've fairly certain this isn't it. It does the job though!
+        </p>
+        {{ macros.captioned_image("salt_level/dupont/crimped.jpg", "Crimped Wire") }}
+
+        <p>
+            I repeated this process for the remaining three wires on the cable.
+        </p>
+        {{ macros.captioned_image("salt_level/dupont/four_bottom.jpg", "Crimped Cable Bottom", container_class="half") }}
+        {{ macros.captioned_image("salt_level/dupont/four_top.jpg", "Crimped Cable Top", container_class="half") }}
+
+        <p>
+            With all four wires done, I could slide on the shell, successfully hiding the mess that
+            was made underneath! This was the finished Dupont wire!
+        </p>
+        {{ macros.captioned_image("salt_level/dupont/finished_bottom.jpg", "Finished Wire Bottom", container_class="half") }}
+        {{ macros.captioned_image("salt_level/dupont/finished_top.jpg", "Finished Wire Top", container_class="half") }}
+
+        <p>
+            With this done, I was able to test it out with one of the sensors. I didn't set all
+            of it up with the new wires, but I ensured that the connection fit on the sensor side
+            and testsd continuity between the sensor pin and the far side of the wire. I repeated
+            this entire process four times, one for each of the sensors that I am planning on
+            installing.
+        </p>
+        {{ macros.captioned_image("salt_level/dupont/testing_connection.jpg", "It works!") }}
+
+        <p class="still-interested">
+            <strong>
+                Still interested? Go back to the
+                {{ macros.link_to("salt_level/index.html", "Water Softener Tracker page")}}
+                and check out some other things!
+            </strong>
+        </p>
+
+    </div>
+{% endblock %}
