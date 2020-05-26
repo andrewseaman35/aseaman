@@ -6,11 +6,11 @@
     {{ PUBLIC_BUCKET_URL }}aseaman/images/{{ path }}
 {%- endmacro %}
 
-{% macro captioned_image(image_path, caption, alt=None, class=None) -%}
-    <div class="img-container">
+{% macro captioned_image(image_path, caption, alt=None, class=None, container_class=None) -%}
+    <div class="img-container{% if container_class is not none %} {{ container_class }}{% endif %}">
         <img
             src="{{ image_url(image_path) }}"
-            alt="{% if alt is not none %}{{ alt }}{% else %}{{ caption }}{% endif %}"
+            alt="{% if alt is not none %}{{ alt }}{% else %} {{ caption }}{% endif %}"
             {% if class is not none %}class="{{ class }}"{% endif %}
         >
             <div class="img-caption">

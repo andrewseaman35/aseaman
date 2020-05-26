@@ -34,6 +34,19 @@ img {
         }
     }
 
+
+    @include screen-lg {
+        &.half {
+            max-width: 50%;
+            float: left;
+
+            img {
+                max-width: 95%;
+                padding: 0 5%;
+            }
+        }
+    }
+
     .img-caption {
         align-self: center;
         padding: 10px 0 4px;
