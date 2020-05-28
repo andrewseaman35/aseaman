@@ -1,7 +1,7 @@
 {% extends 'base.jinja2' %}
 
-{% block page_id %}hardware-housing{% endblock %}
-{% block body_class %}hardware-housing{% endblock %}
+{% block page_id %}salt-level-hardware-housing{% endblock %}
+{% block body_class %}salt-level{% endblock %}
 
 {% block content %}
     <div class="inner">
@@ -78,15 +78,8 @@
         </p>
         {{ macros.captioned_image("salt_level/connection_changes.png", "Sizing Iteration", None, "large") }}
 
+        {{ macros.in_progress() }}
+        {{ macros.still_interested("about/index.html", "page about this website") }}
 
-        <h4>This page is still in progress... come back later and there might be more here!</h4>
-
-        <p class="still-interested">
-            <strong>
-                Still interested? Go back to the
-                {{ macros.link_to("about/index.html", "page about this website")}}
-                and check out how other things work!
-            </strong>
-        </p>
     </div>
 {% endblock %}

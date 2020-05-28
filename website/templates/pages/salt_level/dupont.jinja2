@@ -63,13 +63,7 @@
         </p>
         {{ macros.captioned_image("salt_level/dupont/testing_connection.jpg", "It works!") }}
 
-        <p class="still-interested">
-            <strong>
-                Still interested? Go back to the
-                {{ macros.link_to("salt_level/index.html", "Water Softener Tracker page")}}
-                and check out some other things!
-            </strong>
-        </p>
+        {{ macros.still_interested("salt_level/index.html", "Water Softener Tracker page")}}
 
     </div>
 {% endblock %}

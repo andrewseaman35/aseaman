@@ -19,3 +19,17 @@
         </img>
     </div>
 {%- endmacro %}
+
+{% macro still_interested(path, text) -%}
+    <p class="still-interested">
+        <strong>
+            Still interested? Go back to the
+            <a href="{{ ROOT_URL }}{{ path }}" title="{{ text }}">{{text}}</a>
+            and check out how other things work!
+        </strong>
+    </p>
+{%- endmacro %}
+
+{% macro in_progress() -%}
+    <h4>This page is still in progress... come back later and there might be more here!</h4>
+{%- endmacro %}
