@@ -40,13 +40,8 @@
             user notification is required.
         </p>
 
-        <p class="still-interested">
-            <strong>
-                Still interested? Go back to the
-                {{ macros.link_to("salt_level/index.html", "Salt Level")}}
-                page and check out some of the other things!
-            </strong>
-        </p>
+        {{ macros.still_interested("salt_level/index.html", "Salt Level")}}
+
     </div>
 </div>
 {% endblock %}

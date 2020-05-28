@@ -33,13 +33,9 @@
             You can see that the valve on the right (post-heat) is opened a little bit, meaning that it's working properly. There's also a spec for how much it should open, so I measured the width of the opening and confirmed that as well. Once this was done, I could confidently put it back in the car to to finish off the
             {{ macros.link_to("project_car/cooling_system.html", "cooling system replacement") }}!
         </p>
-        <p class="still-interested">
-            <strong>
-                Still interested? Go back to the
-                {{ macros.link_to("project_car/index.html", "Project Car") }}
-                page and check out something else I've done!
-            </strong>
-        </p>
+
+        {{ macros.still_interested("project_car/index.html", "Project Car") }}
+
     </div>
 </div>
 {% endblock %}

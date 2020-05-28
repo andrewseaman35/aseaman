@@ -1,0 +1,128 @@
+{% extends 'base.jinja2' %}
+
+{% block page_id %}project-car-timing-belt{% endblock %}
+{% block body_class %}project-car{% endblock %}
+
+{% block content %}
+<div class="inner">
+    <div>
+        <div class="project-header">
+            <h1>Project Car</h1>
+            <h2>Project: Replacing the Timing Belt</h2>
+        </div>
+        <p>
+            After the bulk of the {{ macros.link_to("project_car/cooling_system.html", "cooling system replacement")}}
+            work was finished, I went and took most of the cooling system back out in order
+            to start the replcement of the timing belt. Though the procedure to perform this
+            is not very difficult, the risk to the engine alongside my lack of experience made
+            me regret taking on this task so early on. Regardless, I got everything done properly
+            and without damaging anything, albeit several weeks and many stressful days after starting.
+        </p>
+
+        <div class="list">
+            <div class="list-header">Replaced Parts</div>
+            <ul>
+                <li>Timing belt</li>
+                <li>Tension bearing</li>
+                <li>Tension bearing bolt</li>
+                <li>Water pump</li>
+                <li>Water pump gasket</li>
+                <li>Water pump to heater pipe gasket</li>
+                <li>Coolant T outlet gasket</li>
+            </ul>
+        </div>
+
+        <p>
+            For some reason, I didn't take a ton of photos when going through this, but I've
+            included the ones that I have and some from other jobs that could be helpful.
+        </p>
+
+        <p>
+            The beginning of the replacement starts with the removal of the radiator and coolant
+            hoses. This is described with images on the
+            {{ macros.link_to("project_car/cooling_system.html", "cooling system replacement")}}
+            page. I repeated all of these steps to remove what I had put in previously.
+        </p>
+        {{ macros.captioned_image("project_car/timing_belt/radiator_removed.jpg", "Radiator removed", "Engine bay without radiator") }}
+
+        <p>
+            Once the radiator and coolant hoses have been removed, we can move on to the serpentine
+            belt. This is the belt that drives the alternator and the water pump.
+        </p>
+        {{ macros.captioned_image("project_car/timing_belt/serpentine_belt.jpg", "Serpentine belt and peripherals") }}
+        <p>
+            To remove the belt, you can loosen the belt's tension by first loosening the alternator
+            mounting bolt and sliding the alternator its mounting bracket. Once the tension in the belt is loose enough, it can be removed by slipping it off of the alternator pulley.
+        </p>
+        {{ macros.captioned_image("project_car/timing_belt/alternator.jpg", "Alternator on mounting bracket") }}
+        <p>
+            I then removed the battery and the spark plugs. I didn't have to do this just yet, but
+            will did it done so we can freely turn the engine by hand. To remove the spark plugs,
+            we just have to detach the spark plug wires and then remvoe the plugs with a plug socket.
+            The furthest back spark plug is both angled and tucked in there pretty well. I found that
+            it's easiest to get out with both an extension bar and a universal joint.
+        </p>
+        {{ macros.captioned_image("project_car/timing_belt/spark_plugs.jpg", "Spark plugs") }}
+        <p>
+            The last thing in the way of the timing belt is the timing belt cover. This is the
+            large yellow shield that's left on there. To get this off, we need to remove the
+            coolant T outlet by removing the two 10mm nuts that attach it. The T outlet is mounted
+            with a gasket, and we'll be sure to replace this with a new one when we put everything
+            back together.
+        </p>
+        <p>
+            After removing the coolant T outlet, we can remove the cover itself. It's held on by
+            a couple of nuts towards the top and several bolts spread around the body of it. The nuts
+            have washers that should be removed and stored so they're not lost. The bolts have
+            plastic inserts that slide into the body of the timing belt cover. These should also be
+            removed and stored so they don't get lost if they slip out.
+        </p>
+        {{ macros.captioned_image("project_car/timing_belt/timing_belt_cover.jpg", "Timing belt cover") }}
+        <p>
+            With the cover off, I wanted to get the engine's static timing marks lined up before
+            I kept going. Since the spark plugs have already been removed, we should be able to
+            turn the engine by hand. We first shift the car into neutral, making to to engage
+            the e-brake or chock the wheels. The crankshaft has a 38mm pulley bolt that can be
+            turned clockwise to turn the engine. I ended up using a 1.5" socket since I didn't
+            have a 38mm socket.
+        </p>
+        <p>
+            I unfortunately didn't take any pictures of this part, but there are timing marks on
+            both camshaft pulleys, the crankshaft pulley, and the auxilary shaft pulley. I
+            started by aligning the camshaft timing marks. There are two fins that point to
+            where the camshaft timing marks need to be. Once the marks are aligned, we can double
+            check that the timing is already as it should be by making sure that the first
+            cylinder piston is at top dead center (TDC). We can easily do this by putting
+            a long stick into the first spark plug hole (I used a straw), and making sure that the straw is lifted to its peak when the marks are aligned.
+        </p>
+        <p>
+            With the camshaft marks lined up, I checked that the crankshaft timing mark is lined
+            up as expected as well. The alignment marks are on the timing belt cover, so we
+            have to put that back on to check. There are three marks towards the bottom of the
+            cover and ideally, the crankshaft mark will be aligned with the center mark. In my
+            case, this is what I found, meaning the static timing was lined up properly. With
+            that done, we could put the car back into gear in order to lock the cams.
+        </p>
+        {{ macros.captioned_image("project_car/timing_belt/static_timing_crank.jpg", "Crankshaft timing mark") }}
+        <p>
+            With the static timing done, we should take a look at the auxilary shaft mark. It
+            should be at around 1 o'clock or 34&deg;. Regardless of where it is, we should take note
+            of where it is to make sure it's in the same spot when we're done.
+        </p>
+        <p>
+            The next step is remove the water pump. This isn't a completely necessary step
+            but it gives us more space to work with and was also due a replacement, so I took it
+            out. There are three bolts that mount the belt pulley onto the pump. These have to
+            be removed first so we can get to the pump mounting bolts. The heater pipe connects
+            to the back of the pump and has to be disconnected as well. There are two gaskets
+            that we need to replace: one connecting the water pump to the engine body and
+            one connecting the water pump to the heater pump. After removing the water pump,
+            I cleaned all of faces that will get a gasket replacement later.
+        </p>
+
+        {{ macros.in_progress() }}
+        {{ macros.still_interested("project_car/index.html", "Project Car") }}
+
+    </div>
+</div>
+{% endblock %}
