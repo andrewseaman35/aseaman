@@ -1,4 +1,7 @@
+import $ from 'jquery';
+
 import CONFIG from './config';
+import CONSTANTS from './constants';
 
 function getAPIUrl(path) {
     if (CONFIG.LOCAL) {
@@ -45,6 +48,10 @@ function getUrlTo(path) {
     return CONFIG.ROOT_URL + path;
 }
 
+function isMobile() {
+    return $(window).width() < CONSTANTS.SCREEN_SMALL_WIDTH_MAX;
+}
+
 const KEY_CODE = {
     ESCAPE: 'Escape',
     LEFT: 'ArrowLeft',
@@ -54,6 +61,7 @@ const KEY_CODE = {
 
 module.exports = {
     KEY_CODE,
+    isMobile,
     getAPIUrl,
     setCookie,
     getCookie,

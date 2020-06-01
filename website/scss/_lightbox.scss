@@ -45,37 +45,49 @@
     }
 
     .lightbox-content {
-        @include screen-med {
-            height: 75%;
-            width: 75%;
-        }
-
-        @include screen-lg {
-            height: 85%;
-            width: 85%;
-        }
         position: fixed;
         display: flex;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
+        height: 75%;
+        width: 85%;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
+
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        overflow: visible;
+
         pointer-events: none; // Let clicks pass through to lightbox-outer
 
-        img {
+        .img-caption {
+            display: none;
+            flex-direction: column;
             max-height: 100%;
             max-width: 100%;
-            background-color: $white;
-            pointer-events: all; // capture clicks on the image itself
-            z-index: $z-index-lightbox-image;
-            display: none;
 
             &.displayed {
                 display: flex;
             }
+
+            img {
+                max-height: 100%;
+                max-width: 100%;
+                background-color: $white;
+                pointer-events: all; // capture clicks on the image itself
+                z-index: $z-index-lightbox-image;
+            }
+
+            .caption {
+                font-size: 16px;
+                padding: 12px;
+                margin-top: 12px;
+                background-color: rgba(255, 255, 255, .8);
+                text-align: center;
+                border-radius: 10px;
+            }
         }
+
     }
 }
 .no-background {
