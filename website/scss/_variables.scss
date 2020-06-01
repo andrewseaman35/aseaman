@@ -1,11 +1,16 @@
 $white: #FFFFFF;
 $light-gray: #EEEEEE;
+$dark-gray: #878787;
 $blackish: #111111;
 
 $base-text-color: $blackish;
 $link-color: #0000EE;
 
 $z-index-nav: 10;
+
+$z-index-lightbox: 20;
+$z-index-lightbox-close: 21;
+$z-index-lightbox-image: 21;
 
 $header-height: 48px;
 $footer-height: 50px;
