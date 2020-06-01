@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import React from 'react';
 import CONSTANTS from '../constants';
-import { getImageSrc, KEY_CODE } from '../utils';
+import { isMobile, getImageSrc, KEY_CODE } from '../utils';
 
 
 class Lightbox extends React.Component {
@@ -44,6 +44,7 @@ class Lightbox extends React.Component {
                 }
                 const additionalClass = image.dataset['lbClass'] ? image.dataset['lbClass'] : '';
                 this.imagesByGroupId[lightboxGroup].push({
+                    caption: image.alt,
                     src: image.src,
                     class: additionalClass
                 });
@@ -62,18 +63,22 @@ class Lightbox extends React.Component {
     }
 
     getCurrentImage() {
-        return this.imagesByGroupId[this.state.currentGroup][this.state.currentImageIndex].src;
+        return this.imagesByGroupId[this.state.currentGroup][this.state.currentImageIndex];
+    }
+
+    getCurrentImageSrc() {
+        return this.getCurrentImage().src;
     }
 
     getCurrentClass() {
-        return this.imagesByGroupId[this.state.currentGroup][this.state.currentImageIndex].class;
+        return this.getCurrentImage().class;
     }
 
     handleKeyDown() {
-        if (!(event.code in this.eventListenerMapping)) {
-            return;
+        if (!this.state.isOpen || !this.state.currentGroup) {
+            return
         }
-        if ($(window).width() >= CONSTANTS.SCREEN_SMALL_WIDTH_MAX) {
+        if (!(event.code in this.eventListenerMapping)) {
             return;
         }
 
@@ -91,7 +96,7 @@ class Lightbox extends React.Component {
 
         this.setState({
             currentImageIndex: nextImageIndex,
-        })
+        });
     }
 
     next() {
@@ -99,7 +104,7 @@ class Lightbox extends React.Component {
         const nextImageIndex = (this.state.currentImageIndex + 1) % currentGroupImages.length;
         this.setState({
             currentImageIndex: nextImageIndex,
-        })
+        });
     }
 
     close() {
@@ -117,6 +122,9 @@ class Lightbox extends React.Component {
     }
 
     open(group, imgSrc) {
+        if (isMobile()) {
+            return;
+        }
         const imagesInGroup = this.imagesByGroupId[group];
         const imageIndex = imagesInGroup.map(function(e) { return e.src; }).indexOf(imgSrc);
 
@@ -136,15 +144,26 @@ class Lightbox extends React.Component {
         if (imagesInGroup.length > 1) {
             const elements = [];
             for (let i = 0; i < imagesInGroup.length; i++) {
-                const className = i === this.state.currentImageIndex ? 'displayed' : '';
+                const className = i === this.state.currentImageIndex ? 'img-caption displayed' : 'img-caption';
                 const imageSrc = imagesInGroup[i].src;
+                const imageCaption = imagesInGroup[i].caption;
                 elements.push(
-                    <img className={className} src={imageSrc} alt="" key={i} />
+                    <div className={className} key={i}>
+                        <img className='displayed' src={imageSrc} alt=""/>
+                        <div className='caption'>{imageCaption}</div>
+                    </div>
                 )
             }
             return elements;
         }
-        return <img className='displayed' src={this.getCurrentImage()} alt=""/>;
+
+        const image = this.getCurrentImage();
+        return (
+            <div className="img-caption displayed">
+                <img src={image.src} alt=""/>
+                <div className='caption'>{image.caption}</div>
+            </div>
+        )
 
     }
 
@@ -176,7 +195,7 @@ class Lightbox extends React.Component {
                 </div>
                 <div id='lightbox-outer' className='lightbox' data-close-lightbox='true' onClick={this.onCloseButtonClick}>
                     <div id='lightbox-previous' className={`lightbox-control ${arrowButtonClass}`}>
-                        <img alt="Previous" data-close-lightbox='true' src="/img/icons/left_arrow.svg" onClick={this.previous} />
+                        <img alt="Previous" src="/img/icons/left_arrow.svg" onClick={this.previous} />
                     </div>
                     <div className="lightbox-content">
                         {this.renderImages()}

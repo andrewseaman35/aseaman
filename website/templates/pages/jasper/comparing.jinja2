@@ -26,7 +26,7 @@
             Lambda endpoint that runs some validation on the image file and stores
             it to S3.
         </p>
-        {{ macros.captioned_image("jasper/example/input_drawing.png", "Input drawing", "Drawing example", "bordered", lb_group="input") }}
+        {{ macros.captioned_image("jasper/example/input_drawing.png", "Input drawing", class="bordered", lb_group="input") }}
         <p>
             We use OpenCV to load the image so we can start messing around with it.
             The first thing we do with the drawing is crop it to the content. Since we've
@@ -64,7 +64,7 @@ def crop_to_content(img_file_path):
     # return submatrix of image based on bounding box of nonzero values
     return image[y:y+h, x:x+w]
         </div>
-        {{ macros.captioned_image("jasper/example/cropped_drawing.png", "Input drawing, cropped", None, "bordered", lb_group="input") }}
+        {{ macros.captioned_image("jasper/example/cropped_drawing.png", "Input drawing, cropped", class="bordered", lb_group="input") }}
         <p>
             Previous to this, I had created mask images for each of the photos of my cat, Jasper.
             This ended up being a manual step since I couldn't find a consistent way to
@@ -74,8 +74,8 @@ def crop_to_content(img_file_path):
             that I have of him. Here are some examples of the particularly difficult ones.
         </p>
         <div class="image-row">
-            {{ macros.captioned_image("jasper/example/jas-color-1.jpg", "Jasper over Jasper-colored blanket", None, "medium", lb_group="jas-color") }}
-            {{ macros.captioned_image("jasper/example/jas-color-2.jpg", "Practically invisible", None, "medium", lb_group="jas-color") }}
+            {{ macros.captioned_image("jasper/example/jas-color-1.jpg", "Jasper over Jasper-colored blanket", class="medium", lb_group="jas-color") }}
+            {{ macros.captioned_image("jasper/example/jas-color-2.jpg", "Practically invisible", class="medium", lb_group="jas-color") }}
         </div>
         <p>
             Hopefully, as I get better at working with images, I'll be able to find a way to
@@ -89,8 +89,8 @@ def crop_to_content(img_file_path):
             drawing.
         </p>
         <div class="image-row">
-            {{ macros.captioned_image("jasper/example/jas-color-1-blob.png", "Jasper as blob", None, "medium", lb_group="jas-blob") }}
-            {{ macros.captioned_image("jasper/example/jas-color-2-blob.png", "Jasper as a different blob", None, "medium", lb_group="jas-blob") }}
+            {{ macros.captioned_image("jasper/example/jas-color-1-blob.png", "Jasper as blob", class="medium", lb_group="jas-blob") }}
+            {{ macros.captioned_image("jasper/example/jas-color-2-blob.png", "Jasper as a different blob", class="medium", lb_group="jas-blob") }}
         </div>
         <p>
             I wrote a script with OpenCV that takes these blobbed photos of Jasper, finds
@@ -101,8 +101,8 @@ def crop_to_content(img_file_path):
             white on black shape representing where Jasper is on the photo.
         </p>
         <div class="image-row">
-            {{ macros.captioned_image("jasper/example/jas-bw-1.png", "Mask of Jasper blob", None, "medium", lb_group="mask") }}
-            {{ macros.captioned_image("jasper/example/jas-bw-2.png", "Another mask of Jasper blob", None, "medium", lb_group="mask") }}
+            {{ macros.captioned_image("jasper/example/jas-bw-1.png", "Mask of Jasper blob", class="medium", lb_group="mask") }}
+            {{ macros.captioned_image("jasper/example/jas-bw-2.png", "Another mask of Jasper blob", class="medium", lb_group="mask") }}
         </div>
         <p>
             At this point, we have many shapes, all white on black. One of these is the input
@@ -152,20 +152,20 @@ smaller_padded = cv2.copyMakeBorder(
             image.
         </p>
         <div class="image-row">
-            {{ macros.captioned_image("jasper/example/difference_1.png", "Blob difference", None, "medium", lb_group="blob_diff") }}
-            {{ macros.captioned_image("jasper/example/difference_2.png", "Blob difference", None, "medium", lb_group="blob_diff") }}
+            {{ macros.captioned_image("jasper/example/difference_1.png", "Blob difference", class="medium", lb_group="blob_diff") }}
+            {{ macros.captioned_image("jasper/example/difference_2.png", "Blob difference", class="medium", lb_group="blob_diff") }}
         </div>
         <p>
             At the end of all of this, we end up with a single image of Jasper where the Jasper's
             shape is most like the input drawing we're comparing to!
         </p>
         <div class="image-row">
-            {{ macros.captioned_image("jasper/example/input_drawing.png", "Input drawing", None, "medium", lb_group="final") }}
-            {{ macros.captioned_image("jasper/example/selected_blob.png", "Selected blob", None, "medium", lb_group="final") }}
+            {{ macros.captioned_image("jasper/example/input_drawing.png", "Input drawing", class="medium", lb_group="final") }}
+            {{ macros.captioned_image("jasper/example/selected_blob.png", "Selected blob", class="medium", lb_group="final") }}
         </div>
         <div class="image-row">
-            {{ macros.captioned_image("jasper/example/selected_difference.png", "Final difference", None, "medium", lb_group="final") }}
-            {{ macros.captioned_image("jasper/example/example_final.jpg", "Final selection", None, "medium", lb_group="final") }}
+            {{ macros.captioned_image("jasper/example/selected_difference.png", "Final difference", class="medium", lb_group="final") }}
+            {{ macros.captioned_image("jasper/example/example_final.jpg", "Final selection", class="medium", lb_group="final") }}
         </div>
         <p>
             In this example, I clearly tried to match a specific image of Jasper, but it's kind of
@@ -173,16 +173,16 @@ smaller_padded = cv2.copyMakeBorder(
             other examples!
         </p>
         <div class="image-row">
-            {{ macros.captioned_image("jasper/example/input-1.png", "Example input 1", None, "medium", lb_group="more_examples") }}
-            {{ macros.captioned_image("jasper/example/output-1.jpg", "Example output 1", None, "medium", lb_group="more_examples") }}
+            {{ macros.captioned_image("jasper/example/input-1.png", "Example input 1", class="medium", lb_group="more_examples") }}
+            {{ macros.captioned_image("jasper/example/output-1.jpg", "Example output 1", class="medium", lb_group="more_examples") }}
         </div>
         <div class="image-row">
-            {{ macros.captioned_image("jasper/example/input-2.png", "Example input 2", None, "medium", lb_group="more_examples") }}
-            {{ macros.captioned_image("jasper/example/output-2.jpg", "Example output 2", None, "medium", lb_group="more_examples") }}
+            {{ macros.captioned_image("jasper/example/input-2.png", "Example input 2", class="medium", lb_group="more_examples") }}
+            {{ macros.captioned_image("jasper/example/output-2.jpg", "Example output 2", class="medium", lb_group="more_examples") }}
         </div>
         <div class="image-row">
-            {{ macros.captioned_image("jasper/example/input-3.png", "Example input 3", None, "medium", lb_group="more_examples") }}
-            {{ macros.captioned_image("jasper/example/output-3.jpg", "Example output 3", None, "medium", lb_group="more_examples") }}
+            {{ macros.captioned_image("jasper/example/input-3.png", "Example input 3", class="medium", lb_group="more_examples") }}
+            {{ macros.captioned_image("jasper/example/output-3.jpg", "Example output 3", class="medium", lb_group="more_examples") }}
         </div>
         <p>
             Next steps are to extract the outline of Jasper through OpenCV. Once I am able to do

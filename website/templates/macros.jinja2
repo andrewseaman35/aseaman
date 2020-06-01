@@ -10,7 +10,7 @@
     <div class="img-container{% if container_class is not none %} {{ container_class }}{% endif %}">
         <img
             src="{{ image_url(image_path) }}"
-            alt="{% if alt is not none %}{{ alt }}{% else %} {{ caption }}{% endif %}"
+            alt="{% if alt is not None %}{{ alt }}{% else %}{{ caption }}{% endif %}"
             {% if not omit_lb %}
                 data-lb="true"
                 {% if lb_group is not none %}data-lb-group="{{ lb_group }}"{% endif %}

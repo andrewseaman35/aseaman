@@ -106,7 +106,6 @@ class DrawJasper extends React.Component {
     }
 
     handleDown(e) {
-        console.log(this.state)
         if (this.state.finishedDrawing) {
             return;
         }
