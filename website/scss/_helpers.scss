@@ -13,3 +13,10 @@
     bottom: 0;
     padding: 5px;
 }
+
+
+.hide-sm {
+    @include screen-sm {
+        display: none !important;
+    }
+}

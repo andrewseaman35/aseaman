@@ -12,16 +12,17 @@ $screen-xl-min: 1200px;
     @media (max-width: 575px) {
         @content;
     }
- }
+}
 
- @mixin screen-med {
+@mixin screen-med {
     @media (min-width: #{$screen-md-min}) and (max-width: #{$screen-md-max}) {
         @content;
     }
- }
+}
 
- @mixin screen-lg {
+@mixin screen-lg {
     @media (min-width: #{$screen-md-min}) {
         @content;
     }
- }
+}
+
