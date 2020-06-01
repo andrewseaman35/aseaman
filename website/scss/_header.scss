@@ -29,6 +29,7 @@ a {
     list-style: none;
     padding-left: 10px;
     background-color: white;
+    padding: 8px 12px;
 
     &:hover {
         display: block;
@@ -50,7 +51,7 @@ a {
 }
 
 .nested-nav-item {
-    padding-bottom: 4px;
+    padding-bottom: 6px;
 
     &:hover::before {
         content: ">";
