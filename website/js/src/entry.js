@@ -6,6 +6,14 @@ import Patent from './Patent';
 import SaltLevel from './SaltLevel';
 import Whisky from './Whisky';
 
+import Lightbox from './components/Lightbox';
+
+function initLightbox() {
+    ReactDOM.render(
+        <Lightbox />,
+        document.getElementById('lightbox'),
+    );
+}
 
 function initDrawJasper(elementId) {
     ReactDOM.render(
@@ -41,6 +49,7 @@ function initSaltLevel(elementId) {
 
 module.exports = {
     initDrawJasper,
+    initLightbox,
     initPatent,
     initSaltLevel,
     initWhisky,

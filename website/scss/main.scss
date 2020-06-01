@@ -36,4 +36,7 @@ body {
     &.resume {
         @import "resume.scss";
     }
+    #lightbox {
+        @import "lightbox.scss";
+    }
 }

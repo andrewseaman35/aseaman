@@ -7,8 +7,10 @@ const utils = require('./utils');
 const auth = require('./auth');
 const header = require('./header');
 
+
 import {
     initDrawJasper,
+    initLightbox,
     initPatent,
     initSaltLevel,
     initWhisky,
@@ -20,6 +22,7 @@ import {
 
 const modules = {
     initDrawJasper,
+    initLightbox,
     initPatent,
     initSaltLevel,
     initWhisky,
@@ -35,5 +38,6 @@ $(window).ready(function() {
     for (const i in window.aseaman._js) {
         window.aseaman._js[i](modules);
     }
+    initLightbox()
 });
 

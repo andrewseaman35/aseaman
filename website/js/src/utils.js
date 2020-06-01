@@ -45,7 +45,15 @@ function getUrlTo(path) {
     return CONFIG.ROOT_URL + path;
 }
 
+const KEY_CODE = {
+    ESCAPE: 'Escape',
+    LEFT: 'ArrowLeft',
+    RIGHT: 'ArrowRight',
+};
+
+
 module.exports = {
+    KEY_CODE,
     getAPIUrl,
     setCookie,
     getCookie,

@@ -1,0 +1,125 @@
+.lightbox-container {
+    background-color: rgba(0, 0, 0, 0.85);
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+    overflow: hidden;
+    position: fixed;
+    z-index: $z-index-lightbox;
+}
+
+.lightbox {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    .lightbox-control {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        pointer-events: none; // Let clicks pass through to lightbox-outer
+
+        img {
+            height: 40px;
+            width: 40px;
+            padding: 20px;
+            cursor: pointer;
+            pointer-events: all; // capture clicks on the image itself
+        }
+
+        &.disabled {
+            img {
+                display: none;
+            }
+        }
+
+    }
+
+    .lightbox-content {
+        @include screen-med {
+            height: 75%;
+            width: 75%;
+        }
+
+        @include screen-lg {
+            height: 85%;
+            width: 85%;
+        }
+        position: fixed;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none; // Let clicks pass through to lightbox-outer
+
+        img {
+            max-height: 100%;
+            max-width: 100%;
+            background-color: $white;
+            pointer-events: all; // capture clicks on the image itself
+            z-index: $z-index-lightbox-image;
+            display: none;
+
+            &.displayed {
+                display: flex;
+            }
+        }
+    }
+}
+.no-background {
+    .lightbox-content {
+        img {
+            background: none;
+        }
+    }
+}
+
+
+.lightbox-close {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: $z-index-lightbox-close;
+
+    img {
+        width: 40px;
+        height: 40px;
+        margin: 8px;
+        cursor: pointer;
+    }
+}
+
+.lightbox-dots {
+    position: fixed;
+    bottom: 20px;
+    height: 15px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+
+    .lightbox-dot {
+        height: 10px;
+        width: 10px;
+        background-color: $dark-gray;
+        border-radius: 100%;
+        margin: 5px;
+
+        &.selected {
+            background-color: $white;
+        }
+    }
+}
