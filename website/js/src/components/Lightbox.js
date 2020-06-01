@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import React from 'react';
+import CONSTANTS from '../constants';
 import { getImageSrc, KEY_CODE } from '../utils';
 
 
@@ -70,6 +71,9 @@ class Lightbox extends React.Component {
 
     handleKeyDown() {
         if (!(event.code in this.eventListenerMapping)) {
+            return;
+        }
+        if ($(window).width() >= CONSTANTS.SCREEN_SMALL_WIDTH_MAX) {
             return;
         }
 
@@ -166,7 +170,7 @@ class Lightbox extends React.Component {
         const disableArrowButton = this.imagesByGroupId[this.state.currentGroup].length === 1;
         const arrowButtonClass = disableArrowButton ? 'disabled' : '';
         return (
-            <div className={`lightbox-container hide-for-small-screen ${this.getCurrentClass()}`}>
+            <div className={`lightbox-container hide-sm ${this.getCurrentClass()}`}>
                 <div className="lightbox-close">
                     <img alt="Close" data-close-lightbox='true' src="/img/icons/close.svg" onClick={this.onCloseButtonClick} />
                 </div>
