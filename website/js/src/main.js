@@ -9,6 +9,7 @@ const header = require('./header');
 
 
 import {
+    initCompareACNH,
     initDrawJasper,
     initLightbox,
     initPatent,
@@ -21,6 +22,7 @@ import {
 } from './components';
 
 const modules = {
+    initCompareACNH,
     initDrawJasper,
     initLightbox,
     initPatent,

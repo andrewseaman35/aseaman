@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import CompareACNH from './compare_acnh';
 import DrawJasper from './DrawJasper';
 import Patent from './Patent';
 import SaltLevel from './SaltLevel';
@@ -12,6 +13,13 @@ function initLightbox() {
     ReactDOM.render(
         <Lightbox />,
         document.getElementById('lightbox'),
+    );
+}
+
+function initCompareACNH(elementId) {
+    ReactDOM.render(
+        <CompareACNH />,
+        document.getElementById(elementId),
     );
 }
 
@@ -48,6 +56,7 @@ function initSaltLevel(elementId) {
 
 
 module.exports = {
+    initCompareACNH,
     initDrawJasper,
     initLightbox,
     initPatent,
