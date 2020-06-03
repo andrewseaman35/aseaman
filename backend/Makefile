@@ -9,6 +9,7 @@ DEPLOY_PARAMETERS:= \
 	ParameterKey=WhiskyApiName,ParameterValue="$(WHISKY_API_NAME)" \
 	ParameterKey=DrawJasperApiName,ParameterValue="$(DRAW_JASPER_API_NAME)" \
 	ParameterKey=SaltLevelApiName,ParameterValue="$(SALT_LEVEL_API_NAME)" \
+	ParameterKey=CompareACNHApiName,ParameterValue="$(COMPARE_ACNH_API_NAME)" \
 	ParameterKey=HostedZoneId,ParameterValue="$(HOSTED_ZONE_ID)" \
 	ParameterKey=ApiCertificateId,ParameterValue="$(API_CERTIFICATE_ID)"
 

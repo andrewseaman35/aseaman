@@ -57,5 +57,12 @@ def salt_level():
     return convert_to_response(result)
 
 
+@app.route('/compare_acnh', methods=['POST'])
+def compare_acnh():
+    payload = get_payload(request)
+    result = make_lambda_request('compare_acnh', payload, None)
+    return convert_to_response(result)
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8099)
