@@ -1969,8 +1969,8 @@ const villagers = [
         "hobbies": "Nature"
     },
     {
-        "id": "jacobna\njakeypal",
-        "name": "JacobNA\nJakeyPAL",
+        "id": "jacob",
+        "name": "Jacob",
         "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/6/65/NH-Jacob_poster.png/revision/latest?cb=20200522062554",
         "gender": "M",
         "personality": "Lazy",
@@ -3289,7 +3289,7 @@ const villagers = [
         "hobbies": "Nature"
     },
     {
-        "id": "renée",
+        "id": "renee",
         "name": "Renée",
         "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/d8/NH-Ren%C3%A9e_poster.png/revision/latest?cb=20200522190140",
         "gender": "F",
@@ -3718,8 +3718,8 @@ const villagers = [
         "hobbies": "Nature"
     },
     {
-        "id": "sporkna\ncracklepal",
-        "name": "SporkNA\nCracklePAL",
+        "id": "spork",
+        "name": "Spork",
         "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/db/NH-Spork_poster.png/revision/latest?cb=20200522190834",
         "gender": "M",
         "personality": "Lazy",
