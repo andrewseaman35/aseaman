@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import $ from 'jquery';
 
-import { getImageSrc } from '../utils';
+import { getAPIUrl } from '../utils';
 import villagers from './acnh_villagers.js'
 
 
@@ -14,6 +14,8 @@ class CompareACNH extends React.Component {
         super();
         this.completed = new Set();
 
+        this.fetchVillagerSummaries = this.fetchVillagerSummaries.bind(this);
+
         this.getRandomSelections = this.getRandomSelections.bind(this);
         this.nextComparison = this.nextComparison.bind(this);
         this.isNewComparison = this.isNewComparison.bind(this);
@@ -23,7 +25,9 @@ class CompareACNH extends React.Component {
 
         this.state = {
             villagerA: null,
+            villagerARecord: null,
             villagerB: null,
+            villagerBRecord: null,
         };
     }
 
@@ -47,6 +51,21 @@ class CompareACNH extends React.Component {
         };
     }
 
+    fetchVillagerSummaries(villagerIds) {
+        const postData = {
+            action: 'get_summary_items',
+            payload: {
+                villager_ids: villagerIds,
+            },
+        };
+        return $.ajax({
+            type: 'POST',
+            url: getAPIUrl('compare_acnh'),
+            data: JSON.stringify(postData),
+            contentType: 'application/json',
+        }).promise();
+    }
+
     nextComparison() {
         let villagersSelected = false;
         let villagerA = null;
@@ -60,7 +79,18 @@ class CompareACNH extends React.Component {
             }
         }
 
-        this.setState({ villagerA, villagerB });
+        this.fetchVillagerSummaries([villagerA.id, villagerB.id])
+            .then((response) => {
+                const recordByVillagerId = _.keyBy(response, 'villager_id');
+                console.log(response)
+                console.log(recordByVillagerId)
+                this.setState({
+                    villagerA,
+                    villagerB,
+                    villagerARecord: recordByVillagerId[villagerA.id],
+                    villagerBRecord: recordByVillagerId[villagerB.id],
+                });
+            });
     }
 
     isNewComparison(villagerA, villagerB) {
@@ -73,16 +103,30 @@ class CompareACNH extends React.Component {
         return sortedIds.join('|');
     }
 
-    submitSelection(villagerId) {
+    submitSelection(winnerId) {
         const { villagerA, villagerB } = this.state;
-        const selectedVillager = villagerId = villagerA.id ? villagerA : villagerB;
-        console.log(`selected ${selectedVillager.name}`);
+        const loserId = winnerId === villagerA.id ? villagerB.id : villagerA.id;
+
         $('.compare-card').blur();
-        this.completed.add(this.toKey(villagerA, villagerB));
-        this.nextComparison();
+        const postData = {
+            action: 'save',
+            payload: {
+                winner: winnerId,
+                loser: loserId,
+            },
+        };
+        $.ajax({
+            type: 'POST',
+            url: getAPIUrl('compare_acnh'),
+            data: JSON.stringify(postData),
+            contentType: 'application/json',
+        }).then(() => {
+            this.completed.add(this.toKey(villagerA, villagerB));
+            this.nextComparison();
+        });
     }
 
-    renderCard(villager) {
+    renderCard(villager, record) {
         const {
             id,
             name,
@@ -99,7 +143,9 @@ class CompareACNH extends React.Component {
                 <div className="compare-inner">
                     <img src={imageUrl}></img>
                     <div className="detail-container">
-                        <div className="name">{name}</div>
+                        <div className="name-and-record">
+                            {name} <span className="record">({record.wins} - {record.losses})</span>
+                        </div>
                         <table className="detail-table">
                             <tbody>
                                 <tr>
@@ -135,16 +181,16 @@ class CompareACNH extends React.Component {
     }
 
     render() {
-        const { villagerA, villagerB } = this.state;
-        if (!villagerA || ! villagerB) {
+        const { villagerA, villagerB, villagerARecord, villagerBRecord } = this.state;
+        if (!villagerA || !villagerB) {
             return null;
         }
 
         return (
             <div>
                 <div className='compare-container'>
-                    {this.renderCard(villagerA)}
-                    {this.renderCard(villagerB)}
+                    {this.renderCard(villagerA, villagerARecord)}
+                    {this.renderCard(villagerB, villagerBRecord)}
                 </div>
             </div>
         )

@@ -51,10 +51,16 @@
         margin-top: 24px;
     }
 
-    .name {
+    .name-and-record {
         font-size: 18px;
         font-weight: 700;
         margin-bottom: 12px;
+    }
+
+    .record {
+        font-size: 14px;
+        font-weight: normal;
+        font-style: italic;
     }
 
     table {

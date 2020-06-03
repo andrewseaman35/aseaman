@@ -38,6 +38,31 @@ class APILambdaHandlerBase(object):
         value = response['Parameter']['Value']
         return value
 
+    @classmethod
+    def _ddb_item_to_json(cls, ddb_item):
+        item_data = {}
+        for key, value_type_map in ddb_item.items():
+            value = cls._parse_ddb_value_type_map(value_type_map)
+            item_data[key] = value
+        return item_data
+
+    @classmethod
+    def _parse_ddb_value_type_map(cls, value_type_map):
+        value_type = next(iter(value_type_map.keys()))
+        value = value_type_map[value_type]
+        if value_type == 'S':
+            return str(value)
+        elif value_type == 'N':
+            return int(value)
+        elif value_type == 'L':
+            return [cls._parse_ddb_value_type_map(val) for val in value]
+        elif value_type == 'M':
+            return {
+                key: cls._parse_ddb_value_type_map(val) for (key, val) in value.items()
+            }
+        else:
+            raise Exception('unsupported value: {}'.format(value_type))
+
     def _empty_response(self):
         return {
             "isBase64Encoded": False,
