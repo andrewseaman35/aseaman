@@ -1,0 +1,88 @@
+#compare-acnh-container {
+    @include screen-sm {
+        padding-bottom: 100px;
+    }
+}
+
+.compare-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+
+    @include screen-lg {
+        padding: 24px;
+    }
+}
+
+.compare-inner {
+    max-width: 100%;
+}
+
+.compare-card {
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+    border-radius: 8px;
+    text-align: left;
+    max-width: 50%;
+
+    @include screen-sm {
+        &:first-child {
+            margin-right: 8px;
+        }
+    }
+
+    @include screen-lg {
+        padding: 24px;
+    }
+
+    img {
+        max-width: 100%;
+    }
+
+    &:hover {
+        border: 1px solid $blackish;
+        background-color: $light-gray;
+        cursor: pointer;
+        color: $blackish;
+    }
+
+    .detail-container {
+        margin-top: 24px;
+    }
+
+    .name {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
+
+    table {
+        border-spacing: 0 4px;
+
+        td {
+            padding: 0;
+
+            &.detail-value {
+                padding-left: 8px;
+                @include screen-sm {
+                    padding-bottom: 4px;
+                }
+            }
+
+            @include screen-sm {
+                // Stack the tds for mobile
+                display: block;
+                clear:both;
+            }
+        }
+    }
+    .x {
+        border-radius: 8px;
+        padding: 0;
+        /* border: 0; */
+        text-align: left;
+    }
+}
+
+

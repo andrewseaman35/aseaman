@@ -39,4 +39,7 @@ body {
     #lightbox {
         @import "lightbox.scss";
     }
+    &.compare-acnh {
+        @import "compare_acnh.scss";
+    }
 }
