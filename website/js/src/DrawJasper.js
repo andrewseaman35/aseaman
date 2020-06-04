@@ -212,11 +212,11 @@ class DrawJasper extends React.Component {
         const matchId = match.matchId;
         return (
             <div className="after-match">
-                <div class="img-container">
+                <div className="img-container">
                     <img className="input-drawing" id="drawing-image" src={this.state.imgSrc} />
                     <div className="img-caption">Your drawing!</div>
                 </div>
-                <div class="img-container">
+                <div className="img-container">
                     <img className="match-image" width="400px" src={getImageSrc(`images/jasper/data/original/${matchId}.jpg`)} />
                     <div className="img-caption">Your match!</div>
                 </div>
