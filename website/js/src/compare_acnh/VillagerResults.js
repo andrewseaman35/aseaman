@@ -35,7 +35,7 @@ class VillagerResults extends React.Component {
 
         $.when(fetchVillagerResults(villagerId), fetchVillagerSummaries([villagerId]))
             .done((resultsResponse, summariesResponse) => {
-                const results = resultsResponse[0];
+                const results = _.filter(resultsResponse[0], (result) => (result.wins + result.losses > 0));
                 const summary = summariesResponse[0][0];
                 this.setState({ results, summary });
             });
