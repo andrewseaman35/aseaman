@@ -1,5 +1,6 @@
 {% extends 'base.jinja2' %}
 
+{% block page_title %}Villager Showdown{% endblock %}
 {% block page_id %}acnh-compare{% endblock %}
 {% block body_class %}acnh{% endblock %}
 
@@ -11,6 +12,9 @@
         <p>
             Choose your favorite Animal Crossing: New Horizons villager and help us find
             the ultimate villager!
+        </p>
+        <p>
+            <strong>Pro tip:</strong> Use your left and right arrow keys!
         </p>
         <div class="view-leaderboard">
             {{ macros.link_to("acnh/rankings.html", "View the leaderboard")}}
