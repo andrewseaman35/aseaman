@@ -2,6 +2,19 @@ import $ from 'jquery';
 
 import { getAPIUrl } from '../utils';
 
+
+function fetchAllSummaries() {
+    const postData = {
+        action: 'all_summary_items',
+    };
+    return $.ajax({
+        type: 'POST',
+        url: getAPIUrl('compare_acnh'),
+        data: JSON.stringify(postData),
+        contentType: 'application/json',
+    }).promise();
+}
+
 function fetchVillagerSummaries(villagerIds) {
     const postData = {
         action: 'get_summary_items',
@@ -33,6 +46,7 @@ function fetchVillagerResults(villagerId) {
 }
 
 module.exports = {
+    fetchAllSummaries,
     fetchVillagerSummaries,
     fetchVillagerResults,
 }

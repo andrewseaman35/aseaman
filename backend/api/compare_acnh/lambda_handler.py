@@ -11,6 +11,16 @@ LOCAL_SUMMARY_TABLE_NAME = 'compare_acnh_summary_local'
 RESULTS_TABLE_NAME = 'compare_acnh_results'
 LOCAL_RESULTS_TABLE_NAME = 'compare_acnh_results_local'
 
+
+def summarySortKey(item):
+    return (
+        -int(item['wins']),
+        -(int(item['wins']) - int(item['losses'])),
+        int(item['losses']),
+        item['villager_id']
+    )
+
+
 class CompareACNHHandler(APILambdaHandlerBase):
     require_auth = False
 
@@ -78,7 +88,7 @@ class CompareACNHHandler(APILambdaHandlerBase):
         ddb_items = result.get('Responses', {}).get(self.summary_table_name, [])
         items = [self._ddb_item_to_json(ddb_item) for ddb_item in ddb_items]
 
-        return items
+        return sorted(items, key=summarySortKey)
 
     def _get_results(self):
         result = self.ddb_client.query(
@@ -150,7 +160,7 @@ class CompareACNHHandler(APILambdaHandlerBase):
                 for key, value in ddb_item.items()
             } for ddb_item in ddb_items
         ]
-        return items
+        return sorted(items, key=summarySortKey)
 
     def _run(self):
         result = self.actions[self.action]()

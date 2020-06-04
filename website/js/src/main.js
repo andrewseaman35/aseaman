@@ -8,6 +8,7 @@ const auth = require('./auth');
 const header = require('./header');
 
 import {
+    initACNHRankings,
     initCompareACNH,
     initVillagerResults,
     initDrawJasper,
@@ -22,6 +23,7 @@ import {
 } from './components';
 
 const modules = {
+    initACNHRankings,
     initCompareACNH,
     initVillagerResults,
     initDrawJasper,

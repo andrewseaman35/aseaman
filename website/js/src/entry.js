@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { CompareACNH, VillagerResults } from './compare_acnh';
+import { ACNHRankings, CompareACNH, VillagerResults } from './compare_acnh';
 import DrawJasper from './DrawJasper';
 import Patent from './Patent';
 import SaltLevel from './SaltLevel';
@@ -19,6 +19,13 @@ function initLightbox() {
 function initCompareACNH(elementId) {
     ReactDOM.render(
         <CompareACNH />,
+        document.getElementById(elementId),
+    );
+}
+
+function initACNHRankings(elementId) {
+    ReactDOM.render(
+        <ACNHRankings />,
         document.getElementById(elementId),
     );
 }
@@ -63,6 +70,7 @@ function initSaltLevel(elementId) {
 
 
 module.exports = {
+    initACNHRankings,
     initCompareACNH,
     initVillagerResults,
     initDrawJasper,

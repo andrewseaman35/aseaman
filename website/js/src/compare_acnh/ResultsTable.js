@@ -25,8 +25,8 @@ class ResultsTable extends React.Component {
             results: null,
 
             sort: {
-                key: SORT_KEYS.NAME,
-                reversed: false,
+                key: SORT_KEYS.WINS,
+                reversed: true,
             },
 
             pageIndex: 0,
@@ -101,7 +101,7 @@ class ResultsTable extends React.Component {
                     </th>
                     <th onClick={() => {this.setSort(SORT_KEYS.LOSSES)}}>
                         <span>Losses</span>
-                        { sort.key === SORT_KEYS.Losses && <Icon icon={sortIconName} size={16} /> }
+                        { sort.key === SORT_KEYS.LOSSES && <Icon icon={sortIconName} size={16} /> }
                     </th>
                 </tr>
             </thead>
