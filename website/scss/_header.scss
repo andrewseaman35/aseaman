@@ -25,11 +25,15 @@ a {
     display: none;
     position: absolute;
     margin-top: 0;
-    padding-top: 8px;
+    padding-top: 20px;
     list-style: none;
     padding-left: 10px;
     background-color: white;
     padding: 8px 12px;
+
+    border: 1px solid;
+    border-top: 0;
+    border-radius: 3px;
 
     &:hover {
         display: block;
@@ -65,6 +69,10 @@ a {
 .container {
     flex-direction: row-reverse;
     justify-content: center;
+}
+
+#api-key-input {
+    width: 50px;
 }
 
 #api-key-input,
