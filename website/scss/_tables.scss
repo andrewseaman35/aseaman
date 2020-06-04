@@ -1,0 +1,53 @@
+table {
+    border-collapse: collapse;
+
+    min-width: 90%;
+    @include screen-med {
+        min-width: 800px;
+    }
+}
+
+th,
+tr>td {
+    text-align: left;
+    padding: 4px 10px;
+}
+
+th {
+    min-width: 100px;
+    padding: 12px;
+    white-space: nowrap;
+
+    &.actions {
+        display: flex;
+        min-width: 10px;
+        width: 10px;
+    }
+
+    &:hover {
+        cursor: pointer;
+        background-color: #DDDDDD;
+    }
+
+    svg {
+        margin-left: 4px;
+        vertical-align: middle;
+    }
+}
+
+tr {
+    .actions {
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    &:hover {
+        background-color: #DDDDDD;
+
+        .actions {
+            visibility: visible;
+            pointer-events: all;
+
+        }
+    }
+}

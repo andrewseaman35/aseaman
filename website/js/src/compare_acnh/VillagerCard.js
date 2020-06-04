@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 
 const VillagerCard = (props) => {
     const outerClass = `villager ${props.forCompare ? 'compare-card' : ''}`;
@@ -50,5 +52,27 @@ const VillagerCard = (props) => {
     )
 }
 
+VillagerCard.defaultProps = {
+    forCompare: false,
+    onClick: null,
+    summary: null,
+};
+
+VillagerCard.propTypes = {
+    name: PropTypes.string.isRequired,
+    gender: PropTypes.string.isRequired,
+    personality: PropTypes.string.isRequired,
+    species: PropTypes.string.isRequired,
+    birthday: PropTypes.string.isRequired,
+    catchPhrase: PropTypes.string.isRequired,
+    hobbies: PropTypes.string.isRequired,
+
+    forCompare: PropTypes.bool,
+    onClick: PropTypes.func,
+    summary: PropTypes.shape({
+        wins: PropTypes.number.isRequired,
+        losses: PropTypes.number.isRequired,
+    }),
+};
 
 module.exports = VillagerCard;

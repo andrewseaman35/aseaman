@@ -2,14 +2,14 @@ import React from 'react';
 import _ from 'lodash';
 import $ from 'jquery';
 
-import { getAPIUrl, KEY_CODE } from '../utils';
-
-import { fetchVillagerResults, fetchVillagerSummaries } from './api';
-import villagers from './acnh_villagers.js'
+import ResultsTable from './ResultsTable';
 import VillagerCard from './VillagerCard';
 
+import villagers from './acnh_villagers'
+import { fetchVillagerResults, fetchVillagerSummaries } from './api';
 
-const NEW_RANDOM_ATTEMPTS = 5;
+import { getAPIUrl, KEY_CODE } from '../utils';
+
 
 
 class VillagerResults extends React.Component {
@@ -81,21 +81,33 @@ class VillagerResults extends React.Component {
     }
 
     render() {
-        const { villagerId, summary } = this.state;
+        const { villagerId, results, summary } = this.state;
         if (!villagerId) {
             return null;
         }
         const villager = this.villagersById[villagerId];
 
         return (
-            <div className='villager-results-container'>
-                <VillagerCard
-                    {...villager}
-                    summary={summary}
-                >
-                </VillagerCard>
-                { this.renderResultsTable(villager) }
-            </div>
+            <React.Fragment>
+                <h1>
+                    ACNH Villager Stats: {villager.name}
+                </h1>
+                <div className='villager-results-container'>
+                    <VillagerCard
+                        {...villager}
+                        summary={summary}
+                    >
+                    </VillagerCard>
+                    {
+                        results && (
+                            <ResultsTable
+                                results={results}
+                            >
+                            </ResultsTable>
+                        )
+                    }
+                </div>
+            </React.Fragment>
         )
     }
 }

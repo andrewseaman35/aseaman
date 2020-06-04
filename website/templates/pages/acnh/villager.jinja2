@@ -4,18 +4,13 @@
 {% block body_class %}acnh{% endblock %}
 
 {% block content %}
-    <div class="inner">
-        <h1>
-            Compare ACNH: Villager
-        </h1>
-        <div id="acnh-villger-container"></div>
-    </div>
+    <div id="acnh-villager-container" class="inner"></div>
 {% endblock %}
 
 {% block include_js %}
     <script>
         window.aseaman.ready(function(exports) {
-            exports.initVillagerResults('acnh-villger-container');
+            exports.initVillagerResults('acnh-villager-container');
         });
     </script>
 {% endblock %}
