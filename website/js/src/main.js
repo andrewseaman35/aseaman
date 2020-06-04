@@ -7,9 +7,9 @@ const utils = require('./utils');
 const auth = require('./auth');
 const header = require('./header');
 
-
 import {
     initCompareACNH,
+    initVillagerResults,
     initDrawJasper,
     initLightbox,
     initPatent,
@@ -23,6 +23,7 @@ import {
 
 const modules = {
     initCompareACNH,
+    initVillagerResults,
     initDrawJasper,
     initLightbox,
     initPatent,

@@ -1,5 +1,7 @@
 import json
 
+from boto3.dynamodb.conditions import Key
+
 from base.lambda_handler_base import APILambdaHandlerBase
 from base.api_exceptions import BadRequestException, UnauthorizedException
 
@@ -18,12 +20,12 @@ class CompareACNHHandler(APILambdaHandlerBase):
         self.actions = {
             'all_summary_items': self._get_all_summary_items,
             'get_summary_items': self._get_summary_items,
-            'comparisons': self._get_comparisons,
+            'results': self._get_results,
             'save': self._save_result,
         }
         self.validation_actions = {
             'get_summary_items': self._validate_get_summary_items,
-            'comparisons': self._validate_get_comparisons,
+            'results': self._validate_get_results,
             'save': self._validate_save_result,
         }
 
@@ -39,8 +41,10 @@ class CompareACNHHandler(APILambdaHandlerBase):
             raise BadRequestException('invalid action')
         self.payload = payload.get('payload')
 
-    def _validate_get_comparisons(self):
-        pass
+    def _validate_get_results(self):
+        self.villager_id = self.payload.get('villager_id')
+        if self.villager_id is None:
+            raise BadRequestException('villager_id parameter required')
 
     def _validate_save_result(self):
         self.winner = self.payload.get('winner')
@@ -76,8 +80,23 @@ class CompareACNHHandler(APILambdaHandlerBase):
 
         return items
 
-    def _get_comparisons(self):
-        return
+    def _get_results(self):
+        result = self.ddb_client.query(
+            TableName=self.results_table_name,
+            Select='ALL_ATTRIBUTES',
+            ConsistentRead=False,
+            KeyConditionExpression='v_id = :vid',
+            ExpressionAttributeValues={
+                ':vid': {
+                    'S': self.villager_id,
+                },
+            },
+        )
+
+        ddb_items = result.get('Items', [])
+        items = [self._ddb_item_to_json(ddb_item) for ddb_item in ddb_items]
+
+        return items
 
     def _increment_summary_count(self, villager_id, column):
         self.ddb_client.update_item(
