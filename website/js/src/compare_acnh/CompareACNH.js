@@ -2,7 +2,9 @@ import React from 'react';
 import _ from 'lodash';
 import $ from 'jquery';
 
-import { getAPIUrl } from '../utils';
+import { getAPIUrl, KEY_CODE } from '../utils';
+
+import VillagerCard from './VillagerCard';
 import villagers from './acnh_villagers.js'
 
 
@@ -13,8 +15,6 @@ class CompareACNH extends React.Component {
     constructor() {
         super();
         this.completed = new Set();
-
-        this.fetchVillagerSummaries = this.fetchVillagerSummaries.bind(this);
 
         this.getRandomSelections = this.getRandomSelections.bind(this);
         this.nextComparison = this.nextComparison.bind(this);
@@ -32,7 +32,18 @@ class CompareACNH extends React.Component {
     }
 
     componentDidMount() {
+        this.initEventListeners();
         this.nextComparison();
+    }
+
+    initEventListeners() {
+        document.addEventListener('keydown', (event) => {
+            if (event.code === KEY_CODE.LEFT) {
+                this.submitSelection(this.state.villagerA.id);
+            } else if (event.code === KEY_CODE.RIGHT) {
+                this.submitSelection(this.state.villagerB.id)
+            }
+        });
     }
 
     getRandomSelections() {
@@ -51,21 +62,6 @@ class CompareACNH extends React.Component {
         };
     }
 
-    fetchVillagerSummaries(villagerIds) {
-        const postData = {
-            action: 'get_summary_items',
-            payload: {
-                villager_ids: villagerIds,
-            },
-        };
-        return $.ajax({
-            type: 'POST',
-            url: getAPIUrl('compare_acnh'),
-            data: JSON.stringify(postData),
-            contentType: 'application/json',
-        }).promise();
-    }
-
     nextComparison() {
         let villagersSelected = false;
         let villagerA = null;
@@ -79,18 +75,7 @@ class CompareACNH extends React.Component {
             }
         }
 
-        this.fetchVillagerSummaries([villagerA.id, villagerB.id])
-            .then((response) => {
-                const recordByVillagerId = _.keyBy(response, 'villager_id');
-                console.log(response)
-                console.log(recordByVillagerId)
-                this.setState({
-                    villagerA,
-                    villagerB,
-                    villagerARecord: recordByVillagerId[villagerA.id],
-                    villagerBRecord: recordByVillagerId[villagerB.id],
-                });
-            });
+        this.setState({ villagerA, villagerB });
     }
 
     isNewComparison(villagerA, villagerB) {
@@ -126,7 +111,7 @@ class CompareACNH extends React.Component {
         });
     }
 
-    renderCard(villager, record) {
+    renderCard(villager) {
         const {
             id,
             name,
@@ -139,49 +124,17 @@ class CompareACNH extends React.Component {
             hobbies,
         } = villager;
         return (
-            <button className="compare-card" onClick={() => { this.submitSelection(villager.id) }}>
-                <div className="compare-inner">
-                    <img src={imageUrl}></img>
-                    <div className="detail-container">
-                        <div className="name-and-record">
-                            {name} <span className="record">({record.wins} - {record.losses})</span>
-                        </div>
-                        <table className="detail-table">
-                            <tbody>
-                                <tr>
-                                    <td className="detail-label">Gender: </td>
-                                    <td className="detail-value">{gender}</td>
-                                </tr>
-                                <tr>
-                                    <td className="detail-label">Personality: </td>
-                                    <td className="detail-value">{personality}</td>
-                                </tr>
-                                <tr>
-                                    <td className="detail-label">Species: </td>
-                                    <td className="detail-value">{species}</td>
-                                </tr>
-                                <tr>
-                                    <td className="detail-label">Birthday: </td>
-                                    <td className="detail-value">{birthday}</td>
-                                </tr>
-                                <tr>
-                                    <td className="detail-label">Catch Phrase: </td>
-                                    <td className="detail-value">{catchPhrase}</td>
-                                </tr>
-                                <tr>
-                                    <td className="detail-label">Hobbies: </td>
-                                    <td className="detail-value">{hobbies}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </button>
+            <VillagerCard
+                {...villager}
+                forCompare
+                onClick={() => { this.submitSelection(villager.id) }}
+            >
+            </VillagerCard>
         )
     }
 
     render() {
-        const { villagerA, villagerB, villagerARecord, villagerBRecord } = this.state;
+        const { villagerA, villagerB } = this.state;
         if (!villagerA || !villagerB) {
             return null;
         }
@@ -189,8 +142,8 @@ class CompareACNH extends React.Component {
         return (
             <div>
                 <div className='compare-container'>
-                    {this.renderCard(villagerA, villagerARecord)}
-                    {this.renderCard(villagerB, villagerBRecord)}
+                    {this.renderCard(villagerA)}
+                    {this.renderCard(villagerB)}
                 </div>
             </div>
         )

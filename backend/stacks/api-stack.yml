@@ -432,6 +432,7 @@ Resources:
                   - "dynamodb:PutItem"
                   - "dynamodb:UpdateItem"
                   - "dynamodb:Scan"
+                  - "dynamodb:BatchGetItem"
                 Resource: !Sub
                     - "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompareACNHResultTable}"
                     - { CompareACNHResultTable: "compare_acnh_results" }
@@ -446,6 +447,7 @@ Resources:
                   - "dynamodb:PutItem"
                   - "dynamodb:UpdateItem"
                   - "dynamodb:Scan"
+                  - "dynamodb:BatchGetItem"
                 Resource: !Sub
                     - "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${CompareACNHResultTable}"
                     - { CompareACNHResultTable: "compare_acnh_summary" }
