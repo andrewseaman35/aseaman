@@ -6,12 +6,15 @@
 {% block content %}
     <div class="inner">
         <h1>
-            Compare ACNH
+            Animal Crossing: Villager Showdown
         </h1>
         <p>
             Choose your favorite Animal Crossing: New Horizons villager and help us find
             the ultimate villager!
         </p>
+        <div class="view-leaderboard">
+            {{ macros.link_to("acnh/rankings.html", "View the leaderboard")}}
+        </div>
         <div id="compare-acnh-container"></div>
     </div>
 {% endblock %}

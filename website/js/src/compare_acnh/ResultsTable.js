@@ -5,9 +5,15 @@ import _ from 'lodash';
 import $ from 'jquery';
 
 import Icon from '../components/icon/Icon';
+import { getUrlTo } from '../utils';
 
 import villagers from './acnh_villagers';
 import { SORT_KEYS } from './constants';
+
+
+function urlForVillager(villagerId) {
+    return getUrlTo(`acnh/villager.html?villager_id=${villagerId}`)
+}
 
 
 class ResultsTable extends React.Component {
@@ -26,12 +32,17 @@ class ResultsTable extends React.Component {
 
             sort: {
                 key: SORT_KEYS.WINS,
-                reversed: true,
+                descending: true,
             },
 
             pageIndex: 0,
             pageSize: 30,
         };
+    }
+
+    onRowClick(e) {
+        const villagerId = e.currentTarget.dataset.villagerId;
+        window.location = urlForVillager(villagerId);
     }
 
     idToName(id) {
@@ -42,21 +53,36 @@ class ResultsTable extends React.Component {
         const { sort } = this.state;
 
         let sortFunc;
+        let reverseMultiplier = 1;
         if (sort.key === 'wins') {
-            sortFunc = (item) => (
-                [item.wins, (item.losses * -1), this.idToName(item.v_id2)]
-            );
+            if (sort.descending) {
+                sortFunc = (item) => (
+                    [(item.wins * -1), (item.losses * -1), this.idToName(item.v_id2)]
+                );
+            } else {
+                sortFunc = (item) => (
+                    [(item.wins), (item.losses * -1), this.idToName(item.v_id2)]
+                );
+            }
         } else if (sort.key === 'losses') {
-            sortFunc = (item) => (
-                [item.losses, (item.wins * -1), this.idToName(item.v_id2)]
-            );
+            if (sort.descending) {
+                sortFunc = (item) => (
+                    [(item.losses * -1), (item.wins * -1), this.idToName(item.v_id2)]
+                );
+            } else {
+                sortFunc = (item) => (
+                    [(item.losses), (item.wins * -1), this.idToName(item.v_id2)]
+                );
+            }
         } else {
             sortFunc = (item) => this.idToName(item.v_id2);
+            if (sort.descending) {
+                reverseMultiplier = -1;
+            }
         }
 
-        const reverseMultiplier = sort.reversed ? -1 : 1;
         return this.props.results.concat().sort((a, b) => (
-            sortFunc(a) < sortFunc(b) ? (-1 * reverseMultiplier) : (1 * reverseMultiplier)
+            sortFunc(a) < sortFunc(b) ? -1 : 1
         ))
     }
 
@@ -74,7 +100,7 @@ class ResultsTable extends React.Component {
         this.setState({
             sort: {
                 key: newSortKey,
-                reversed: sameHeaderClicked ? !sort.reversed : false,
+                descending: sameHeaderClicked ? !sort.descending : false,
             }
         });
     }
@@ -87,7 +113,7 @@ class ResultsTable extends React.Component {
 
     renderTableHeader() {
         const { sort } = this.state;
-        const sortIconName = this.state.sort.reversed ? 'caretDown' : 'caretUp';
+        const sortIconName = sort.descending ? 'caretDown' : 'caretUp';
         return (
             <thead>
                 <tr>
@@ -114,7 +140,7 @@ class ResultsTable extends React.Component {
             <tbody>
                 {
                     results.map((result, key) => (
-                        <tr key={key}>
+                        <tr onClick={this.onRowClick} data-villager-id={result.v_id2} key={key}>
                             <td>{this.villagersById[result.v_id2].name}</td>
                             <td>{result.wins}</td>
                             <td>{result.losses}</td>

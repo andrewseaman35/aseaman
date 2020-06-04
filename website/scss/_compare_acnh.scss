@@ -28,7 +28,16 @@
     flex-direction: row;
     align-items: self-start;
     justify-content: left;
-    height: calc(100% - 100px);
+    height: calc(100% - 100px - 20px);
+}
+
+.view-compare,
+.view-leaderboard {
+    a {
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 18px;
+    }
 }
 
 .rankings table tr {
@@ -223,5 +232,11 @@
     padding: 0px 24px;
     height: 100%;
     overflow: scroll;
+}
+
+.results-table {
+    tr {
+        cursor: pointer;
+    }
 }
 

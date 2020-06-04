@@ -5,13 +5,13 @@ import $ from 'jquery';
 import villagers from './acnh_villagers'
 
 import { fetchAllSummaries } from './api';
-import { getAPIUrl, KEY_CODE } from '../utils';
+import { getAPIUrl, getUrlTo, KEY_CODE } from '../utils';
 
 
 const LEADERBOARD_COUNT = 5;
 
 function urlForVillager(villagerId) {
-    return `/acnh/villager.html?villager_id=${villagerId}`
+    return getUrlTo(`acnh/villager.html?villager_id=${villagerId}`)
 }
 
 
@@ -119,8 +119,11 @@ class ACNHRankings extends React.Component {
         return (
             <React.Fragment>
                 <h1>
-                    ACNH Villager Rankings
+                    Villager Showdown Leaderboard
                 </h1>
+                <div className="view-leaderboard">
+                    <a href={getUrlTo('acnh/compare.html')}>Vote now!</a>
+                </div>
                 <div className='villager-rankings-container'>
                     { this.renderLeaders() }
                     { this.renderRankingsTable() }

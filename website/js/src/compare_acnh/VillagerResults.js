@@ -8,7 +8,7 @@ import VillagerCard from './VillagerCard';
 import villagers from './acnh_villagers'
 import { fetchVillagerResults, fetchVillagerSummaries } from './api';
 
-import { getAPIUrl, KEY_CODE } from '../utils';
+import { getAPIUrl, getUrlTo, KEY_CODE } from '../utils';
 
 
 
@@ -90,8 +90,11 @@ class VillagerResults extends React.Component {
         return (
             <React.Fragment>
                 <h1>
-                    ACNH Villager Stats: {villager.name}
+                    Villager Stats: {villager.name}
                 </h1>
+                <div className="view-leaderboard">
+                    <a href={getUrlTo('acnh/rankings.html')}>Back to leaderboard</a>
+                </div>
                 <div className='villager-results-container'>
                     <VillagerCard
                         {...villager}
