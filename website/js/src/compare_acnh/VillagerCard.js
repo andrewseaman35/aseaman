@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 
 const VillagerCard = (props) => {
-    const outerClass = `villager ${props.forCompare ? 'compare-card' : ''}`;
+    const outerClass = `villager ${props.forCompare ? 'compare-card' : ''} ${props.class}`;
     const onClick = props.onClick ? props.onClick : () => {};
     const role = props.onClick ? "button" : "";
     const summary = props.summary;
@@ -56,6 +56,7 @@ VillagerCard.defaultProps = {
     forCompare: false,
     onClick: null,
     summary: null,
+    class: '',
 };
 
 VillagerCard.propTypes = {
@@ -67,6 +68,7 @@ VillagerCard.propTypes = {
     catchPhrase: PropTypes.string.isRequired,
     hobbies: PropTypes.string.isRequired,
 
+    class: PropTypes.string.isRequired,
     forCompare: PropTypes.bool,
     onClick: PropTypes.func,
     summary: PropTypes.shape({

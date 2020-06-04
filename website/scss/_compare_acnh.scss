@@ -33,6 +33,7 @@
 
 .view-compare,
 .view-leaderboard {
+
     a {
         text-decoration: none;
         font-weight: 700;
@@ -145,6 +146,15 @@
     text-align: left;
     max-width: 50%;
 
+    &.winner {
+        background-color: $win-green;
+    }
+
+    &.loser {
+        background-color: $lose-red;
+
+    }
+
     @include screen-sm {
         &:first-child {
             margin-right: 8px;
@@ -156,7 +166,9 @@
     }
 
     img {
-        max-width: 100%;
+        max-width: 256px;
+        max-height: 256px;
+        width: 100%;
     }
 
     .detail-container {
@@ -200,11 +212,13 @@
 .compare-card {
     border: 1px solid $blackish;
 
-    &:hover {
-        border: 1px solid $blackish;
-        background-color: $light-gray;
-        cursor: pointer;
-        color: $blackish;
+    &:not(.winner):not(.loser) {
+        &:hover {
+            border: 1px solid $blackish;
+            background-color: $light-gray;
+            cursor: pointer;
+            color: $blackish;
+        }
     }
 }
 

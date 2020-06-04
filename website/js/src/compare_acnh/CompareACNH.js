@@ -28,6 +28,9 @@ class CompareACNH extends React.Component {
             villagerARecord: null,
             villagerB: null,
             villagerBRecord: null,
+
+            winnerId: null,
+            loading: false,
         };
     }
 
@@ -75,7 +78,7 @@ class CompareACNH extends React.Component {
             }
         }
 
-        this.setState({ villagerA, villagerB });
+        this.setState({ villagerA, villagerB, loading: false, winnerId: null });
     }
 
     isNewComparison(villagerA, villagerB) {
@@ -89,8 +92,12 @@ class CompareACNH extends React.Component {
     }
 
     submitSelection(winnerId) {
+        if (this.state.loading) {
+            return;
+        }
         const { villagerA, villagerB } = this.state;
         const loserId = winnerId === villagerA.id ? villagerB.id : villagerA.id;
+        this.setState({ loading: true, winnerId: winnerId });
 
         $('.compare-card').blur();
         const postData = {
@@ -123,9 +130,14 @@ class CompareACNH extends React.Component {
             catchPhrase,
             hobbies,
         } = villager;
+        let cardClass = '';
+        if (this.state.winnerId !== null) {
+            cardClass = this.state.winnerId === villager.id ? 'winner' : 'loser';
+        }
         return (
             <VillagerCard
                 {...villager}
+                class={cardClass}
                 forCompare
                 onClick={() => { this.submitSelection(villager.id) }}
             >
