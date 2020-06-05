@@ -6,9 +6,7 @@
 
 #acnh-villager-container {
     position: relative;
-    height: 100%;
     padding: 0;
-    overflow: hidden;
 
     h1 {
         margin-top: 40px;
@@ -20,6 +18,11 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+
+    @include screen-sm {
+        flex-direction: column;
+        margin-bottom: 16px;
+    }
 
     button {
         max-height: 40px;
@@ -44,7 +47,12 @@
     flex-direction: row;
     align-items: self-start;
     justify-content: left;
-    height: calc(100% - 100px - 20px);
+    // height: calc(100% - 100px - 20px);
+
+    @include screen-sm {
+        flex-direction: column;
+        align-items: center;
+    }
 }
 
 .back-to-all-species {
@@ -58,6 +66,18 @@
         text-decoration: none;
         font-weight: 700;
         font-size: 18px;
+        white-space: nowrap;
+    }
+}
+
+.rankings {
+    max-width: 100%;
+    overflow: scroll;
+
+    @include screen-sm {
+        th {
+            min-width: unset;
+        }
     }
 }
 
@@ -163,6 +183,9 @@
             padding: 12px 20px;
             border-radius: 10px;
             margin: 8px;
+            @include screen-sm {
+                padding: 12px 4px;
+            }
         }
 
         a {
@@ -193,9 +216,13 @@
         display: flex;
         flex-direction: row;
         justify-content: center;
+        flex-wrap: wrap;
 
         a {
             margin: 30px;
+            @include screen-sm {
+                margin: 10px;
+            }
         }
 
         .leader {
@@ -287,13 +314,38 @@
                     padding-bottom: 4px;
                 }
             }
+        }
+    }
+}
 
+.villager-compare {
+    table {
+        td {
             @include screen-sm {
                 // Stack the tds for mobile
                 display: block;
                 clear:both;
             }
         }
+    }
+}
+
+.villager-stats {
+    max-width: 256px;
+
+    @include screen-sm {
+        max-width: unset;
+    }
+    .name {
+        font-size: 24px;
+    }
+
+    .stats-table {
+        margin-bottom: 24px;
+    }
+
+    table {
+        min-width: unset;
     }
 }
 
@@ -334,9 +386,15 @@
     padding: 0px 24px;
     height: 100%;
     overflow: scroll;
+
+    @include screen-sm {
+        overflow: visible;
+        padding-bottom: 40px;
+    }
 }
 
 .results-table {
+    min-width: unset;
     tr {
         cursor: pointer;
     }

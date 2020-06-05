@@ -20,3 +20,9 @@
         display: none !important;
     }
 }
+
+.sm-only {
+    @include screen-lg {
+        display: none !important;
+    }
+}

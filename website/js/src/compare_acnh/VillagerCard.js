@@ -8,6 +8,9 @@ const VillagerCard = (props) => {
     const role = props.onClick ? "button" : "";
     const summary = props.summary;
     const record = summary ? `  (${summary.wins} - ${summary.losses})` : '';
+    const winPercentage = summary ? `${summary.win_percentage}%` : null;
+    const overallRanking = props.overallRanking;
+    const speciesRanking = props.speciesRanking;
 
     return (
         <div className={outerClass} onClick={onClick} role={role}>
@@ -18,6 +21,34 @@ const VillagerCard = (props) => {
                         <span className="name">{props.name}</span>
                         { record && <span className="record">{record}</span> }
                     </div>
+                    {
+                        winPercentage !== null && (
+                            <table className="stats-table">
+                                <tbody>
+                                    <tr>
+                                        <td className="detail-label">
+                                            <strong>Win Percentage:</strong>
+                                        </td>
+                                        <td className="detail-value">{winPercentage}</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="detail-label">
+                                            <strong>Overall Ranking:</strong>
+                                        </td>
+                                        <td className="detail-value">{overallRanking}</td>
+                                    </tr>
+                                    <tr>
+
+                                    <td className="detail-label">
+                                        <strong>Species Ranking:</strong>
+                                    </td>
+                                    <td className="detail-value">{speciesRanking}</td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        )
+                    }
                     <table className="detail-table">
                         <tbody>
                             <tr>
@@ -67,6 +98,8 @@ VillagerCard.propTypes = {
     birthday: PropTypes.string.isRequired,
     catchPhrase: PropTypes.string.isRequired,
     hobbies: PropTypes.string.isRequired,
+    speciesRanking: PropTypes.number,
+    overallRanking: PropTypes.number,
 
     class: PropTypes.string.isRequired,
     forCompare: PropTypes.bool,

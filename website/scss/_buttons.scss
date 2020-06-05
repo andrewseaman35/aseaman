@@ -69,6 +69,13 @@ button.link-button {
         $TOGGLE_BORDER_RADIUS: calc(#{$TOGGLE_BUTTON_HEIGHT} / 2);
         width: 200px;
         height: $TOGGLE_BUTTON_HEIGHT;
+        white-space: nowrap;
+
+        @include screen-sm {
+            width: 140px;
+            padding: 4px 12px;
+            font-size: 12px;
+        }
 
         &.active {
             background-color: $dark-gray;
