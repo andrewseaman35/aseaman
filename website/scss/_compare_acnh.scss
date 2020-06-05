@@ -15,12 +15,28 @@
     }
 }
 
+.acnh-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    button {
+        max-height: 40px;
+    }
+}
+
 .villager-rankings-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: calc(100% - 100px);
+    height: calc(100% - 200px);
+}
+
+.villager-species-container {
+    height: calc(100% - 200px);
+    display: flex;
 }
 
 .villager-results-container {
@@ -29,6 +45,10 @@
     align-items: self-start;
     justify-content: left;
     height: calc(100% - 100px - 20px);
+}
+
+.back-to-all-species {
+    margin-bottom: 12px;
 }
 
 .view-compare,
@@ -49,6 +69,12 @@
     a {
         color: black;
         text-decoration: none;
+        padding: 12px;
+        border-radius: 10px;
+
+        &:hover {
+            background-color: $light-gray;
+        }
     }
 
     .leader-details {
@@ -105,13 +131,74 @@
         }
     }
 
+    &.by-species {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+
+        .species-label-container {
+            border-radius: 10px;
+            padding: 4px 0;
+            text-align: center;
+            cursor: pointer;
+
+            &:hover {
+                background-color: $light-gray;
+            }
+        }
+        .species-label {
+            font-size: 20px;
+            font-weight: 700;
+            text-decoration: underline;
+        }
+
+        .view-species-label {
+            font-size: 12px;
+            text-decoration: none;
+            font-weight: 400;
+            margin-top: 4px;
+        }
+
+        .species-leader {
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin: 8px;
+        }
+
+        a {
+            margin: 0;
+            padding: 0;
+        }
+
+        .leader {
+            border-radius: 10px;
+            padding: 12px;
+
+            .name {
+                font-weight: 700;
+            }
+
+            &:hover {
+                background-color: $light-gray;
+                cursor: pointer;
+            }
+        }
+
+        img {
+            max-width: 100px;
+        }
+    }
+
     .runners-up {
         display: flex;
         flex-direction: row;
         justify-content: center;
 
+        a {
+            margin: 30px;
+        }
+
         .leader {
-            padding: 30px;
             .name {
                 font-weight: 700;
             }
@@ -255,3 +342,8 @@
     }
 }
 
+
+.toggle {
+    text-align: center;
+    margin-bottom: 24px;
+}

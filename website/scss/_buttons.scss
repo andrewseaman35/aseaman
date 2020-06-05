@@ -49,3 +49,46 @@ button {
         }
     }
 }
+
+button.link-button {
+    padding: 0;
+    border: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: $link-color;
+
+    &:hover {
+        background-color: unset;
+        color: $link-color-hover;
+    }
+}
+
+.toggle {
+    .toggle-button {
+        $TOGGLE_BUTTON_HEIGHT: 40px;
+        $TOGGLE_BORDER_RADIUS: calc(#{$TOGGLE_BUTTON_HEIGHT} / 2);
+        width: 200px;
+        height: $TOGGLE_BUTTON_HEIGHT;
+
+        &.active {
+            background-color: $dark-gray;
+        }
+
+        &.left {
+            border-top-left-radius: $TOGGLE_BORDER_RADIUS;
+            border-bottom-left-radius: $TOGGLE_BORDER_RADIUS;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+
+            border-right: 0;
+
+        }
+
+        &.right {
+            border-top-right-radius: $TOGGLE_BORDER_RADIUS;
+            border-bottom-right-radius: $TOGGLE_BORDER_RADIUS;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+    }
+}

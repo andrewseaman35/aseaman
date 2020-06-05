@@ -47,39 +47,6 @@ class VillagerResults extends React.Component {
         this.setState({ villagerId }, this.fetchData);
     }
 
-    renderResultRow(key, result) {
-        return (
-            <tr key={key}>
-                <td>{this.villagersById[result.v_id2].name}</td>
-                <td>{result.wins}</td>
-                <td>{result.losses}</td>
-            </tr>
-        )
-    }
-
-    renderResultsTable(villager) {
-        const { results } = this.state;
-        if (!results) {
-            return null;
-        }
-        return (
-            <div className="results">
-                <table className="results-table">
-                    <thead>
-                        <tr>
-                            <th>Opponent</th>
-                            <th>Wins</th>
-                            <th>Losses</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        { results.map((result, key) => (this.renderResultRow(key, result))) }
-                    </tbody>
-                </table>
-            </div>
-        )
-    }
-
     render() {
         const { villagerId, results, summary } = this.state;
         if (!villagerId) {
@@ -89,11 +56,17 @@ class VillagerResults extends React.Component {
 
         return (
             <React.Fragment>
-                <h1>
-                    Villager Stats: {villager.name}
-                </h1>
+                <div className="acnh-header">
+                    <h1>Villager Stats: {villager.name}</h1>
+                    <button className="view-leaderboard">
+                        <a href={getUrlTo('acnh/compare.html')}>Vote now!</a>
+                    </button>
+                </div>
                 <div className="view-leaderboard">
-                    <a href={getUrlTo('acnh/rankings.html')}>Back to leaderboard</a>
+                    <button
+                        className="link-button"
+                        onClick={ () => { window.history.back(); } }
+                    >{"< Back"}</button>
                 </div>
                 <div className='villager-results-container'>
                     <VillagerCard
