@@ -173,9 +173,9 @@ class CompareACNH extends React.Component {
             catchPhrase,
             hobbies,
         } = villager;
-        let cardClass = '';
+        let cardClass = 'villager-compare';
         if (this.state.winnerId !== null) {
-            cardClass = this.state.winnerId === villager.id ? 'winner' : 'loser';
+            cardClass += this.state.winnerId === villager.id ? ' winner' : ' loser';
         }
         return (
             <VillagerCard

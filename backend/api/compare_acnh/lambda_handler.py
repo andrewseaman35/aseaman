@@ -14,9 +14,8 @@ LOCAL_RESULTS_TABLE_NAME = 'compare_acnh_results_local'
 
 def summarySortKey(item):
     return (
-        -int(item['wins']),
-        -(int(item['wins']) - int(item['losses'])),
-        int(item['losses']),
+        -item['win_percentage'],
+        -item['total'],
         item['villager_id']
     )
 
@@ -70,6 +69,26 @@ class CompareACNHHandler(APILambdaHandlerBase):
         if self.villager_ids is None:
             raise BadRequestException('villager_ids parameter required')
 
+    def _complete_summary_items(self, items):
+        for item in items:
+            wins = int(item['wins'])
+            losses = int(item['losses'])
+            total = wins + losses
+            win_percentage = round(100 * (wins / total), 2) if total else 0
+            item['total'] = total
+            item['win_percentage'] = win_percentage
+        return items
+
+
+    def _get_all_summary_items(self):
+        ddb_items = self.ddb_client.scan(
+            TableName=self.summary_table_name,
+        )['Items']
+        items = self._complete_summary_items(
+            [self._ddb_item_to_json(ddb_item) for ddb_item in ddb_items]
+        )
+        return sorted(items, key=summarySortKey)
+
     def _get_summary_items(self):
         request_keys = [{
             'villager_id': {
@@ -86,7 +105,9 @@ class CompareACNHHandler(APILambdaHandlerBase):
         )
 
         ddb_items = result.get('Responses', {}).get(self.summary_table_name, [])
-        items = [self._ddb_item_to_json(ddb_item) for ddb_item in ddb_items]
+        items = self._complete_summary_items(
+            [self._ddb_item_to_json(ddb_item) for ddb_item in ddb_items]
+        )
 
         return sorted(items, key=summarySortKey)
 
@@ -149,18 +170,6 @@ class CompareACNHHandler(APILambdaHandlerBase):
 
         self._increment_summary_count(self.loser, 'losses')
         self._increment_result_count(self.loser, self.winner, 'losses')
-
-    def _get_all_summary_items(self):
-        ddb_items = self.ddb_client.scan(
-            TableName=self.summary_table_name,
-        )['Items']
-        items = [
-            {
-                key: value[list(value.keys())[0]]
-                for key, value in ddb_item.items()
-            } for ddb_item in ddb_items
-        ]
-        return sorted(items, key=summarySortKey)
 
     def _run(self):
         result = self.actions[self.action]()

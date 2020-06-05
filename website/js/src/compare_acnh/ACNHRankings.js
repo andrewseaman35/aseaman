@@ -163,7 +163,6 @@ class ACNHRankings extends React.Component {
     }
 
     renderLeader(villager, record, position, omitBadge) {
-        const recordString = `(${record.wins} - ${record.losses})`;
         const badge = !omitBadge ? <div className={`place-badge place-${position}`}>{position}</div> :  null;
         return (
             <a key={position} href={urlForVillager(villager.id)}>
@@ -172,7 +171,8 @@ class ACNHRankings extends React.Component {
                     <img src={villager.imageUrl} />
                     <div className="leader-details">
                         <div className="name">{villager.name}</div>
-                        <div className="record">{recordString}</div>
+                        <div className="record">{`(${record.wins} - ${record.losses})`}</div>
+                        <div className="record">{`${record.win_percentage}%`}</div>
                     </div>
                 </div>
             </a>
@@ -184,8 +184,11 @@ class ACNHRankings extends React.Component {
             <tr key={key} data-villager-id={item.villager_id} onClick={this.onRowClick}>
                 <td>({key + LEADERBOARD_COUNT + 1})</td>
                 <td>{this.villagersById[item.villager_id].name}</td>
-                <td>{item.wins}</td>
-                <td>{item.losses}</td>
+                <td>{`${item.win_percentage}%`}</td>
+                <td className="hide-sm">{item.wins}</td>
+                <td className="hide-sm">{item.losses}</td>
+                <td className="sm-only">{`${item.wins}-${item.losses}`}</td>
+                <td className="hide-sm">{item.total}</td>
             </tr>
         )
     }
@@ -199,8 +202,12 @@ class ACNHRankings extends React.Component {
                         <tr>
                             <th>Place</th>
                             <th>Villager</th>
-                            <th>Wins</th>
-                            <th>Losses</th>
+                            <th className="hide-sm">Win Percentage</th>
+                            <th className="sm-only">Win %</th>
+                            <th className="hide-sm">Wins</th>
+                            <th className="hide-sm">Losses</th>
+                            <th className="sm-only">Record</th>
+                            <th className="hide-sm">Total</th>
                         </tr>
                     </thead>
                     <tbody>

@@ -6,7 +6,7 @@ import ResultsTable from './ResultsTable';
 import VillagerCard from './VillagerCard';
 
 import villagers from './acnh_villagers'
-import { fetchVillagerResults, fetchVillagerSummaries } from './api';
+import { fetchVillagerResults, fetchAllSummaries } from './api';
 
 import { getAPIUrl, getUrlTo, KEY_CODE } from '../utils';
 
@@ -33,11 +33,19 @@ class VillagerResults extends React.Component {
     fetchData() {
         const { villagerId } = this.state;
 
-        $.when(fetchVillagerResults(villagerId), fetchVillagerSummaries([villagerId]))
+        $.when(fetchVillagerResults(villagerId), fetchAllSummaries())
             .done((resultsResponse, summariesResponse) => {
                 const results = _.filter(resultsResponse[0], (result) => (result.wins + result.losses > 0));
-                const summary = summariesResponse[0][0];
-                this.setState({ results, summary });
+                const summaryIndex = _.findIndex(summariesResponse[0], { 'villager_id': villagerId} );
+                const overallRanking = summaryIndex + 1;
+                const summary = summariesResponse[0][summaryIndex];
+                const speciesRanking = _.filter(
+                    summariesResponse[0].splice(0, summaryIndex + 1),
+                    (summary) => (
+                        this.villagersById[summary.villager_id].species === this.villagersById[villagerId].species
+                    )
+                ).length
+                this.setState({ results, summary, speciesRanking, overallRanking });
             });
     }
 
@@ -72,6 +80,9 @@ class VillagerResults extends React.Component {
                     <VillagerCard
                         {...villager}
                         summary={summary}
+                        class="villager-stats"
+                        speciesRanking={this.state.speciesRanking}
+                        overallRanking={this.state.overallRanking}
                     >
                     </VillagerCard>
                     {
