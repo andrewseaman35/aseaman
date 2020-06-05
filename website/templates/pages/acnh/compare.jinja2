@@ -6,9 +6,13 @@
 
 {% block content %}
     <div class="inner">
-        <h1>
-            Animal Crossing: Villager Showdown
-        </h1>
+        <div class="acnh-header">
+            <h1>Animal Crossing: Villager Showdown</h1>
+            <button class="view-leaderboard">
+                {{ macros.link_to('acnh/rankings.html', "Leaderboard") }}
+            </button>
+        </div>
+
         <p>
             Choose your favorite Animal Crossing: New Horizons villager and help us find
             the ultimate villager!
@@ -16,9 +20,6 @@
         <p>
             <strong>Pro tip:</strong> Use your left and right arrow keys!
         </p>
-        <div class="view-leaderboard">
-            {{ macros.link_to("acnh/rankings.html", "View the leaderboard")}}
-        </div>
         <div id="compare-acnh-container"></div>
     </div>
 {% endblock %}

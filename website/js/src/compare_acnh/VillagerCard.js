@@ -22,7 +22,7 @@ const VillagerCard = (props) => {
                         <tbody>
                             <tr>
                                 <td className="detail-label">Gender: </td>
-                                <td className="detail-value">{props.gender}</td>
+                                <td className="detail-value">{props.gender === 'M' ? 'Male' : 'Female'}</td>
                             </tr>
                             <tr>
                                 <td className="detail-label">Personality: </td>

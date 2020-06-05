@@ -40,6 +40,12 @@ function getCookie(name) {
     return null;
 }
 
+function setQueryStringParameter(key, value) {
+    const queryParams = new URLSearchParams(window.location.search);
+    queryParams.set(key, value);
+    history.replaceState(null, null, '?'+queryParams.toString());
+}
+
 function getImageSrc(path) {
     return CONFIG.PUBLIC_BUCKET_URL + 'aseaman/' + path;
 }
@@ -68,4 +74,5 @@ module.exports = {
     getImageSrc,
     getUrlTo,
     unsetCookie,
+    setQueryStringParameter,
 };

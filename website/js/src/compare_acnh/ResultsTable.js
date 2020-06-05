@@ -26,10 +26,6 @@ class ResultsTable extends React.Component {
         this.getItemsToDisplay = this.getItemsToDisplay.bind(this);
 
         this.state = {
-            villagerId: null,
-            summary: null,
-            results: null,
-
             sort: {
                 key: SORT_KEYS.WINS,
                 descending: true,
@@ -81,7 +77,7 @@ class ResultsTable extends React.Component {
             }
         }
 
-        return this.props.results.concat().sort((a, b) => (
+        return this.props.results.slice().sort((a, b) => (
             sortFunc(a) < sortFunc(b) ? -1 : 1
         ))
     }
@@ -184,7 +180,7 @@ class ResultsTable extends React.Component {
                         ))
                     }
                     {
-                        pageIndex !== (pageCount - 1) && (
+                        pageIndex !== (pageCount - 1) && (pageCount > 1) && (
                             <button onClick={() => { this.setPage(pageIndex + 1) }}>{'next>'}</button>
                         )
                     }
