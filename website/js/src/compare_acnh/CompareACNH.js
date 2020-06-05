@@ -4,6 +4,7 @@ import $ from 'jquery';
 
 import { getAPIUrl, KEY_CODE } from '../utils';
 
+import { fetchAllSummaries } from './api';
 import VillagerCard from './VillagerCard';
 import villagers from './acnh_villagers.js'
 
@@ -17,11 +18,17 @@ class CompareACNH extends React.Component {
         this.completed = new Set();
 
         this.getRandomSelections = this.getRandomSelections.bind(this);
+        this.refreshVillagerOrder = this.refreshVillagerOrder.bind(this);
         this.nextComparison = this.nextComparison.bind(this);
         this.isNewComparison = this.isNewComparison.bind(this);
         this.toKey = this.toKey.bind(this);
 
         this.villagers = [...villagers];
+        this.villagersById = _.keyBy(this.villagers, 'id');
+
+        this.villagerSummaries = null;
+        this.orderedVillagerIds = null;
+        this.orderIndex = 0;
 
         this.state = {
             villagerA: null,
@@ -35,8 +42,38 @@ class CompareACNH extends React.Component {
     }
 
     componentDidMount() {
-        this.initEventListeners();
-        this.nextComparison();
+        this.refreshVillagerOrder(() => {
+            this.initEventListeners();
+            this.nextComparison();
+        });
+    }
+
+    refreshVillagerOrder(callback) {
+        fetchAllSummaries().then((response) => {
+            this.orderIndex = 0;
+            this.villagerSummaries = response;
+            this.orderedVillagerIds = this.orderedVillagerIdsByMatchCount(this.villagerSummaries);
+            callback();
+        });
+    }
+
+    orderedVillagerIdsByMatchCount(summaries) {
+        const villagerIdByMatchCount = {};
+        _.each(summaries, (summary) => {
+            const count = Number(summary.wins) + Number(summary.losses);
+            if (!(count in villagerIdByMatchCount)) {
+                villagerIdByMatchCount[count] = [];
+            }
+            villagerIdByMatchCount[count].push(summary.villager_id);
+        });
+        console.log(villagerIdByMatchCount)
+
+        const orderedVillagerIds = [];
+        _.each(_.sortBy(Object.keys(villagerIdByMatchCount), (k) => Number(k)), count => {
+            orderedVillagerIds.push(..._.shuffle(villagerIdByMatchCount[count]));
+        });
+
+        return orderedVillagerIds;
     }
 
     initEventListeners() {
@@ -50,13 +87,14 @@ class CompareACNH extends React.Component {
     }
 
     getRandomSelections() {
-        const firstIndex = Math.floor(Math.random() * this.villagers.length);
+        const villagerAId = this.orderedVillagerIds[this.orderIndex++];
+        const villagerA = this.villagersById[villagerAId];
+
         let secondIndex = null;
-        while(secondIndex === null || secondIndex === firstIndex){
+        while(secondIndex === null || this.villagers[secondIndex].id === villagerAId){
            secondIndex = Math.floor(Math.random() * this.villagers.length);
         }
 
-        const villagerA = this.villagers[firstIndex];
         const villagerB = this.villagers[secondIndex];
 
         return {
@@ -66,6 +104,11 @@ class CompareACNH extends React.Component {
     }
 
     nextComparison() {
+        if (this.orderIndex >= this.orderedVillagerIds.length) {
+            return this.refreshVillagerOrder(() => {
+                this.nextComparison();
+            });
+        }
         let villagersSelected = false;
         let villagerA = null;
         let villagerB = null;
