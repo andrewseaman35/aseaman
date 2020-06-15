@@ -36,12 +36,14 @@ class ACNHRankings extends React.Component {
         this.displayBySpecies = this.displayBySpecies.bind(this);
 
         const view = this.getViewFromQueryString().toLowerCase();
-        const selectedSpecies = view === VIEWS.SPECIES ? this.getSpeciesFromQueryString() : null;
+        const selectedSpecies = view === VIEWS.ALL ? this.getSpeciesFromQueryString() : null;
+        console.log(view)
+        console.log(selectedSpecies)
 
         this.state = {
             loaded: false,
             selectedSpecies: selectedSpecies,
-            viewBySpecies: view === VIEWS.SPECIES,
+            view: view,
         };
     }
 
@@ -88,7 +90,7 @@ class ACNHRankings extends React.Component {
         setQueryStringParameter(QS_VIEW, VIEWS.ALL);
         setQueryStringParameter(QS_SPECIES, species);
         this.setState({
-            viewBySpecies: false,
+            view: VIEWS.ALL,
             selectedSpecies: species,
         });
     }
@@ -97,7 +99,7 @@ class ACNHRankings extends React.Component {
         setQueryStringParameter(QS_VIEW, VIEWS.ALL);
         setQueryStringParameter(QS_SPECIES, null);
         this.setState({
-            viewBySpecies: false,
+            view: VIEWS.ALL,
             selectedSpecies: null,
         });
     }
@@ -106,18 +108,18 @@ class ACNHRankings extends React.Component {
         setQueryStringParameter(QS_VIEW, VIEWS.SPECIES);
         setQueryStringParameter(QS_SPECIES, null);
         this.setState({
-            viewBySpecies: true,
+            view: VIEWS.SPECIES,
             selectedSpecies: null,
         });
     }
 
     renderHeaderText() {
-        const { loaded, viewBySpecies, selectedSpecies } = this.state;
+        const { loaded, view, selectedSpecies } = this.state;
         if (this.state.loaded) {
-            if (this.viewBySpecies) {
+            if (view === VIEWS.SPECIES) {
                 return 'Species Leaderboard';
             }
-            if (selectedSpecies in this.rankingsBySpecies) {
+            if (view === VIEWS.ALL && selectedSpecies in this.rankingsBySpecies) {
                 return `Species Leaderboard: ${selectedSpecies}`;
             }
 
@@ -243,11 +245,12 @@ class ACNHRankings extends React.Component {
 
 
     render() {
-        const containerClass = this.state.viewBySpecies ? 'villager-species-container' : 'villager-rankings-container';
+        const { loaded, selectedSpecies, view } = this.state;
+        const containerClass = (view === VIEWS.SPECIES) ? 'villager-species-container' : 'villager-rankings-container';
         let header = 'Villager Leaderboard';
-        if (this.state.loaded && this.state.selectedSpecies in this.rankingsBySpecies) {
-            header = `Species Leaderboard: ${this.state.selectedSpecies}`;
-        } else if (this.state.viewBySpecies) {
+        if (loaded && view ===  VIEWS.ALL && selectedSpecies in this.rankingsBySpecies) {
+            header = `Species Leaderboard: ${selectedSpecies}`;
+        } else if (view === VIEWS.SPECIES) {
             header = 'Species Leaderboard';
         }
         return (
@@ -259,7 +262,7 @@ class ACNHRankings extends React.Component {
                     </button>
                 </div>
                 <Toggle
-                    startActive={this.state.viewBySpecies ? 'right' : 'left'}
+                    startActive={view === VIEWS.SPECIES ? 'right' : 'left'}
                     leftLabel="View all"
                     rightLabel="View by species"
                     onLeftToggle={this.displayViewAll}
@@ -269,7 +272,7 @@ class ACNHRankings extends React.Component {
                     this.state.loaded && (
                         <div className={containerClass}>
                             {
-                                this.state.viewBySpecies ? (
+                                view === VIEWS.SPECIES ? (
                                     this.renderViewBySpecies()
                                 ) : (
                                     <React.Fragment>
