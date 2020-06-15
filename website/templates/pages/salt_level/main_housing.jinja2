@@ -1,0 +1,78 @@
+{% extends 'base.jinja2' %}
+
+{% block page_id %}salt-level-main-housing{% endblock %}
+{% block body_class %}salt-level{% endblock %}
+
+{% block content %}
+    <div class="inner">
+        <h1>Water Softener Tracker</h1>
+        <h2>Arduino Housing</h2>
+        <h4>Tools</h4>
+        <div class="tools">
+            <ul>
+                <li><a href="https://www.autodesk.com/products/fusion-360/overview/" target="_blank" rel="noopener noreferrer">Fusion 360</a></li>
+            </ul>
+        </div>
+
+        <p>
+            In addition to the
+            {{ macros.link_to('salt_level/sensor_housing.html', 'sensor housing') }}, I wanted to design a housing
+            for the Arduino that's the core of the data collection module. The housing had the following
+            requirements:
+        </p>
+        <div class="requirements">
+            <ul>
+                <li>Securely fit a Arduino MKR WiFi 1010 with attached perf board</li>
+                <li>Allow for the LEDs to be visible</li>
+                <li>Provide access for a micro USB</li>
+                <li>Provide access for connections to the sensor units</li>
+                <li>Mount to the underside of the water softener tank</li>
+            </ul>
+        </div>
+
+        <p>
+            The first thing I did was model the Arduino and the attached perfboard. I had mounted the Arduino to
+            a little piece of perfboard so I could solder on the connections. I also mounted three LEDs that
+            are used by the program.
+        </p>
+        {{ macros.captioned_image("salt_level/main_housing/arduino_and_perf.png", "Arduino and perfboard", class="large") }}
+
+        <p>
+            With that modeled, this is what I came up with. The holes on the top are lined up with the LEDs
+            so they're visible from the outside. There are two fins on the sides which have holes to mount the
+            unit to the inside of the water softener tank. The fin at the top (just barely visible in the
+            images below) is to connect the two halves. The rectangular hole in the front lines up with
+            the micro USB port on the Arduino so it can be plugged in. There are four angled channels, two
+            per side. These channels are angled and placed for the dupont wires that attach the sensor units
+            to the Arduino.
+        </p>
+        {{ macros.captioned_image("salt_level/main_housing/outer_top.png", "Housing top", lb_group="outer") }}
+        {{ macros.captioned_image("salt_level/main_housing/outer_bottom.png", "Housing bottom", lb_group="outer") }}
+
+        <p>
+            On the inside of the bottom piece, the Arduino and perfboard side nicely with the LEDs pointing upwards.
+            The channels for the wires are placed such that the wires should enter the housing body near to where
+            their pins are for the front two, and near the perfboard to be soldered on for the back two. There are
+            two latches on the front side that mate with the top piece in order to keep the two halves set in place
+            and kept from moving around.
+        </p>
+        {{ macros.captioned_image("salt_level/main_housing/inner_bottom.png", "Inside bottom", lb_group="inner") }}
+
+        <p>
+            On the inside of the top piece, the headers on the Arduino are meant to fit in the empty space towards
+            the center to keep the Arduino in place. The three holes should sit nicely on top of the LEDs and have a
+            chamfer in order to seat the tips of the LEDs. By the port for the USB, there's the opposite latch
+            mechanism that's meant to mate with the latch on the bottom half.
+        </p>
+        {{ macros.captioned_image("salt_level/main_housing/inner_top.png", "Inside top", lb_group="inner") }}
+
+        <p>
+            I'm working on getting these printed now (thanks again, Jake!), and will be updating this page once
+            things have progressed a bit further.
+        </p>
+
+        {{ macros.in_progress() }}
+        {{ macros.still_interested("salt_level/index.html", "Water Softener Salt Tracker") }}
+
+    </div>
+{% endblock %}

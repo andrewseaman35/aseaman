@@ -1,12 +1,12 @@
 {% extends 'base.jinja2' %}
 
-{% block page_id %}salt-level-hardware-housing{% endblock %}
+{% block page_id %}salt-level-sensor-housing{% endblock %}
 {% block body_class %}salt-level{% endblock %}
 
 {% block content %}
     <div class="inner">
         <h1>Water Softener Tracker</h1>
-        <h2>Hardware Housing</h2>
+        <h2>Sensor Housing</h2>
         <h4>Tools</h4>
         <div class="tools">
             <ul>
@@ -22,10 +22,12 @@
             would also be my first experience with 3D modeling, which was exciting. My plan was to
             design something and somehow get it 3D printed.
         </p>
-        <h4>Sensor Housing</h4>
+
         <p>
             I started with the housings for the distance sensor units since they seem a bit simpler
-            than the Arduino housing. This housing had the following requirements:
+            than the Arduino housing. You can see the write-up of the Arduino housing
+            {{ macros.link_to("salt_level/main_housing.html", "here") }}.
+            This housing had the following requirements:
         </p>
         <div class="requirements">
             <ul>
@@ -79,7 +81,7 @@
         {{ macros.captioned_image("salt_level/connection_changes.png", "Sizing Iteration", class="large") }}
 
         {{ macros.in_progress() }}
-        {{ macros.still_interested("about/index.html", "page about this website") }}
+        {{ macros.still_interested("salt_level/index.html", "Water Softener Salt Tracker") }}
 
     </div>
 {% endblock %}
