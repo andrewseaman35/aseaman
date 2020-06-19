@@ -10,7 +10,9 @@
         <h4>Tools</h4>
         <div class="tools">
             <ul>
-                <li><a href="https://www.autodesk.com/products/fusion-360/overview/" target="_blank" rel="noopener noreferrer">Fusion 360</a></li>
+                <li>
+                    {{ macros.external_link("https://www.autodesk.com/products/fusion-360/overview/", "Fusion 360") }}
+                </li>
             </ul>
         </div>
 
@@ -40,7 +42,7 @@
             The first thing I did was model the sensor itself, so I could build a housing around it.
             This is what I ended up with.
         </p>
-        {{ macros.captioned_image("salt_level/sensor_render.png", "Sensor Rendering", class="large") }}
+        {{ macros.captioned_image("salt_level/sensor_housing/sensor_render.png", "Sensor Rendering", class="large") }}
         <p>
             The black volume that's extending from the image on the left is meant to be the Dupont wire
             that I'll be using to hook each sensor up to the central Arduino.
@@ -48,8 +50,8 @@
         <p>
             The renderings below show what I ended up with for the housing.
         </p>
-        {{ macros.captioned_image("salt_level/housing_front.png", "Housing Front Rendering", class="large", lb_group="housing") }}
-        {{ macros.captioned_image("salt_level/housing_back.png", "Housing Back Rendering", class="large", lb_group="housing") }}
+        {{ macros.captioned_image("salt_level/sensor_housing/housing_front.png", "Housing Front Rendering", class="large", lb_group="housing") }}
+        {{ macros.captioned_image("salt_level/sensor_housing/housing_back.png", "Housing Back Rendering", class="large", lb_group="housing") }}
         <p>
             On the front rendering, you can see where the Dupont connection is meant to be connected through.
             On the bottom renderings, the hole in the center face is meant to be a mounting point for a bolt.
@@ -57,7 +59,7 @@
             sensor face directly downwards at the salt itself. The tab with the hole is meant to keep the two
             pieces together.
         </p>
-        {{ macros.captioned_image("salt_level/split_v1.png", "Housing Top and Bottom", class="large") }}
+        {{ macros.captioned_image("salt_level/sensor_housing/split_v1.png", "Housing Top and Bottom", class="large") }}
         <p>
             The renderings above show the internals of the top and bottom halves of the housing. The left
             rendering shows two tabs that are meant to be latched onto by the other piece. This, in
@@ -65,7 +67,7 @@
             The small ledges on the sides of the left rendering are meant to support the sensor board itself
             to ensure the proper sitting within the housing.
         </p>
-        {{ macros.captioned_image("salt_level/enclosed.png", "Sensor Fitting", class="large") }}
+        {{ macros.captioned_image("salt_level/sensor_housing/enclosed.png", "Sensor Fitting", class="large") }}
         <p>
             The rendering above how the board is meant to sit within the housing if everything goes as it should.
             Fortunately, I have a friend with both a 3D printer and modeling experience who was able to take a
@@ -78,7 +80,61 @@
             tolerance in order to fit together. I made the following changes to the smaller of the two pieces
             to allow more space between the pieces as well as an easier connection.
         </p>
-        {{ macros.captioned_image("salt_level/connection_changes.png", "Sizing Iteration", class="large") }}
+        {{ macros.captioned_image("salt_level/sensor_housing/connection_changes.png", "Sizing Iteration", class="large") }}
+
+        <h4>The Result</h4>
+        <p>
+            This is what the printed pieces look like!
+        </p>
+        {{ macros.captioned_image("salt_level/sensor_housing/printed_inside.jpg", "Inside") }}
+        {{ macros.captioned_image("salt_level/sensor_housing/printed_outside.jpg", "Outside") }}
+
+        <p>
+            I'm really happy with how the prints came out! To my own surprise, the sensor fit decently well
+            and the it worked out more or less how I imagined. The little platforms on the sides properly hold
+            the sensor at the right level and provide enough surface area to mount the sensor boards. For some
+            reason, I have a little box of a lot of glasses screws that work quite nicely to mount the board.
+        </p>
+        <p>
+            I don't have a tiny enough drill bit, so I ended up heating up a needle and melting little holes
+            to screw directly into. This is what it looks like with the board mounted. Note the little screws
+            at the top right and bottom left mounting points.
+        </p>
+        {{ macros.captioned_image("salt_level/sensor_housing/sensor_seated.jpg", "Housing with mounted board") }}
+
+        <p>
+            Once mounted, everything seems to work pretty well! The housing closes nicely enough, the sensor
+            head is at the right level, and the cable fits nicely through the port.
+        </p>
+        {{ macros.captioned_image("salt_level/sensor_housing/printed_final.jpg", "Front of housing with mounted board") }}
+
+        <p>
+            I managed to get all of the sensors mounted in their housings and they all seem to work fine!
+            I still need to get some bolts to secure the two halves of the housing together as well as some
+            bolts to mount the housing to the inside of the tanks.
+        </p>
+        {{ macros.captioned_image("salt_level/sensor_housing/printed_all.jpg", "Sensor fleet") }}
+
+        <p>
+            Although it worked, there are a few things I would do differently if I were to do this again.
+        </p>
+
+        <div>
+            <ul>
+                <li>
+                    I would move the latching tabs to the corners of the inner cavity. As it is now, the pieces
+                    can slide back and forth until the bolt is in. If the tabs were in the corners as opposed
+                    to its current, more central location, they would make it so the other piece couldn't
+                    slide around.
+                </li>
+                <li>
+                    I would incorporate the holes to mount the board into the design itself. Although I managed
+                    to make holes myself, it was somewhat difficult definitely not as clean as it could've
+                    been.
+                </li>
+            </ul>
+        </div>
+
 
         {{ macros.in_progress() }}
         {{ macros.still_interested("salt_level/index.html", "Water Softener Salt Tracker") }}

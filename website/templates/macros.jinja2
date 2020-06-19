@@ -1,3 +1,7 @@
+{% macro external_link(path, text) -%}
+    <a href="{{ path }}" target="_blank" rel="noopener noreferrer">{{ text }}</a>
+{%- endmacro %}
+
 {% macro link_to(path, text) -%}
     <a href="{{ ROOT_URL }}{{ path }}" title="{{ text }}">{{text}}</a>
 {%- endmacro %}
