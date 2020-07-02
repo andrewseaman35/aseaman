@@ -43,4 +43,7 @@ body {
     &.acnh {
         @import "compare_acnh.scss";
     }
+    &.printing {
+        @import "printing.scss";
+    }
 }
