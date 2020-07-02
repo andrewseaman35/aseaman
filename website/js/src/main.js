@@ -6,6 +6,7 @@ const utils = require('./utils');
 
 const auth = require('./auth');
 const header = require('./header');
+const initMultiImageContainers = require('./multiImageContainer');
 
 import {
     initACNHRankings,
@@ -32,6 +33,7 @@ const modules = {
     initSaltLevel,
     initWhisky,
     initWhiskyShelf,
+    initMultiImageContainers,
     auth,
     config,
     constants,
