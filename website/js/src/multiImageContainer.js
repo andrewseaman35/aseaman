@@ -7,7 +7,7 @@ function shiftIndex(multiImageContainer, forwards) {
     const activeIndex = _.findIndex(imgContainers, (ic) => !$(ic).hasClass('hide'));
     const shift = forwards ? 1 : -1;
     const nextActiveIndex = (
-        activeIndex === 0 && !forwards ? imgContainers.length :
+        activeIndex === 0 && !forwards ? imgContainers.length - 1 :
         (activeIndex + shift) % imgContainers.length
     );
     _.forEach(imgContainers, (imgContainer, index) => {
