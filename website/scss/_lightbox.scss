@@ -73,9 +73,10 @@
             img {
                 max-height: 100%;
                 max-width: 100%;
-                background-color: $white;
+                background-color: $blackish;
                 pointer-events: all; // capture clicks on the image itself
                 z-index: $z-index-lightbox-image;
+                object-fit: contain;
             }
 
             .caption {
