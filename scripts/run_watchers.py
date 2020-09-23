@@ -1,6 +1,7 @@
 import os
 import threading
 import time
+import traceback
 import subprocess
 
 from base import BaseScript
@@ -71,7 +72,8 @@ class RunWatchers(BaseScript):
         try:
             self.compile_html.run()
         except Exception as e:
-            print("Error while building HTML: {}".format(e))
+            print("Error while building HTML")
+            traceback.print_exc()
 
     def trigger_scss_build(self):
         subprocess.check_output(['make', '-C', 'website', 'css'])

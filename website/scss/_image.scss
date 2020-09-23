@@ -69,3 +69,64 @@ img {
         width: fit-content;
     }
 }
+
+.multi-image-container-outer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    @include screen-lg-only {
+        flex-direction: row;
+    }
+}
+
+.multi-image-container {
+    display: flex;
+    align-items: center;
+
+    .img-container {
+        height: 400px;
+        width: 500px;
+        align-items: center;
+        justify-content: center;
+
+        &.hide {
+            display: none;
+        }
+    }
+
+    img {
+        max-height: 400px;
+        max-width: 500px;
+        height: auto;
+        width: auto;
+    }
+
+    .arrow-icon {
+        background-color: $dark-gray;
+        width: 48px;
+        height: 48px;
+
+        mask-repeat: no-repeat;
+        -webkit-mask-repeat: no-repeat;
+        mask-position: center;
+        -webkit-mask-position: center;
+        mask-size: contain;
+        -webkit-mask-size: contain;
+
+        &.previous {
+            -webkit-mask-image: url(/img/icons/left_arrow.svg);
+            mask-image: url(/img/icons/left_arrow.svg);
+        }
+        &.next {
+            -webkit-mask-image: url(/img/icons/right_arrow.svg);
+            mask-image: url(/img/icons/right_arrow.svg);
+        }
+
+        &:hover {
+            background-color: $blackish;
+            cursor: pointer;
+        }
+    }
+}
