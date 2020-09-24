@@ -1,0 +1,35 @@
+.d3-summary-container {
+
+}
+
+#summary-chart {
+    .line {
+        fill: none;
+        stroke-width: 3;
+
+        &.sensor_one {
+            stroke: #ffab00;
+        }
+        &.sensor_two {
+            stroke: #03fc77;
+        }
+    }
+
+    .overlay {
+      fill: none;
+      pointer-events: all;
+    }
+
+    /* Style the dots by assigning a fill and stroke */
+    .dot {
+        stroke: #fff;
+
+        &.sensor_one {
+            fill: #ffab00;
+        }
+        &.sensor_two {
+            fill: #03fc77;
+        }
+
+    }
+}

@@ -46,4 +46,8 @@ body {
     &.printing {
         @import "printing.scss";
     }
+
+    &.salt-level {
+        @import "salt_level.scss";
+    }
 }
