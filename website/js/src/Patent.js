@@ -4,47 +4,46 @@ import $ from 'jquery';
 import { getAPIUrl } from './utils';
 
 
+const HAPTIC_APPLICATION_NUMBER = '15655488';
+const PEDIGREE_APPLICATION_NUMBER = '16948311';
+
+
 class Patent extends React.Component {
     constructor() {
         super();
         this.renderStatusTable = this.renderStatusTable.bind(this);
         this.retrievePatentStatus = this.retrievePatentStatus.bind(this);
-
         this.patentUrl = getAPIUrl('state_check');
-        this.parentQueryData = {
-            state_id: 'patent_number',
-        };
 
         this.state = {
             displayError: false,
             pending: true,
-            patentStatusData: null,
+            hapticPatentStatus: null,
+            pedigreePatentStatus: null,
         };
     }
 
     componentDidMount() {
-        this.retrievePatentStatus()
+        this.retrievePatentStatus(HAPTIC_APPLICATION_NUMBER)
             .then(
-                (response) => {
-                    this.setState({
-                        patentStatusData: response.data,
-                    });
-                },
-                () => {
-                    this.setState({
-                        displayError: true,
-                    })
-                })
-            .then(() => {
-                this.setState({ pending: false });
-            });
+                (response) => { this.setState({ hapticPatentStatus: response.data }); },
+                () => { this.setState({ displayError: true, }); })
+            .then(() => { this.setState({ pending: false }); });
+        this.retrievePatentStatus(PEDIGREE_APPLICATION_NUMBER)
+            .then(
+                (response) => { this.setState({ pedigreePatentStatus: response.data }); },
+                () => { this.setState({ displayError: true, }); })
+            .then(() => { this.setState({ pending: false }); });
     }
 
-    retrievePatentStatus() {
+    retrievePatentStatus(applicationNumber) {
+        const payload = {
+            state_id: `patent_application-${applicationNumber}`,
+        };
         return $.ajax({
             type: 'POST',
             url: this.patentUrl,
-            data: JSON.stringify(this.parentQueryData),
+            data: JSON.stringify(payload),
             processData: false,
             contentType: 'application/json',
         }).promise();
@@ -57,14 +56,10 @@ class Patent extends React.Component {
     }
 
     renderStatusTable() {
-        if (this.state.pending) {
-            return (
-                <p>Loading...</p>
-            )
-        }
         if (this.state.displayError) {
             return this.renderError();
         }
+        const { hapticPatentStatus, pedigreePatentStatus } = this.state;
         return (
             <div>
                 <p>
@@ -72,22 +67,33 @@ class Patent extends React.Component {
                 </p>
                 <div id="patent-state">
                     <table id="state-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>App# {HAPTIC_APPLICATION_NUMBER}</th>
+                                <th>App# {HAPTIC_APPLICATION_NUMBER}</th>
+                            </tr>
+                        </thead>
                         <tbody>
                             <tr>
                                 <td>Patent exists?</td>
-                                <td>{this.state.patentStatusData.available ? ' yes!' : ' no'}</td>
+                                <td>{hapticPatentStatus && hapticPatentStatus.available ? ' yes!' : ' no'}</td>
+                                <td>{pedigreePatentStatus && pedigreePatentStatus.available ? ' yes!' : ' no'}</td>
                             </tr>
                             <tr>
                                 <td>Patent Number</td>
-                                <td>{this.state.patentStatusData.patent_number}</td>
+                                <td>{hapticPatentStatus && hapticPatentStatus.patent_number}</td>
+                                <td>{pedigreePatentStatus && pedigreePatentStatus.patent_number}</td>
                             </tr>
                             <tr>
-                                <td>Latent status</td>
-                                <td>{this.state.patentStatusData.app_status}</td>
+                                <td>Patent status</td>
+                                <td>{hapticPatentStatus && hapticPatentStatus.app_status}</td>
+                                <td>{pedigreePatentStatus && pedigreePatentStatus.app_status}</td>
                             </tr>
                             <tr>
                                 <td>Last updated</td>
-                                <td>{this.state.patentStatusData.last_updated}</td>
+                                <td>{hapticPatentStatus && hapticPatentStatus.last_updated}</td>
+                                <td>{pedigreePatentStatus && pedigreePatentStatus.last_updated}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -104,7 +110,9 @@ class Patent extends React.Component {
                     <p>
                         This page was initially set up for me to track the status of a patent application
                         that I had open. Since I set it up, the application was approved (yay!) so this page
-                        is somewhat useless. Admittedly, it wasn't terribly useful before.
+                        is somewhat useless. Admittedly, it wasn't terribly useful before. However, since then
+                        (the second "then"), I've been on another patent application, so the tiny amount of
+                        value it provided is back in business!
                     </p>
                     <p>
                         For this to work, I had set up a Lambda function that checks the status of the
@@ -128,7 +136,7 @@ class Patent extends React.Component {
                     {this.renderStatusTable()}
 
                     <p>
-                        If you're interested, you can look at the patent <a
+                        If you're interested, you can look at the granted patent <a
                             href="http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO1&Sect2=HITOFF&d=PALL&p=1&u=%2Fnetahtml%2FPTO%2Fsrchnum.htm&r=1&f=G&l=50&s1=10304298.PN.&OS=PN/10304298&RS=PN/10304298"
                             rel="noopener noreferrer"
                             target="_blank"
