@@ -33,7 +33,7 @@ build_local_js:
 build_js:
 	mkdir -p public/js/
 	./node_modules/.bin/babel js/src --out-dir public/lib
-	browserify public/lib/main.js -d | uglifyjs -cm > public/js/bundle.js
+	browserify public/lib/main.js -d | ./node_modules/.bin/terser -cm > public/js/bundle.js
 
 js: node_modules build_js
 
