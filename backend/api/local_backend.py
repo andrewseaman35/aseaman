@@ -28,6 +28,24 @@ def get_payload(request):
     payload.update({'local': True})
     return payload
 
+def get_curl_payload(request):
+    string_payload = json.loads(request.data)
+    payload = {
+        'action': string_payload['action'],
+        'payload': json.loads(string_payload['payload']),
+        'local': True, 
+    }
+    return payload
+
+@app.route('/mame_highscore', methods=['POST'])
+def mame_highscore():
+    try:
+        payload = get_payload(request)
+        payload['payload'].get
+    except:
+        payload = get_curl_payload(request)
+    result = make_lambda_request('mame_highscore', payload, None)
+    return convert_to_response(result)
 
 @app.route('/whisky', methods=['POST'])
 def whisky():

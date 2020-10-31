@@ -15,10 +15,12 @@ class MameHighscoreLambdaHandler(APILambdaHandlerBase):
         self.table_name = LOCAL_TABLE_NAME if self.is_local else TABLE_NAME
         self.actions = {
             'save': self._create,
+            'get_by_game_id': self._get_by_game_id,
             'list': self._list,
         }
         self.validation_actions = {
             'save': self._validate_create,
+            'get_by_game_id': self._validate_get_by_game_id,
             'list': self._validate_list,
         }
 
@@ -52,12 +54,29 @@ class MameHighscoreLambdaHandler(APILambdaHandlerBase):
         if self.secret_key is None:
             raise BadRequestException('secret_key parameter required')
 
+    def _validate_get_by_game_id(self):
+        # this should get the user and valuidate against the key
+        self.user = self.payload.get('user')
+        if self.user is None:
+            raise BadRequestException('user parameter required')
+
+        self.game_id = self.payload.get('game_id')
+        if self.game_id is None:
+            raise BadRequestException('game_id parameter required')
+
+        self.secret_key = self.payload.get('secret_key')
+        if self.secret_key is None:
+            raise BadRequestException('secret_key parameter required')
+
     def _validate_list(self):
         return True
         self.user = self.payload.get('user')
 
-    def _build_key(self, user):
+    def _build_key(self, game_id, user):
         return {
+            'game_id': {
+                'S': game_id,
+            },
             'user': {
                 'S': user,
             },
@@ -75,7 +94,7 @@ class MameHighscoreLambdaHandler(APILambdaHandlerBase):
                 'N': str(score),
             },
             'timestamp': {
-                'N': str(timestamp),
+                'N': str(int(time.time())),
             },
         }
 
@@ -111,6 +130,31 @@ class MameHighscoreLambdaHandler(APILambdaHandlerBase):
             },
             FilterExpression='#wsid = :wsid',
         )['Items']
+
+    def _scan_by_game_id(self):
+        return self.ddb_client.scan(
+            TableName=self.table_name,
+            ExpressionAttributeNames={
+                '#gid': 'game_id',
+            },
+            ExpressionAttributeValues={
+                ':gid': {
+                    'S': self.game_id,
+                },
+            },
+            FilterExpression='#gid = :gid',
+        )['Items']
+        
+
+    def _get_by_game_id(self):
+        ddb_items = self._scan_by_game_id()
+        items = [
+            {
+                key: value[list(value.keys())[0]]
+                for key, value in ddb_item.items()
+            } for ddb_item in ddb_items
+        ]
+        return items
 
     def _list(self):
         ddb_items = self._scan_by_user() if self.user else self._scan_all()
