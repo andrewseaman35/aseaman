@@ -154,7 +154,7 @@ class MameHighscoreLambdaHandler(APILambdaHandlerBase):
                 for key, value in ddb_item.items()
             } for ddb_item in ddb_items
         ]
-        return items
+        return sorted(items, key=lambda i: float(i['score']), reverse=True)
 
     def _list(self):
         ddb_items = self._scan_by_user() if self.user else self._scan_all()
