@@ -1,0 +1,10 @@
+{
+    "action": "save",
+    "payload": {
+        "user": "andrew",
+        "key": "secret",
+        "game_id": "my_game",
+        "score": "1000",
+        "secret_key": "my_secret"
+    }
+}
