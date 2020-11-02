@@ -13,18 +13,13 @@
             check the level of the salt to see if it needs to be filled.
         </p>
         <p>
-            My plan is to make an automatic salt level checker that will check the level of
-            the salt and write it to a DynamoDB table. On write, I will have a Lambda function
-            get triggered and check the salt level in the record. If it is below a certain
-            threshold, I will send myself a notification so I can make sure to buy salt and
-            refill it. I'm also planning on having a Lambda function regularly check the
+            I've made an automatic salt level checker that checks the level of the salt and
+            stores it in a DynamoDB table. When it gets written, a Lambda function is
+            triggered and checks the salt level in the record. If it is below a certain
+            threshold, it sends me a notification so I can make sure to buy salt and
+            refill it. I also have a Lambda function that runs every few days to check the
             table to ensure that it's being updated in case something goes wrong with my
             level checking device.
-        </p>
-        <p>
-            Once I start collecting data, this page is meant to have some useful visualizations
-            of the data. I'd like to be able to track the rate of salt consumption over time which
-            could give me insight into how I can tweak the water softener parameters.
         </p>
         <div class="list">
             <div class="list-header">Here's what I have so far:</div>
@@ -49,6 +44,10 @@
                 </li>
             </ul>
         </div>
+
+        <p>
+            The visualization here is a work in progress.
+        </p>
     </div>
     <div id="salt-level-container"></div>
 {% endblock %}
