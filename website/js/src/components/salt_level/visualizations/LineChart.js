@@ -10,6 +10,7 @@ const SETTINGS = {
     title: {
         font: "Arial",
         fontSize: 30,
+        margin: 50,
     },
 
     margin: {
@@ -30,22 +31,30 @@ const SETTINGS = {
     },
 
     axis: {
-        label: {
+        tick: {
             font: "Arial",
             fontSize: 12,
         },
+        label: {
+            font: "Arial",
+            fontSize: 16,
+        },
         x: {
-            labelType: 'number',
-            labelCount: 6,
-            labelMargin: 4,
+            label: null,
+            labelMargin: 30,
+            tickType: 'number',
+            tickCount: 6,
+            tickMargin: 4,
             roundingPlaces: 2,
             min: undefined,
             max: undefined,
         },
         y: {
-            labelType: 'number',
-            labelCount: 6,
-            labelMargin: 16,
+            label: null,
+            labelMargin: 30,
+            tickType: 'number',
+            tickCount: 6,
+            tickMargin: 16,
             roundingPlaces: 2,
             min: undefined,
             max: undefined,
@@ -95,9 +104,9 @@ class LineChart extends React.Component {
             axis: {
                 ...SETTINGS.axis,
                 ...(this.props.settings.axis || {}),
-                label: {
-                    ...SETTINGS.axis.label,
-                    ...(this.props.settings.axis.label || {}),
+                tick: {
+                    ...SETTINGS.axis.tick,
+                    ...(this.props.settings.axis.tick || {}),
                 },
                 x: {
                     ...SETTINGS.axis.x,
@@ -115,7 +124,18 @@ class LineChart extends React.Component {
     generateConfig() {
         const context = this.canvasRef.current.getContext('2d');
         const canvas = context.canvas;
-        const topMargin = this.props.title ? this.settings.margin.top + 40 : this.settings.margin.top;
+
+        const topMargin = (
+            this.settings.title ? this.settings.margin.top + this.settings.title.margin : this.settings.margin.top
+        );
+        const bottomMargin = (
+            this.settings.axis.x.label ?
+            this.settings.margin.bottom + this.settings.axis.x.labelMargin : this.settings.margin.bottom
+        );
+        const leftMargin = (
+            this.settings.axis.y.label ?
+            this.settings.margin.left + this.settings.axis.y.labelMargin : this.settings.margin.left
+        );
         this.config = {
             ...this.settings,
             canvas: {
@@ -125,14 +145,16 @@ class LineChart extends React.Component {
             margin: {
                 ...this.settings.margin,
                 top: topMargin,
+                bottom: bottomMargin,
+                left: leftMargin,
             },
             point: {
                 ...this.settings.point,
             },
             axis: {
                 ...this.settings.axis,
-                width: canvas.width - this.settings.margin.left - this.settings.margin.right,
-                height: canvas.height - topMargin - this.settings.margin.bottom,
+                width: canvas.width - leftMargin - this.settings.margin.right,
+                height: canvas.height - topMargin - bottomMargin,
                 x: {
                     ...this.settings.axis.x,
                     min: this.settings.axis.x.min !== undefined ? this.settings.axis.x.min : this.metadata.x.min,
@@ -173,24 +195,24 @@ class LineChart extends React.Component {
 
     calculateAxisValues(min, max, positionMin, positionMax, axisSettings) {
         const roundMultiplier = Math.pow(10, axisSettings.roundingPlaces);
-        const step = (max - min) / axisSettings.labelCount - 1;
-        const labels = _.map(
+        const step = (max - min) / axisSettings.tickCount - 1;
+        const ticks = _.map(
             _.concat(_.range(min, max, step), max),
-            label => {
-                if (axisSettings.labelType === 'timestamp_day') {
-                    return formatDayTimestampLabel(label);
+            tick => {
+                if (axisSettings.tickType === 'timestamp_day') {
+                    return formatDayTimestampLabel(tick);
                 }
-                return Math.round(label * roundMultiplier) / roundMultiplier;
+                return Math.round(tick * roundMultiplier) / roundMultiplier;
             },
         );
-        const positionStep = (positionMax - positionMin) / SETTINGS.axis.x.labelCount;
+        const positionStep = (positionMax - positionMin) / SETTINGS.axis.x.tickCount;
         const positions = _.map(
             _.concat(
                 _.range(positionMin, positionMax, positionStep),
                 positionMax,
             ),
         );
-        return { labels, positions }
+        return { ticks, positions }
     }
 
     translateX(xValue) {
@@ -236,18 +258,18 @@ class LineChart extends React.Component {
 
         context.stroke();
 
-        context.font = `${this.config.axis.label.fontSize}px ${this.config.axis.label.font}`;
+        context.font = `${this.config.axis.tick.fontSize}px ${this.config.axis.tick.font}`;
         context.textAlign = "center";
 
         const xPosMin = this.config.margin.left;
         const xPosMax = this.config.margin.left + this.config.axis.width;
         const xAxis = this.calculateAxisValues(this.config.axis.x.min, this.config.axis.x.max, xPosMin, xPosMax, this.config.axis.x);
 
-        for (let i = 0; i < xAxis.labels.length; i += 1) {
+        for (let i = 0; i < xAxis.ticks.length; i += 1) {
             context.fillText(
-                xAxis.labels[i],
+                xAxis.ticks[i],
                 xAxis.positions[i],
-                this.config.margin.top + this.config.axis.height + this.config.axis.y.labelMargin,
+                this.config.margin.top + this.config.axis.height + this.config.axis.y.tickMargin,
             );
         }
 
@@ -256,15 +278,40 @@ class LineChart extends React.Component {
         const yPosMax = this.config.margin.top + this.config.axis.height;
         const yAxis = this.calculateAxisValues(this.config.axis.y.min, this.config.axis.y.max, yPosMin, yPosMax, this.config.axis.y);
 
-        for (let i = 0; i < yAxis.labels.length; i += 1) {
+        for (let i = 0; i < yAxis.ticks.length; i += 1) {
             context.fillText(
-                yAxis.labels[i],
-                this.config.margin.left - this.config.axis.x.labelMargin,
+                yAxis.ticks[i],
+                this.config.margin.left - this.config.axis.x.tickMargin,
                 yAxis.positions[yAxis.positions.length - i - 1],
             );
         }
 
-        console.log('Draw Y labels');
+        context.textAlign = "center";
+        context.font = `${this.config.axis.label.fontSize}px ${this.config.axis.label.font}`;
+        if (this.config.axis.x.label) {
+            context.fillText(
+                this.config.axis.x.label,
+                this.config.margin.left + (this.config.axis.width / 2),
+                (
+                    this.config.margin.top +
+                    this.config.axis.height +
+                    this.config.axis.y.tickMargin +
+                    this.config.margin.bottom / 2
+                ),
+            )
+        }
+        if (this.config.axis.y.label) {
+            // Save the context, rotate everything to write sideways, and restore. The rotate method
+            // also rotates the coordinates.
+            context.save();
+            context.rotate(-Math.PI / 2);
+            context.fillText(
+                this.config.axis.y.label,
+                -(this.config.margin.top + (this.config.axis.height / 2)),
+                this.config.margin.left / 2,
+            )
+            context.restore();
+        }
     }
 
     drawData() {
@@ -343,18 +390,24 @@ LineChart.propTypes = {
             color: PropTypes.string,
         }),
         axis: PropTypes.shape({
+            tick: PropTypes.shape({
+                font: PropTypes.string,
+                fontSize: PropTypes.number,
+            }),
             x: PropTypes.shape({
-                labelCount: PropTypes.number,
-                labelType: PropTypes.string,
-                labelMargin: PropTypes.number,
+                label: PropTypes.string,
+                tickCount: PropTypes.number,
+                tickType: PropTypes.string,
+                tickMargin: PropTypes.number,
                 roundingPlaces: PropTypes.number,
                 min: PropTypes.number,
                 max: PropTypes.number,
             }),
             y: PropTypes.shape({
-                labelCount: PropTypes.number,
-                labelType: PropTypes.string,
-                labelMargin: PropTypes.number,
+                label: PropTypes.string,
+                tickCount: PropTypes.number,
+                tickType: PropTypes.string,
+                tickMargin: PropTypes.number,
                 roundingPlaces: PropTypes.number,
                 min: PropTypes.number,
                 max: PropTypes.number,

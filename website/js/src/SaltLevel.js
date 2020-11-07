@@ -98,16 +98,18 @@ class SaltLevel extends React.Component {
         const settings = {
             axis: {
                 x: {
-                    labelType: 'timestamp_day',
+                    label: 'Date',
+                    tickType: 'timestamp_day',
                 },
                 y: {
+                    label: 'Height of Salt (cm)',
                     min: 0,
                 }
             },
         };
         return (
             <LineChart
-                title="Water Softener Salt Level"
+                title="Amount of Salt Used"
                 width={900}
                 height={500}
                 datasets={datasets}
