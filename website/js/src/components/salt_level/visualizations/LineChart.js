@@ -31,6 +31,8 @@ const SETTINGS = {
     },
 
     axis: {
+        lineColor: '#000000',
+        lineWidth: 2,
         tick: {
             font: "Arial",
             fontSize: 12,
@@ -48,6 +50,9 @@ const SETTINGS = {
             roundingPlaces: 2,
             min: undefined,
             max: undefined,
+            grid: false,
+            gridColor: '#DDDDDD',
+            gridWidth: 1,
         },
         y: {
             label: null,
@@ -58,6 +63,9 @@ const SETTINGS = {
             roundingPlaces: 2,
             min: undefined,
             max: undefined,
+            grid: false,
+            gridColor: '#DDDDDD',
+            gridWidth: 1,
         },
     }
 };
@@ -248,7 +256,12 @@ class LineChart extends React.Component {
         const context = this.canvasRef.current.getContext('2d');
         const canvas = context.canvas;
 
+        // Set axis styling
+        context.lineWidth = this.config.axis.lineWidth;
+        context.strokeStyle = this.config.axis.lineColor;
+
         // y axis
+        context.beginPath()
         context.moveTo(this.config.margin.left, this.config.margin.top);
         context.lineTo(this.config.margin.left, this.config.margin.top + this.config.axis.height);
 
@@ -257,6 +270,7 @@ class LineChart extends React.Component {
         context.lineTo(this.config.margin.left + this.config.axis.width, this.config.margin.top + this.config.axis.height);
 
         context.stroke();
+        context.closePath();
 
         context.font = `${this.config.axis.tick.fontSize}px ${this.config.axis.tick.font}`;
         context.textAlign = "center";
@@ -265,26 +279,41 @@ class LineChart extends React.Component {
         const xPosMax = this.config.margin.left + this.config.axis.width;
         const xAxis = this.calculateAxisValues(this.config.axis.x.min, this.config.axis.x.max, xPosMin, xPosMax, this.config.axis.x);
 
+        context.lineWidth = this.config.axis.x.gridWidth;
+        context.strokeStyle = this.config.axis.x.gridColor;
+        context.beginPath();
         for (let i = 0; i < xAxis.ticks.length; i += 1) {
-            context.fillText(
-                xAxis.ticks[i],
-                xAxis.positions[i],
-                this.config.margin.top + this.config.axis.height + this.config.axis.y.tickMargin,
-            );
+            const x = xAxis.positions[i];
+            const y = this.config.margin.top + this.config.axis.height + this.config.axis.y.tickMargin;
+            context.fillText(xAxis.ticks[i], x, y);
+            if (i > 0 && this.config.axis.x.grid) {
+                context.moveTo(x, this.config.margin.top + this.config.axis.height);
+                context.lineTo(x, this.config.margin.top);
+            }
         }
+        context.stroke();
+        context.closePath();
+
 
         context.textAlign = "right";
         const yPosMin = this.config.margin.top;
         const yPosMax = this.config.margin.top + this.config.axis.height;
         const yAxis = this.calculateAxisValues(this.config.axis.y.min, this.config.axis.y.max, yPosMin, yPosMax, this.config.axis.y);
 
+        context.lineWidth = this.config.axis.y.gridWidth;
+        context.strokeStyle = this.config.axis.x.gridColor;
+        context.beginPath();
         for (let i = 0; i < yAxis.ticks.length; i += 1) {
-            context.fillText(
-                yAxis.ticks[i],
-                this.config.margin.left - this.config.axis.x.tickMargin,
-                yAxis.positions[yAxis.positions.length - i - 1],
-            );
+            const x = this.config.margin.left - this.config.axis.x.tickMargin;
+            const y = yAxis.positions[yAxis.positions.length - i - 1];
+            context.fillText(yAxis.ticks[i], x, y);
+            if (i > 0 && this.config.axis.y.grid) {
+                context.moveTo(this.config.margin.left, y);
+                context.lineTo(this.config.margin.left + this.config.axis.width, y);
+            }
         }
+        context.stroke();
+        context.closePath();
 
         context.textAlign = "center";
         context.font = `${this.config.axis.label.fontSize}px ${this.config.axis.label.font}`;
@@ -396,6 +425,7 @@ LineChart.propTypes = {
             }),
             x: PropTypes.shape({
                 label: PropTypes.string,
+                grid: PropTypes.boolean,
                 tickCount: PropTypes.number,
                 tickType: PropTypes.string,
                 tickMargin: PropTypes.number,
@@ -405,6 +435,7 @@ LineChart.propTypes = {
             }),
             y: PropTypes.shape({
                 label: PropTypes.string,
+                grid: PropTypes.boolean,
                 tickCount: PropTypes.number,
                 tickType: PropTypes.string,
                 tickMargin: PropTypes.number,

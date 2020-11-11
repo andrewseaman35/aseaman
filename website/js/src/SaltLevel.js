@@ -100,10 +100,12 @@ class SaltLevel extends React.Component {
                 x: {
                     label: 'Date',
                     tickType: 'timestamp_day',
+                    grid: true,
                 },
                 y: {
                     label: 'Height of Salt (cm)',
                     min: 0,
+                    grid: true,
                 }
             },
         };
