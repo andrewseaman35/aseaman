@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 
 import { ACNHRankings, CompareACNH, VillagerResults } from './compare_acnh';
 import DrawJasper from './DrawJasper';
+import MameHighscore from './MameHighscore';
 import Patent from './Patent';
 import SaltLevel from './SaltLevel';
 import Whisky from './Whisky';
@@ -44,6 +45,12 @@ function initDrawJasper(elementId) {
     );
 }
 
+function initMameHighscore(elementId) {
+    ReactDOM.render(
+        <MameHighscore />,
+        document.getElementById(elementId),
+    );
+}
 
 function initPatent(elementId) {
     ReactDOM.render(
@@ -75,6 +82,7 @@ module.exports = {
     initVillagerResults,
     initDrawJasper,
     initLightbox,
+    initMameHighscore,
     initPatent,
     initSaltLevel,
     initWhisky,
