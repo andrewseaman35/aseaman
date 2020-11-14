@@ -20,7 +20,7 @@ class MameHighscore extends React.Component {
     retrieveHighscore() {
         // pacman, avspirit
         const postData = {
-            action: 'get_by_game_id',
+            action: 'metadata',
             payload: {
                 game_id: 'avspirit',
             }
