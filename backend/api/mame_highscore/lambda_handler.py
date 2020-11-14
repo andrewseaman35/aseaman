@@ -11,6 +11,12 @@ from .parsers import PARSER_BY_GAME_ID
 BUCKET_NAME = "aseaman-public-bucket"
 
 
+GAME_NAME_MAP = {
+    'avspirit': 'Avenging Spirit',
+    'pacman': 'Pacman',
+}
+
+
 class MameHighscoreLambdaHandler(APILambdaHandlerBase):
     require_auth = False
     primary_partition_key = 'user'
@@ -64,10 +70,15 @@ class MameHighscoreLambdaHandler(APILambdaHandlerBase):
         return local_filename
 
     def _get_metadata(self):
-        files = [{
-            'game_id': file['Key'].split('.hi')[0].split('hi/')[1],
-            'last_modified': int(file['LastModified'].timestamp()),
-        } for file in self._list()['Contents'] if file['Key'] != 'hi/']
+        files = []
+        for file in [f for f in self._list()['Contents'] if f['Key'] != 'hi/']:
+            game_id = file['Key'].split('.hi')[0].split('hi/')[1]
+            game_name = GAME_NAME_MAP[game_id]
+            files.append({
+                'gameName': game_name,
+                'gameId': game_id,
+                'lastModified': int(file['LastModified'].timestamp()),
+            })
 
         metadata = {
             'parsers': [key for key in PARSER_BY_GAME_ID.keys()],
