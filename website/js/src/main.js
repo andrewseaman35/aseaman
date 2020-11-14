@@ -14,6 +14,7 @@ import {
     initVillagerResults,
     initDrawJasper,
     initLightbox,
+    initMameHighscore,
     initPatent,
     initSaltLevel,
     initWhisky,
@@ -29,6 +30,7 @@ const modules = {
     initVillagerResults,
     initDrawJasper,
     initLightbox,
+    initMameHighscore,
     initPatent,
     initSaltLevel,
     initWhisky,
@@ -45,6 +47,6 @@ $(window).ready(function() {
     for (const i in window.aseaman._js) {
         window.aseaman._js[i](modules);
     }
-    initLightbox()
+    initLightbox();
 });
 
