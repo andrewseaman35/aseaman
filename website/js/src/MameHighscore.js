@@ -1,36 +1,34 @@
 import React from 'react';
 import $ from 'jquery';
 
-import { getAPIUrl } from './utils';
+import MameHighscoreList from './components/mame/MameHighscoreList';
+
+import {
+    getMetadata,
+    getScoresByGameId,
+} from './components/mame/api';
 
 
 class MameHighscore extends React.Component {
     constructor() {
         super();
 
-        this.state = {};
+        this.state = {
+            loadingMetadata: true,
+            metadata: null,
+        };
     }
 
     componentDidMount() {
-        this.retrieveHighscore().then(x => {
-            console.log(x)
+        getMetadata()
+            .then(metadata => {
+                this.setState({
+                    metadata,
+                    loadingMetadata: false,
+                });
+            });
+        getScoresByGameId('avspirit').then(metadata => {
         });
-    }
-
-    retrieveHighscore() {
-        // pacman, avspirit
-        const postData = {
-            action: 'metadata',
-            payload: {
-                game_id: 'avspirit',
-            }
-        };
-        return $.ajax({
-            type: 'POST',
-            url: getAPIUrl('mame_highscore'),
-            data: JSON.stringify(postData),
-            contentType: 'application/json',
-        }).promise();
     }
 
     render() {
@@ -38,6 +36,13 @@ class MameHighscore extends React.Component {
             <div className="inner">
                 <div className="left-content">
                     Under development!
+                    {
+                        !this.state.loadingMetadata && (
+                            <MameHighscoreList
+                                gameList={this.state.metadata}
+                            />
+                        )
+                    }
                 </div>
             </div>
         )
