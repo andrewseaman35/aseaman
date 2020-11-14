@@ -73,7 +73,7 @@ class MameHighscoreLambdaHandler(APILambdaHandlerBase):
         files = []
         for file in [f for f in self._list()['Contents'] if f['Key'] != 'hi/']:
             game_id = file['Key'].split('.hi')[0].split('hi/')[1]
-            game_name = GAME_NAME_MAP[game_id]
+            game_name = GAME_NAME_MAP.get(game_id, game_id)
             files.append({
                 'gameName': game_name,
                 'gameId': game_id,

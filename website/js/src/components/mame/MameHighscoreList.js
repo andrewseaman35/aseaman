@@ -29,11 +29,18 @@ class MameHighscoreList extends React.Component {
 
 
 MameHighscoreList.propTypes = {
-    gameList: PropTypes.arrayOf(PropTypes.shape({
-        gameName: PropTypes.string,
-        gameId: PropTypes.string,
-        lastModified: PropTypes.number,
-    })).isRequired,
+    gameList: PropTypes.shape({
+        games: PropTypes.arrayOf(
+            PropTypes.shape({
+                gameName: PropTypes.string,
+                gameId: PropTypes.string,
+                lastModified: PropTypes.number,
+            })
+        ),
+        parsers: PropTypes.arrayOf(
+            PropTypes.string,
+        ),
+    }),
 };
 
 

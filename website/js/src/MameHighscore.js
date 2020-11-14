@@ -28,6 +28,7 @@ class MameHighscore extends React.Component {
                 });
             });
         getScoresByGameId('avspirit').then(metadata => {
+            console.log(metadata)
         });
     }
 
