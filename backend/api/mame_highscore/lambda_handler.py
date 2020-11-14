@@ -19,6 +19,7 @@ class MameHighscoreLambdaHandler(APILambdaHandlerBase):
         self.s3_key_format = 'hi/{game_id}.hi'
 
         self.actions = {
+            'metadata': self._get_metadata,
             'get_by_game_id': self._get_by_game_id,
             'list': self._list,
         }
@@ -47,6 +48,13 @@ class MameHighscoreLambdaHandler(APILambdaHandlerBase):
     def _validate_list(self):
         return True
 
+    def _list(self):
+        response = self.s3_client.list_objects_v2(
+            Bucket=BUCKET_NAME,
+            Prefix='hi/',
+        )
+        return response
+
     def _download(self, key):
         tmpdir = tempfile.gettempdir()
         filename = key.split('/')[-1]
@@ -54,6 +62,18 @@ class MameHighscoreLambdaHandler(APILambdaHandlerBase):
         with open(local_filename, 'wb') as data:
             self.s3_client.download_fileobj(BUCKET_NAME, key, data)
         return local_filename
+
+    def _get_metadata(self):
+        files = [{
+            'game_id': file['Key'].split('.hi')[0].split('hi/')[1],
+            'last_modified': int(file['LastModified'].timestamp()),
+        } for file in self._list()['Contents'] if file['Key'] != 'hi/']
+
+        metadata = {
+            'parsers': [key for key in PARSER_BY_GAME_ID.keys()],
+            'games': files,
+        }
+        return metadata
 
     def _get_highscore_data_by_game_id(self, game_id):
         s3_key = self.s3_key_format.format(game_id=game_id)
@@ -71,9 +91,6 @@ class MameHighscoreLambdaHandler(APILambdaHandlerBase):
 
         highscore_data = self._get_highscore_data_by_game_id(self.payload['game_id'])
         return parser(highscore_data)
-
-    def _list(self):
-        return []
 
     def _run(self):
         result = self.actions[self.action]()
