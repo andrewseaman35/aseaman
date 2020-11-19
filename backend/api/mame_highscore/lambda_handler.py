@@ -14,6 +14,7 @@ BUCKET_NAME = "aseaman-public-bucket"
 GAME_NAME_MAP = {
     'avspirit': 'Avenging Spirit',
     'pacman': 'Pacman',
+    'missle1': 'Missle Command',
 }
 
 
