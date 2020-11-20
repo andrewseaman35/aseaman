@@ -9,27 +9,37 @@ import {
 const MameHighscoreTable = (props) => {
     const [scores, setScores] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
 
     useEffect(() => {
         if (props.gameId) {
             setLoading(true);
             getScoresByGameId(props.gameId)
                 .then((scores) => {
-                    setScores(scores);
+                    if (scores.errorMessage) {
+                        setErrorMessage(scores.errorMessage);
+                        setScores(null);
+                    } else {
+                        setErrorMessage(null);
+                        setScores(scores);
+                    }
+                }, (error) => {
+                    setErrorMessage('Score parsing failed!');
+                })
+                .then(() => {
                     setLoading(false);
-                }
-            );
+                });
         }
     }, [props.gameId])
 
     if (loading) {
         return <div className="highscore-table no-scores">loading scores...</div>
+    } else if (errorMessage) {
+        return <div className="highscore-table no-scores">{errorMessage}</div>
     } else if (!scores) {
         return <div className="highscore-table no-scores">&lt;--- Select a game!</div>
     }
-    if (scores.error) {
-        return <div className="highscore-table no-scores">Score parser not available</div>
-    }
+
     return (
         <div className="highscore-table">
             <table>

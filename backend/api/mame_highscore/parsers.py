@@ -45,7 +45,7 @@ class AvspiritParser(BaseParser):
         return mapping
 
 
-class Missile1Parser(BaseParser):
+class MissileParser(BaseParser):
     game_ids = ['missile1']
     game_title = 'Missile Command'
 
@@ -67,6 +67,59 @@ class Missile1Parser(BaseParser):
                 ),
             })
 
+        return mapping
+
+
+class GalagaParser(BaseParser):
+    game_ids = ['galaga']
+    game_title = 'Galaga'
+
+    @classmethod
+    def parse(cls, data):
+        mapping = cls.get_mapping()
+
+        scores = []
+        def get_user_val(data, index):
+            val = data[index]
+            if 10 <= val <= 35:
+                # A-Z
+                shift =  55
+            else:
+                # sort of a guess, based on "." only
+                shift = 4
+            return chr(shift + val)
+
+        for place in mapping:
+            print('HELLO')
+            print(place)
+            user = ''.join([get_user_val(data, i) for i in place['user']])
+            score = int(''.join([f"{int(hex(data[i]).split('x')[1])}" for i in place['score']]))
+            scores.append({
+                'user': user,
+                'score': score,
+            })
+        return scores
+
+    @classmethod
+    def get_mapping(cls):
+        mapping = []
+        for i in range(5):
+            user_n = i * 3
+            score_n = i * 6
+            mapping.append({
+                'user': (
+                    (user_n + 30),
+                    (user_n + 30 + 1),
+                    (user_n + 30 + 2),
+                ),
+                'score': (
+                    (score_n + 4),
+                    (score_n + 3),
+                    (score_n + 2),
+                    (score_n + 1),
+                    (score_n),
+                ),
+            })
         return mapping
 
 
