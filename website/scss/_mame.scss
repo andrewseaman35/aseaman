@@ -1,0 +1,27 @@
+.left-content {
+    justify-content: flex-start;
+    padding-top: 48px;
+}
+
+.dev {
+    margin-bottom: 24px;
+}
+
+.mame-container {
+    display: flex;
+    width: 100%;
+
+    .highscore-list {
+        flex-grow: 1;
+    }
+
+    .highscore-table {
+        flex-grow: 3;
+
+        &.no-scores {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+}

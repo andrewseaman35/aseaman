@@ -58,6 +58,11 @@ function isMobile() {
     return $(window).width() < CONSTANTS.SCREEN_SMALL_WIDTH_MAX;
 }
 
+function toReadableDateTime(secondsTimestamp) {
+    const mod = new Date(secondsTimestamp * 1000);
+    return `${mod.getMonth()}/${mod.getDay()}/${mod.getFullYear()} ${mod.getHours()}:${mod.getMinutes()}:${mod.getSeconds()}`;
+}
+
 const KEY_CODE = {
     ESCAPE: 'Escape',
     LEFT: 'ArrowLeft',
@@ -75,4 +80,5 @@ module.exports = {
     getUrlTo,
     unsetCookie,
     setQueryStringParameter,
+    toReadableDateTime,
 };

@@ -53,13 +53,6 @@ missle1.hi
  7330 SRC
  7005 RDA
 """
-'''
-{'user': (0,   1, 2), 'score':  (29, 28, 27)}
-{'user': (3,   4, 5), 'score':  (26, 25, 24)}
-{'user': (6,   7, 8), 'score':  (23, 22, 21)}
-{'user': (9,  10, 11), 'score': (20, 19, 18)}
-{'user': (12, 13, 14), 'score': (17, 16, 15)}
-'''
 def missile1(data):
     mapping = []
     for i in range(5):
@@ -75,6 +68,8 @@ def missile1(data):
     print(mapping)
     return parse(data, mapping)
 
+def pacman(data):
+    import pdb; pdb.set_trace()
 
 class TestParser(object):
     def __init__(self):
