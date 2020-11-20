@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euxo pipefail
 
 export \
     BRANCH="$TRAVIS_BRANCH" \

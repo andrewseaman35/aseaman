@@ -15,7 +15,5 @@ urllib3==1.25.3
 Werkzeug==0.15.4
 
 numpy==1.18.2
-opencv-contrib-python==4.2.0.32
 opencv-contrib-python-headless==4.2.0.32
-opencv-python==4.2.0.32
 opencv-python-headless==4.2.0.32

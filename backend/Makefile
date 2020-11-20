@@ -17,7 +17,11 @@ DEPLOY_PARAMETERS:= \
 package:
 	make -C api package
 
-deploy:
+validate:
+	aws cloudformation validate-template \
+		--template-body file://$(ROOT)/stacks/api-stack.yml
+
+deploy: validate
 	make -C api upload
 	aws cloudformation create-stack \
 		--template-body file://$(ROOT)/stacks/api-stack.yml \

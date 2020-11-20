@@ -462,7 +462,7 @@ Resources:
       Path: "/"
       Roles:
         -
-          Ref: "SaltLevelAPIRole"
+          Ref: "CompareACNHAPIRole"
   CompareACNHAPIFunction:
     Type: "AWS::Lambda::Function"
     Properties:
@@ -532,6 +532,18 @@ Resources:
                 Action:
                   - "ssm:GetParameter"
                 Resource: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/*"
+        -
+          PolicyName: "s3"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "s3:GetObject"
+                  - "s3:ListBucket"
+                Resource:
+                  - "arn:aws:s3:::aseaman-public-bucket"
+                  - "arn:aws:s3:::aseaman-public-bucket/*"
 
   MameHighscoreAPIPolicy:
     Type: "AWS::IAM::InstanceProfile"
@@ -539,7 +551,7 @@ Resources:
       Path: "/"
       Roles:
         -
-          Ref: "SaltLevelAPIRole"
+          Ref: "MameHighscoreAPIRole"
   MameHighscoreAPIFunction:
     Type: "AWS::Lambda::Function"
     Properties:
@@ -551,7 +563,7 @@ Resources:
             - '/'
             - !Ref MameHighscoreApiName
             - '.zip'
-      Description: Compare ACNH API Lambda function
+      Description: Mame Highscore API Lambda function
       FunctionName: !Ref MameHighscoreApiName
       Handler: lambda_handler.lambda_handler
       Role : !GetAtt MameHighscoreAPIRole.Arn
@@ -1207,7 +1219,7 @@ Resources:
         Fn::GetAtt:
           - RestAPI
           - RootResourceId
-      PathPart: compare_acnh
+      PathPart: mame_highscore
   MameHighscoreAPIGetMethod:
     Type: "AWS::ApiGateway::Method"
     Properties:
