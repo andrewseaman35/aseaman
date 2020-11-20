@@ -39,21 +39,45 @@ def avspirit(data):
     return scores
 
 
+"""
+missle1.hi
+ 8500?AAA
+ 7500 DFT
+ 7495 DLS
+ 7330 SRC
+ 7005 RDA
+"""
+def missile1(data):
+    mapping = []
+    for i in range(5):
+        n = i * 3
+        mapping.append({
+            'user': (n, n + 1, n + 2),
+            'score': (29 - n, 29 - n - 1, 29 - n - 2)
+        })
+
+    scores = []
+    for place in mapping:
+        user = ''.join([chr(data[i]) for i in place['user']])
+        score = int(''.join([f"{int(hex(data[i]).split('x')[1]):02d}" for i in place['score']]))
+        scores.append({
+            'user': user,
+            'score': score,
+        })
+    return scores
+
+
 class TestParser(object):
     def __init__(self):
         self.parser = argparse.ArgumentParser()
         self.parser.add_argument('game', help='game/parser to test', nargs=1)
-
-        self.score_parsers = {
-            'avspirit': avspirit,
-        }
 
         self.args = self.parser.parse_args()
 
         # remove .hi suffix if exists
         self.game = self.args.game[0].split('.hi')[0]
 
-        if not self.game in self.score_parsers:
+        if not self.game in globals():
             raise Exception('parser for {} not set up'.format(self.game))
 
     def game_filepath(self):
@@ -63,7 +87,7 @@ class TestParser(object):
     def run(self):
         with open(self.game_filepath(), 'rb') as f:
             data = f.read()
-        result = self.score_parsers[self.game](data)
+        result = globals()[self.game](data)
         print(result)
 
 

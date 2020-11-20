@@ -13,6 +13,8 @@ class MameHighscore extends React.Component {
     constructor() {
         super();
 
+        this.onGameClick = this.onGameClick.bind(this);
+
         this.state = {
             loadingMetadata: true,
             metadata: null,
@@ -27,8 +29,11 @@ class MameHighscore extends React.Component {
                     loadingMetadata: false,
                 });
             });
-        getScoresByGameId('avspirit').then(metadata => {
-            console.log(metadata)
+    }
+
+    onGameClick(gameId) {
+        getScoresByGameId(gameId).then(scores => {
+            console.log(scores);
         });
     }
 
@@ -41,6 +46,7 @@ class MameHighscore extends React.Component {
                         !this.state.loadingMetadata && (
                             <MameHighscoreList
                                 gameList={this.state.metadata}
+                                onGameClick={this.onGameClick}
                             />
                         )
                     }

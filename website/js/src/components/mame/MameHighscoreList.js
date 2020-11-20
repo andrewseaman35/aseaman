@@ -15,7 +15,12 @@ class MameHighscoreList extends React.Component {
                 <tbody>
                     {
                         this.props.gameList.games.map(game => (
-                            <tr>
+                            <tr
+                                key={game.gameId}
+                                onClick={
+                                    () => { this.props.onGameClick(game.gameId) }
+                                }
+                            >
                                 <td>{game.gameName}</td>
                                 <td>{game.lastModified}</td>
                             </tr>
@@ -41,6 +46,7 @@ MameHighscoreList.propTypes = {
             PropTypes.string,
         ),
     }),
+    onGameClick: PropTypes.func.isRequired,
 };
 
 

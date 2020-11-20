@@ -11,13 +11,6 @@ from .parsers import PARSER_BY_GAME_ID
 BUCKET_NAME = "aseaman-public-bucket"
 
 
-GAME_NAME_MAP = {
-    'avspirit': 'Avenging Spirit',
-    'pacman': 'Pacman',
-    'missle1': 'Missle Command',
-}
-
-
 class MameHighscoreLambdaHandler(APILambdaHandlerBase):
     require_auth = False
     primary_partition_key = 'user'
@@ -74,7 +67,10 @@ class MameHighscoreLambdaHandler(APILambdaHandlerBase):
         files = []
         for file in [f for f in self._list()['Contents'] if f['Key'] != 'hi/']:
             game_id = file['Key'].split('.hi')[0].split('hi/')[1]
-            game_name = GAME_NAME_MAP.get(game_id, game_id)
+            game_name = (
+                PARSER_BY_GAME_ID[game_id].game_title if game_id in PARSER_BY_GAME_ID
+                else game_id
+            )
             files.append({
                 'gameName': game_name,
                 'gameId': game_id,
@@ -102,7 +98,7 @@ class MameHighscoreLambdaHandler(APILambdaHandlerBase):
             }
 
         highscore_data = self._get_highscore_data_by_game_id(self.payload['game_id'])
-        return parser(highscore_data)
+        return parser.parse(highscore_data)
 
     def _run(self):
         result = self.actions[self.action]()
