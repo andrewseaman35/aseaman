@@ -1,6 +1,18 @@
 import argparse
 import os
 
+
+def parse(data, mapping):
+    scores = []
+    for place in mapping:
+        user = ''.join([chr(data[i]) for i in place['user']])
+        score = int(''.join([f"{int(hex(data[i]).split('x')[1]):02d}" for i in place['score']]))
+        scores.append({
+            'user': user,
+            'score': score,
+        })
+    return scores
+
 """
 avspirit.hi
 100,000 JAL
@@ -15,28 +27,22 @@ avspirit.hi
  10,000 BUT
 """
 def avspirit(data):
-    mapping = [{
-        'score': (
-            (8 * n) + 5,
-            ((8 * n) + 5 + 1),
-            ((8 * n) + 5 + 2),
-        ),
-        'user': (
-            ((8 * n) + 5 + 3),
-            ((8 * n) + 5 + 4),
-            ((8 * n) + 5 + 5),
-        ),
-    } for n in range(0, 10)]
-
-    scores = []
-    for place in mapping:
-        user = ''.join([chr(data[i]) for i in place['user']])
-        score = int(''.join([f"{int(hex(data[i]).split('x')[1]):02d}" for i in place['score']]))
-        scores.append({
-            'user': user,
-            'score': score,
+    mapping = []
+    for i in range(10):
+        n = i * 8
+        mapping.append({
+            'user': (
+                (n + 5 + 3),
+                (n + 5 + 4),
+                (n + 5 + 5),
+            ),
+            'score': (
+                (n + 5),
+                (n + 5 + 1),
+                (n + 5 + 2),
+            ),
         })
-    return scores
+    return parse(data, mapping)
 
 
 """
@@ -47,24 +53,27 @@ missle1.hi
  7330 SRC
  7005 RDA
 """
+'''
+{'user': (0,   1, 2), 'score':  (29, 28, 27)}
+{'user': (3,   4, 5), 'score':  (26, 25, 24)}
+{'user': (6,   7, 8), 'score':  (23, 22, 21)}
+{'user': (9,  10, 11), 'score': (20, 19, 18)}
+{'user': (12, 13, 14), 'score': (17, 16, 15)}
+'''
 def missile1(data):
     mapping = []
     for i in range(5):
         n = i * 3
         mapping.append({
             'user': (n, n + 1, n + 2),
-            'score': (29 - n, 29 - n - 1, 29 - n - 2)
+            'score': (
+                (n + 15 + 2),
+                (n + 15 + 1),
+                (n + 15),
+            ),
         })
-
-    scores = []
-    for place in mapping:
-        user = ''.join([chr(data[i]) for i in place['user']])
-        score = int(''.join([f"{int(hex(data[i]).split('x')[1]):02d}" for i in place['score']]))
-        scores.append({
-            'user': user,
-            'score': score,
-        })
-    return scores
+    print(mapping)
+    return parse(data, mapping)
 
 
 class TestParser(object):
