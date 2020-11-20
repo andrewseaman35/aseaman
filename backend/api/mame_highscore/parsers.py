@@ -27,18 +27,22 @@ class AvspiritParser(BaseParser):
 
     @classmethod
     def get_mapping(cls):
-        return [{
-            'score': (
-                (8 * n) + 5,
-                ((8 * n) + 5 + 1),
-                ((8 * n) + 5 + 2),
-            ),
-            'user': (
-                ((8 * n) + 5 + 3),
-                ((8 * n) + 5 + 4),
-                ((8 * n) + 5 + 5),
-            ),
-        } for n in range(0, 10)]
+        mapping = []
+        for i in range(10):
+            n = i * 8
+            mapping.append({
+                'user': (
+                    (n + 5 + 3),
+                    (n + 5 + 4),
+                    (n + 5 + 5),
+                ),
+                'score': (
+                    (n + 5),
+                    (n + 5 + 1),
+                    (n + 5 + 2),
+                ),
+            })
+        return mapping
 
 
 class Missile1Parser(BaseParser):
@@ -51,8 +55,16 @@ class Missile1Parser(BaseParser):
         for i in range(5):
             n = i * 3
             mapping.append({
-                'user': (n, n + 1, n + 2),
-                'score': (29 - n, 29 - n - 1, 29 - n - 2)
+                'user': (
+                    n,
+                    n + 1,
+                    n + 2,
+                ),
+                'score': (
+                    (n + 15 + 2),
+                    (n + 15 + 1),
+                    (n + 15),
+                ),
             })
 
         return mapping
