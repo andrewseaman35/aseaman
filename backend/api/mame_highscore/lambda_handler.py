@@ -94,7 +94,7 @@ class MameHighscoreLambdaHandler(APILambdaHandlerBase):
         parser = PARSER_BY_GAME_ID.get(self.payload['game_id'])
         if not parser:
             return {
-                'error': 'no parser'
+                'errorMessage': '{} parser not set up'.format(self.payload['game_id'])
             }
 
         highscore_data = self._get_highscore_data_by_game_id(self.payload['game_id'])

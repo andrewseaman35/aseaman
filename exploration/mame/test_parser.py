@@ -2,11 +2,11 @@ import argparse
 import os
 
 
-def parse(data, mapping):
+def parse(data, mapping, get_scores=True, get_user=True):
     scores = []
     for place in mapping:
-        user = ''.join([chr(data[i]) for i in place['user']])
-        score = int(''.join([f"{int(hex(data[i]).split('x')[1]):02d}" for i in place['score']]))
+        user = get_user and ''.join([chr(data[i]) for i in place['user']])
+        score = get_scores and int(''.join([f"{int(hex(data[i]).split('x')[1]):02d}" for i in place['score']]))
         scores.append({
             'user': user,
             'score': score,
@@ -68,8 +68,48 @@ def missile1(data):
     print(mapping)
     return parse(data, mapping)
 
-def pacman(data):
-    import pdb; pdb.set_trace()
+def galaga(data):
+    def parse(data, mapping):
+        scores = []
+        def get_user_val(data, index):
+            val = data[index]
+            if 10 <= val <= 35:
+                # A-Z
+                shift =  55
+            else:
+                # sort of a guess, based on "." only
+                shift = 4
+            return chr(shift + val)
+
+        for place in mapping:
+            user = ''.join([get_user_val(data, i) for i in place['user']])
+            score = int(''.join([f"{int(hex(data[i]).split('x')[1])}" for i in place['score']]))
+            scores.append({
+                'user': user,
+                'score': score,
+            })
+        return scores
+
+    mapping = []
+    for i in range(5):
+        user_n = i * 3
+        score_n = i * 6
+        mapping.append({
+            'user': (
+                (user_n + 30),
+                (user_n + 30 + 1),
+                (user_n + 30 + 2),
+            ),
+            'score': (
+                (score_n + 4),
+                (score_n + 3),
+                (score_n + 2),
+                (score_n + 1),
+                (score_n),
+            ),
+        })
+    # import pdb; pdb.set_trace()
+    return parse(data, mapping)
 
 class TestParser(object):
     def __init__(self):
