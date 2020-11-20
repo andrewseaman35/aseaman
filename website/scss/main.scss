@@ -50,4 +50,7 @@ body {
     &.salt-level {
         @import "salt_level.scss";
     }
+    &.mame {
+        @import "mame.scss";
+    }
 }

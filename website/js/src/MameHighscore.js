@@ -2,6 +2,7 @@ import React from 'react';
 import $ from 'jquery';
 
 import MameHighscoreList from './components/mame/MameHighscoreList';
+import MameHighscoreTable from './components/mame/MameHighscoreTable';
 
 import {
     getMetadata,
@@ -18,6 +19,8 @@ class MameHighscore extends React.Component {
         this.state = {
             loadingMetadata: true,
             metadata: null,
+
+            selectedGameId: null,
         };
     }
 
@@ -32,24 +35,29 @@ class MameHighscore extends React.Component {
     }
 
     onGameClick(gameId) {
-        getScoresByGameId(gameId).then(scores => {
-            console.log(scores);
-        });
+        this.setState({ selectedGameId: gameId });
     }
 
     render() {
         return (
             <div className="inner">
                 <div className="left-content">
-                    Under development!
-                    {
-                        !this.state.loadingMetadata && (
-                            <MameHighscoreList
-                                gameList={this.state.metadata}
-                                onGameClick={this.onGameClick}
-                            />
-                        )
-                    }
+                    <div className="dev">Under development!</div>
+                    <div className="mame-container">
+                        {
+                            !this.state.loadingMetadata && (
+                                <React.Fragment>
+                                    <MameHighscoreList
+                                        gameList={this.state.metadata}
+                                        onGameClick={this.onGameClick}
+                                    />
+                                    <MameHighscoreTable
+                                        gameId={this.state.selectedGameId}
+                                    />
+                                </React.Fragment>
+                            )
+                        }
+                    </div>
                 </div>
             </div>
         )
