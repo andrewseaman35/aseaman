@@ -2,11 +2,17 @@ import json
 import os
 import tempfile
 import time
+import os
+import sys
+
+# Required to support absolute imports when running locally and on lambda
+CURR_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(CURR_DIR)
 
 from base.lambda_handler_base import APILambdaHandlerBase
 from base.api_exceptions import BadRequestException, UnauthorizedException
 
-from .parsers import PARSER_BY_GAME_ID
+from parsers import PARSER_BY_GAME_ID
 
 BUCKET_NAME = "aseaman-public-bucket"
 

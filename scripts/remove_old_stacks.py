@@ -61,23 +61,31 @@ class RemoveOldStacks(BaseScript):
             StackStatusFilter=STATES_TO_DELETE
         )['StackSummaries']
 
-        count = 0
         regex = STACKNAME_REGEXES[self.deploy_env]
+        matched_stacks = []
+        stacks_to_delete = []
         for summary in stack_summaries:
             stack_name = summary['StackName']
             match = regex.match(stack_name)
-            if not match or stack_name == self.stack_name:
+            if not match:
+                continue
+
+            matched_stacks.append(stack_name)
+            if stack_name == self.stack_name:
                 continue
             if self.deploy_env == 'test' and self.branch != match.group('branch'):
                 continue
 
-            count += 1
-            print("Deleting stack {}".format(stack_name))
-            response = self.client.delete_stack(
-                StackName=stack_name,
-            )
+            stacks_to_delete.append(stack_name)
 
-        print("Deleted {} stack{}".format(count, '' if count == 1 else 's'))
+        if len(matched_stacks) > len(stacks_to_delete):
+            for stack_name in stacks_to_delete:
+                print("Deleting stack {}".format(stack_name))
+                response = self.client.delete_stack(
+                    StackName=stack_name,
+                )
+
+        print("Deleted {} stack{}".format(len(stacks_to_delete), '' if len(stacks_to_delete) == 1 else 's'))
 
 
 if __name__ == '__main__':
