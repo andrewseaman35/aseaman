@@ -58,9 +58,19 @@ function isMobile() {
     return $(window).width() < CONSTANTS.SCREEN_SMALL_WIDTH_MAX;
 }
 
+function zeroPad(num, places) {
+    return String(num).padStart(places, '0')
+}
+
 function toReadableDateTime(secondsTimestamp) {
     const mod = new Date(secondsTimestamp * 1000);
-    return `${mod.getMonth()}/${mod.getDay()}/${mod.getFullYear()} ${mod.getHours()}:${mod.getMinutes()}:${mod.getSeconds()}`;
+    const month = zeroPad(mod.getMonth() + 1, 2);
+    const day = zeroPad(mod.getDate(), 2);
+    const year = mod.getFullYear();
+    const hour = zeroPad(mod.getHours(), 2);
+    const minute = zeroPad(mod.getMinutes(), 2);
+    const second = zeroPad(mod.getSeconds(), 2);
+    return `${month}/${day}/${year} ${hour}:${minute}:${second}`;
 }
 
 const KEY_CODE = {

@@ -83,9 +83,12 @@ class MameHighscoreLambdaHandler(APILambdaHandlerBase):
                 'lastModified': int(file['LastModified'].timestamp()),
             })
 
+        def _sort(f):
+            return (f['hasParser'], f['lastModified'], f['gameId'])
+
         metadata = {
             'parsers': [key for key in PARSER_BY_GAME_ID.keys()],
-            'games': files,
+            'games': sorted(files, key=_sort, reverse=True),
         }
         return metadata
 

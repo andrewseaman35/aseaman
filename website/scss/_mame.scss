@@ -13,6 +13,18 @@
 
     .highscore-list {
         flex-grow: 1;
+
+        tbody {
+            tr {
+                color: $dark-gray;
+            }
+            tr.parsed {
+                color: $blackish;
+            }
+            tr.selected {
+                background-color: $light-gray;
+            }
+        }
     }
 
     .highscore-table {

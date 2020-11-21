@@ -42,6 +42,7 @@ const MameHighscoreTable = (props) => {
 
     return (
         <div className="highscore-table">
+            <div className="table-header">{props.game.gameTitle}</div>
             <table>
                 <thead>
                     <tr>
@@ -68,6 +69,9 @@ const MameHighscoreTable = (props) => {
 
 MameHighscoreTable.propTypes = {
     gameId: PropTypes.string,
+    game: PropTypes.shape({
+        title: PropTypes.string,
+    }),
 };
 
 
