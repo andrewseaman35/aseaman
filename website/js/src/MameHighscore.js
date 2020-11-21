@@ -1,5 +1,6 @@
 import React from 'react';
 import $ from 'jquery';
+import _ from 'lodash';
 
 import MameHighscoreList from './components/mame/MameHighscoreList';
 import MameHighscoreTable from './components/mame/MameHighscoreTable';
@@ -16,10 +17,9 @@ class MameHighscore extends React.Component {
 
         this.onGameClick = this.onGameClick.bind(this);
 
+        this.gamesById = null;
         this.state = {
             loadingMetadata: true,
-            metadata: null,
-
             selectedGameId: null,
         };
     }
@@ -27,11 +27,16 @@ class MameHighscore extends React.Component {
     componentDidMount() {
         getMetadata()
             .then(metadata => {
+                this.gamesById = _.keyBy(metadata.games, 'gameId');
+                console.log(this)
                 this.setState({
-                    metadata,
                     loadingMetadata: false,
                 });
             });
+    }
+
+    get gameMetadataList() {
+        return Object.values(this.gamesById);
     }
 
     onGameClick(gameId) {
@@ -48,11 +53,13 @@ class MameHighscore extends React.Component {
                             !this.state.loadingMetadata && (
                                 <React.Fragment>
                                     <MameHighscoreList
-                                        gameList={this.state.metadata}
+                                        games={this.gameMetadataList}
+                                        selectedGameId={this.state.selectedGameId}
                                         onGameClick={this.onGameClick}
                                     />
                                     <MameHighscoreTable
                                         gameId={this.state.selectedGameId}
+                                        game={this.gamesById[this.state.selectedGameId]}
                                     />
                                 </React.Fragment>
                             )

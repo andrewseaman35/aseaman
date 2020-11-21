@@ -111,6 +111,14 @@ def galaga(data):
     # import pdb; pdb.set_trace()
     return parse(data, mapping)
 
+def galaxian(data):
+    print(data)
+    import pdb; pdb.set_trace()
+
+def outrun(data):
+    print(data)
+    import pdb; pdb.set_trace()
+
 class TestParser(object):
     def __init__(self):
         self.parser = argparse.ArgumentParser()

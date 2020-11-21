@@ -18,9 +18,10 @@ class MameHighscoreList extends React.Component {
                     </thead>
                     <tbody>
                         {
-                            this.props.gameList.games.map(game => (
+                            this.props.games.map(game => (
                                 <tr
                                     key={game.gameId}
+                                    className={`${game.hasParser ? 'parsed' : ''} ${game.gameId === this.props.selectedGameId ? 'selected': ''}`}
                                     onClick={
                                         () => { this.props.onGameClick(game.gameId) }
                                     }
@@ -40,18 +41,14 @@ class MameHighscoreList extends React.Component {
 
 
 MameHighscoreList.propTypes = {
-    gameList: PropTypes.shape({
-        games: PropTypes.arrayOf(
-            PropTypes.shape({
-                gameName: PropTypes.string,
-                gameId: PropTypes.string,
-                lastModified: PropTypes.number,
-            })
-        ),
-        parsers: PropTypes.arrayOf(
-            PropTypes.string,
-        ),
-    }),
+    selectedGameId: PropTypes.string,
+    games: PropTypes.arrayOf(
+        PropTypes.shape({
+            gameName: PropTypes.string,
+            gameId: PropTypes.string,
+            lastModified: PropTypes.number,
+        })
+    ),
     onGameClick: PropTypes.func.isRequired,
 };
 
