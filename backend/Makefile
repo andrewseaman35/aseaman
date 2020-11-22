@@ -19,7 +19,8 @@ package:
 
 validate:
 	aws cloudformation validate-template \
-		--template-body file://$(ROOT)/stacks/api-stack.yml
+		--template-body file://$(ROOT)/stacks/api-stack.yml \
+		--region=us-east-1
 
 deploy: validate
 	make -C api upload
