@@ -1,10 +1,16 @@
 class BaseParser(object):
     game_ids = []
     game_title = None
+    parse_user = True
+    parse_score = True
 
     @classmethod
     def get_mapping(cls):
         raise Exception('not implemented')
+
+    @classmethod
+    def post_process_parsed(cls, parsed):
+        return parsed
 
     @classmethod
     def parse(cls, data):
@@ -12,13 +18,14 @@ class BaseParser(object):
 
         scores = []
         for place in mapping:
-            user = ''.join([chr(data[i]) for i in place['user']])
-            score = int(''.join([f"{int(hex(data[i]).split('x')[1]):02d}" for i in place['score']]))
-            scores.append({
-                'user': user,
-                'score': score,
-            })
-        return sorted(scores, key=lambda score: score['score'], reverse=True)
+            score_data = {}
+            if cls.parse_user:
+                score_data['user'] = ''.join([chr(data[i]) for i in place['user']])
+            if cls.parse_score:
+                score_data['score'] = int(''.join([f"{int(hex(data[i]).split('x')[1]):02d}" for i in place['score']]))
+            scores.append(score_data)
+        parsed = sorted(scores, key=lambda score: score['score'], reverse=True)
+        return cls.post_process_parsed(parsed)
 
 
 class AvspiritParser(BaseParser):
@@ -121,6 +128,32 @@ class GalagaParser(BaseParser):
                 ),
             })
         return mapping
+
+
+class FroggerParser(BaseParser):
+    game_ids = ['frogger']
+    game_title = 'Frogger'
+    parse_user = False
+
+    @classmethod
+    def get_mapping(cls):
+        mapping = []
+        for i in range(5):
+            score_n = i * 2
+            mapping.append({
+                'score': (
+                    (score_n + 1),
+                    (score_n)
+                ),
+            })
+        print(mapping)
+        return mapping
+
+    @classmethod
+    def post_process_parsed(cls, parsed):
+        for place in parsed:
+            place['score'] *= 10
+        return parsed
 
 
 PARSER_BY_GAME_ID = {

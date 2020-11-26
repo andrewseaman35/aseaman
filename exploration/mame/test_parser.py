@@ -111,6 +111,27 @@ def galaga(data):
     # import pdb; pdb.set_trace()
     return parse(data, mapping)
 
+def frogger(data):
+    print(data)
+    mapping = [
+        {'score': (1, 0)},
+        {'score': (3, 2)},
+        {'score': (5, 4)},
+        {'score': (7, 6)},
+        {'score': (9, 8)},
+    ]
+    m = []
+    for i in range(5):
+        score_n = i * 2
+        m.append({
+            'score': (
+                (score_n + 1),
+                (score_n)
+            ),
+        })
+    import pdb; pdb.set_trace()
+    return parse(data, mapping, get_user=False)
+
 def galaxian(data):
     print(data)
     import pdb; pdb.set_trace()
