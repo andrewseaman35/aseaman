@@ -3,6 +3,7 @@ import os
 
 
 def parse(data, mapping, get_scores=True, get_user=True):
+    print(mapping)
     scores = []
     for place in mapping:
         user = get_user and ''.join([chr(data[i]) for i in place['user']])
@@ -27,21 +28,33 @@ avspirit.hi
  10,000 BUT
 """
 def avspirit(data):
-    mapping = []
-    for i in range(10):
-        n = i * 8
-        mapping.append({
-            'user': (
-                (n + 5 + 3),
-                (n + 5 + 4),
-                (n + 5 + 5),
-            ),
-            'score': (
-                (n + 5),
-                (n + 5 + 1),
-                (n + 5 + 2),
-            ),
-        })
+    # mapping = []
+    # for i in range(10):
+    #     n = i * 8
+    #     mapping.append({
+    #         'user': (
+    #             (n + 5 + 3),
+    #             (n + 5 + 4),
+    #             (n + 5 + 5),
+    #         ),
+    #         'score': (
+    #             (n + 5),
+    #             (n + 5 + 1),
+    #             (n + 5 + 2),
+    #         ),
+    #     })
+    mapping = [
+        {'user': (8, 9, 10), 'score': (5, 6, 7)},
+        {'user': (16, 17, 18), 'score': (13, 14, 15)},
+        {'user': (24, 25, 26), 'score': (21, 22, 23)},
+        {'user': (32, 33, 34), 'score': (29, 30, 31)},
+        {'user': (40, 41, 42), 'score': (37, 38, 39)},
+        {'user': (48, 49, 50), 'score': (45, 46, 47)},
+        {'user': (56, 57, 58), 'score': (53, 54, 55)},
+        {'user': (64, 65, 66), 'score': (61, 62, 63)},
+        {'user': (72, 73, 74), 'score': (69, 70, 71)},
+        {'user': (80, 81, 82), 'score': (77, 78, 79)},
+    ]
     return parse(data, mapping)
 
 
@@ -54,22 +67,30 @@ missle1.hi
  7005 RDA
 """
 def missile1(data):
-    mapping = []
-    for i in range(5):
-        n = i * 3
-        mapping.append({
-            'user': (n, n + 1, n + 2),
-            'score': (
-                (n + 15 + 2),
-                (n + 15 + 1),
-                (n + 15),
-            ),
-        })
-    print(mapping)
+    # mapping = []
+    # for i in range(5):
+    #     n = i * 3
+    #     mapping.append({
+    #         'user': (n, n + 1, n + 2),
+    #         'score': (
+    #             (n + 15 + 2),
+    #             (n + 15 + 1),
+    #             (n + 15),
+    #         ),
+    #     })
+    # print(mapping)
+    mapping = [
+        {'user': (0, 1, 2), 'score': (17, 16, 15)},
+        {'user': (3, 4, 5), 'score': (20, 19, 18)},
+        {'user': (6, 7, 8), 'score': (23, 22, 21)},
+        {'user': (9, 10, 11), 'score': (26, 25, 24)},
+        {'user': (12, 13, 14), 'score': (29, 28, 27)},
+    ]
     return parse(data, mapping)
 
 def galaga(data):
     def parse(data, mapping):
+        print(mapping)
         scores = []
         def get_user_val(data, index):
             val = data[index]
@@ -152,7 +173,7 @@ def dkong3(data):
         {
             'user': (151, 152, 153),
             'score': (143, 144, 145, 146, 147, 148)
-        }
+        },
     ]
     return parse(data, mapping)
 
