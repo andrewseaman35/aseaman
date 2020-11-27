@@ -97,8 +97,6 @@ class GalagaParser(BaseParser):
             return chr(shift + val)
 
         for place in mapping:
-            print('HELLO')
-            print(place)
             user = ''.join([get_user_val(data, i) for i in place['user']])
             score = int(''.join([f"{int(hex(data[i]).split('x')[1])}" for i in place['score']]))
             scores.append({
@@ -154,6 +152,50 @@ class FroggerParser(BaseParser):
         for place in parsed:
             place['score'] *= 10
         return parsed
+
+
+class DKong3Parser(BaseParser):
+    game_ids = ['dkong3']
+    game_title = 'Donkey Kong 3'
+
+    @classmethod
+    def get_mapping(cls):
+        return [
+            {
+                'user': (15, 16, 17),
+                'score': (7, 8, 9, 10, 11, 12),
+            },
+            {
+                'user': (49, 50, 51),
+                'score': (41, 42, 43, 44, 45, 46),
+            },
+            {
+                'user': (83, 84, 85),
+                'score': (75, 76, 77, 78, 70, 80),
+            },
+            {
+                'user': (117, 118, 119),
+                'score': (109, 110, 111, 112, 113, 114),
+            },
+            {
+                'user': (151, 152, 153),
+                'score': (143, 144, 145, 146, 147, 148)
+            },
+        ]
+
+    @classmethod
+    def parse(cls, data):
+        mapping = cls.get_mapping()
+
+        scores = []
+        for place in mapping:
+            user = ''.join([chr(data[i]) for i in place['user']])
+            score = int(''.join([chr(data[i]) for i in place['score']]))
+            scores.append({
+                'user': user,
+                'score': score,
+            })
+        return scores
 
 
 PARSER_BY_GAME_ID = {
