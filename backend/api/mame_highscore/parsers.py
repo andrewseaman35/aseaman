@@ -34,22 +34,18 @@ class AvspiritParser(BaseParser):
 
     @classmethod
     def get_mapping(cls):
-        mapping = []
-        for i in range(10):
-            n = i * 8
-            mapping.append({
-                'user': (
-                    (n + 5 + 3),
-                    (n + 5 + 4),
-                    (n + 5 + 5),
-                ),
-                'score': (
-                    (n + 5),
-                    (n + 5 + 1),
-                    (n + 5 + 2),
-                ),
-            })
-        return mapping
+        return [
+            {'user': (8, 9, 10), 'score': (5, 6, 7)},
+            {'user': (16, 17, 18), 'score': (13, 14, 15)},
+            {'user': (24, 25, 26), 'score': (21, 22, 23)},
+            {'user': (32, 33, 34), 'score': (29, 30, 31)},
+            {'user': (40, 41, 42), 'score': (37, 38, 39)},
+            {'user': (48, 49, 50), 'score': (45, 46, 47)},
+            {'user': (56, 57, 58), 'score': (53, 54, 55)},
+            {'user': (64, 65, 66), 'score': (61, 62, 63)},
+            {'user': (72, 73, 74), 'score': (69, 70, 71)},
+            {'user': (80, 81, 82), 'score': (77, 78, 79)},
+        ]
 
 
 class MissileParser(BaseParser):
@@ -58,23 +54,13 @@ class MissileParser(BaseParser):
 
     @classmethod
     def get_mapping(cls):
-        mapping = []
-        for i in range(5):
-            n = i * 3
-            mapping.append({
-                'user': (
-                    n,
-                    n + 1,
-                    n + 2,
-                ),
-                'score': (
-                    (n + 15 + 2),
-                    (n + 15 + 1),
-                    (n + 15),
-                ),
-            })
-
-        return mapping
+        return [
+            {'user': (0, 1, 2), 'score': (17, 16, 15)},
+            {'user': (3, 4, 5), 'score': (20, 19, 18)},
+            {'user': (6, 7, 8), 'score': (23, 22, 21)},
+            {'user': (9, 10, 11), 'score': (26, 25, 24)},
+            {'user': (12, 13, 14), 'score': (29, 28, 27)},
+        ]
 
 
 class GalagaParser(BaseParser):
@@ -107,25 +93,13 @@ class GalagaParser(BaseParser):
 
     @classmethod
     def get_mapping(cls):
-        mapping = []
-        for i in range(5):
-            user_n = i * 3
-            score_n = i * 6
-            mapping.append({
-                'user': (
-                    (user_n + 30),
-                    (user_n + 30 + 1),
-                    (user_n + 30 + 2),
-                ),
-                'score': (
-                    (score_n + 4),
-                    (score_n + 3),
-                    (score_n + 2),
-                    (score_n + 1),
-                    (score_n),
-                ),
-            })
-        return mapping
+        return [
+            {'user': (30, 31, 32), 'score': (4, 3, 2, 1, 0)},
+            {'user': (33, 34, 35), 'score': (10, 9, 8, 7, 6)},
+            {'user': (36, 37, 38), 'score': (16, 15, 14, 13, 12)},
+            {'user': (39, 40, 41), 'score': (22, 21, 20, 19, 18)},
+            {'user': (42, 43, 44), 'score': (28, 27, 26, 25, 24)},
+        ]
 
 
 class FroggerParser(BaseParser):
@@ -135,17 +109,13 @@ class FroggerParser(BaseParser):
 
     @classmethod
     def get_mapping(cls):
-        mapping = []
-        for i in range(5):
-            score_n = i * 2
-            mapping.append({
-                'score': (
-                    (score_n + 1),
-                    (score_n)
-                ),
-            })
-        print(mapping)
-        return mapping
+        return [
+            {'score': (1, 0)},
+            {'score': (3, 2)},
+            {'score': (5, 4)},
+            {'score': (7, 6)},
+            {'score': (9, 8)},
+        ]
 
     @classmethod
     def post_process_parsed(cls, parsed):
