@@ -111,6 +111,51 @@ def galaga(data):
     # import pdb; pdb.set_trace()
     return parse(data, mapping)
 
+'''
+012000 WIN    4057 494e
+009000 MAI
+008000 OGA
+005400 SUZ
+003200 YOU
+'''
+def dkong3(data):
+    print(data)
+
+    def parse(data, mapping, get_scores=True, get_user=True):
+        scores = []
+        for place in mapping:
+            user = get_user and ''.join([chr(data[i]) for i in place['user']])
+            score = get_scores and int(''.join([chr(data[i]) for i in place['score']]))
+            scores.append({
+                'user': user,
+                'score': score,
+            })
+        return scores
+
+    mapping = [
+        {
+            'user': (15, 16, 17),
+            'score': (7, 8, 9, 10, 11, 12),
+        },
+        {
+            'user': (49, 50, 51),
+            'score': (41, 42, 43, 44, 45, 46),
+        },
+        {
+            'user': (83, 84, 85),
+            'score': (75, 76, 77, 78, 70, 80),
+        },
+        {
+            'user': (117, 118, 119),
+            'score': (109, 110, 111, 112, 113, 114),
+        },
+        {
+            'user': (151, 152, 153),
+            'score': (143, 144, 145, 146, 147, 148)
+        }
+    ]
+    return parse(data, mapping)
+
 def frogger(data):
     print(data)
     mapping = [
