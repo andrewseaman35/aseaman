@@ -5,6 +5,9 @@ import _ from 'lodash';
 
 import { formatDayTimestampLabel } from './utils';
 
+const LEGEND_POSITIONS = {
+    TOP_RIGHT: 'top_right',
+};
 
 const SETTINGS = {
     title: {
@@ -67,7 +70,38 @@ const SETTINGS = {
             gridColor: '#DDDDDD',
             gridWidth: 1,
         },
-    }
+    },
+    legend: {
+        display: false,
+        position: LEGEND_POSITIONS.TOP_RIGHT,
+        line: {
+            color: '#000000',
+            width: 1,
+        },
+        label: {
+            font: "Arial",
+            fontSize: 12,
+            color: '#000000',
+            spacing: 5,
+        },
+        margin: {
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0,
+        },
+        padding: {
+            top: 5,
+            right: 5,
+            bottom: 5,
+            left: 5,
+        },
+        icon: {
+            style: 'line',
+            size: 10,
+            padding: 10,
+        },
+    },
 };
 
 
@@ -124,6 +158,29 @@ class LineChart extends React.Component {
                     ...SETTINGS.axis.y,
                     ...(this.props.settings.axis.y || {}),
                 }
+            },
+            legend: {
+                ...SETTINGS.legend,
+                ...(this.props.settings.legend || {}),
+                line: {
+                    ...SETTINGS.legend.line,
+                    ...(this.props.settings.legend.line || {}),
+                },
+                label: {
+                    ...SETTINGS.legend.label,
+                    ...(this.props.settings.legend.label || {}),
+                },
+                margin: {
+                    ...SETTINGS.legend.margin,
+                    ...(this.props.settings.legend.margin || {}),
+                },
+                padding: {
+                    ...SETTINGS.legend.padding,
+                    ...(this.props.settings.legend.padding || {}),
+                },
+                icon: {
+                    ...SETTINGS.legend.icon,
+                },
             }
         };
         console.log(this.settings)
@@ -172,6 +229,21 @@ class LineChart extends React.Component {
                     ...this.settings.axis.y,
                     min: this.settings.axis.y.min !== undefined ? this.settings.axis.y.min : this.metadata.y.min,
                     max: this.settings.axis.y.max !== undefined ? this.settings.axis.y.max : this.metadata.y.max,
+                },
+            },
+            legend: {
+                ...this.settings.legend,
+                line: {
+                    ...this.settings.legend.line,
+                },
+                label: {
+                    ...this.settings.legend.label,
+                },
+                margin: {
+                    ...this.settings.legend.margin,
+                },
+                padding: {
+                    ...this.settings.legend.padding,
                 },
             },
         };
@@ -239,6 +311,7 @@ class LineChart extends React.Component {
         this.drawTitle();
         this.drawAxes();
         this.drawData();
+        this.drawLegend();
     }
 
     drawTitle() {
@@ -375,6 +448,73 @@ class LineChart extends React.Component {
         }
     }
 
+    calculateLegendCoordinates() {
+        if (this.config.legend.position === LEGEND_POSITIONS.TOP_RIGHT) {
+            return {
+                top: this.config.legend.margin.top,
+                right: this.config.canvas.width - this.config.legend.margin.right,
+                left: this.config.canvas.width - this.config.legend.margin.right - this.config.legend.width,
+                bottom: this.config.legend.margin.top + this.config.legend.height,
+            }
+        }
+    }
+
+    drawLegend() {
+        if (!this.config.legend.display) {
+            return;
+        }
+        console.log("Draw legend");
+        const context = this.canvasRef.current.getContext('2d');
+        const canvas = context.canvas;
+
+        // this should get height and width based on the contents
+        const coordinates = this.calculateLegendCoordinates();
+
+        context.lineWidth = this.config.legend.line.width;
+        context.strokeStyle = this.config.legend.line.color;
+
+        context.beginPath()
+
+        // Draw the box
+        context.moveTo(coordinates.right, coordinates.top);
+        context.lineTo(coordinates.right, coordinates.bottom);
+        context.lineTo(coordinates.left, coordinates.bottom);
+        context.lineTo(coordinates.left, coordinates.top);
+        context.lineTo(coordinates.right, coordinates.top);
+
+        context.stroke();
+        context.closePath();
+
+        context.font = `${this.config.legend.label.fontSize}px ${this.config.legend.label.font}`;
+        context.textAlign = "left";
+
+        // Draw the labels
+        const leftEdge = coordinates.left + this.config.legend.padding.left;
+        const topEdge = coordinates.top + this.config.legend.padding.top;
+        for (let i = 0; i < this.props.datasets.length; i += 1) {
+            context.beginPath()
+            const dataset = this.props.datasets[i];
+
+            context.lineWidth = dataset.style.line.width;
+            context.strokeStyle = dataset.style.line.color;
+            const lineHeight = (this.config.legend.label.fontSize + this.config.legend.label.spacing) * (i + 1);
+            const top = topEdge + lineHeight;
+
+            const iconSize = this.config.legend.icon.size;
+            const iconLeft = leftEdge + this.config.legend.icon.padding;
+            const iconTop = top - ((this.config.legend.label.fontSize - this.config.legend.label.spacing) / 2);
+            console.log(iconLeft, iconTop)
+            context.moveTo(iconLeft, iconTop);
+            context.lineTo(iconLeft + iconSize, iconTop);
+
+            const textLeft = iconLeft + this.config.legend.icon.size + this.config.legend.icon.padding;
+            context.fillText(dataset.label, textLeft, top);
+            context.stroke();
+            context.closePath();
+        }
+
+    }
+
     render() {
         return (
             <canvas
@@ -453,6 +593,31 @@ LineChart.propTypes = {
                 roundingPlaces: PropTypes.number,
                 min: PropTypes.number,
                 max: PropTypes.number,
+            }),
+        }),
+        legend: PropTypes.shape({
+            display: PropTypes.boolean,
+            position: PropTypes.string,
+            label: PropTypes.shape({
+                font: PropTypes.string,
+                fontSize: PropTypes.number,
+                color: PropTypes.string,
+                spacing: PropTypes.number,
+            }),
+            margin: PropTypes.shape({
+                top: PropTypes.number,
+                right: PropTypes.number,
+                bottom: PropTypes.number,
+                left: PropTypes.number,
+            }),
+            padding: PropTypes.shape({
+                top: PropTypes.number,
+                right: PropTypes.number,
+                bottom: PropTypes.number,
+                left: PropTypes.number,
+            }),
+            icon: PropTypes.shape({
+                padding: PropTypes.number,
             }),
         }),
     }),

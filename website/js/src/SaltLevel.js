@@ -46,6 +46,7 @@ class SaltLevel extends React.Component {
                     },
                     line: {
                         color: '#FF5733',
+                        width: 2,
                     },
                 },
             },
@@ -61,6 +62,7 @@ class SaltLevel extends React.Component {
                     },
                     line: {
                         color: '#096F15',
+                        width: 2,
                     },
                 },
             },
@@ -76,6 +78,7 @@ class SaltLevel extends React.Component {
                     },
                     line: {
                         color: '#334FFF',
+                        width: 2,
                     },
                 },
             },
@@ -91,6 +94,7 @@ class SaltLevel extends React.Component {
                     },
                     line: {
                         color: '#C733FF',
+                        width: 2,
                     },
                 },
             },
@@ -109,7 +113,7 @@ class SaltLevel extends React.Component {
                     },
                     line: {
                         color: '#000000',
-                        width: 3,
+                        width: 2,
                     },
                 },
             },
@@ -126,6 +130,27 @@ class SaltLevel extends React.Component {
                     min: 0,
                     grid: true,
                 }
+            },
+            legend: {
+                display: true,
+                position: 'top_right',
+                width: 105,
+                height: 115,
+                label: {
+                    fontSize: 14,
+                    spacing: 5,
+                },
+                margin: {
+                    top: 10,
+                    right: 10,
+                },
+                padding: {
+                    left: 5,
+                    top: 5,
+                },
+                icon: {
+                    padding: 5,
+                },
             },
         };
         return (
