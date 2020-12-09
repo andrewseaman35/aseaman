@@ -354,6 +354,7 @@ class LineChart extends React.Component {
         const radius = dataset.style.point.size || this.config.point.size;
         context.fillStyle = dataset.style.point.color || this.config.point.color;
         context.strokeStyle = dataset.style.line.color || this.config.line.color;
+        context.lineWidth = dataset.style.line.width || this.config.line.width;
         for (let i = 0; i < dataset.points.length; i += 1) {
             const point = dataset.points[i];
             const x = this.translateX(point.x);
@@ -402,6 +403,16 @@ LineChart.propTypes = {
             x: PropTypes.number.isRequired,
             y: PropTypes.number.isRequired,
         })).isRequired,
+        style: PropTypes.shape({
+            point: PropTypes.shape({
+                color: PropTypes.string,
+                size: PropTypes.Number,
+            }),
+            line: PropTypes.shape({
+                color: PropTypes.string,
+                width: PropTypes.Number,
+            }),
+        }),
     })).isRequired,
     settings: PropTypes.shape({
         title: PropTypes.shape({
