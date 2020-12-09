@@ -94,6 +94,25 @@ class SaltLevel extends React.Component {
                     },
                 },
             },
+            {
+                label: 'average',
+                points: _.map(this.data, d => ({
+                    x: Number(d.timestamp),
+                    y: _.reduce(
+                            _.map([d.sensor_0, d.sensor_1, d.sensor_2, d.sensor_3], Number),
+                            (a, b) => a + b,
+                        ) / 4,
+                })),
+                style: {
+                    point: {
+                        color: '#000000',
+                    },
+                    line: {
+                        color: '#000000',
+                        width: 3,
+                    },
+                },
+            },
         ];
         const settings = {
             axis: {
