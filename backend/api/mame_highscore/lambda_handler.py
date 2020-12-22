@@ -12,7 +12,8 @@ sys.path.append(CURR_DIR)
 from base.lambda_handler_base import APILambdaHandlerBase
 from base.api_exceptions import BadRequestException, UnauthorizedException
 
-from parsers import PARSER_BY_GAME_ID
+from high_score_parser import HighScoreParser
+
 
 BUCKET_NAME = "aseaman-public-bucket"
 
@@ -73,8 +74,8 @@ class MameHighscoreLambdaHandler(APILambdaHandlerBase):
         files = []
         for file in [f for f in self._list()['Contents'] if f['Key'] != 'hi/']:
             game_id = file['Key'].split('.hi')[0].split('hi/')[1]
-            has_parser = game_id in PARSER_BY_GAME_ID
-            game_name = PARSER_BY_GAME_ID[game_id].game_title if has_parser else game_id
+            has_parser = HighScoreParser.implemented(game_id)
+            game_name = HighScoreParser.get_game_title(game_id)
 
             files.append({
                 'hasParser': has_parser,
@@ -87,7 +88,7 @@ class MameHighscoreLambdaHandler(APILambdaHandlerBase):
             return (f['hasParser'], f['lastModified'], f['gameId'])
 
         metadata = {
-            'parsers': [key for key in PARSER_BY_GAME_ID.keys()],
+            'parsers': HighScoreParser.get_games(),
             'games': sorted(files, key=_sort, reverse=True),
         }
         return metadata
@@ -100,14 +101,14 @@ class MameHighscoreLambdaHandler(APILambdaHandlerBase):
         return data
 
     def _get_by_game_id(self):
-        parser = PARSER_BY_GAME_ID.get(self.payload['game_id'])
-        if not parser:
+        game_id = self.payload['game_id']
+        if not HighScoreParser.implemented(game_id):
             return {
-                'errorMessage': '{} parser not set up'.format(self.payload['game_id'])
+                'errorMessage': '{} parser not set up'.format(game_id)
             }
 
-        highscore_data = self._get_highscore_data_by_game_id(self.payload['game_id'])
-        return parser.parse(highscore_data)
+        highscore_data = self._get_highscore_data_by_game_id(game_id)
+        return HighScoreParser.parse(game_id, highscore_data)
 
     def _run(self):
         result = self.actions[self.action]()
