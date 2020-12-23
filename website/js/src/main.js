@@ -7,6 +7,9 @@ const utils = require('./utils');
 const auth = require('./auth');
 const header = require('./header');
 const initMultiImageContainers = require('./multiImageContainer');
+import {
+    initChip8,
+} from './chip8';
 
 import {
     initACNHRankings,
@@ -26,6 +29,7 @@ import {
 
 const modules = {
     initACNHRankings,
+    initChip8,
     initCompareACNH,
     initVillagerResults,
     initDrawJasper,

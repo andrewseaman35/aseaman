@@ -112,23 +112,30 @@ def galaga(data):
         return scores
 
     mapping = []
-    for i in range(5):
-        user_n = i * 3
-        score_n = i * 6
-        mapping.append({
-            'user': (
-                (user_n + 30),
-                (user_n + 30 + 1),
-                (user_n + 30 + 2),
-            ),
-            'score': (
-                (score_n + 4),
-                (score_n + 3),
-                (score_n + 2),
-                (score_n + 1),
-                (score_n),
-            ),
-        })
+    # for i in range(5):
+    #     user_n = i * 3
+    #     score_n = i * 6
+    #     mapping.append({
+    #         'user': (
+    #             (user_n + 30),
+    #             (user_n + 30 + 1),
+    #             (user_n + 30 + 2),
+    #         ),
+    #         'score': (
+    #             (score_n + 4),
+    #             (score_n + 3),
+    #             (score_n + 2),
+    #             (score_n + 1),
+    #             (score_n),
+    #         ),
+    #     })
+    mapping = [
+        {'user': (30, 31, 32), 'score': (4, 3, 2, 1, 0)},
+        {'user': (33, 34, 35), 'score': (10, 9, 8, 7, 6)},
+        {'user': (36, 37, 38), 'score': (16, 15, 14, 13, 12)},
+        {'user': (39, 40, 41), 'score': (22, 21, 20, 19, 18)},
+        {'user': (42, 43, 44), 'score': (28, 27, 26, 25, 24)},
+    ]
     # import pdb; pdb.set_trace()
     return parse(data, mapping)
 
