@@ -1,0 +1,16 @@
+{% extends 'base.jinja2' %}
+
+{% block page_id %}chip8{% endblock %}
+{% block body_class %}chip8{% endblock %}
+
+{% block content %}
+    <div id="chip8-container"></div>
+{% endblock %}
+
+{% block include_js %}
+    <script>
+        window.aseaman.ready(function(exports) {
+            exports.initChip8('chip8-container');
+        });
+    </script>
+{% endblock %}
