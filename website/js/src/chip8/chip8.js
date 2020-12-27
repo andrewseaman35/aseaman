@@ -78,10 +78,16 @@ class Chip8 {
     }
 
     load() {
-        _.each(ROMS.testopcode, (b, i) => {
-            this.memory[CONST.INTERPRETER_SIZE + i] = b;
-        });
+        const rom = ROMS.testopcode;
+        for (let i = 0; i < rom.length; i++) {
+            this.memory[CONST.INTERPRETER_SIZE + 2 * i] = rom[i] >> 8;
+            this.memory[CONST.INTERPRETER_SIZE + 2 * i + 1] = rom[i] & 0x00ff;
+        }
         console.log('Loaded ROM');
+    }
+
+    cycle() {
+        this.opcode = this.memory[this.pc] << 8 | this.memory[this.pc + 1];
     }
 }
 
