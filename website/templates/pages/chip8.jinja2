@@ -4,7 +4,15 @@
 {% block body_class %}chip8{% endblock %}
 
 {% block content %}
-    <div id="chip8-container"></div>
+    <div id="chip8-container">
+        <canvas
+            id="chip8-display"
+            width="1024"
+            height="512"
+            style="background-color: cyan"
+        >
+        </canvas>
+    </div>
 {% endblock %}
 
 {% block include_js %}
