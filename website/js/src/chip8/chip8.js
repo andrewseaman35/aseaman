@@ -84,7 +84,7 @@ class Chip8 {
     }
 
     load() {
-        const rom = ROMS.testopcode;
+        const rom = ROMS.bc_test;
         for (let i = 0; i < rom.length; i++) {
             this.memory[CONST.INTERPRETER_SIZE + 2 * i] = rom[i] >> 8;
             this.memory[CONST.INTERPRETER_SIZE + 2 * i + 1] = rom[i] & 0x00ff;
