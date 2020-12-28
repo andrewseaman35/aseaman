@@ -1,7 +1,6 @@
 import _ from 'lodash';
 
 import CONST from './constants';
-import ROMS from './roms';
 
 window._ = _;
 
@@ -10,6 +9,8 @@ const STACK_SIZE = 16;
 const NUM_REGISTERS = 16;
 const KEYPAD_SIZE = 16;
 const MEMORY_SIZE = 4096;
+
+const DEBUG = false;
 
 const chip8Fontset = [
     0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
@@ -46,25 +47,6 @@ class Chip8 {
 
         this.legacyShift = false;
 
-        this.keyMap = {
-            'Digit1': 0,
-            'Digit2': 1,
-            'Digit3': 2,
-            'Digit4': 3,
-            'KeyQ': 4,
-            'KeyW': 5,
-            'KeyE': 6,
-            'KeyR': 7,
-            'KeyA': 8,
-            'KeyS': 9,
-            'KeyD': 10,
-            'KeyF': 11,
-            'KeyZ': 12,
-            'KeyX': 13,
-            'KeyC': 14,
-            'KeyV': 15,
-        };
-
         this.clearDisplay();
         this.clearStack();
         this.clearRegisters();
@@ -73,6 +55,28 @@ class Chip8 {
         this.initMemory();
 
         console.log('Chip8 Initialized');
+    }
+
+    reset() {
+        this.opcode = 0;
+        this.I = 0;
+        this.sp = 0;
+        this.delayTimer = 0;
+        this.soundTimer = 0;
+        this.pc = CONST.INTERPRETER_SIZE;
+
+        this.registerAwaitingKeyPress = -1;
+        this.lastProcessorCycleMS = -1;
+        this.lastTimerCycleMS = -1;
+
+        this.clearDisplay();
+        this.clearStack();
+        this.clearRegisters();
+        this.clearKeypad();
+
+        this.initMemory();
+
+        console.log('Chip8 Reset');
     }
 
     clearDisplay() {
@@ -99,11 +103,12 @@ class Chip8 {
     }
 
     log(s) {
-        // console.log(s);
+        if (DEBUG) {
+            console.log(s);
+        }
     }
 
-    load(rom) {
-        const romData = ROMS[rom];
+    load(romData) {
         for (let i = 0; i < romData.length; i++) {
             this.memory[CONST.INTERPRETER_SIZE + 2 * i] = romData[i] >> 8;
             this.memory[CONST.INTERPRETER_SIZE + 2 * i + 1] = romData[i] & 0x00ff;
@@ -111,21 +116,19 @@ class Chip8 {
         console.log('Loaded ROM');
     }
 
-    handleKeyDown(keyCode) {
-        const keyIndex = this.keyMap[keyCode];
-        this.keypad[keyIndex] = 1;
+    handleKeyDown(key) {
+        this.keypad[key] = 1;
         if (this.registerAwaitingKeyPress > -1) {
-            this.V[this.registerAwaitingKeyPress] = keyIndex;
+            this.V[this.registerAwaitingKeyPress] = key;
             this.registerAwaitingKeyPress = -1;
             this.pc += 2;
         }
-        console.log(`handleKeyDown: ${keyIndex}`);
+        this.log(`handleKeyDown: ${key}`);
     }
 
-    handleKeyUp(keyCode) {
-        const keyIndex = this.keyMap[keyCode];
-        this.keypad[keyIndex] = 0;
-        console.log(`handleKeyUp: ${keyIndex}`);
+    handleKeyUp(key) {
+        this.keypad[key] = 0;
+        this.log(`handleKeyUp: ${key}`);
     }
 
     cycle() {
