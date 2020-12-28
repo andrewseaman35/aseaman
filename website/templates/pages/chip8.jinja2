@@ -5,20 +5,29 @@
 
 {% block content %}
     <div class="inner">
-        <h1>CHIP-8</h1>
+        <h1>CHIP-8 Emulator</h1>
         <p>
-            This is a CHIP-8 emulator written in JavaScript!
+            This is a CHIP-8 emulator I wrote in JavaScript. I originally wrote one in
+            C++ to get introduced to emulators and I figured I might as well do it again
+            in JavaScript so I can put it here.
+        </p>
+        <p>
+            You can see the C++ source code {{ macros.external_link('https://github.com/andrewseaman35/chip8', 'here') }}.
+            Admittedly, I did the minimum to get it working in C++ and will probably only iterate
+            on this JavaScript version.
         </p>
         <div>
             <label for="roms">Select a ROM</label>
-
             <select name="roms" id="rom-select">
                 <option value="">--</option>
-                <option value="AIRPLANE">Airplane</option>
-                <option value="PONG">Pong</option>
-                <option value="TEST_OPCODE">Test Opcode</option>
-                <option value="BC_TEST">BC Test</option>
+                <option value="airplane">Airplane</option>
+                <option value="space_invaders">Space Invaders</option>
+                <option value="pong_1p">Pong (1 player)</option>
+                <option value="pong_2p">Pong (2 player)</option>
+                <option value="test_opcode">Test Opcode</option>
+                <option value="bc_test">BC Test</option>
             </select>
+            <div id="chip8-description"></div>
         </div>
         <div id="chip8-container">
             <canvas
