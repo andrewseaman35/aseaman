@@ -3,33 +3,20 @@ import $ from 'jquery';
 import Chip8 from './chip8';
 import Display from './display';
 
+import CONST from './constants';
 
 
 function initChip8(elementId) {
     const chip8 = new Chip8();
-    chip8.load('pong');
-    chip8.cycle();
-
     const display = new Display();
     display.init('chip8-display');
-    console.log('init chip8');
-    console.log(chip8);
-    console.log(display);
 
     let quit = false;
-    function go() {
-        if (chip8.requiresRerender) {
-            display.setDisplay(chip8.displayBuffer);
-            chip8.requiresRerender = false;
-        }
-        chip8.cycle();
-    }
-
     let timer = 0;
     function cycle() {
         timer++;
 
-        if (timer % 2 === 0) {
+        if (timer % 1 === 0) {
             if (chip8.requiresRerender) {
                 display.setDisplay(chip8.displayBuffer);
                 chip8.requiresRerender = false;
@@ -43,25 +30,35 @@ function initChip8(elementId) {
         }
     }
 
-    document.addEventListener('keydown', (e) => {
-        if (e.code === "Space") {
-            go();
-        } else if (e.code === "Escape") {
+    $('#rom-select').on('change', function() {
+        if (this.value.length) {
+            quit = false;
+            chip8.reset();
+            display.setDisplay(chip8.displayBuffer);
+            chip8.load(this.value);
+            $(this).blur();
+            cycle();
+        } else {
+            display.renderDefault();
             quit = true;
-        } else if (e.code in chip8.keyMap) {
-            chip8.handleKeyDown(e.code);
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.code === "Escape") {
+            quit = true;
+        } else if (e.code in CONST.KEY_MAP) {
+            chip8.handleKeyDown(CONST.KEY_MAP[e.code]);
         } else {
             console.log(e.code);
         }
     });
 
     document.addEventListener('keyup', (e) => {
-        if (e.code in chip8.keyMap) {
-            chip8.handleKeyUp(e.code);
+        if (e.code in CONST.KEY_MAP) {
+            chip8.handleKeyUp(CONST.KEY_MAP[e.code]);
         }
     });
-
-    cycle();
 }
 
 module.exports = {
