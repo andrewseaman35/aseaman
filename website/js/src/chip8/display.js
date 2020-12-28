@@ -1,5 +1,5 @@
 import _ from 'lodash';
-
+import CONST from './constants';
 
 const CANVAS_WIDTH = 1024;
 const CANVAS_HEIGHT = 512;
@@ -8,8 +8,8 @@ const X_PIXEL_COUNT = 64;
 const Y_PIXEL_COUNT = 32;
 
 const COLORS = {
-    ON: '#000000',
-    OFF: '#FFFFFF',
+    ON: '#00FFFF',
+    OFF: '#000000',
 }
 
 
@@ -23,11 +23,12 @@ class Display {
         this.elementId = elementId;
         const canvas = document.getElementById(this.elementId);
         console.log(canvas);
-        this.setPixel(0, 0, COLORS.ON);
-        this.setPixel(0, 2, COLORS.ON);
-        this.setPixel(4, 2, COLORS.OFF);
-        this.setPixel(63, 0, COLORS.OFF);
-        this.setPixel(63, 31, COLORS.OFF);
+
+        this.renderDefault();
+    }
+
+    renderDefault() {
+        this.setDisplay(_.map(CONST.DEFAULT_DISPLAY_ARRAY, Number));
     }
 
     setPixel(x, y, color) {

@@ -4,16 +4,32 @@
 {% block body_class %}chip8{% endblock %}
 
 {% block content %}
-    <div id="chip8-container">
-        <canvas
-            id="chip8-display"
-            width="1024"
-            height="512"
-            style="background-color: cyan"
-        >
-        </canvas>
+    <div class="inner">
+        <h1>CHIP-8</h1>
+        <p>
+            This is a CHIP-8 emulator written in JavaScript!
+        </p>
+        <div>
+            <label for="roms">Select a ROM</label>
+
+            <select name="roms" id="rom-select">
+                <option value="">--</option>
+                <option value="AIRPLANE">Airplane</option>
+                <option value="PONG">Pong</option>
+                <option value="TEST_OPCODE">Test Opcode</option>
+                <option value="BC_TEST">BC Test</option>
+            </select>
+        </div>
+        <div id="chip8-container">
+            <canvas
+                id="chip8-display"
+                width="1024"
+                height="512"
+                style="background-color: cyan"
+            >
+            </canvas>
+        </div>
     </div>
-    <button id="cycle-btn">cycle</button>
 {% endblock %}
 
 {% block include_js %}
