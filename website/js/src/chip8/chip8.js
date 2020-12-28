@@ -46,6 +46,25 @@ class Chip8 {
 
         this.legacyShift = false;
 
+        this.keyMap = {
+            'Digit1': 0,
+            'Digit2': 1,
+            'Digit3': 2,
+            'Digit4': 3,
+            'KeyQ': 4,
+            'KeyW': 5,
+            'KeyE': 6,
+            'KeyR': 7,
+            'KeyA': 8,
+            'KeyS': 9,
+            'KeyD': 10,
+            'KeyF': 11,
+            'KeyZ': 12,
+            'KeyX': 13,
+            'KeyC': 14,
+            'KeyV': 15,
+        };
+
         this.clearDisplay();
         this.clearStack();
         this.clearRegisters();
@@ -80,16 +99,33 @@ class Chip8 {
     }
 
     log(s) {
-        console.log(s);
+        // console.log(s);
     }
 
-    load() {
-        const rom = ROMS.bc_test;
-        for (let i = 0; i < rom.length; i++) {
-            this.memory[CONST.INTERPRETER_SIZE + 2 * i] = rom[i] >> 8;
-            this.memory[CONST.INTERPRETER_SIZE + 2 * i + 1] = rom[i] & 0x00ff;
+    load(rom) {
+        const romData = ROMS[rom];
+        for (let i = 0; i < romData.length; i++) {
+            this.memory[CONST.INTERPRETER_SIZE + 2 * i] = romData[i] >> 8;
+            this.memory[CONST.INTERPRETER_SIZE + 2 * i + 1] = romData[i] & 0x00ff;
         }
         console.log('Loaded ROM');
+    }
+
+    handleKeyDown(keyCode) {
+        const keyIndex = this.keyMap[keyCode];
+        this.keypad[keyIndex] = 1;
+        if (this.registerAwaitingKeyPress > -1) {
+            this.V[this.registerAwaitingKeyPress] = keyIndex;
+            this.registerAwaitingKeyPress = -1;
+            this.pc += 2;
+        }
+        console.log(`handleKeyDown: ${keyIndex}`);
+    }
+
+    handleKeyUp(keyCode) {
+        const keyIndex = this.keyMap[keyCode];
+        this.keypad[keyIndex] = 0;
+        console.log(`handleKeyUp: ${keyIndex}`);
     }
 
     cycle() {
@@ -163,20 +199,11 @@ class Chip8 {
                 // 7xkk - ADD Vx, byte
                 // Set Vx = Vx + kk.
                 this.log(" -- 7xkk");
-                console.log(this.V)
-                console.log(this.opcode.toString(16));
-                console.log((this.opcode & 0x0F00).toString(16));
-                console.log(((this.opcode & 0x0F00) >> 8).toString(16));
-                console.log((this.V[(this.opcode & 0x0F00) >> 8]).toString(16));
-                console.log((this.opcode & 0x00FF).toString(16));
                 this.V[(this.opcode & 0x0F00) >> 8] = (this.V[(this.opcode & 0x0F00) >> 8] + (this.opcode & 0x00FF)) % 256;
-                console.log((this.V[(this.opcode & 0x0F00) >> 8]).toString(16));
-                console.log(this.V)
 
                 this.pc += 2;
                 break;
             case 0x8000:
-                console.log(`0x8000 OPCODE: ${this.opcode}`)
                 switch(this.opcode & 0x000F) {
                     case 0x0000:
                         // 8xy0 - LD Vx, Vy
@@ -218,7 +245,6 @@ class Chip8 {
                         // 8xy5 - SUB Vx, Vy
                         // Set Vx = Vx - Vy, set VF = NOT borrow.
                         this.log(" -- 8xy5");
-                        console.log(this.V);
                         // if Vx > Vy, no borrow necessary, VF = 1
                         this.V[0xF] = this.V[(this.opcode & 0x0F00) >> 8] > this.V[(this.opcode & 0x00F0) >> 4] ? 1 : 0;
                         this.V[(this.opcode & 0x0F00) >> 8] -= this.V[(this.opcode & 0x00F0) >> 4];
@@ -226,7 +252,6 @@ class Chip8 {
                             this.V[(this.opcode & 0x0F00) >> 8] += 256;
                         }
                         this.pc += 2;
-                        console.log(this.V);
 
                         break;
                     case 0x0006:
@@ -235,7 +260,6 @@ class Chip8 {
                         this.log(" -- 8xy6");
 
                         // If the least-significant bit of Vy is 1, then VF is set to 1, otherwise 0.
-                        console.log(this.V);
                         if (this.legacyShift) {
                             this.V[0xF] = this.V[(this.opcode & 0x00F0) >> 4] & 0x1;
                             this.V[(this.opcode & 0x0F00) >> 8] = this.V[(this.opcode & 0x00F0) >> 4] >> 1;
@@ -243,7 +267,6 @@ class Chip8 {
                             this.V[0xF] = this.V[(this.opcode & 0x0F00) >> 8] & 0x1;
                             this.V[(this.opcode & 0x0F00) >> 8] >>= 1;
                         }
-                        console.log(this.V);
                         this.pc += 2;
                         break;
                     case 0x0007:
@@ -264,7 +287,6 @@ class Chip8 {
                         // Set Vx = Vy SHL 1.
                         // If the most-significant bit of Vy is 1, then VF is set to 1, otherwise to 0.
                         this.log(" -- 8xyE");
-                        console.log(this.V)
                         if (this.legacyShift) {
                             this.V[0xF] = this.V[(this.opcode & 0x00F0) >> 4] >> 7;
                             this.V[(this.opcode & 0x0F00) >> 8] = (this.V[(this.opcode & 0x00F0) >> 4] << 1) % 256;
@@ -273,7 +295,6 @@ class Chip8 {
                             this.V[(this.opcode & 0x0F00) >> 8] = (this.V[(this.opcode & 0x0F00) >> 8] << 1) % 256;
                         }
                         this.pc += 2;
-                        console.log(this.V)
                         break;
                     default:
                         throw new Error(`unhandled ${this.opcode}`);
@@ -473,6 +494,13 @@ class Chip8 {
                 break;
             default:
                 throw new Error(`unhandled ${this.opcode}`);
+        }
+
+        if (this.delayTimer) {
+            this.delayTimer -= 1;
+        }
+        if (this.soundTimer) {
+            this.soundTimer -= 1;
         }
     }
 }
