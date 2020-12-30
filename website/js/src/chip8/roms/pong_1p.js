@@ -3,8 +3,8 @@ module.exports = {
     title: 'Pong (1P)',
     description: '1 player Pong against the computer',
     controls: [
-        { key: '3', action: 'Move up' },
-        { key: 'W', action: 'Move down' },
+        { key: '2', action: 'Move up' },
+        { key: 'Q', action: 'Move down' },
     ],
     rom: [
         0x6a02, 0x6b0c, 0x6c3f, 0x6d0c, 0xa2ea, 0xdab6, 0xdcd6, 0x6e00,

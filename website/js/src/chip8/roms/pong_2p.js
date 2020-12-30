@@ -3,8 +3,8 @@ module.exports = {
     title: 'Pong (2P)',
     description: '2 player Pong against a second player',
     controls: [
-        { key: '3', action: 'Move player 1 up' },
-        { key: 'W', action: 'Move player 1 down' },
+        { key: '2', action: 'Move player 1 up' },
+        { key: 'Q', action: 'Move player 1 down' },
         { key: 'Z', action: 'Move player 2 up' },
         { key: 'X', action: 'Move player 2 down' },
     ],
