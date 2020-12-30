@@ -2,6 +2,7 @@ module.exports = {
     id: 'space_invaders',
     title: 'Space Invaders',
     description: null,
+    author: 'David Winter',
     controls: [
         { key: 'Q', action: 'move left' },
         { key: 'E', action: 'move right' },
