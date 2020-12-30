@@ -14,7 +14,7 @@ module.exports = {
         breakout,
         connect_four,
         pong_1p,
-        pong_2p,
+        // pong_2p,
         space_invaders,
         tank,
     ],
