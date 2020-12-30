@@ -1,0 +1,43 @@
+{% extends 'base.jinja2' %}
+
+{% block page_id %}mame-highscore{% endblock %}
+{% block body_class %}mame{% endblock %}
+
+{% block content %}
+    <div class="inner">
+    <div>
+        <div class="project-header">
+            <h1>MAME</h1>
+            <h2>High scores</h2>
+        </div>
+        <p>
+            As a part of this project, I wanted a way to track my scores against
+            my friends' scores. I modified the existing `hiscore` plugin to sync
+            the high score files to an s3 bucket in AWS. When a game is starting,
+            it'll try to download an existing high score file and it'll use that as
+            the file. On close, it'll upload the updated high score file. This
+            allows us to share common high score files for all of the games!
+
+        </p>
+        <p>Check out the plugin source {{ macros.external_link('https://github.com/andrewseaman35/mame_plugins/tree/master/aws_highscore', 'here') }}</p>
+        <p>
+            The second part of this was to come up with a way to view the uploaded
+            scores from outside of the MAME environment. The high score files contain
+            ranges of bytes that are loaded into memory before the game starts. This
+            means that files have different formats and need to be parsed before they
+            can be viewed. Below are the scores that have been uploaded -- some have
+            been parsed, some haven't. At some point, I'll hopefully get through all
+            the games I have scores for!
+        </p>
+    </div>
+    <div id="mame-highscore-container"></div>
+</div>
+{% endblock %}
+
+{% block include_js %}
+    <script>
+        window.aseaman.ready(function(exports) {
+            exports.initMameHighscore('mame-highscore-container');
+        });
+    </script>
+{% endblock %}
