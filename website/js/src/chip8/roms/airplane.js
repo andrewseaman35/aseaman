@@ -1,8 +1,12 @@
 module.exports = {
     id: 'airplane',
     title: 'Airplane',
-    description: null,
-    controls: null,
+    description: 'The goal of this game is to drop a package down to the ground ' +
+                 'without hitting any of the other planes. If the package makes it ' +
+                 'to the ground, you score! If it hits a plane, you lose a life.',
+    controls: [
+        { key: 'A', action: 'drop package' },
+    ],
     rom: [
         0x6a00, 0x6b04, 0x6c01, 0x6d00, 0x6e02, 0x2326, 0x2320, 0x6030,
         0x6101, 0xf015, 0xf007, 0xf118, 0x3000, 0x1214, 0x2242, 0x2320,

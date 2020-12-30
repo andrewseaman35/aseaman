@@ -2,6 +2,12 @@ h4 {
     margin-bottom: 8px;
 }
 
+#button-container {
+    display: flex;
+    justify-content: space-evenly;
+    padding-top: 24px;
+}
+
 #chip8-display {
     margin-top: 24px;
 }
