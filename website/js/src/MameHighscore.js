@@ -47,7 +47,6 @@ class MameHighscore extends React.Component {
         return (
             <div className="inner">
                 <div className="left-content">
-                    <div className="dev">Under development!</div>
                     <div className="mame-container">
                         {
                             !this.state.loadingMetadata && (
