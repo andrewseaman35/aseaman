@@ -1,5 +1,5 @@
 {% macro external_link(path, text) -%}
-    <a href="{{ path }}" target="_blank" rel="noopener noreferrer">{{ text }}</a>
+    <a href="{{ path }}" target="_blank" rel="noopener noreferrer">{% if text %}{{ text }}{% else %}{{ path }}{% endif %}</a>
 {%- endmacro %}
 
 {% macro link_to(path, text) -%}
