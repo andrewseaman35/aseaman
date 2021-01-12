@@ -12,8 +12,9 @@
         </div>
         <p>
             As a part of this project, I wanted a way to track my scores against
-            my friends' scores. I modified the existing `hiscore` plugin to sync
-            the high score files to an s3 bucket in AWS. When a game is starting,
+            my friends' scores. I modified the existing
+            {{ macros.external_link('https://github.com/mamedev/mame/tree/master/plugins/hiscore', 'hiscore plugin') }}
+            to sync the high score files to an s3 bucket in AWS. When a game is starting,
             it'll try to download an existing high score file and it'll use that as
             the file. On close, it'll upload the updated high score file. This
             allows us to share common high score files for all of the games!
@@ -28,6 +29,10 @@
             can be viewed. Below are the scores that have been uploaded -- some have
             been parsed, some haven't. At some point, I'll hopefully get through all
             the games I have scores for!
+        </p>
+        <p>
+            You can look at how I've set up the score file parsing
+            {{ macros.external_link('https://github.com/andrewseaman35/aseaman/blob/master/backend/api/mame_highscore/high_score_parser.py', 'here') }}!
         </p>
     </div>
     <div id="mame-highscore-container"></div>
