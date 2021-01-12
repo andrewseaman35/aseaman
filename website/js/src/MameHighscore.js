@@ -46,24 +46,22 @@ class MameHighscore extends React.Component {
     render() {
         return (
             <div className="inner">
-                <div className="left-content">
-                    <div className="mame-container">
-                        {
-                            !this.state.loadingMetadata && (
-                                <React.Fragment>
-                                    <MameHighscoreList
-                                        games={this.gameMetadataList}
-                                        selectedGameId={this.state.selectedGameId}
-                                        onGameClick={this.onGameClick}
-                                    />
-                                    <MameHighscoreTable
-                                        gameId={this.state.selectedGameId}
-                                        game={this.gamesById[this.state.selectedGameId]}
-                                    />
-                                </React.Fragment>
-                            )
-                        }
-                    </div>
+                <div className="mame-container">
+                    {
+                        !this.state.loadingMetadata && (
+                            <React.Fragment>
+                                <MameHighscoreList
+                                    games={this.gameMetadataList}
+                                    selectedGameId={this.state.selectedGameId}
+                                    onGameClick={this.onGameClick}
+                                />
+                                <MameHighscoreTable
+                                    gameId={this.state.selectedGameId}
+                                    game={this.gamesById[this.state.selectedGameId]}
+                                />
+                            </React.Fragment>
+                        )
+                    }
                 </div>
             </div>
         )
