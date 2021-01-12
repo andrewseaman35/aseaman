@@ -7,6 +7,8 @@ import { LineChart } from './components/salt_level/visualizations';
 
 const CONFIG = require('./config');
 
+const MAX_SALT_HEIGHT = 100;  // cm
+
 
 class SaltLevel extends React.Component {
     constructor() {
@@ -38,7 +40,7 @@ class SaltLevel extends React.Component {
                 label: 'sensor_0',
                 points: _.map(this.data, d => ({
                     x: Number(d.timestamp),
-                    y: Number(d.sensor_0),
+                    y: MAX_SALT_HEIGHT - Number(d.sensor_0),
                 })),
                 style: {
                     point: {
@@ -54,7 +56,7 @@ class SaltLevel extends React.Component {
                 label: 'sensor_1',
                 points: _.map(this.data, d => ({
                     x: Number(d.timestamp),
-                    y: Number(d.sensor_1),
+                    y: MAX_SALT_HEIGHT - Number(d.sensor_1),
                 })),
                 style: {
                     point: {
@@ -70,7 +72,7 @@ class SaltLevel extends React.Component {
                 label: 'sensor_2',
                 points: _.map(this.data, d => ({
                     x: Number(d.timestamp),
-                    y: Number(d.sensor_2),
+                    y: MAX_SALT_HEIGHT - Number(d.sensor_2),
                 })),
                 style: {
                     point: {
@@ -86,7 +88,7 @@ class SaltLevel extends React.Component {
                 label: 'sensor_3',
                 points: _.map(this.data, d => ({
                     x: Number(d.timestamp),
-                    y: Number(d.sensor_3),
+                    y: MAX_SALT_HEIGHT - Number(d.sensor_3),
                 })),
                 style: {
                     point: {
@@ -102,7 +104,7 @@ class SaltLevel extends React.Component {
                 label: 'average',
                 points: _.map(this.data, d => ({
                     x: Number(d.timestamp),
-                    y: _.reduce(
+                    y: MAX_SALT_HEIGHT - _.reduce(
                             _.map([d.sensor_0, d.sensor_1, d.sensor_2, d.sensor_3], Number),
                             (a, b) => a + b,
                         ) / 4,
@@ -127,6 +129,7 @@ class SaltLevel extends React.Component {
                 },
                 y: {
                     label: 'Height of Salt (cm)',
+                    max: MAX_SALT_HEIGHT,
                     min: 0,
                     grid: true,
                 }
@@ -134,6 +137,7 @@ class SaltLevel extends React.Component {
             legend: {
                 display: true,
                 position: 'top_right',
+                orientation: 'vertical',
                 width: 105,
                 height: 115,
                 label: {
@@ -146,7 +150,9 @@ class SaltLevel extends React.Component {
                 },
                 padding: {
                     left: 5,
+                    right: 5,
                     top: 5,
+                    bottom: 5,
                 },
                 icon: {
                     padding: 5,
@@ -155,7 +161,7 @@ class SaltLevel extends React.Component {
         };
         return (
             <LineChart
-                title="Amount of Salt Used"
+                title="Height of Remaining Salt (cm)"
                 width={900}
                 height={500}
                 datasets={datasets}
