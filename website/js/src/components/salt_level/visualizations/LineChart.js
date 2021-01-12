@@ -7,6 +7,11 @@ import { formatDayTimestampLabel } from './utils';
 
 const LEGEND_POSITIONS = {
     TOP_RIGHT: 'top_right',
+    TOP_CENTER: 'top_center',
+};
+const LEGEND_ORIENTATIONS = {
+    VERTICAL: 'vertical',
+    HORIZONTAL: 'horizontal',
 };
 
 const SETTINGS = {
@@ -74,6 +79,7 @@ const SETTINGS = {
     legend: {
         display: false,
         position: LEGEND_POSITIONS.TOP_RIGHT,
+        orientation: LEGEND_ORIENTATIONS.VERTICAL,
         line: {
             color: '#000000',
             width: 1,
@@ -275,7 +281,7 @@ class LineChart extends React.Component {
 
     calculateAxisValues(min, max, positionMin, positionMax, axisSettings) {
         const roundMultiplier = Math.pow(10, axisSettings.roundingPlaces);
-        const step = (max - min) / axisSettings.tickCount - 1;
+        const step = (max - min) / axisSettings.tickCount;
         const ticks = _.map(
             _.concat(_.range(min, max, step), max),
             tick => {
@@ -296,13 +302,13 @@ class LineChart extends React.Component {
     }
 
     translateX(xValue) {
-        const valueRange = this.metadata.x.max - this.config.axis.x.min;
+        const valueRange = this.config.axis.x.max - this.config.axis.x.min;
         const multiplier = this.config.axis.width / valueRange;
         return this.config.margin.left + (multiplier * (xValue - this.config.axis.x.min));
     }
 
     translateY(yValue) {
-        const valueRange = this.metadata.y.max - this.config.axis.y.min;
+        const valueRange = this.config.axis.y.max - this.config.axis.y.min;
         const multiplier = this.config.axis.height / valueRange;
         return this.config.canvas.height - this.config.margin.bottom - (multiplier * (yValue - this.config.axis.y.min));
     }
@@ -449,12 +455,62 @@ class LineChart extends React.Component {
     }
 
     calculateLegendCoordinates() {
+        const context = this.canvasRef.current.getContext('2d');
+        const labels = _.map(this.props.datasets, dataset => dataset.label);
+
         if (this.config.legend.position === LEGEND_POSITIONS.TOP_RIGHT) {
-            return {
-                top: this.config.legend.margin.top,
-                right: this.config.canvas.width - this.config.legend.margin.right,
-                left: this.config.canvas.width - this.config.legend.margin.right - this.config.legend.width,
-                bottom: this.config.legend.margin.top + this.config.legend.height,
+            if (this.config.legend.orientation === LEGEND_ORIENTATIONS.VERTICAL) {
+                const longestLabel = _.maxBy(labels, label => context.measureText(label).width);
+                const legendWidth = (
+                    this.config.legend.padding.left +
+                    this.config.legend.icon.padding +
+                    this.config.legend.icon.size +
+                    this.config.legend.icon.padding +
+                    context.measureText(longestLabel).width +
+                    this.config.legend.padding.right
+                );
+
+                const lineHeight = (this.config.legend.label.fontSize + this.config.legend.label.spacing);
+                const legendHeight = (
+                    this.config.legend.padding.top +
+                    (lineHeight * labels.length) +
+                    this.config.legend.padding.bottom
+                );
+                return {
+                    top: this.config.legend.margin.top,
+                    right: this.config.canvas.width - this.config.legend.margin.right,
+                    left: this.config.canvas.width - this.config.legend.margin.right - legendWidth,
+                    bottom: this.config.legend.margin.top + legendHeight,
+                }
+            } else {
+                throw new Error('not implemented');
+            }
+        } else if (this.config.legend.position === LEGEND_POSITIONS.TOP_CENTER) {
+            if (this.config.legend.orientation === LEGEND_ORIENTATIONS.HORIZONTAL) {
+                const xCenter = this.config.canvas.width / 2;
+                const lineHeight = (this.config.legend.label.fontSize + this.config.legend.label.spacing);
+                const legendHeight = (
+                    this.config.legend.padding.top +
+                    lineHeight +
+                    this.config.legend.padding.bottom
+                );
+                const legendWidth = (
+                    this.config.legend.padding.left +
+                    (this.config.legend.icon.padding * labels.length) +
+                    (this.config.legend.icon.size * labels.length) +
+                    (this.config.legend.icon.padding * labels.length) +
+                    _.sumBy(labels, label => context.measureText(label).width) +
+                    (this.config.legend.label.spacing * labels.length) +
+                    this.config.legend.padding.right
+                );
+                return {
+                    top: this.config.legend.margin.top,
+                    right: xCenter + (legendWidth / 2),
+                    left: xCenter - (legendWidth / 2),
+                    bottom: this.config.legend.margin.top + legendHeight,
+                }
+            } else {
+                throw new Error('not implemented');
             }
         }
     }
@@ -487,27 +543,50 @@ class LineChart extends React.Component {
 
         context.font = `${this.config.legend.label.fontSize}px ${this.config.legend.label.font}`;
         context.textAlign = "left";
+        context.textBaseline = "bottom";
 
         // Draw the labels
         const leftEdge = coordinates.left + this.config.legend.padding.left;
         const topEdge = coordinates.top + this.config.legend.padding.top;
+        const vertical = this.config.legend.orientation === LEGEND_ORIENTATIONS.VERTICAL;
         for (let i = 0; i < this.props.datasets.length; i += 1) {
             context.beginPath()
             const dataset = this.props.datasets[i];
 
             context.lineWidth = dataset.style.line.width;
             context.strokeStyle = dataset.style.line.color;
-            const lineHeight = (this.config.legend.label.fontSize + this.config.legend.label.spacing) * (i + 1);
-            const top = topEdge + lineHeight;
+            const lineHeight = (this.config.legend.label.fontSize + this.config.legend.label.spacing);
+             // if drawing vertically, multiply the line height by the number of drawn lines
+            const lineHeightMultiplier = vertical ? (i + 1) : 1;
+            const top = topEdge + (lineHeight * lineHeightMultiplier);
 
             const iconSize = this.config.legend.icon.size;
-            const iconLeft = leftEdge + this.config.legend.icon.padding;
-            const iconTop = top - ((this.config.legend.label.fontSize - this.config.legend.label.spacing) / 2);
-            console.log(iconLeft, iconTop)
+            let iconLeft;
+            if (vertical) {
+                iconLeft = (
+                    coordinates.left +
+                    this.config.legend.padding.left +
+                    this.config.legend.icon.padding
+                );
+            } else {
+                // This doesn't quite work :/
+                iconLeft = (
+                    coordinates.left +
+                    this.config.legend.padding.left +
+                    _.sum(_.times(i + 1, () => this.config.legend.icon.padding)) +
+                    _.sum(_.times(i, () => this.config.legend.icon.size)) +
+                    _.sum(_.times(i, () => this.config.legend.icon.padding)) +
+                    _.sum(_.times(i, j => context.measureText(this.props.datasets[j]).width)) +
+                    _.sum(_.times(i, () => this.config.legend.label.spacing))
+                );
+            }
+
+            const iconTop = top - (this.config.legend.label.fontSize - this.config.legend.label.spacing);
+            console.log(iconLeft, iconTop);
             context.moveTo(iconLeft, iconTop);
             context.lineTo(iconLeft + iconSize, iconTop);
 
-            const textLeft = iconLeft + this.config.legend.icon.size + this.config.legend.icon.padding;
+            const textLeft = iconLeft + iconSize + this.config.legend.icon.padding;
             context.fillText(dataset.label, textLeft, top);
             context.stroke();
             context.closePath();
