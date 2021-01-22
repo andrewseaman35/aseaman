@@ -4,6 +4,7 @@ import {
     BOARD_WIDTH,
     BOARD_HEIGHT,
     SIDE,
+    SPACE_STATE,
 } from './constants';
 
 import {
@@ -22,50 +23,44 @@ import {
 
 import Space from './space';
 
-const WHITE_PIECE_SETUP = [
-    { Piece: Pawn, startingPositions: ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2'] },
-    { Piece: Rook, startingPositions: ['A1', 'H1'] },
-    { Piece: Knight, startingPositions: ['B1', 'G1'] },
-    { Piece: Bishop, startingPositions: ['C1', 'F1'] },
-    { Piece: Queen, startingPositions: ['D1'] },
-    { Piece: King, startingPositions: ['E1'] },
-];
-
-const BLACK_PIECE_SETUP = [
-    { Piece: Pawn, startingPositions: ['A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7'] },
-    { Piece: Rook, startingPositions: ['A8', 'H8'] },
-    { Piece: Knight, startingPositions: ['B8', 'G8'] },
-    { Piece: Bishop, startingPositions: ['C8', 'F8'] },
-    { Piece: Queen, startingPositions: ['D8'] },
-    { Piece: King, startingPositions: ['E8'] },
-];
-
 
 class Board {
     constructor() {
-        this.board = _.times(BOARD_WIDTH * BOARD_HEIGHT, i => new Space(i));
-        this.whitePieces = this.initializePieces(WHITE_PIECE_SETUP, SIDE.WHITE);
-        this.blackPieces = this.initializePieces(BLACK_PIECE_SETUP, SIDE.BLACK);
-
-        this.createDebugBoard();
-        this.displayDebugBoard();
+        this.spaces = _.times(BOARD_WIDTH * BOARD_HEIGHT, i => new Space(i));
+        this.createBoard();
     }
 
-    initializePieces(pieceSetup, side) {
-        const pieces = [];
-        _.each(pieceSetup, (pieceSetup) => {
-            _.each(pieceSetup.startingPositions, (startingPosition) => {
-                const piece = new pieceSetup.Piece(side);
-                this.board[positionToIndex(startingPosition)].setPiece(piece);
-                pieces.push(piece);
-            });
-        });
+    setPiece(piece, position) {
+        const spaceIndex = positionToIndex(position);
+        this.spaces[spaceIndex].setPiece(piece);
+    }
 
-        return pieces;
+    onBoardSpaceClick(event) {
+        this.clearBoardState();
+        const spaceIndex = positionToIndex(event.currentTarget.id);
+        const piece = this.spaces[spaceIndex].piece;
+        this.spaces[spaceIndex].setState(SPACE_STATE.SELECTED);
+        if (piece) {
+            const possibleMoves = this.spaces[spaceIndex].piece.getPossibleMoves(this.spaces, this.spaces[spaceIndex]);
+            _.each(possibleMoves, (movePosition) => {
+                this.spaces[positionToIndex(movePosition)].setState(SPACE_STATE.SELECTABLE);
+            });
+        }
+    }
+
+    clearBoardState() {
+        _.each(this.spaces, (space) => {
+            space.clearState();
+        });
     }
 
     /* Debug board */
-    createDebugBoard() {
+    render() {
+        this.createBoard();
+        this.refreshBoard();
+    }
+
+    createBoard() {
         const container = document.getElementById('debug-container');
         container.innerHTML = '';
 
@@ -73,16 +68,18 @@ class Board {
         table.setAttribute('id', 'debug-table');
         container.appendChild(table);
 
-        let index = 0;
+        let spaceIndex = 0;
         _.times(BOARD_WIDTH, () => {
-            const rank = Math.floor(index / 8) + 1;
+            const rank = Math.floor(spaceIndex / 8) + 1;
             const row = document.createElement('tr');
             row.setAttribute('id', `row-${rank}`);
             _.times(BOARD_HEIGHT, () => {
                 const cell = document.createElement('td');
-                cell.setAttribute('id', indexToPosition(index));
+                this.spaces[spaceIndex].setCell(cell);
+                cell.setAttribute('id', indexToPosition(spaceIndex));
+                cell.addEventListener('click', this.onBoardSpaceClick.bind(this));
                 row.appendChild(cell);
-                index += 1;
+                spaceIndex += 1;
             });
             table.prepend(row);
         });
@@ -94,10 +91,11 @@ class Board {
         container.innerHTML = '';
     }
 
-    displayDebugBoard() {
-        _.each(this.board, (space, index) => {
-            const position = indexToPosition(index);
+    refreshBoard() {
+        _.each(this.spaces, (space, spaceIndex) => {
+            const position = indexToPosition(spaceIndex);
             const boardSpace = document.getElementById(position);
+            console.log(space)
             if (space.piece !== null) {
                 boardSpace.innerHTML = `${position}: ${space.piece.notation}`;
             } else {

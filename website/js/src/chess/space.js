@@ -1,3 +1,9 @@
+import _ from 'lodash';
+
+import {
+    SPACE_STATE,
+} from './constants';
+
 import {
     fileFromIndex,
     rankFromIndex,
@@ -16,10 +22,11 @@ class Space {
         this.rank = rankFromIndex(this.index);
         this.file = fileFromIndex(this.index);
 
+        this.cell = null;
         this.piece = null;
     }
 
-    getRelativeSpace(fileIncrement, rankIncrement) {
+    getRelativeSpacePosition(fileIncrement, rankIncrement) {
         const newFile = incrementFile(this.file, fileIncrement);
         const newRank = incrementRank(this.rank, rankIncrement);
         if (newFile !== null && newRank !== null) {
@@ -28,8 +35,26 @@ class Space {
         return null;
     }
 
+    get isOccupied() {
+        return this.piece !== null;
+    }
+
+    setCell(cell) {
+        this.cell = cell;
+    }
+
     setPiece(piece) {
         this.piece = piece;
+    }
+
+    setState(state) {
+        this.cell.classList.add(state);
+    }
+
+    clearState() {
+        _.each(SPACE_STATE, (state) => {
+            this.cell.classList.remove(state);
+        });
     }
 }
 

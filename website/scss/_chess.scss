@@ -23,5 +23,13 @@
             background-color: #DDDDDD;
             cursor: pointer;
         }
+
+        &.selected {
+            background-color: #CCCCCC;
+        }
+
+        &.selectable {
+            background-color: red;
+        }
     }
 }
