@@ -16,6 +16,43 @@
             <div class="print-project">
                 <div class="multi-image-container">
                     <div class="arrow-icon previous"></div>
+                    {{ macros.captioned_image('3d_printing/cup_holder_insert/complete.png', 'Rendering with nested insert', lb_group='cup_holder') }}
+                    {{ macros.captioned_image('3d_printing/cup_holder_insert/no_glencairn.png', 'Rendering without nested insert', lb_group='cup_holder') }}
+                    {{ macros.captioned_image('3d_printing/cup_holder_insert/can_insert_rendering.png', 'Can insert rendering', lb_group='cup_holder') }}
+                    {{ macros.captioned_image('3d_printing/cup_holder_insert/with_glencairn_insert_rendering.png', 'Glencairn insert rendering', lb_group='cup_holder') }}
+                    {{ macros.captioned_image('3d_printing/cup_holder_insert/cross_section.png', 'Cross section rendering', lb_group='cup_holder') }}
+                    {{ macros.captioned_image('3d_printing/cup_holder_insert/can_insert.jpg', 'Can insert', lb_group='cup_holder') }}
+                    {{ macros.captioned_image('3d_printing/cup_holder_insert/glencairn_insert.jpg', 'Glencairn insert', lb_group='cup_holder') }}
+                    <div class="arrow-icon next"></div>
+                </div>
+                <div class="print-description">
+                    <h4>Couch Cup Holder Nesting Inserts</h4>
+                    <p>
+                        On the arms of my couch, I have some cup holders whose holes are much too big. I designed
+                        and printed a set of nesting inserts that allow me to use the cup holder at two additional
+                        sizes.
+                    </p>
+                    <p>
+                        The larger size is fit to a normal soda can and the smaller size is raised and made
+                        to fit a whisky tasting glass called a glencairn. The larger insert can be used on its own,
+                        and the glencairn size sits nested inside the larger insert.
+                    </p>
+                    <div class="print-links">
+                        <div>
+                            <span><b>STL files: </b></span>
+                            <a href="{{ macros.stl_url('cup_holder_insert/can_insert.stl') }}">can insert</a>
+                            <a href="{{ macros.stl_url('cup_holder_insert/glencairn_insert.stl') }}">glencairn insert</a>
+                        </div>
+                        <div>
+                            <span><b>Thingiverse: </b></span>
+                            {{ macros.external_link('https://www.thingiverse.com/thing:4732722', 'thing:4732722') }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="print-project">
+                <div class="multi-image-container">
+                    <div class="arrow-icon previous"></div>
                     {{ macros.captioned_image('3d_printing/nest_adapter_mount/top_model.png', 'Top of mount rendering', lb_group='nest') }}
                     {{ macros.captioned_image('3d_printing/nest_adapter_mount/back_model.png', 'Bottom of mount rendering', lb_group='nest') }}
                     {{ macros.captioned_image('3d_printing/nest_adapter_mount/top_comparison.jpg', 'Comparison: print on right', lb_group='nest') }}
