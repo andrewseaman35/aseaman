@@ -1,0 +1,27 @@
+#debug-container {
+    table {
+        border-collapse: unset;
+        border: 1px solid black;
+        min-width: unset;
+    }
+
+    tr {
+        height: 50px;
+
+        &:hover {
+            background-color: $white;
+            cursor: auto;
+        }
+    }
+
+    td {
+        width: 50px;
+        text-align: center;
+        border: 1px solid black;
+
+        &:hover {
+            background-color: #DDDDDD;
+            cursor: pointer;
+        }
+    }
+}

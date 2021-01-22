@@ -56,4 +56,7 @@ body {
     &.chip8 {
         @import "chip8.scss";
     }
+    &.chess {
+        @import "chess.scss";
+    }
 }
