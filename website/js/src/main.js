@@ -10,6 +10,9 @@ const initMultiImageContainers = require('./multiImageContainer');
 import {
     initChip8,
 } from './chip8';
+import {
+    initChess,
+} from './chess';
 
 import {
     initACNHRankings,
@@ -29,6 +32,7 @@ import {
 
 const modules = {
     initACNHRankings,
+    initChess,
     initChip8,
     initCompareACNH,
     initVillagerResults,
