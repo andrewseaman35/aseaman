@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import _ from 'lodash';
 
 import {
@@ -98,24 +99,21 @@ class Board {
     }
 
     createBoard() {
-        const container = document.getElementById('debug-container');
-        container.innerHTML = '';
+        const container = $('#board-container');
+        container.empty();
 
-        const table = document.createElement('table');
-        table.setAttribute('id', 'debug-table');
-        container.appendChild(table);
+        const table = $('<table></table>').attr('id', 'debug-table');
+        container.append(table);
 
         let spaceIndex = 0;
         _.times(BOARD_WIDTH, () => {
             const rank = Math.floor(spaceIndex / 8) + 1;
-            const row = document.createElement('tr');
-            row.setAttribute('id', `row-${rank}`);
+            const row = $('<tr></tr>').attr('id', `row-${rank}`);
             _.times(BOARD_HEIGHT, () => {
-                const cell = document.createElement('td');
+                const cell = $('<td></td>').attr('id', indexToPosition(spaceIndex));
                 this.spaces[spaceIndex].setCell(cell);
-                cell.setAttribute('id', indexToPosition(spaceIndex));
-                cell.addEventListener('click', this.onBoardSpaceClick.bind(this));
-                row.appendChild(cell);
+                cell.on('click', this.onBoardSpaceClick.bind(this));
+                row.append(cell);
                 spaceIndex += 1;
             });
             table.prepend(row);
@@ -123,20 +121,15 @@ class Board {
 
     }
 
-    clearDebugBoard() {
-        const container = document.getElementById('debug-container');
-        container.innerHTML = '';
-    }
-
     refreshBoard() {
         this.clearBoardState();
         _.each(this.spaces, (space, spaceIndex) => {
             const position = indexToPosition(spaceIndex);
-            const boardSpace = document.getElementById(position);
+            const boardSpace = $(`#${position}`);
             if (space.piece !== null) {
-                boardSpace.innerHTML = `${position}: ${space.piece.notation} (${space.piece.side})`;
+                boardSpace.text(`${position}: ${space.piece.notation} (${space.piece.side})`);
             } else {
-                boardSpace.innerHTML = position;
+                boardSpace.text(position);
             }
         });
     }

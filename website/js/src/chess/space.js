@@ -48,12 +48,12 @@ class Space {
     }
 
     setState(state) {
-        this.cell.classList.add(state);
+        this.cell.addClass(state);
     }
 
     clearState() {
         _.each(SPACE_STATE, (state) => {
-            this.cell.classList.remove(state);
+            this.cell.removeClass(state);
         });
     }
 }
