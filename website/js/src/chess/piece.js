@@ -18,12 +18,25 @@ class Piece {
     constructor(side, notation, startingPosition) {
         this.side = side;
         this.notation = notation;
+
         this.startingPosition = startingPosition;
 
         this.movementPaths = [];
 
         this.isWhite = this.side === SIDE.WHITE;
         this.isBlack = !this.isWhite;
+    }
+
+    get forwardRankIncrement() {
+        return this.isWhite ? 1 : -1;
+    }
+
+    get startingRank() {
+        return rankFromIndex(positionToIndex(this.startingPosition));
+    }
+
+    get startingFile() {
+        return fileFromIndex(positionToIndex(this.startingPosition));
     }
 
     getMovementPaths() {
@@ -61,21 +74,25 @@ class Pawn extends Piece {
         const rank = space.rank;
         const movementPaths = [];
 
-        const rankIncrement = this.isWhite ? 1 : -1;
-        movementPaths.push([[0, rankIncrement]]);
+        const forwardPosition = space.getRelativeSpacePosition(...[0, this.forwardRankIncrement]);
+        const forwardSpace = board[positionToIndex(forwardPosition)];
+        if (!forwardSpace.isOccupied) {
+            movementPaths.push([[0, this.forwardRankIncrement]]);
 
-        const startingRank = this.isWhite ? 2 : 7;
-        const startingRankIncrement = this.isWhite ? 2 : -2;
-        if (rank === startingRank) {
-            movementPaths[0].push([0, startingRankIncrement]);
+            const startingRankIncrement = 2 * this.forwardRankIncrement;
+            if (rank === this.startingRank) {
+                movementPaths[0].push([0, startingRankIncrement]);
+            }
         }
 
-        const diagonalIncrements = [[1, rankIncrement], [-1, rankIncrement]];
+        const diagonalIncrements = [[1, this.forwardRankIncrement], [-1, this.forwardRankIncrement]];
         _.map(diagonalIncrements, (increment) => {
             const diagonalPosition = space.getRelativeSpacePosition(...increment);
-            const diagonalSpace = board[positionToIndex(diagonalPosition)];
-            if (diagonalSpace.isOccupied && this.side !== diagonalSpace.piece.side) {
-                movementPaths.push([increment]);
+            if (diagonalPosition) {
+                const diagonalSpace = board[positionToIndex(diagonalPosition)];
+                if (diagonalSpace.isOccupied && this.side !== diagonalSpace.piece.side) {
+                    movementPaths.push([increment]);
+                }
             }
         });
 
