@@ -132,7 +132,7 @@ class ChessGame {
 
     onBoardSpaceSelect(space) {
         if (this.currentTurn.isInState(TURN_STATE.EMPTY)) {
-            if (space.piece) {
+            if (space.piece && space.piece.getPossibleMoves(this.board, space).length) {
                 if (space.piece.side === this.currentTurn.side) {
                     this.currentTurn.setStartingPieceSpace(space);
                     this.board.displayPossibleMoves(space);
