@@ -20,6 +20,12 @@ const SPACE_STATE = {
     SELECTED: 'selected',
 };
 
+const TURN_STATE = {
+    EMPTY: 'empty',
+    SELECTED_PIECE: 'selected_piece',
+    COMPLETE: 'complete',
+};
+
 const MOVEMENT_GROUPS = {
     DIAGONALS: [
         [[1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 6], [7, 7]],
@@ -39,8 +45,10 @@ module.exports = {
     BOARD_HEIGHT,
     BOARD_WIDTH,
 
-    SIDE,
     SPACE_STATE,
+    TURN_STATE,
+
+    SIDE,
     PIECE_NOTATION,
     MOVEMENT_GROUPS,
 };

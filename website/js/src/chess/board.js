@@ -3,7 +3,6 @@ import _ from 'lodash';
 import {
     BOARD_WIDTH,
     BOARD_HEIGHT,
-    SIDE,
     SPACE_STATE,
 } from './constants';
 
@@ -11,15 +10,6 @@ import {
     positionToIndex,
     indexToPosition,
 } from './utils';
-
-import {
-    Pawn,
-    Knight,
-    Bishop,
-    Rook,
-    Queen,
-    King,
-} from './piece';
 
 import Space from './space';
 
@@ -41,9 +31,45 @@ class Board {
 
     onBoardSpaceClick(event) {
         if (this.onSpaceSelectListener) {
-            const space = this.spaces[positionToIndex(event.currentTarget.id)];
+            const space = this.spaceByPosition(event.currentTarget.id);
             this.onSpaceSelectListener(space);
         }
+    }
+
+    spaceByPosition(position) {
+        return this.spaces[positionToIndex(position)];
+    }
+
+    spaceByIndex(index) {
+        return this.spaces[index];
+    }
+
+    validateTurn(turn) {
+        const startingSpace = this.spaceByPosition(turn.startingSpacePosition);
+        const endingSpace = this.spaceByPosition(turn.endingSpacePosition);
+        if (startingSpace.piece !== turn.piece) {
+            throw new Error(`validateTurn failed on piece validation: ${startingSpace.piece} !== ${turn.piece}`);
+        }
+        if (turn.isCapture) {
+            if (endingSpace.piece === null) {
+                throw new Error('no piece on ending space during capture');
+            }
+            if (endingSpace.piece.side === startingSpace.piece.side) {
+                throw new Error('capture applied to own piece');
+            }
+        }
+    }
+
+    executeTurn(turn) {
+        const startingSpace = this.spaceByPosition(turn.startingSpacePosition);
+        const endingSpace = this.spaceByPosition(turn.endingSpacePosition);
+        const piece = startingSpace.piece;
+
+        if (turn.isCapture) {
+            endingSpace.piece.isCaptured = true;
+        }
+        startingSpace.piece = null;
+        endingSpace.piece = piece;
     }
 
     clearBoardState() {
@@ -57,7 +83,7 @@ class Board {
         const piece = space.piece;
         space.setState(SPACE_STATE.SELECTED);
         if (piece) {
-            const possibleMoves = space.piece.getPossibleMoves(this.spaces, space);
+            const possibleMoves = space.piece.getPossibleMoves(this, space);
             console.log(possibleMoves);
             _.each(possibleMoves, (movePosition) => {
                 this.spaces[positionToIndex(movePosition)].setState(SPACE_STATE.SELECTABLE);
@@ -103,12 +129,12 @@ class Board {
     }
 
     refreshBoard() {
+        this.clearBoardState();
         _.each(this.spaces, (space, spaceIndex) => {
             const position = indexToPosition(spaceIndex);
             const boardSpace = document.getElementById(position);
-            console.log(space)
             if (space.piece !== null) {
-                boardSpace.innerHTML = `${position}: ${space.piece.notation}`;
+                boardSpace.innerHTML = `${position}: ${space.piece.notation} (${space.piece.side})`;
             } else {
                 boardSpace.innerHTML = position;
             }
