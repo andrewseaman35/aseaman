@@ -23,8 +23,8 @@ class Piece {
 
         this.movementPaths = [];
 
+        this.isCaptured = false;
         this.isWhite = this.side === SIDE.WHITE;
-        this.isBlack = !this.isWhite;
     }
 
     get forwardRankIncrement() {
@@ -50,7 +50,7 @@ class Piece {
             _.each(path, (move) => {
                 const newSpacePosition = space.getRelativeSpacePosition(move[0], move[1]);
                 if (newSpacePosition) {
-                    const newSpace = board[positionToIndex(newSpacePosition)];
+                    const newSpace = board.spaces[positionToIndex(newSpacePosition)];
                     if (newSpace.isOccupied) {
                         if (this.side !== newSpace.piece.side) {
                             moves.push(newSpacePosition);
@@ -75,7 +75,7 @@ class Pawn extends Piece {
         const movementPaths = [];
 
         const forwardPosition = space.getRelativeSpacePosition(...[0, this.forwardRankIncrement]);
-        const forwardSpace = board[positionToIndex(forwardPosition)];
+        const forwardSpace = board.spaces[positionToIndex(forwardPosition)];
         if (!forwardSpace.isOccupied) {
             movementPaths.push([[0, this.forwardRankIncrement]]);
 
@@ -89,7 +89,7 @@ class Pawn extends Piece {
         _.map(diagonalIncrements, (increment) => {
             const diagonalPosition = space.getRelativeSpacePosition(...increment);
             if (diagonalPosition) {
-                const diagonalSpace = board[positionToIndex(diagonalPosition)];
+                const diagonalSpace = board.spaces[positionToIndex(diagonalPosition)];
                 if (diagonalSpace.isOccupied && this.side !== diagonalSpace.piece.side) {
                     movementPaths.push([increment]);
                 }
