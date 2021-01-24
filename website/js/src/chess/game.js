@@ -27,12 +27,21 @@ const WHITE_PIECE_SETUP = [
 
 const BLACK_PIECE_SETUP = [
     { Piece: Pawn, startingPositions: ['A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7'] },
-    { Piece: Rook, startingPositions: ['A8', 'H8'] },
+    { Piece: Rook, startingPositions: ['A8', 'H8', 'E3'] },
     { Piece: Knight, startingPositions: ['B8', 'G8'] },
     { Piece: Bishop, startingPositions: ['C8', 'F8'] },
     { Piece: Queen, startingPositions: ['D8'] },
     { Piece: King, startingPositions: ['E8'] },
 ];
+
+
+class ChessTurn {
+    constructor(side) {
+        this.side = side;
+        this.pieceNotation = null;
+        this.capture = null;
+    }
+}
 
 
 class ChessGame {
@@ -42,9 +51,10 @@ class ChessGame {
         this.whitePieces = this.initializePieces(WHITE_PIECE_SETUP, SIDE.WHITE);
         this.blackPieces = this.initializePieces(BLACK_PIECE_SETUP, SIDE.BLACK);
 
-        this.currentTurn = SIDE.WHITE;
+        this.currentTurn = null;
+        this.turns = [];
+
         this.board.refreshBoard();
-        console.log(this);
 
         const stateMachine = [
             {turn: 'white', action: 'selectPiece'},
@@ -58,7 +68,7 @@ class ChessGame {
         const pieces = [];
         _.each(pieceSetup, (pieceSetup) => {
             _.each(pieceSetup.startingPositions, (startingPosition) => {
-                const piece = new pieceSetup.Piece(side);
+                const piece = new pieceSetup.Piece(side, startingPosition);
                 this.board.setPiece(piece, startingPosition);
                 pieces.push(piece);
             });
@@ -67,6 +77,10 @@ class ChessGame {
         return pieces;
     }
 
+    startGame() {
+        this.currentTurn = SIDE.WHITE;
+
+    }
 
 }
 
