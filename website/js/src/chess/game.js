@@ -141,13 +141,10 @@ class ChessGame {
         } else if (this.currentTurn.isInState(TURN_STATE.SELECTED_PIECE)) {
             const startingSpace = this.board.spaceByPosition(this.currentTurn.startingSpacePosition);
             if (space.piece && space.piece.side === this.currentTurn.side) {
-                const startingPiece = this.currentTurn.startingPiece;
                 this.currentTurn.unsetStartingPieceSpace();
                 this.board.clearBoardState();
-                if (space.piece !== startingPiece) {
-                    this.currentTurn.setStartingPieceSpace(space);
-                    this.board.displayPossibleMoves(space);
-                }
+                this.currentTurn.setStartingPieceSpace(space);
+                this.board.displayPossibleMoves(space);
             } else if (this.currentTurn.piece.getPossibleMoves(this.board, startingSpace).includes(space.position)) {
                 this.currentTurn.setEndingPieceSpace(space);
                 this.board.executeTurn(this.currentTurn);

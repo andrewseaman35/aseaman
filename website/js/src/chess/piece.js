@@ -1,6 +1,10 @@
 import _ from 'lodash';
 
 import {
+    getImageSrc,
+} from '../utils';
+
+import {
     SIDE,
     PIECE_NOTATION,
     MOVEMENT_GROUPS,
@@ -10,7 +14,6 @@ import {
     fileFromIndex,
     rankFromIndex,
     positionToIndex,
-    indexToPosition,
 } from './utils';
 
 
@@ -39,6 +42,11 @@ class Piece {
         return fileFromIndex(positionToIndex(this.startingPosition));
     }
 
+    get imagePath() {
+        const imageName = `${this.notation.toLowerCase()}_${this.side.toLowerCase()}`;
+        return getImageSrc(`images/chess/pieces/${imageName}.svg`);
+    }
+
     getMovementPaths() {
         return this.movementPaths;
     }
@@ -50,7 +58,7 @@ class Piece {
             _.each(path, (move) => {
                 const newSpacePosition = space.getRelativeSpacePosition(move[0], move[1]);
                 if (newSpacePosition) {
-                    const newSpace = board.spaces[positionToIndex(newSpacePosition)];
+                    const newSpace = board.spaceByPosition(newSpacePosition);
                     if (newSpace.isOccupied) {
                         if (this.side !== newSpace.piece.side) {
                             moves.push(newSpacePosition);
@@ -75,7 +83,7 @@ class Pawn extends Piece {
         const movementPaths = [];
 
         const forwardPosition = space.getRelativeSpacePosition(...[0, this.forwardRankIncrement]);
-        const forwardSpace = board.spaces[positionToIndex(forwardPosition)];
+        const forwardSpace = board.spaceByPosition(forwardPosition);
         if (!forwardSpace.isOccupied) {
             movementPaths.push([[0, this.forwardRankIncrement]]);
 
@@ -89,7 +97,7 @@ class Pawn extends Piece {
         _.map(diagonalIncrements, (increment) => {
             const diagonalPosition = space.getRelativeSpacePosition(...increment);
             if (diagonalPosition) {
-                const diagonalSpace = board.spaces[positionToIndex(diagonalPosition)];
+                const diagonalSpace = board.spaceByPosition(diagonalPosition);
                 if (diagonalSpace.isOccupied && this.side !== diagonalSpace.piece.side) {
                     movementPaths.push([increment]);
                 }

@@ -1,3 +1,7 @@
+#chess-container {
+    display: flex;
+}
+
 #board-container {
     table {
         border-collapse: unset;
@@ -15,9 +19,11 @@
     }
 
     td {
+        height: 50px;
         width: 50px;
         text-align: center;
         border: 1px solid black;
+        padding: 4px;
 
         &:hover {
             background-color: #DDDDDD;
@@ -32,4 +38,15 @@
             background-color: red;
         }
     }
+
+    .piece-image {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+#game-info-container {
+    border: 1px solid $blackish;
+    margin-left: 20px;
+    padding: 8px;
 }

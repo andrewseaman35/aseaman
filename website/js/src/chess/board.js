@@ -127,7 +127,7 @@ class Board {
             const position = indexToPosition(spaceIndex);
             const boardSpace = $(`#${position}`);
             if (space.piece !== null) {
-                boardSpace.text(`${position}: ${space.piece.notation} (${space.piece.side})`);
+                boardSpace.html(`<img class="piece-image" src=${space.piece.imagePath} />`);
             } else {
                 boardSpace.text(position);
             }
