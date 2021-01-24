@@ -6,6 +6,7 @@ import {
 } from './constants';
 
 import Board from './board';
+import GameInfo from './gameInfo';
 
 import {
     Pawn,
@@ -96,6 +97,7 @@ class ChessTurn {
 class ChessGame {
     constructor() {
         this.board = new Board();
+        this.gameInfo = new GameInfo();
 
         this.whitePieces = this.initializePieces(WHITE_PIECE_SETUP, SIDE.WHITE);
         this.blackPieces = this.initializePieces(BLACK_PIECE_SETUP, SIDE.BLACK);
@@ -164,6 +166,8 @@ class ChessGame {
 
     startNextTurn() {
         this.turns.push(new ChessTurn(this.currentSide));
+        this.gameInfo.setTurn(this.currentTurn);
+
     }
 
     endTurn() {
