@@ -10,6 +10,7 @@ import {
 import {
     positionToIndex,
     indexToPosition,
+    fileFromIndex,
 } from './utils';
 
 import Space from './space';
@@ -109,8 +110,13 @@ class Board {
         _.times(BOARD_WIDTH, () => {
             const rank = Math.floor(spaceIndex / 8) + 1;
             const row = $('<tr></tr>').attr('id', `row-${rank}`);
+
+            const rankLabelCell = $(`<td>${rank}</td>`)
+                .attr('class', 'board-label rank');
+            row.append(rankLabelCell);
+
             _.times(BOARD_HEIGHT, () => {
-                const cell = $('<td></td>').attr('id', indexToPosition(spaceIndex));
+                const cell = $('<td></td>').attr('id', indexToPosition(spaceIndex)).attr('class', 'space');
                 this.spaces[spaceIndex].setCell(cell);
                 cell.on('click', this.onBoardSpaceClick.bind(this));
                 row.append(cell);
@@ -118,6 +124,14 @@ class Board {
             });
             table.prepend(row);
         });
+        const fileLabelRow = $('<tr></tr>').attr('id', 'row-file-label');
+        fileLabelRow.append($('<td></td>').attr('class', 'board-label empty'));
+        _.times(BOARD_WIDTH, (i) => {
+            const fileLabelCell = $(`<td>${fileFromIndex(i)}</td>`)
+                .attr('class', 'board-label file');
+            fileLabelRow.append(fileLabelCell);
+        });
+        table.append(fileLabelRow);
 
     }
 

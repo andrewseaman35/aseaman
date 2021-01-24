@@ -10,8 +10,6 @@
     }
 
     tr {
-        height: 50px;
-
         &:hover {
             background-color: $white;
             cursor: auto;
@@ -26,17 +24,33 @@
         border: 1px solid black;
         padding: 4px;
 
-        &:hover {
-            background-color: #DDDDDD;
-            cursor: pointer;
+        &.space {
+            &:hover {
+                background-color: #DDDDDD;
+                cursor: pointer;
+            }
+
+            &.selected {
+                background-color: #CCCCCC;
+            }
+
+            &.selectable {
+                background-color: red;
+            }
         }
 
-        &.selected {
-            background-color: #CCCCCC;
-        }
-
-        &.selectable {
-            background-color: red;
+        &.board-label {
+            color: $blackish;
+            &.empty {
+                height: 20px;
+                width: 20px;
+            }
+            &.rank {
+                width: 20px;
+            }
+            &.file {
+                height: 20px;
+            }
         }
     }
 
