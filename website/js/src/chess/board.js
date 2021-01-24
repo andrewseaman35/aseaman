@@ -30,23 +30,19 @@ class Board {
         this.createBoard();
     }
 
+    setOnSpaceSelectListener(listener) {
+        this.onSpaceSelectListener = listener;
+    }
+
     setPiece(piece, position) {
         const spaceIndex = positionToIndex(position);
         this.spaces[spaceIndex].setPiece(piece);
     }
 
     onBoardSpaceClick(event) {
-        this.clearBoardState();
-        const spaceIndex = positionToIndex(event.currentTarget.id);
-        const piece = this.spaces[spaceIndex].piece;
-        this.spaces[spaceIndex].setState(SPACE_STATE.SELECTED);
-        if (piece) {
-            const possibleMoves = this.spaces[spaceIndex].piece.getPossibleMoves(this.spaces, this.spaces[spaceIndex]);
-            console.log(piece);
-            console.log(possibleMoves);
-            _.each(possibleMoves, (movePosition) => {
-                this.spaces[positionToIndex(movePosition)].setState(SPACE_STATE.SELECTABLE);
-            });
+        if (this.onSpaceSelectListener) {
+            const space = this.spaces[positionToIndex(event.currentTarget.id)];
+            this.onSpaceSelectListener(space);
         }
     }
 
@@ -54,6 +50,19 @@ class Board {
         _.each(this.spaces, (space) => {
             space.clearState();
         });
+    }
+
+    displayPossibleMoves(space) {
+        this.clearBoardState();
+        const piece = space.piece;
+        space.setState(SPACE_STATE.SELECTED);
+        if (piece) {
+            const possibleMoves = space.piece.getPossibleMoves(this.spaces, space);
+            console.log(possibleMoves);
+            _.each(possibleMoves, (movePosition) => {
+                this.spaces[positionToIndex(movePosition)].setState(SPACE_STATE.SELECTABLE);
+            });
+        }
     }
 
     /* Debug board */

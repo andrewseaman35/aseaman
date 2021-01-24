@@ -38,8 +38,11 @@ const BLACK_PIECE_SETUP = [
 class ChessTurn {
     constructor(side) {
         this.side = side;
+        this.isCapture = null;
         this.pieceNotation = null;
-        this.capture = null;
+
+        this.startingSpacePostion = null;
+        this.endingSpacePosition = null;
     }
 }
 
@@ -51,17 +54,12 @@ class ChessGame {
         this.whitePieces = this.initializePieces(WHITE_PIECE_SETUP, SIDE.WHITE);
         this.blackPieces = this.initializePieces(BLACK_PIECE_SETUP, SIDE.BLACK);
 
-        this.currentTurn = null;
+        this.currentSide = null;
         this.turns = [];
 
-        this.board.refreshBoard();
+        this.board.setOnSpaceSelectListener(this.onBoardSpaceSelect.bind(this));
 
-        const stateMachine = [
-            {turn: 'white', action: 'selectPiece'},
-            {turn: 'white', action: 'selectMove'},
-            {turn: 'black', action: 'selectPiece'},
-            {turn: 'black', action: 'selectMove'},
-        ];
+        this.board.refreshBoard();
     }
 
     initializePieces(pieceSetup, side) {
@@ -77,9 +75,22 @@ class ChessGame {
         return pieces;
     }
 
-    startGame() {
-        this.currentTurn = SIDE.WHITE;
+    get currentTurn() {
+        return this.turns[this.turns.length - 1];
+    }
 
+    onBoardSpaceSelect(space) {
+        console.log(space);
+        this.board.displayPossibleMoves(space, space.piece);
+    }
+
+    startGame() {
+        this.currentSide = SIDE.WHITE;
+        this.startTurn();
+    }
+
+    startTurn() {
+        this.turns.push(new ChessTurn(this.currentSide));
     }
 
 }
