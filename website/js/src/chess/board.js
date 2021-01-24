@@ -42,6 +42,8 @@ class Board {
         this.spaces[spaceIndex].setState(SPACE_STATE.SELECTED);
         if (piece) {
             const possibleMoves = this.spaces[spaceIndex].piece.getPossibleMoves(this.spaces, this.spaces[spaceIndex]);
+            console.log(piece);
+            console.log(possibleMoves);
             _.each(possibleMoves, (movePosition) => {
                 this.spaces[positionToIndex(movePosition)].setState(SPACE_STATE.SELECTABLE);
             });
