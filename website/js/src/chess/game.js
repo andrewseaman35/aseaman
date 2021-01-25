@@ -1,10 +1,13 @@
 import _ from 'lodash';
 
 import {
+    PIECE_NOTATION,
     SIDE,
+    PLAY_CONDITIONS,
     TURN_STATE,
 } from './constants';
 
+import Analyzer from './analyzer';
 import Board from './board';
 import GameInfo from './gameInfo';
 
@@ -98,6 +101,7 @@ class ChessGame {
     constructor() {
         this.board = new Board();
         this.gameInfo = new GameInfo();
+        this.analyzer = new Analyzer();
 
         this.whitePieces = this.initializePieces(WHITE_PIECE_SETUP, SIDE.WHITE);
         this.blackPieces = this.initializePieces(BLACK_PIECE_SETUP, SIDE.BLACK);
@@ -130,6 +134,22 @@ class ChessGame {
         return this.turns[this.turns.length - 1];
     }
 
+    get opponentKing() {
+        return _.find(this.opponentSidePieces, piece => piece.notation === PIECE_NOTATION.KING);
+    }
+
+    get currentKing() {
+        return _.find(this.currentSidePieces, piece => piece.notation === PIECE_NOTATION.KING);
+    }
+
+    get opponentSidePieces() {
+        return this.currentSide === SIDE.WHITE ? this.blackPieces : this.whitePieces;
+    }
+
+    get currentSidePieces() {
+        return this.currentSide === SIDE.WHITE ? this.whitePieces : this.blackPieces;
+    }
+
     onBoardSpaceSelect(space) {
         if (this.currentTurn.isInState(TURN_STATE.EMPTY)) {
             if (space.piece && space.piece.getPossibleMoves(this.board, space).length) {
@@ -141,17 +161,19 @@ class ChessGame {
         } else if (this.currentTurn.isInState(TURN_STATE.SELECTED_PIECE)) {
             const startingSpace = this.board.spaceByPosition(this.currentTurn.startingSpacePosition);
             if (space.piece && space.piece.side === this.currentTurn.side) {
+                const setStartingSpace = space.position !== this.currentTurn.startingSpacePosition;
                 this.currentTurn.unsetStartingPieceSpace();
                 this.board.clearBoardState();
-                this.currentTurn.setStartingPieceSpace(space);
-                this.board.displayPossibleMoves(space);
+                if (setStartingSpace) {
+                    this.currentTurn.setStartingPieceSpace(space);
+                    this.board.displayPossibleMoves(space);
+                }
             } else if (this.currentTurn.piece.getPossibleMoves(this.board, startingSpace).includes(space.position)) {
                 this.currentTurn.setEndingPieceSpace(space);
                 this.board.executeTurn(this.currentTurn);
                 this.board.refreshBoard();
 
                 this.endTurn();
-                this.startNextTurn();
             }
         }
     }
@@ -162,13 +184,24 @@ class ChessGame {
     }
 
     startNextTurn() {
+        this.determinePlayConditions();
         this.turns.push(new ChessTurn(this.currentSide));
         this.gameInfo.setTurn(this.currentTurn);
+    }
 
+    determinePlayConditions() {
+        const conditions = [];
+        const checks = this.analyzer.findChecks(this.board, this.opponentSidePieces, this.currentSidePieces);
+
+        this.gameInfo.setChecks(checks);
+        console.log(checks);
+
+        return conditions;
     }
 
     endTurn() {
         this.currentSide = this.currentSide === SIDE.WHITE ? SIDE.BLACK : SIDE.WHITE;
+        this.startNextTurn();
     }
 
 }

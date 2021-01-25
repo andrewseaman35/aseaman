@@ -26,6 +26,10 @@ const TURN_STATE = {
     COMPLETE: 'complete',
 };
 
+const PLAY_CONDITIONS = {
+    CHECK: 'check',
+};
+
 const MOVEMENT_GROUPS = {
     DIAGONALS: [
         [[1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 6], [7, 7]],
@@ -45,6 +49,7 @@ module.exports = {
     BOARD_HEIGHT,
     BOARD_WIDTH,
 
+    PLAY_CONDITIONS,
     SPACE_STATE,
     TURN_STATE,
 
