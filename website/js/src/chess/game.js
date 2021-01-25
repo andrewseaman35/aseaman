@@ -3,7 +3,7 @@ import _ from 'lodash';
 import {
     PIECE_NOTATION,
     SIDE,
-    PLAY_CONDITIONS,
+    SPACE_STATE,
     TURN_STATE,
 } from './constants';
 
@@ -44,6 +44,7 @@ class ChessTurn {
     constructor(side) {
         this.side = side;
         this.isCapture = null;
+        this.check = false;
 
         this.piece = null;
         this.startingSpacePosition = null;
@@ -184,22 +185,28 @@ class ChessGame {
     }
 
     startNextTurn() {
-        this.determinePlayConditions();
         this.turns.push(new ChessTurn(this.currentSide));
         this.gameInfo.setTurn(this.currentTurn);
     }
 
-    determinePlayConditions() {
+    setPlayConditions() {
         const conditions = [];
-        const checks = this.analyzer.findChecks(this.board, this.opponentSidePieces, this.currentSidePieces);
+        const checkSpaces = this.analyzer.findChecks(this.board, this.currentSidePieces, this.opponentSidePieces);
 
-        this.gameInfo.setChecks(checks);
-        console.log(checks);
+        if (checkSpaces.length) {
+            _.each(checkSpaces, (space) => {
+                space.setState(SPACE_STATE.CHECK_THREAT);
+            });
+            this.currentTurn.check = true;
+        }
+        this.gameInfo.setChecks(checkSpaces);
 
         return conditions;
     }
 
     endTurn() {
+        this.setPlayConditions();
+
         this.currentSide = this.currentSide === SIDE.WHITE ? SIDE.BLACK : SIDE.WHITE;
         this.startNextTurn();
     }

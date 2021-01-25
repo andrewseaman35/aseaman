@@ -16,18 +16,15 @@ const PIECE_NOTATION = {
 };
 
 const SPACE_STATE = {
-    SELECTABLE: 'selectable',
     SELECTED: 'selected',
+    POSSIBLE_MOVE: 'possible-move',
+    CHECK_THREAT: 'check-threat',
 };
 
 const TURN_STATE = {
     EMPTY: 'empty',
     SELECTED_PIECE: 'selected_piece',
     COMPLETE: 'complete',
-};
-
-const PLAY_CONDITIONS = {
-    CHECK: 'check',
 };
 
 const MOVEMENT_GROUPS = {
@@ -49,7 +46,6 @@ module.exports = {
     BOARD_HEIGHT,
     BOARD_WIDTH,
 
-    PLAY_CONDITIONS,
     SPACE_STATE,
     TURN_STATE,
 

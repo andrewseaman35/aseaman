@@ -1,3 +1,6 @@
+$space-dark: #703C06;
+$space-light: #CB9053;
+
 #chess-container {
     display: flex;
 }
@@ -25,6 +28,12 @@
         padding: 4px;
 
         &.space {
+            &.dark {
+                background-color: $space-dark;
+            }
+            &.light {
+                background-color: $space-light;
+            }
             &:hover {
                 background-color: #DDDDDD;
                 cursor: pointer;
@@ -34,8 +43,12 @@
                 background-color: #CCCCCC;
             }
 
-            &.selectable {
+            &.possible-move {
                 background-color: red;
+            }
+
+            &.check-threat {
+                background-color: orange;
             }
         }
 

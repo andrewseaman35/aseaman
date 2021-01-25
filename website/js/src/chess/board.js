@@ -8,6 +8,7 @@ import {
 } from './constants';
 
 import {
+    determineSpaceColor,
     positionToIndex,
     indexToPosition,
     fileFromIndex,
@@ -104,7 +105,7 @@ class Board {
             const possibleMoves = space.piece.getPossibleMoves(this, space);
             console.log(possibleMoves);
             _.each(possibleMoves, (movePosition) => {
-                this.spaces[positionToIndex(movePosition)].setState(SPACE_STATE.SELECTABLE);
+                this.spaces[positionToIndex(movePosition)].setState(SPACE_STATE.POSSIBLE_MOVE);
             });
         }
     }
@@ -132,7 +133,10 @@ class Board {
             row.append(rankLabelCell);
 
             _.times(BOARD_HEIGHT, () => {
-                const cell = $('<td></td>').attr('id', indexToPosition(spaceIndex)).attr('class', 'space');
+                const position = indexToPosition(spaceIndex);
+                const cell = $('<td></td>')
+                    .attr('id', position)
+                    .attr('class', `space ${determineSpaceColor(position)}`);
                 this.spaces[spaceIndex].setCell(cell);
                 cell.on('click', this.onBoardSpaceClick.bind(this));
                 row.append(cell);
@@ -161,7 +165,7 @@ class Board {
                     boardSpace.html(`<img class="piece-image" src=${space.piece.imagePath} />`);
                 }
             } else {
-                boardSpace.text(position);
+                boardSpace.empty();
             }
         });
     }
