@@ -46,6 +46,22 @@ class Board {
         return this.spaces[index];
     }
 
+    getSpaceOfPiece(piece) {
+        const space = _.find(this.spaces, space => space.piece === piece);
+        if (space) {
+            return space;
+        }
+        return null;
+    }
+
+    findPositionOfPiece(piece) {
+        const space = this.getSpaceOfPiece(piece);
+        if (space) {
+            return space.position;
+        }
+        return null;
+    }
+
     validateTurn(turn) {
         const startingSpace = this.spaceByPosition(turn.startingSpacePosition);
         const endingSpace = this.spaceByPosition(turn.endingSpacePosition);
