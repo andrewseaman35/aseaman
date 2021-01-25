@@ -88,7 +88,9 @@ class Pawn extends Piece {
             movementPaths.push([[0, this.forwardRankIncrement]]);
 
             const startingRankIncrement = 2 * this.forwardRankIncrement;
-            if (rank === this.startingRank) {
+            const twoSquareMovePosition = space.getRelativeSpacePosition(0, startingRankIncrement);
+            const twoSquareMoveSpace = board.spaceByPosition(twoSquareMovePosition);
+            if (rank === this.startingRank && !twoSquareMoveSpace.isOccupied) {
                 movementPaths[0].push([0, startingRankIncrement]);
             }
         }

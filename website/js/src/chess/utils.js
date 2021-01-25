@@ -1,3 +1,9 @@
+function determineSpaceColor(position) {
+    const index = positionToIndex(position);
+    const spaceColorVal = Math.floor(index / 8) + (index % 8) + 1;
+    return spaceColorVal % 2 === 1 ? 'dark' : 'light';
+}
+
 function fileFromIndex(index) {
     return String.fromCharCode((index % 8) + 65);
 }
@@ -39,6 +45,7 @@ function incrementRank(rank, increment) {
 
 
 module.exports = {
+    determineSpaceColor,
     fileFromIndex,
     rankFromIndex,
     positionToIndex,
