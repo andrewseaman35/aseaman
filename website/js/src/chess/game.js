@@ -136,27 +136,31 @@ class ChessGame {
     }
 
     endGame() {
-        console.log('donezo.');
+        console.log('donezo');
+        this.currentTurn.checkmate = true;
         this.gameInfo.setCheckmate();
     }
 
     setPlayConditions() {
         const conditions = [];
         this.analyzer.setup(this.board);
-        if (this.analyzer.isInCheckmate(this.opponentSide)) {
-            console.log('Checkmate!');
-            this.endGame();
-        }
-        const checkSpacePositions = this.analyzer.findSpacesCausingCheckAgainst(this.opponentSide);
 
-        if (checkSpacePositions.length) {
-            _.each(checkSpacePositions, (position) => {
-                const space = this.board.spaceByPosition(position);
-                space.setState(SPACE_STATE.CHECK_THREAT);
-            });
-            this.currentTurn.check = true;
+        if (this.analyzer.isInCheck(this.opponentSide)) {
+            if (this.analyzer.isInCheckmate(this.opponentSide)) {
+                this.endGame();
+            } else {
+                const checkSpacePositions = this.analyzer.findSpacesCausingCheckAgainst(this.opponentSide);
+                _.each(checkSpacePositions, (position) => {
+                    const space = this.board.spaceByPosition(position);
+                    space.setState(SPACE_STATE.CHECK_THREAT);
+                });
+                const movesToGetOutOfCheck = this.analyzer.movesToGetOutOfCheck(this.opponentSide);
+                this.currentTurn.check = true;
+                this.gameInfo.setChecks(checkSpacePositions);
+            }
+        } else {
+            this.gameInfo.setChecks(null);
         }
-        this.gameInfo.setChecks(checkSpacePositions);
 
         return conditions;
     }
