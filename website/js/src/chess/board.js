@@ -102,7 +102,6 @@ class Board {
         space.setState(SPACE_STATE.SELECTED);
         if (piece) {
             const possibleMoves = space.piece.getPossibleMoves(this, space);
-            console.log(possibleMoves);
             _.each(possibleMoves, (movePosition) => {
                 this.spaces[positionToIndex(movePosition)].setState(SPACE_STATE.POSSIBLE_MOVE);
             });

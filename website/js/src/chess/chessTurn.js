@@ -8,6 +8,7 @@ class ChessTurn {
         this.side = side;
         this.isCapture = null;
         this.check = false;
+        this.checkmate = false;
 
         this.piece = null;
         this.startingSpacePosition = null;
