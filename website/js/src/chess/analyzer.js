@@ -132,6 +132,24 @@ class Analyzer {
         return this._isInCheckmate[side];
     }
 
+    willMoveResultInSelfCheck(startPosition, endPosition) {
+        console.log(this.analyzableBoard)
+        const startSpace = this.analyzableBoard.spaceByPosition(startPosition);
+        const piece = startSpace.piece;
+        const turn = new ChessTurn(piece.side);
+        turn.setStartingPieceSpace(this.analyzableBoard.spaceByPosition(startPosition));
+        turn.setEndingPieceSpace(this.analyzableBoard.spaceByPosition(endPosition));
+        this.analyzableBoard.applyTurns([turn]);
+
+        let result = false;
+        if (this.analyzableBoard.isInCheck(piece.side)) {
+            result = true;
+        }
+        this.analyzableBoard.restore();
+        return result;
+
+    }
+
     movesToPutOpponentInCheck(side) {
         if (this._movesToPutOpponentInCheck[side] !== null) {
             return this._movesToPutOpponentInCheck[side];
