@@ -50,6 +50,7 @@ class ChessGame {
         this.whitePieces = this.initializePieces(WHITE_PIECE_SETUP, SIDE.WHITE);
         this.blackPieces = this.initializePieces(BLACK_PIECE_SETUP, SIDE.BLACK);
 
+        this.isInCheck = false;
         this.currentSide = null;
         this.turns = [];
 
@@ -116,6 +117,10 @@ class ChessGame {
                     this.board.displayPossibleMoves(space);
                 }
             } else if (this.currentTurn.piece.getPossibleMoves(this.board, startingSpace).includes(space.position)) {
+                if (this.analyzer.willMoveResultInSelfCheck(this.currentTurn.startingSpacePosition, space.position)) {
+                    console.log('Move results in check - invalid');
+                    return;
+                }
                 this.currentTurn.setEndingPieceSpace(space);
                 this.board.executeTurn(this.currentTurn);
                 this.board.refreshBoard();
@@ -133,6 +138,7 @@ class ChessGame {
     startNextTurn() {
         this.turns.push(new ChessTurn(this.currentSide));
         this.gameInfo.setTurn(this.currentTurn);
+        this.analyzer.setup(this.board);
     }
 
     endGame() {
@@ -142,7 +148,6 @@ class ChessGame {
     }
 
     setPlayConditions() {
-        const conditions = [];
         this.analyzer.setup(this.board);
 
         if (this.analyzer.isInCheck(this.opponentSide)) {
@@ -154,15 +159,14 @@ class ChessGame {
                     const space = this.board.spaceByPosition(position);
                     space.setState(SPACE_STATE.CHECK_THREAT);
                 });
-                const movesToGetOutOfCheck = this.analyzer.movesToGetOutOfCheck(this.opponentSide);
                 this.currentTurn.check = true;
                 this.gameInfo.setChecks(checkSpacePositions);
+                this.isInCheck = true;
             }
         } else {
             this.gameInfo.setChecks(null);
+            this.isInCheck = false;
         }
-
-        return conditions;
     }
 
     endTurn() {
