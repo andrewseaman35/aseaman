@@ -20,7 +20,6 @@ import Space from './space';
 class Board {
     constructor() {
         this.spaces = _.times(BOARD_WIDTH * BOARD_HEIGHT, i => new Space(i));
-        this.createBoard();
     }
 
     setOnSpaceSelectListener(listener) {
@@ -112,11 +111,11 @@ class Board {
 
     /* Debug board */
     render() {
-        this.createBoard();
+        this.initializeBoard();
         this.refreshBoard();
     }
 
-    createBoard() {
+    initializeBoard() {
         const container = $('#board-container');
         container.empty();
 

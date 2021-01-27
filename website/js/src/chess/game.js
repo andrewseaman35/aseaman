@@ -9,6 +9,7 @@ import {
 
 import Analyzer from './analyzer';
 import Board from './board';
+import ChessTurn from './chessTurn';
 import GameInfo from './gameInfo';
 
 import {
@@ -40,64 +41,6 @@ const BLACK_PIECE_SETUP = [
 ];
 
 
-class ChessTurn {
-    constructor(side) {
-        this.side = side;
-        this.isCapture = null;
-        this.check = false;
-
-        this.piece = null;
-        this.startingSpacePosition = null;
-        this.endingSpacePosition = null;
-    }
-
-    get pieceNotation() {
-        if (this.piece) {
-            return this.piece.notation;
-        }
-        return null;
-    }
-
-    get state() {
-        if (this.piece === null) {
-            return TURN_STATE.EMPTY;
-        }
-        if (this.endingSpacePosition === null) {
-            return TURN_STATE.SELECTED_PIECE;
-        }
-        return TURN_STATE.COMPLETE;
-    }
-
-    unsetStartingPieceSpace() {
-        if (!this.isInState(TURN_STATE.SELECTED_PIECE)) {
-            throw new Error(`unsetStartingPieceSpace disallowed for state ${this.state}`);
-        }
-        this.startingSpacePosition = null;
-        this.piece = null;
-    }
-
-    setStartingPieceSpace(space) {
-        if (!this.isInState(TURN_STATE.EMPTY)) {
-            throw new Error(`setStartingPieceSpace disallowed for state ${this.state}`);
-        }
-        this.startingSpacePosition = space.position;
-        this.piece = space.piece;
-    }
-
-    setEndingPieceSpace(space) {
-        if (!this.isInState(TURN_STATE.SELECTED_PIECE)) {
-            throw new Error(`setEndingPieceSpace disallowed for state ${this.state}`);
-        }
-        this.endingSpacePosition = space.position;
-        this.isCapture = space.isOccupied && (space.piece.side !== this.side);
-    }
-
-    isInState(state) {
-        return this.state === state;
-    }
-}
-
-
 class ChessGame {
     constructor() {
         this.board = new Board();
@@ -111,8 +54,7 @@ class ChessGame {
         this.turns = [];
 
         this.board.setOnSpaceSelectListener(this.onBoardSpaceSelect.bind(this));
-
-        this.board.refreshBoard();
+        this.board.render();
 
         this.startGame();
         console.log(this);
@@ -133,6 +75,10 @@ class ChessGame {
 
     get currentTurn() {
         return this.turns[this.turns.length - 1];
+    }
+
+    get opponentSide() {
+        return this.currentSide === SIDE.WHITE ? SIDE.BLACK : SIDE.WHITE;
     }
 
     get opponentKing() {
@@ -189,17 +135,28 @@ class ChessGame {
         this.gameInfo.setTurn(this.currentTurn);
     }
 
+    endGame() {
+        console.log('donezo.');
+        this.gameInfo.setCheckmate();
+    }
+
     setPlayConditions() {
         const conditions = [];
-        const checkSpaces = this.analyzer.findChecks(this.board, this.currentSidePieces, this.opponentSidePieces);
+        this.analyzer.setup(this.board);
+        if (this.analyzer.isInCheckmate(this.opponentSide)) {
+            console.log('Checkmate!');
+            this.endGame();
+        }
+        const checkSpacePositions = this.analyzer.findSpacesCausingCheckAgainst(this.opponentSide);
 
-        if (checkSpaces.length) {
-            _.each(checkSpaces, (space) => {
+        if (checkSpacePositions.length) {
+            _.each(checkSpacePositions, (position) => {
+                const space = this.board.spaceByPosition(position);
                 space.setState(SPACE_STATE.CHECK_THREAT);
             });
             this.currentTurn.check = true;
         }
-        this.gameInfo.setChecks(checkSpaces);
+        this.gameInfo.setChecks(checkSpacePositions);
 
         return conditions;
     }
