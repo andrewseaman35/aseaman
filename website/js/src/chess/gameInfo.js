@@ -7,10 +7,22 @@ class GameInfo {
         this.container = $('#game-info-container');
     }
 
-    setChecks(checkSpaces) {
-        if (checkSpaces && checkSpaces.length) {
-            const checkString = _.map(checkSpaces, space => space.position).join(', ');
-            $('#game-info-checks').text(`Check${checkSpaces.length > 1 ? 's' : ''} from ${checkString}`);
+    setNote(note) {
+        if (note && note.length) {
+            $('game-info-note').text(note);
+        } else {
+            $('game-info-note').empty();
+        }
+    }
+
+    setCheckmate() {
+        $('#game-info-checks').text('Checkmate!');
+    }
+
+    setChecks(checkPositions) {
+        if (checkPositions && checkPositions.length) {
+            const checkString = checkPositions.join(', ');
+            $('#game-info-checks').text(`Check${checkPositions.length > 1 ? 's' : ''} from ${checkString}`);
         } else {
             $('#game-info-checks').empty();
         }
