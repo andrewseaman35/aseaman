@@ -71,6 +71,10 @@ class Piece {
         });
         return _.filter(moves, move => move !== null);
     }
+
+    isSamePiece(otherPiece) {
+        return this.startingPosition === otherPiece.startingPosition;
+    }
 }
 
 class Pawn extends Piece {
