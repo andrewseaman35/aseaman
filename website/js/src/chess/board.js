@@ -47,7 +47,9 @@ class Board {
     }
 
     getSpaceOfPiece(piece) {
-        const space = _.find(this.spaces, space => space.piece === piece);
+        const space = _.find(
+            _.filter(this.spaces, space => space.piece !== null),
+            space => space.piece.isSamePiece(piece));
         if (space) {
             return space;
         }

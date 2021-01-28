@@ -28,6 +28,7 @@ class AnalyzableBoard extends Board {
         this.reset();
         _.each(startingBoard.spaces, (space) => {
             if (space.piece) {
+                // TODO: remove all this cloning and store a serialized piece in boardConfiguration
                 const pieceClone = Object.assign(Object.create(Object.getPrototypeOf(space.piece)), space.piece);
                 const pieceList = pieceClone.isWhite ? this.whitePieces : this.blackPieces;
                 pieceList.push(pieceClone);
@@ -46,12 +47,17 @@ class AnalyzableBoard extends Board {
     }
 
     restore() {
+        this.whitePieces = [];
+        this.blackPieces = [];
         _.each(this.spaces, (space) => {
             space.piece = null;
         });
         _.each(this.boardConfiguration, (piece, position) => {
             if (piece) {
-                this.setPiece(piece, position);
+                const pieceClone = Object.assign(Object.create(Object.getPrototypeOf(piece)), piece);
+                const pieceList = pieceClone.isWhite ? this.whitePieces : this.blackPieces;
+                pieceList.push(pieceClone);
+                this.setPiece(pieceClone, position);
             }
         });
     }
@@ -70,13 +76,14 @@ class AnalyzableBoard extends Board {
         const sideGivingCheckPieces = sideInCheck === SIDE.WHITE ? this.blackPieces : this.whitePieces;
 
         const checkSpacePositions = [];
-        const kingInCheck = this.findPositionOfPiece(this.findKing(sideInCheckPieces));
+        const kingInCheckPosition = this.findPositionOfPiece(this.findKing(sideInCheckPieces));
         _.each(sideGivingCheckPieces, (piece) => {
             if (!piece.isCaptured) {
                 const space = this.getSpaceOfPiece(piece);
-                if (piece.getPossibleMoves(this, space).includes(kingInCheck)) {
+                if (piece.getPossibleMoves(this, space).includes(kingInCheckPosition)) {
                     checkSpacePositions.push(space.position);
                 }
+            } else {
             }
         });
         return checkSpacePositions;
@@ -133,7 +140,6 @@ class Analyzer {
     }
 
     willMoveResultInSelfCheck(startPosition, endPosition) {
-        console.log(this.analyzableBoard)
         const startSpace = this.analyzableBoard.spaceByPosition(startPosition);
         const piece = startSpace.piece;
         const turn = new ChessTurn(piece.side);
@@ -187,13 +193,11 @@ class Analyzer {
         }
         const movesToGetOutOfCheck = [];
         const currentSidePieces = side === SIDE.WHITE ? this.analyzableBoard.whitePieces : this.analyzableBoard.blackPieces;
-        for (let i = 0; i < currentSidePieces.length; i += 1) {
-            const currentSidePiece = currentSidePieces[i];
+        _.each(currentSidePieces, (currentSidePiece) => {
             if (!currentSidePiece.isCaptured) {
                 const currentPieceSpace = this.analyzableBoard.getSpaceOfPiece(currentSidePiece);
                 const currentPiecePossibleMoves = currentSidePiece.getPossibleMoves(this.analyzableBoard, currentPieceSpace);
-                for (let i = 0; i < currentPiecePossibleMoves.length; i += 1) {
-                    const movePosition = currentPiecePossibleMoves[i];
+                _.each(currentPiecePossibleMoves, (movePosition) => {
                     const turn = new ChessTurn(currentSidePiece.side);
                     turn.setStartingPieceSpace(this.analyzableBoard.spaceByPosition(currentPieceSpace.position));
                     turn.setEndingPieceSpace(this.analyzableBoard.spaceByPosition(movePosition));
@@ -203,9 +207,9 @@ class Analyzer {
                         movesToGetOutOfCheck.push([turn.startingSpacePosition, turn.endingSpacePosition]);
                     }
                     this.analyzableBoard.restore();
-                }
+                });
             }
-        }
+        });
 
         this._movesToGetOutOfCheck[side] = movesToGetOutOfCheck;
         return this._movesToGetOutOfCheck[side];
