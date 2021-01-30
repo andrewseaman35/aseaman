@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import _ from 'lodash';
 
 
 class GameInfo {
@@ -15,8 +14,8 @@ class GameInfo {
         }
     }
 
-    setCheckmate() {
-        $('#game-info-checks').text('Checkmate!');
+    setCheckmate(winner) {
+        $('#game-info-checks').text(`Checkmate! ${winner} wins!`);
     }
 
     setChecks(checkPositions) {

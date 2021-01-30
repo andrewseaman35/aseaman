@@ -3,6 +3,7 @@ import _ from 'lodash';
 import {
     PIECE_NOTATION,
     SIDE,
+    GAME_STATE,
     SPACE_STATE,
     TURN_STATE,
 } from './constants';
@@ -51,7 +52,9 @@ class ChessGame {
         this.blackPieces = this.initializePieces(BLACK_PIECE_SETUP, SIDE.BLACK);
 
         this.isInCheck = false;
+        this.isInCheckmate = false;
         this.currentSide = null;
+        this.gameState = GAME_STATE.NOT_STARTED;
         this.turns = [];
 
         this.board.setOnSpaceSelectListener(this.onBoardSpaceSelect.bind(this));
@@ -99,6 +102,9 @@ class ChessGame {
     }
 
     onBoardSpaceSelect(space) {
+        if (this.gameState !== GAME_STATE.PLAYING) {
+            return;
+        }
         if (this.currentTurn.isInState(TURN_STATE.EMPTY)) {
             if (space.piece && space.piece.getPossibleMoves(this.board, space).length) {
                 if (space.piece.side === this.currentTurn.side) {
@@ -131,6 +137,7 @@ class ChessGame {
     }
 
     startGame() {
+        this.gameState = GAME_STATE.PLAYING;
         this.currentSide = SIDE.WHITE;
         this.startNextTurn();
     }
@@ -143,8 +150,9 @@ class ChessGame {
 
     endGame() {
         console.log('donezo');
+        this.gameState = GAME_STATE.COMPLETE;
         this.currentTurn.checkmate = true;
-        this.gameInfo.setCheckmate();
+        this.gameInfo.setCheckmate(this.currentTurn.side);
     }
 
     setPlayConditions() {
@@ -152,7 +160,7 @@ class ChessGame {
 
         if (this.analyzer.isInCheck(this.opponentSide)) {
             if (this.analyzer.isInCheckmate(this.opponentSide)) {
-                this.endGame();
+                this.isInCheckmate = true;
             } else {
                 const checkSpacePositions = this.analyzer.findSpacesCausingCheckAgainst(this.opponentSide);
                 _.each(checkSpacePositions, (position) => {
@@ -171,11 +179,13 @@ class ChessGame {
 
     endTurn() {
         this.setPlayConditions();
-
-        this.currentSide = this.currentSide === SIDE.WHITE ? SIDE.BLACK : SIDE.WHITE;
-        this.startNextTurn();
+        if (this.isInCheckmate) {
+            this.endGame();
+        } else {
+            this.currentSide = this.currentSide === SIDE.WHITE ? SIDE.BLACK : SIDE.WHITE;
+            this.startNextTurn();
+        }
     }
-
 }
 
 
