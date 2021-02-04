@@ -7,6 +7,7 @@ import {
 
 import ChessTurn from './chessTurn';
 import Board from './board';
+import GameInfo from './gameinfo';
 
 
 class AnalyzableBoard extends Board {
@@ -80,7 +81,7 @@ class AnalyzableBoard extends Board {
         _.each(sideGivingCheckPieces, (piece) => {
             if (!piece.isCaptured) {
                 const space = this.getSpaceOfPiece(piece);
-                if (piece.getPossibleMoves(this, space).includes(kingInCheckPosition)) {
+                if (piece.getAttackedSpacePositions(this, space).includes(kingInCheckPosition)) {
                     checkSpacePositions.push(space.position);
                 }
             }
@@ -128,11 +129,6 @@ class Analyzer {
             return this._isInCheckmate[side];
         }
         const movesToGetOutOfCheck = this.movesToGetOutOfCheck(side);
-        console.log(`${side} can get out of check with`);
-        _.each(movesToGetOutOfCheck, move => {
-            console.log(`   ${move[0]} to ${move[1]}`);
-        });
-
         const isInCheckmate = movesToGetOutOfCheck.length === 0;
         this._isInCheckmate[side] = isInCheckmate;
         return this._isInCheckmate[side];
@@ -165,7 +161,7 @@ class Analyzer {
             const currentSidePiece = currentSidePieces[i];
             if (!currentSidePiece.isCaptured) {
                 const currentPieceSpace = this.analyzableBoard.getSpaceOfPiece(currentSidePiece);
-                const currentPiecePossibleMoves = currentSidePiece.getPossibleMoves(this.analyzableBoard, currentPieceSpace);
+                const currentPiecePossibleMoves = currentSidePiece.getPossibleMoves(this.analyzableBoard, currentPieceSpace).moves;
                 for (let i = 0; i < currentPiecePossibleMoves.length; i += 1) {
                     const movePosition = currentPiecePossibleMoves[i];
                     const turn = new ChessTurn(currentSidePiece.side);
@@ -175,7 +171,7 @@ class Analyzer {
 
                     const checkPositions = this.analyzableBoard.findSpacesCausingCheckAgainst(currentSidePiece.side);
                     if (checkPositions.length) {
-                        console.log(`${side} check with ${turn.startingSpacePosition} to ${turn.endingSpacePosition}`);
+                        GameInfo.smallLog(`Threat: ${turn.startingSpacePosition} to ${turn.endingSpacePosition}`);
                         movesToPutOpponentInCheck.push([turn.startingSpacePosition, turn.endingSpacePosition]);
                     }
                     this.analyzableBoard.restore();
@@ -195,7 +191,7 @@ class Analyzer {
         _.each(currentSidePieces, (currentSidePiece) => {
             if (!currentSidePiece.isCaptured) {
                 const currentPieceSpace = this.analyzableBoard.getSpaceOfPiece(currentSidePiece);
-                const currentPiecePossibleMoves = currentSidePiece.getPossibleMoves(this.analyzableBoard, currentPieceSpace);
+                const currentPiecePossibleMoves = currentSidePiece.getPossibleMoves(this.analyzableBoard, currentPieceSpace).moves;
                 _.each(currentPiecePossibleMoves, (movePosition) => {
                     const turn = new ChessTurn(currentSidePiece.side);
                     turn.setStartingPieceSpace(this.analyzableBoard.spaceByPosition(currentPieceSpace.position));

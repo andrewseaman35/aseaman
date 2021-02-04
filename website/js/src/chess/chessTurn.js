@@ -1,6 +1,7 @@
 import {
     SIDE,
     TURN_STATE,
+    PIECE_NOTATION,
 } from './constants';
 
 
@@ -42,6 +43,7 @@ class ChessTurn {
         const endingSpace = board.spaceByPosition(this.endingSpacePosition);
         this.piece = startingSpace.piece;
         this.isCapture = endingSpace.isOccupied && (endingSpace.piece.side !== this.side);
+        this.piece.hasMoved = true;
 
         if (this.isCapture) {
             endingSpace.piece.isCaptured = true;
@@ -50,6 +52,17 @@ class ChessTurn {
         endingSpace.piece = this.piece;
 
         this.executed = true;
+    }
+
+    toAlgebraicNotation() {
+        // Not quite there yet.. this should be understandable, but not nice and minimized like it should be
+        const start = this.startingSpacePosition;
+        const end = this.endingSpacePosition;
+        const piece = this.piece.notation === PIECE_NOTATION.PAWN ? '' : this.piece.notation;
+        const cap = this.isCapture ? 'x' : '';
+        const check = this.check ? '+' : '';
+        const mate = this.checkmate ? '#' : '';
+        return `${piece}${start} ${cap}${end}${check}${mate}`;
     }
 
     serialize() {

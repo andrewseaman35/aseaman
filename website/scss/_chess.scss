@@ -74,7 +74,28 @@ $space-light: #CB9053;
 }
 
 #game-info-container {
+    width: 200px;
     border: 1px solid $blackish;
     margin-left: 20px;
     padding: 8px;
+
+    >div {
+        padding: 8px 0;
+    }
+
+    #game-log-header {
+        margin-bottom: 4px;
+    }
+
+    #game-log-container {
+        height: 220px;
+        overflow: scroll;
+        border: 1px solid black;
+        padding: 8px;
+    }
+
+    span.small-log {
+        font-size: 12px;
+        margin-left: 16px;
+    }
 }

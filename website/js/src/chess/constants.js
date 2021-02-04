@@ -49,6 +49,11 @@ const MOVEMENT_GROUPS = {
     ],
 };
 
+const SPECIAL_MOVE = {
+    KINGSIDE_CASTLE: 'kingside_castle',
+    QUEENSIDE_CASTLE: 'queenside_castle',
+};
+
 module.exports = {
     BOARD_HEIGHT,
     BOARD_WIDTH,
@@ -60,4 +65,5 @@ module.exports = {
     SIDE,
     PIECE_NOTATION,
     MOVEMENT_GROUPS,
+    SPECIAL_MOVE,
 };
