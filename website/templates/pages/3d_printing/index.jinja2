@@ -16,6 +16,31 @@
             <div class="print-project">
                 <div class="multi-image-container">
                     <div class="arrow-icon previous"></div>
+                    {{ macros.captioned_image('3d_printing/t_moulding_dremel_attachment/model.png', 'Rendering of dremel attachment', lb_group='t_moulding_attachment') }}
+                    {{ macros.captioned_image('3d_printing/t_moulding_dremel_attachment/dremel_attachment.jpg', 'attached dremel attachment', lb_group='t_moulding_attachment') }}
+                    {{ macros.captioned_image('3d_printing/t_moulding_dremel_attachment/dremel_attachment_use.jpg', 'Dremel attachment use', lb_group='t_moulding_attachment') }}
+                    <div class="arrow-icon next"></div>
+                </div>
+                <div class="print-description">
+                    <h4>Dremel Attachment for T-Moulding</h4>
+                    <p>
+                        As a part of my {{ macros.link_to('mame/build.html', 'MAME cabinet build') }}, I wanted
+                        to add t-moulding along the edges of the side panels. To do this, I needed to cut a
+                        centered channel along the edges of some 3/4" MDF. I modeled and printed an
+                        attachment for a Dremel 4300 that would keep a router bit centered over the edge.
+                    </p>
+                    <p>
+                        Though this is usable, there are some improvements I would make if I were doing this
+                        again. The main improvement is to add some way for the sawdust to escape the body
+                        of the attachment. The sawdust would get pushed into the attachment which added some
+                        resistance for the escaping dust and also tended to heat up due to friction from
+                        the spinning bit.
+                    </p>
+                </div>
+            </div>
+            <div class="print-project">
+                <div class="multi-image-container">
+                    <div class="arrow-icon previous"></div>
                     {{ macros.captioned_image('3d_printing/cup_holder_insert/complete.png', 'Rendering with nested insert', lb_group='cup_holder') }}
                     {{ macros.captioned_image('3d_printing/cup_holder_insert/no_glencairn.png', 'Rendering without nested insert', lb_group='cup_holder') }}
                     {{ macros.captioned_image('3d_printing/cup_holder_insert/can_insert_rendering.png', 'Can insert rendering', lb_group='cup_holder') }}
