@@ -83,7 +83,6 @@ class AnalyzableBoard extends Board {
                 if (piece.getPossibleMoves(this, space).includes(kingInCheckPosition)) {
                     checkSpacePositions.push(space.position);
                 }
-            } else {
             }
         });
         return checkSpacePositions;
