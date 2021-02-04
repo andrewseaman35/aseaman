@@ -106,7 +106,7 @@ class ChessGame {
             return;
         }
         if (this.currentTurn.isInState(TURN_STATE.EMPTY)) {
-            if (space.piece && space.piece.getPossibleMoves(this.board, space).length) {
+            if (space.piece && space.piece.getPossibleMoves(this.board, space).moves.length) {
                 if (space.piece.side === this.currentTurn.side) {
                     this.currentTurn.setStartingPieceSpace(space);
                     this.board.displayPossibleMoves(space);
@@ -122,9 +122,9 @@ class ChessGame {
                     this.currentTurn.setStartingPieceSpace(space);
                     this.board.displayPossibleMoves(space);
                 }
-            } else if (startingSpace.piece.getPossibleMoves(this.board, startingSpace).includes(space.position)) {
+            } else if (startingSpace.piece.getPossibleMoves(this.board, startingSpace).moves.includes(space.position)) {
                 if (this.analyzer.willMoveResultInSelfCheck(this.currentTurn.startingSpacePosition, space.position)) {
-                    console.log('Move results in check - invalid');
+                    this.gameInfo.setNote('Attempted move results in check - invalid');
                     return;
                 }
                 this.currentTurn.setEndingPieceSpace(space);
@@ -149,15 +149,31 @@ class ChessGame {
     }
 
     endGame() {
-        console.log('donezo');
         this.gameState = GAME_STATE.COMPLETE;
         this.currentTurn.checkmate = true;
         this.gameInfo.setCheckmate(this.currentTurn.side);
+        this.gameInfo.log('Game over!');
+    }
+
+    logTurn() {
+        // TODO: set check and checkmate on currentTurn right after execute
+        // Probably from board.js. Should be set before the turn state goes to
+        // executed
+        this.currentTurn.check = this.analyzer.isInCheck(this.opponentSide);
+        this.currentTurn.checkmate = this.analyzer.isInCheckmate(this.opponentSide);
+        GameInfo.log(`${this.turns.length}. ${this.currentTurn.toAlgebraicNotation()}`);
+        if (this.currentTurn.check && !this.currentTurn.checkmate) {
+            const movesToGetOutOfCheck = this.analyzer.movesToGetOutOfCheck(this.opponentSide);
+            if (movesToGetOutOfCheck.length) {
+                GameInfo.smallLog('Possible moves:');
+                _.each(movesToGetOutOfCheck, move => {
+                    GameInfo.smallLog(` - ${move[0]} to ${move[1]}`);
+                });
+            }
+        }
     }
 
     setPlayConditions() {
-        this.analyzer.setup(this.board);
-
         if (this.analyzer.isInCheck(this.opponentSide)) {
             if (this.analyzer.isInCheckmate(this.opponentSide)) {
                 this.isInCheckmate = true;
@@ -178,6 +194,8 @@ class ChessGame {
     }
 
     endTurn() {
+        this.analyzer.setup(this.board);
+        this.logTurn();
         this.setPlayConditions();
         if (this.isInCheckmate) {
             this.endGame();

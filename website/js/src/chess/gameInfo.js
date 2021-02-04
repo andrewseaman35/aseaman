@@ -6,24 +6,33 @@ class GameInfo {
         this.container = $('#game-info-container');
     }
 
-    setNote(note) {
+    static log(note) {
         if (note && note.length) {
-            $('game-info-note').text(note);
-        } else {
-            $('game-info-note').empty();
+            $('#game-info-note').append(`<span>${note}<br></span>`);
         }
     }
 
+    static smallLog(note) {
+        if (note && note.length) {
+            $('#game-info-note').append(`<span class="small-log">${note}<br></span>`);
+        }
+    }
+
+    setNote(note) {
+        $('#game-note').empty();
+        $('#game-note').append(`<span>${note}</span>`);
+    }
+
     setCheckmate(winner) {
-        $('#game-info-checks').text(`Checkmate! ${winner} wins!`);
+        $('#game-note').text(`Checkmate! ${winner} wins!`);
     }
 
     setChecks(checkPositions) {
         if (checkPositions && checkPositions.length) {
             const checkString = checkPositions.join(', ');
-            $('#game-info-checks').text(`Check${checkPositions.length > 1 ? 's' : ''} from ${checkString}`);
+            $('#game-note').text(`Check${checkPositions.length > 1 ? 's' : ''} from ${checkString}`);
         } else {
-            $('#game-info-checks').empty();
+            $('#game-note').empty();
         }
     }
 

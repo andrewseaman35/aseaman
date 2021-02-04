@@ -95,7 +95,7 @@ class Board {
         const piece = space.piece;
         space.setState(SPACE_STATE.SELECTED);
         if (piece) {
-            const possibleMoves = space.piece.getPossibleMoves(this, space);
+            const possibleMoves = space.piece.getPossibleMoves(this, space).moves;
             _.each(possibleMoves, (movePosition) => {
                 this.spaces[positionToIndex(movePosition)].setState(SPACE_STATE.POSSIBLE_MOVE);
             });
