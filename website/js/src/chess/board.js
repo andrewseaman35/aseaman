@@ -81,15 +81,7 @@ class Board {
     }
 
     executeTurn(turn) {
-        const startingSpace = this.spaceByPosition(turn.startingSpacePosition);
-        const endingSpace = this.spaceByPosition(turn.endingSpacePosition);
-        const piece = startingSpace.piece;
-
-        if (turn.isCapture) {
-            endingSpace.piece.isCaptured = true;
-        }
-        startingSpace.piece = null;
-        endingSpace.piece = piece;
+        turn.execute(this);
     }
 
     clearBoardState() {

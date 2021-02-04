@@ -122,7 +122,7 @@ class ChessGame {
                     this.currentTurn.setStartingPieceSpace(space);
                     this.board.displayPossibleMoves(space);
                 }
-            } else if (this.currentTurn.piece.getPossibleMoves(this.board, startingSpace).includes(space.position)) {
+            } else if (startingSpace.piece.getPossibleMoves(this.board, startingSpace).includes(space.position)) {
                 if (this.analyzer.willMoveResultInSelfCheck(this.currentTurn.startingSpacePosition, space.position)) {
                     console.log('Move results in check - invalid');
                     return;

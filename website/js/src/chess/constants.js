@@ -24,7 +24,8 @@ const SPACE_STATE = {
 const TURN_STATE = {
     EMPTY: 'empty',
     SELECTED_PIECE: 'selected_piece',
-    COMPLETE: 'complete',
+    READY: 'ready',
+    EXECUTED: 'executed',
 };
 
 const GAME_STATE = {
