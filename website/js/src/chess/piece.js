@@ -8,7 +8,7 @@ import {
     SIDE,
     PIECE_NOTATION,
     MOVEMENT_GROUPS,
-    SPECIAL_MOVE,
+    MOVE_TYPE,
 } from './constants';
 
 import {
@@ -92,19 +92,24 @@ class Piece {
                     const newSpace = board.spaceByPosition(newSpacePosition);
                     if (newSpace.isOccupied) {
                         if (this.side !== newSpace.piece.side) {
-                            moves.push(newSpacePosition);
+                            moves.push({
+                                position: newSpacePosition,
+                                type: MOVE_TYPE.NORMAL,
+                            });
                         }
                         return false;
                     }
                 }
-                moves.push(newSpacePosition);
+                moves.push({
+                    position: newSpacePosition,
+                    type: MOVE_TYPE.NORMAL,
+                });
             });
         });
 
-        return {
-            moves: _.filter(moves, move => move !== null),
-            special: this.getSpecialMoves(board),
-        };
+        const specialMoves = this.getSpecialMoves(board, space);
+        moves.push(...specialMoves);
+        return _.filter(moves, move => move.position);
     }
 
     isSamePiece(otherPiece) {
@@ -194,13 +199,13 @@ class King extends Piece {
         if (canCastle.kingside) {
             specialMoves.push({
                 position: this.side === SIDE.WHITE ? 'G1' : 'G8',
-                move: SPECIAL_MOVE.KINGSIDE_CASTLE,
+                type: MOVE_TYPE.KINGSIDE_CASTLE,
             });
         }
         if (canCastle.queenside) {
             specialMoves.push({
                 position: this.side === SIDE.WHITE ? 'C1' : 'C8',
-                move: SPECIAL_MOVE.QUEENSIDE_CASTLE
+                type: MOVE_TYPE.QUEENSIDE_CASTLE
             });
         }
         return specialMoves;

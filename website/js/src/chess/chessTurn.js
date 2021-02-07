@@ -2,7 +2,7 @@ import {
     SIDE,
     TURN_STATE,
     PIECE_NOTATION,
-    SPECIAL_MOVE,
+    MOVE_TYPE,
 } from './constants';
 
 
@@ -15,7 +15,7 @@ class ChessTurn {
         this.executed = false;
 
         this.piece = null;
-        this.specialMove = null;
+        this.type = null;
         this.startingSpacePosition = null;
         this.endingSpacePosition = null;
     }
@@ -40,16 +40,12 @@ class ChessTurn {
         return TURN_STATE.READY;
     }
 
-    get isSpecial() {
-        return this.specialMove !== null;
-    }
-
     get isKingsideCastle() {
-        return this.specialMove === SPECIAL_MOVE.KINGSIDE_CASTLE;
+        return this.type === MOVE_TYPE.KINGSIDE_CASTLE;
     }
 
     get isQueensideCastle() {
-        return this.specialMove === SPECIAL_MOVE.QUEENSIDE_CASTLE;
+        return this.type === MOVE_TYPE.QUEENSIDE_CASTLE;
     }
 
     get isCastle() {
@@ -77,7 +73,7 @@ class ChessTurn {
     executeCastle(board, castleMove) {
         let rookStartingPosition;
         let rookEndingPosition;
-        if (castleMove === SPECIAL_MOVE.KINGSIDE_CASTLE) {
+        if (castleMove === MOVE_TYPE.KINGSIDE_CASTLE) {
             rookStartingPosition = this.side === SIDE.WHITE ? 'H1' : 'H8';
             rookEndingPosition = this.side === SIDE.WHITE ? 'F1' : 'F8';
         } else {
@@ -104,7 +100,7 @@ class ChessTurn {
 
     execute(board) {
         if (this.isCastle) {
-            this.executeCastle(board, this.specialMove);
+            this.executeCastle(board, this.type);
         } else {
             this.executeNormalMove(board);
         }
@@ -121,25 +117,22 @@ class ChessTurn {
         const end = this.endingSpacePosition;
         const piece = this.piece.notation === PIECE_NOTATION.PAWN ? '' : this.piece.notation;
         const cap = this.capturedSpacePosition !== null ? 'x' : '';
-        const check = this.check ? '+' : '';
+        const check = (this.check && !this.checkmate) ? '+' : '';
         const mate = this.checkmate ? '#' : '';
         return `${piece}${start} ${cap}${end}${check}${mate}`;
     }
 
     serialize() {
-        const special = this.specialMove === null ? '' : this.specialMove;
-        return `${this.side}|${this.startingSpacePosition}|${this.endingSpacePosition}|${special}`;
+        return `${this.side}|${this.startingSpacePosition}|${this.endingSpacePosition}|${this.type}`;
     }
 
     static deserialize(serialized) {
         const split = serialized.split('|');
         const turn = new ChessTurn(split[0]);
-        const specialMove = split[3];
+        const type = split[3];
         turn.startingSpacePosition = split[1];
         turn.endingSpacePosition = split[2];
-        if (specialMove.length) {
-            turn.specialMove = specialMove;
-        }
+        turn.type = type;
 
         return turn;
     }
@@ -158,14 +151,15 @@ class ChessTurn {
         this.startingSpacePosition = space.position;
     }
 
-    setEndingPieceSpace(space, specialMove) {
+    setEndingPieceSpace(space) {
         if (!this.isInState(TURN_STATE.SELECTED_PIECE)) {
             throw new Error(`setEndingPieceSpace disallowed for state ${this.state}`);
         }
-        if (specialMove) {
-            this.specialMove = specialMove;
-        }
         this.endingSpacePosition = space.position;
+    }
+
+    setType(type) {
+        this.type = type;
     }
 
     isInState(state) {

@@ -50,7 +50,8 @@ const MOVEMENT_GROUPS = {
     ],
 };
 
-const SPECIAL_MOVE = {
+const MOVE_TYPE = {
+    NORMAL: 'normal',
     KINGSIDE_CASTLE: 'kingside_castle',
     QUEENSIDE_CASTLE: 'queenside_castle',
     EN_PASSANT: 'en_passant',
@@ -67,5 +68,5 @@ module.exports = {
     SIDE,
     PIECE_NOTATION,
     MOVEMENT_GROUPS,
-    SPECIAL_MOVE,
+    MOVE_TYPE,
 };

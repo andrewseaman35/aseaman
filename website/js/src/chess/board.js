@@ -5,7 +5,7 @@ import {
     BOARD_WIDTH,
     BOARD_HEIGHT,
     SPACE_STATE,
-    SPECIAL_MOVE,
+    MOVE_TYPE,
     SIDE,
 } from './constants';
 
@@ -85,7 +85,7 @@ class Board {
 
     displayPossibleCastle(king, castleMove) {
         let endingKingPosition;
-        if (castleMove.move === SPECIAL_MOVE.KINGSIDE_CASTLE) {
+        if (castleMove.move === MOVE_TYPE.KINGSIDE_CASTLE) {
             endingKingPosition = king.side === SIDE.WHITE ? 'G1' : 'G8';
         } else {
             endingKingPosition = king.side === SIDE.WHITE ? 'C1' : 'C8';
@@ -99,13 +99,11 @@ class Board {
         space.setState(SPACE_STATE.SELECTED);
         if (piece) {
             const possibleMoves = space.piece.getPossibleMoves(this, space);
-            _.each(possibleMoves.moves, (movePosition) => {
-                this.spaces[positionToIndex(movePosition)].setState(SPACE_STATE.POSSIBLE_MOVE);
-            });
-            _.each(possibleMoves.special, (specialMove) => {
-                GameInfo.smallLog(`${specialMove.move} available`);
-                if (specialMove.move === SPECIAL_MOVE.KINGSIDE_CASTLE || specialMove.move === SPECIAL_MOVE.QUEENSIDE_CASTLE) {
-                    this.displayPossibleCastle(piece, specialMove);
+            _.each(possibleMoves, (move) => {
+                if (move.type === MOVE_TYPE.NORMAL) {
+                    this.spaces[positionToIndex(move.position)].setState(SPACE_STATE.POSSIBLE_MOVE);
+                } else {
+                    this.spaces[positionToIndex(move.position)].setState(SPACE_STATE.POSSIBLE_SPECIAL_MOVE);
                 }
             });
         }
