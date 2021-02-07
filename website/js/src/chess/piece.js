@@ -18,7 +18,7 @@ import {
 } from './utils';
 
 import Analyzer from './analyzer';
-import GameInfo from './gameinfo';
+import GameInfo from './gameInfo';
 
 
 class Piece {
