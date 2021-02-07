@@ -117,6 +117,11 @@ class Pawn extends Piece {
         super(side, PIECE_NOTATION.PAWN, startingPosition);
     }
 
+    getSpecialMoves(board) {
+        // ugh, this needs reference to the previous turn.. :(
+        return [];
+    }
+
     getMovementPaths(board, space) {
         const movementPaths = [];
 
@@ -187,17 +192,21 @@ class King extends Piece {
         const specialMoves = [];
 
         if (canCastle.kingside) {
-            specialMoves.push(SPECIAL_MOVE.KINGSIDE);
-            GameInfo.smallLog('Kingside castle available');
+            specialMoves.push({
+                position: this.side === SIDE.WHITE ? 'G1' : 'G8',
+                move: SPECIAL_MOVE.KINGSIDE_CASTLE,
+            });
         }
         if (canCastle.queenside) {
-            specialMoves.push(SPECIAL_MOVE.QUEENSIDE);
-            GameInfo.smallLog('Queenside castle available');
+            specialMoves.push({
+                position: this.side === SIDE.WHITE ? 'C1' : 'C8',
+                move: SPECIAL_MOVE.QUEENSIDE_CASTLE
+            });
         }
         return specialMoves;
     }
 
-    canCastleForFileSpaces(board, rookPosition, intermediatePositions, endingPosition) {
+    canCastleForFileSpaces(board, rookPosition, intermediatePositions, endingKingPosition) {
         const kingSpace = board.getSpaceOfPiece(this);
         const rookSpace = board.spaceByPosition(rookPosition);
 
@@ -226,21 +235,21 @@ class King extends Piece {
                 return false;
             }
         }
-        return !analyzer.willMoveResultInSelfCheck(kingSpace.position, endingPosition);
+        return !analyzer.willMoveResultInSelfCheck(kingSpace.position, endingKingPosition);
     }
 
     canQueensideFileCastle(board) {
         const queensideRookPosition = this.side === SIDE.WHITE ? 'A1' : 'A8';
         const intermediatePositions = this.side === SIDE.WHITE ? ['B1', 'C1', 'D1'] : ['B8', 'C8', 'D8'];
-        const endingPosition = this.side === SIDE.WHITE ? 'C1' : 'C8';
-        return this.canCastleForFileSpaces(board, queensideRookPosition, intermediatePositions, endingPosition);
+        const endingKingPosition = this.side === SIDE.WHITE ? 'C1' : 'C8';
+        return this.canCastleForFileSpaces(board, queensideRookPosition, intermediatePositions, endingKingPosition);
     }
 
     canKingsideFileCastle(board) {
         const kingsideRookPosition = this.side === SIDE.WHITE ? 'H1' : 'H8';
         const intermediatePositions = this.side === SIDE.WHITE ? ['F1', 'G1'] : ['F8', 'G8'];
-        const endingPosition = this.side === SIDE.WHITE ? 'G1' : 'G8';
-        return this.canCastleForFileSpaces(board, kingsideRookPosition, intermediatePositions, endingPosition);
+        const endingKingPosition = this.side === SIDE.WHITE ? 'G1' : 'G8';
+        return this.canCastleForFileSpaces(board, kingsideRookPosition, intermediatePositions, endingKingPosition);
     }
 
     canCastle(board) {

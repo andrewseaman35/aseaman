@@ -5,6 +5,8 @@ import {
     BOARD_WIDTH,
     BOARD_HEIGHT,
     SPACE_STATE,
+    SPECIAL_MOVE,
+    SIDE,
 } from './constants';
 
 import {
@@ -15,6 +17,7 @@ import {
 } from './utils';
 
 import Space from './space';
+import GameInfo from './gameInfo';
 
 
 class Board {
@@ -64,23 +67,6 @@ class Board {
         return null;
     }
 
-    validateTurn(turn) {
-        const startingSpace = this.spaceByPosition(turn.startingSpacePosition);
-        const endingSpace = this.spaceByPosition(turn.endingSpacePosition);
-        if (startingSpace.piece !== turn.piece) {
-            throw new Error(`validateTurn failed on piece validation: ${startingSpace.piece} !== ${turn.piece}`);
-        }
-        if (turn.isCapture) {
-            if (endingSpace.piece === null) {
-                throw new Error('no piece on ending space during capture');
-            }
-            if (endingSpace.piece.side === startingSpace.piece.side) {
-                throw new Error('capture applied to own piece');
-            }
-        }
-    }
-
-
     applyTurns(turns) {
         _.each(turns, (turn) => {
             this.executeTurn(turn);
@@ -97,14 +83,30 @@ class Board {
         });
     }
 
+    displayPossibleCastle(king, castleMove) {
+        let endingKingPosition;
+        if (castleMove.move === SPECIAL_MOVE.KINGSIDE_CASTLE) {
+            endingKingPosition = king.side === SIDE.WHITE ? 'G1' : 'G8';
+        } else {
+            endingKingPosition = king.side === SIDE.WHITE ? 'C1' : 'C8';
+        }
+        this.spaces[positionToIndex(endingKingPosition)].setState(SPACE_STATE.POSSIBLE_SPECIAL_MOVE);
+    }
+
     displayPossibleMoves(space) {
         this.clearBoardState();
         const piece = space.piece;
         space.setState(SPACE_STATE.SELECTED);
         if (piece) {
-            const possibleMoves = space.piece.getPossibleMoves(this, space).moves;
-            _.each(possibleMoves, (movePosition) => {
+            const possibleMoves = space.piece.getPossibleMoves(this, space);
+            _.each(possibleMoves.moves, (movePosition) => {
                 this.spaces[positionToIndex(movePosition)].setState(SPACE_STATE.POSSIBLE_MOVE);
+            });
+            _.each(possibleMoves.special, (specialMove) => {
+                GameInfo.smallLog(`${specialMove.move} available`);
+                if (specialMove.move === SPECIAL_MOVE.KINGSIDE_CASTLE || specialMove.move === SPECIAL_MOVE.QUEENSIDE_CASTLE) {
+                    this.displayPossibleCastle(piece, specialMove);
+                }
             });
         }
     }
