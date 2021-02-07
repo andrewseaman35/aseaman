@@ -7,7 +7,7 @@ import {
 
 import ChessTurn from './chessTurn';
 import Board from './board';
-import GameInfo from './gameinfo';
+import GameInfo from './gameInfo';
 
 
 class AnalyzableBoard extends Board {
