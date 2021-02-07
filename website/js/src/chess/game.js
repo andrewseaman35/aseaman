@@ -6,6 +6,7 @@ import {
     GAME_STATE,
     SPACE_STATE,
     TURN_STATE,
+    MOVE_TYPE,
 } from './constants';
 
 import Analyzer from './analyzer';
@@ -106,7 +107,7 @@ class ChessGame {
             return;
         }
         if (this.currentTurn.isInState(TURN_STATE.EMPTY)) {
-            if (space.piece && space.piece.getPossibleMoves(this.board, space).moves.length) {
+            if (space.piece && space.piece.getPossibleMoves(this.board, space).length) {
                 if (space.piece.side === this.currentTurn.side) {
                     this.currentTurn.setStartingPieceSpace(space);
                     this.board.displayPossibleMoves(space);
@@ -115,7 +116,8 @@ class ChessGame {
         } else if (this.currentTurn.isInState(TURN_STATE.SELECTED_PIECE)) {
             const startingSpace = this.board.spaceByPosition(this.currentTurn.startingSpacePosition);
             const possibleMoves = startingSpace.piece.getPossibleMoves(this.board, startingSpace);
-            const specialMove = _.find(possibleMoves.special, move => move.position === space.position);
+            const possibleSpecialMoves = _.filter(possibleMoves, move => move.type !== MOVE_TYPE.NORMAL);
+            const specialMove = _.find(possibleSpecialMoves, move => move.position === space.position);
 
             if (space.piece && space.piece.side === this.currentTurn.side) {
                 const setStartingSpace = space.position !== this.currentTurn.startingSpacePosition;
@@ -125,17 +127,14 @@ class ChessGame {
                     this.currentTurn.setStartingPieceSpace(space);
                     this.board.displayPossibleMoves(space);
                 }
-            } else if (possibleMoves.moves.includes(space.position)) {
+            } else if (_.map(possibleMoves, move => move.position).includes(space.position)) {
                 if (this.analyzer.willMoveResultInSelfCheck(this.currentTurn.startingSpacePosition, space.position)) {
                     this.gameInfo.setNote('Attempted move results in check - invalid');
                     return;
                 }
                 this.currentTurn.setEndingPieceSpace(space);
-                this.board.executeTurn(this.currentTurn);
-                this.board.refreshBoard();
-                this.endTurn();
-            } else if (specialMove) {
-                this.currentTurn.setEndingPieceSpace(space, specialMove.move);
+                const moveType = specialMove ? specialMove.type :  MOVE_TYPE.NORMAL;
+                this.currentTurn.setType(moveType);
                 this.board.executeTurn(this.currentTurn);
                 this.board.refreshBoard();
                 this.endTurn();
@@ -159,7 +158,7 @@ class ChessGame {
         this.gameState = GAME_STATE.COMPLETE;
         this.currentTurn.checkmate = true;
         this.gameInfo.setCheckmate(this.currentTurn.side);
-        this.gameInfo.log('Game over!');
+        GameInfo.log('Game over!');
     }
 
     logTurn() {
