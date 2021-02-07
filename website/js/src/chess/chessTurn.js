@@ -44,11 +44,16 @@ class ChessTurn {
         return this.specialMove !== null;
     }
 
+    get isKingsideCastle() {
+        return this.specialMove === SPECIAL_MOVE.KINGSIDE_CASTLE;
+    }
+
+    get isQueensideCastle() {
+        return this.specialMove === SPECIAL_MOVE.QUEENSIDE_CASTLE;
+    }
+
     get isCastle() {
-        if (this.specialMove === null) {
-            return false;
-        }
-        return this.specialMove === SPECIAL_MOVE.KINGSIDE_CASTLE || this.specialMove === SPECIAL_MOVE.QUEENSIDE_CASTLE
+        return this.isKingsideCastle || this.isQueensideCastle;
     }
 
     executeNormalMove(board) {
@@ -107,6 +112,11 @@ class ChessTurn {
 
     toAlgebraicNotation() {
         // TODO: Not quite there yet.. this should be understandable, but not nice and minimized like it should be
+        if (this.isKingsideCastle) {
+            return '0-0';
+        } else if (this.isQueensideCastle) {
+            return '0-0-0';
+        }
         const start = this.startingSpacePosition;
         const end = this.endingSpacePosition;
         const piece = this.piece.notation === PIECE_NOTATION.PAWN ? '' : this.piece.notation;
@@ -117,14 +127,19 @@ class ChessTurn {
     }
 
     serialize() {
-        return `${this.side}|${this.startingSpacePosition}|${this.endingSpacePosition}`;
+        const special = this.specialMove === null ? '' : this.specialMove;
+        return `${this.side}|${this.startingSpacePosition}|${this.endingSpacePosition}|${special}`;
     }
 
     static deserialize(serialized) {
         const split = serialized.split('|');
         const turn = new ChessTurn(split[0]);
+        const specialMove = split[3];
         turn.startingSpacePosition = split[1];
         turn.endingSpacePosition = split[2];
+        if (specialMove.length) {
+            turn.specialMove = specialMove;
+        }
 
         return turn;
     }
