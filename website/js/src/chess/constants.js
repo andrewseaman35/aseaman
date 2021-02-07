@@ -18,6 +18,7 @@ const PIECE_NOTATION = {
 const SPACE_STATE = {
     SELECTED: 'selected',
     POSSIBLE_MOVE: 'possible-move',
+    POSSIBLE_SPECIAL_MOVE: 'possible-special-move',
     CHECK_THREAT: 'check-threat',
 };
 
@@ -52,6 +53,7 @@ const MOVEMENT_GROUPS = {
 const SPECIAL_MOVE = {
     KINGSIDE_CASTLE: 'kingside_castle',
     QUEENSIDE_CASTLE: 'queenside_castle',
+    EN_PASSANT: 'en_passant',
 };
 
 module.exports = {

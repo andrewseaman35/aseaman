@@ -114,6 +114,9 @@ class ChessGame {
             }
         } else if (this.currentTurn.isInState(TURN_STATE.SELECTED_PIECE)) {
             const startingSpace = this.board.spaceByPosition(this.currentTurn.startingSpacePosition);
+            const possibleMoves = startingSpace.piece.getPossibleMoves(this.board, startingSpace);
+            const specialMove = _.find(possibleMoves.special, move => move.position === space.position);
+
             if (space.piece && space.piece.side === this.currentTurn.side) {
                 const setStartingSpace = space.position !== this.currentTurn.startingSpacePosition;
                 this.currentTurn.unsetStartingPieceSpace();
@@ -122,7 +125,7 @@ class ChessGame {
                     this.currentTurn.setStartingPieceSpace(space);
                     this.board.displayPossibleMoves(space);
                 }
-            } else if (startingSpace.piece.getPossibleMoves(this.board, startingSpace).moves.includes(space.position)) {
+            } else if (possibleMoves.moves.includes(space.position)) {
                 if (this.analyzer.willMoveResultInSelfCheck(this.currentTurn.startingSpacePosition, space.position)) {
                     this.gameInfo.setNote('Attempted move results in check - invalid');
                     return;
@@ -130,7 +133,11 @@ class ChessGame {
                 this.currentTurn.setEndingPieceSpace(space);
                 this.board.executeTurn(this.currentTurn);
                 this.board.refreshBoard();
-
+                this.endTurn();
+            } else if (specialMove) {
+                this.currentTurn.setEndingPieceSpace(space, specialMove.move);
+                this.board.executeTurn(this.currentTurn);
+                this.board.refreshBoard();
                 this.endTurn();
             }
         }

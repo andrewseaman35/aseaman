@@ -47,6 +47,10 @@ $space-light: #CB9053;
                 background-color: red;
             }
 
+            &.possible-special-move {
+                background-color: green;
+            }
+
             &.check-threat {
                 background-color: orange;
             }
