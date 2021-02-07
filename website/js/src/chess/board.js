@@ -80,6 +80,13 @@ class Board {
         }
     }
 
+
+    applyTurns(turns) {
+        _.each(turns, (turn) => {
+            this.executeTurn(turn);
+        });
+    }
+
     executeTurn(turn) {
         turn.execute(this);
     }

@@ -41,12 +41,6 @@ class AnalyzableBoard extends Board {
         });
     }
 
-    applyTurns(turns) {
-        _.each(turns, (turn) => {
-            this.executeTurn(turn);
-        });
-    }
-
     restore() {
         this.whitePieces = [];
         this.blackPieces = [];
