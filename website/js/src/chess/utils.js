@@ -12,6 +12,14 @@ function rankFromIndex(index) {
     return Math.floor(index / 8) + 1;
 }
 
+function fileFromPosition(position) {
+    return fileFromIndex(positionToIndex(position));
+}
+
+function rankFromPosition(position) {
+    return rankFromIndex(positionToIndex(position));
+}
+
 function positionToIndex(position) {
     // subtract 65 to map 'A' to 0
     const file = position.toUpperCase().charCodeAt(0) - 65;
@@ -48,6 +56,8 @@ module.exports = {
     determineSpaceColor,
     fileFromIndex,
     rankFromIndex,
+    fileFromPosition,
+    rankFromPosition,
     positionToIndex,
     indexToPosition,
     incrementFile,

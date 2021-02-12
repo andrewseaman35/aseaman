@@ -113,27 +113,27 @@ class Analyzer {
         return this._isInCheck[side];
     }
 
-    isInCheckmate(side) {
+    isInCheckmate(side, previousTurn) {
         if (this._isInCheckmate[side] !== null) {
             return this._isInCheckmate[side];
         }
         if (!this.isInCheck(side)) {
-            // console.log(`${side} not in checkmate via short circuit`);
             this._isInCheckmate[side] = false;
             return this._isInCheckmate[side];
         }
-        const movesToGetOutOfCheck = this.movesToGetOutOfCheck(side);
+        const movesToGetOutOfCheck = this.movesToGetOutOfCheck(side, previousTurn);
         const isInCheckmate = movesToGetOutOfCheck.length === 0;
         this._isInCheckmate[side] = isInCheckmate;
         return this._isInCheckmate[side];
     }
 
-    willMoveResultInSelfCheck(startPosition, endPosition) {
+    willMoveResultInSelfCheck(startPosition, move) {
         const startSpace = this.analyzableBoard.spaceByPosition(startPosition);
         const piece = startSpace.piece;
         const turn = new ChessTurn(piece.side);
         turn.setStartingPieceSpace(this.analyzableBoard.spaceByPosition(startPosition));
-        turn.setEndingPieceSpace(this.analyzableBoard.spaceByPosition(endPosition));
+        turn.setEndingPieceSpace(this.analyzableBoard.spaceByPosition(move.position));
+        turn.setType(move.type);
         this.analyzableBoard.applyTurns([turn]);
 
         let result = false;
@@ -146,6 +146,7 @@ class Analyzer {
     }
 
     movesToPutOpponentInCheck(side) {
+        // this is out of date, but unused for now
         if (this._movesToPutOpponentInCheck[side] !== null) {
             return this._movesToPutOpponentInCheck[side];
         }
@@ -176,7 +177,7 @@ class Analyzer {
         return this._movesToPutOpponentInCheck[side];
     }
 
-    movesToGetOutOfCheck(side) {
+    movesToGetOutOfCheck(side, previousTurn) {
         if (this._movesToGetOutOfCheck[side] !== null) {
             return this._movesToGetOutOfCheck[side];
         }
@@ -185,7 +186,8 @@ class Analyzer {
         _.each(currentSidePieces, (currentSidePiece) => {
             if (!currentSidePiece.isCaptured) {
                 const currentPieceSpace = this.analyzableBoard.getSpaceOfPiece(currentSidePiece);
-                const currentPiecePossibleMoves = currentSidePiece.getPossibleMoves(this.analyzableBoard, currentPieceSpace);
+                const currentPiecePossibleMoves = currentSidePiece.getPossibleMoves(this.analyzableBoard, currentPieceSpace, previousTurn);
+
                 _.each(currentPiecePossibleMoves, (move) => {
                     const turn = new ChessTurn(currentSidePiece.side);
                     turn.setStartingPieceSpace(this.analyzableBoard.spaceByPosition(currentPieceSpace.position));
