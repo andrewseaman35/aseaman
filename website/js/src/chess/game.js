@@ -82,6 +82,20 @@ class ChessGame {
         return this.turns[this.turns.length - 1];
     }
 
+    get previousTurn() {
+        if (this.turns.length < 2) {
+            return null;
+        }
+        return this.turns[this.turns.length - 2];
+    }
+
+    get previousPreviousTurn() {
+        if (this.turns.length < 3) {
+            return null;
+        }
+        return this.turns[this.turns.length - 3];
+    }
+
     get opponentSide() {
         return this.currentSide === SIDE.WHITE ? SIDE.BLACK : SIDE.WHITE;
     }
@@ -103,21 +117,25 @@ class ChessGame {
     }
 
     onBoardSpaceSelect(space) {
+        console.log(space);
+
         if (this.gameState !== GAME_STATE.PLAYING) {
             return;
         }
         if (this.currentTurn.isInState(TURN_STATE.EMPTY)) {
-            if (space.piece && space.piece.getPossibleMoves(this.board, space).length) {
+            if (space.piece && space.piece.getPossibleMoves(this.board, space, this.previousTurn).length) {
                 if (space.piece.side === this.currentTurn.side) {
                     this.currentTurn.setStartingPieceSpace(space);
-                    this.board.displayPossibleMoves(space);
+                    this.board.displayPossibleMoves(space, this.previousTurn);
                 }
             }
         } else if (this.currentTurn.isInState(TURN_STATE.SELECTED_PIECE)) {
             const startingSpace = this.board.spaceByPosition(this.currentTurn.startingSpacePosition);
-            const possibleMoves = startingSpace.piece.getPossibleMoves(this.board, startingSpace);
+            const possibleMoves = startingSpace.piece.getPossibleMoves(this.board, startingSpace, this.previousTurn);
             const possibleSpecialMoves = _.filter(possibleMoves, move => move.type !== MOVE_TYPE.NORMAL);
             const specialMove = _.find(possibleSpecialMoves, move => move.position === space.position);
+
+            const selectedMove = _.find(possibleMoves, move => move.position === space.position);
 
             if (space.piece && space.piece.side === this.currentTurn.side) {
                 const setStartingSpace = space.position !== this.currentTurn.startingSpacePosition;
@@ -125,10 +143,10 @@ class ChessGame {
                 this.board.clearBoardState();
                 if (setStartingSpace) {
                     this.currentTurn.setStartingPieceSpace(space);
-                    this.board.displayPossibleMoves(space);
+                    this.board.displayPossibleMoves(space, this.previousTurn);
                 }
-            } else if (_.map(possibleMoves, move => move.position).includes(space.position)) {
-                if (this.analyzer.willMoveResultInSelfCheck(this.currentTurn.startingSpacePosition, space.position)) {
+            } else if (selectedMove) {
+                if (this.analyzer.willMoveResultInSelfCheck(this.currentTurn.startingSpacePosition, selectedMove)) {
                     this.gameInfo.setNote('Attempted move results in check - invalid');
                     return;
                 }
@@ -166,10 +184,10 @@ class ChessGame {
         // Probably from board.js. Should be set before the turn state goes to
         // executed
         this.currentTurn.check = this.analyzer.isInCheck(this.opponentSide);
-        this.currentTurn.checkmate = this.analyzer.isInCheckmate(this.opponentSide);
+        this.currentTurn.checkmate = this.analyzer.isInCheckmate(this.opponentSide, this.currentTurn);
         GameInfo.log(`${this.turns.length}. ${this.currentTurn.toAlgebraicNotation()}`);
         if (this.currentTurn.check && !this.currentTurn.checkmate) {
-            const movesToGetOutOfCheck = this.analyzer.movesToGetOutOfCheck(this.opponentSide);
+            const movesToGetOutOfCheck = this.analyzer.movesToGetOutOfCheck(this.opponentSide, this.currentTurn);
             if (movesToGetOutOfCheck.length) {
                 GameInfo.smallLog('Possible moves:');
                 _.each(movesToGetOutOfCheck, move => {
@@ -181,7 +199,7 @@ class ChessGame {
 
     setPlayConditions() {
         if (this.analyzer.isInCheck(this.opponentSide)) {
-            if (this.analyzer.isInCheckmate(this.opponentSide)) {
+            if (this.analyzer.isInCheckmate(this.opponentSide, this.previousTurn)) {
                 this.isInCheckmate = true;
             } else {
                 const checkSpacePositions = this.analyzer.findSpacesCausingCheckAgainst(this.opponentSide);

@@ -52,6 +52,10 @@ class ChessTurn {
         return this.isKingsideCastle || this.isQueensideCastle;
     }
 
+    get isEnPassant() {
+        return this.type === MOVE_TYPE.EN_PASSANT;
+    }
+
     executeNormalMove(board) {
         const startingSpace = board.spaceByPosition(this.startingSpacePosition);
         const endingSpace = board.spaceByPosition(this.endingSpacePosition);
@@ -98,9 +102,27 @@ class ChessTurn {
         this.executed = true;
     }
 
+    executeEnPassant(board) {
+        const startingSpace = board.spaceByPosition(this.startingSpacePosition);
+        const endingSpace = board.spaceByPosition(this.endingSpacePosition);
+        this.piece = startingSpace.piece;
+        this.piece.hasMoved = true;
+
+        this.capturedSpacePosition = endingSpace.getRelativeSpacePosition(0, -this.piece.forwardRankIncrement);
+        const capturedSpace = board.spaceByPosition(this.capturedSpacePosition);
+        capturedSpace.piece.isCaptured = true;
+
+        startingSpace.piece = null;
+        endingSpace.piece = this.piece;
+        capturedSpace.piece = null;
+        this.executed = true;
+    }
+
     execute(board) {
         if (this.isCastle) {
-            this.executeCastle(board, this.type);
+            this.executeCastle(board);
+        } else if(this.isEnPassant) {
+            this.executeEnPassant(board);
         } else {
             this.executeNormalMove(board);
         }
@@ -129,10 +151,9 @@ class ChessTurn {
     static deserialize(serialized) {
         const split = serialized.split('|');
         const turn = new ChessTurn(split[0]);
-        const type = split[3];
         turn.startingSpacePosition = split[1];
         turn.endingSpacePosition = split[2];
-        turn.type = type;
+        turn.type = split[3];
 
         return turn;
     }

@@ -17,7 +17,6 @@ import {
 } from './utils';
 
 import Space from './space';
-import GameInfo from './gameInfo';
 
 
 class Board {
@@ -93,12 +92,12 @@ class Board {
         this.spaces[positionToIndex(endingKingPosition)].setState(SPACE_STATE.POSSIBLE_SPECIAL_MOVE);
     }
 
-    displayPossibleMoves(space) {
+    displayPossibleMoves(space, previousTurn) {
         this.clearBoardState();
         const piece = space.piece;
         space.setState(SPACE_STATE.SELECTED);
         if (piece) {
-            const possibleMoves = space.piece.getPossibleMoves(this, space);
+            const possibleMoves = space.piece.getPossibleMoves(this, space, previousTurn);
             _.each(possibleMoves, (move) => {
                 if (move.type === MOVE_TYPE.NORMAL) {
                     this.spaces[positionToIndex(move.position)].setState(SPACE_STATE.POSSIBLE_MOVE);

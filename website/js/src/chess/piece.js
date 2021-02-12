@@ -14,6 +14,8 @@ import {
 import {
     fileFromIndex,
     rankFromIndex,
+    fileFromPosition,
+    rankFromPosition,
     positionToIndex,
 } from './utils';
 
@@ -61,7 +63,6 @@ class Piece {
     }
 
     getAttackedSpacePositions(board, space) {
-        // TODO: need to handle special case of pawns only attacking diagonally
         const attackedPositions = [];
         const movementPaths = this.getMovementPaths(board, space);
         _.each(movementPaths, (path) => {
@@ -82,7 +83,7 @@ class Piece {
         return attackedPositions;
     }
 
-    getPossibleMoves(board, space) {
+    getPossibleMoves(board, space, previousTurn) {
         const moves = [];
         const movementPaths = this.getMovementPaths(board, space);
         _.each(movementPaths, (path) => {
@@ -107,7 +108,7 @@ class Piece {
             });
         });
 
-        const specialMoves = this.getSpecialMoves(board, space);
+        const specialMoves = this.getSpecialMoves(board, space, previousTurn);
         moves.push(...specialMoves);
         return _.filter(moves, move => move.position);
     }
@@ -122,9 +123,42 @@ class Pawn extends Piece {
         super(side, PIECE_NOTATION.PAWN, startingPosition);
     }
 
-    getSpecialMoves(board) {
-        // ugh, this needs reference to the previous turn.. :(
-        return [];
+    getSpecialMoves(board, space, previousTurn) {
+        if (previousTurn === null) {
+            return [];
+        }
+        const currentRank = rankFromPosition(space.position);
+
+        // Moving pawn must be on fifth rank
+        const fifthRankForSide = this.side === SIDE.WHITE ? 5 : 4;
+        if (currentRank !== fifthRankForSide) {
+            return [];
+        }
+
+        // Previous turn must have had the captured pawn make a double step
+        if (previousTurn.piece.notation !== PIECE_NOTATION.PAWN) {
+            return [];
+        }
+        const startingRank = rankFromPosition(previousTurn.startingSpacePosition);
+        const endingRank = rankFromPosition(previousTurn.endingSpacePosition);
+        if (Math.abs(startingRank - endingRank) !== 2) {
+            return [];
+        }
+
+        // Captured pawn must be on adjacent file to moving pawn
+        const capturedPawnFile = fileFromPosition(previousTurn.endingSpacePosition);
+        const adjacentFiles = _.filter([
+            fileFromPosition(space.getRelativeSpacePosition(1, 0)),
+            fileFromPosition(space.getRelativeSpacePosition(-1, 0)),
+        ], space => space !== null);
+        if (!adjacentFiles.includes(capturedPawnFile)) {
+            return [];
+        }
+
+        return [{
+            position: `${capturedPawnFile}${currentRank + this.forwardRankIncrement}`,
+            type: MOVE_TYPE.EN_PASSANT,
+        }];
     }
 
     getMovementPaths(board, space) {
@@ -233,14 +267,15 @@ class King extends Piece {
 
         // Perform these checks after since they're relatively expensive
         for (let i = 0; i < intermediatePositions.length; i += 1) {
-            const intermediatePosition = intermediatePositions[i];
             // King cannot pass through a space attacked by the opponent.
             // Determining this by moving the king and checking for check.
-            if (analyzer.willMoveResultInSelfCheck(kingSpace.position, intermediatePosition)) {
+            const intermediateMove = { position: intermediatePositions[i], type: MOVE_TYPE.NORMAL };
+            if (analyzer.willMoveResultInSelfCheck(kingSpace.position, intermediateMove)) {
                 return false;
             }
         }
-        return !analyzer.willMoveResultInSelfCheck(kingSpace.position, endingKingPosition);
+        const endingKingMove = { position: endingKingPosition, type: MOVE_TYPE.NORMAL };
+        return !analyzer.willMoveResultInSelfCheck(kingSpace.position, endingKingMove);
     }
 
     canQueensideFileCastle(board) {
