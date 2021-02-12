@@ -77,6 +77,11 @@ $space-light: #CB9053;
     }
 }
 
+#actions-container {
+    padding: 12px;
+    justify-content: space-evenly;
+}
+
 #game-info-container {
     width: 200px;
     border: 1px solid $blackish;

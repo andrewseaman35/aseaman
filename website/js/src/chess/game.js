@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import $ from 'jquery';
 
 import {
     PIECE_NOTATION,
@@ -22,6 +23,11 @@ import {
     Queen,
     King,
 } from './piece';
+
+import {
+    KASPAROV_TOPALOV_1999,
+    SCHOLARS_MATE
+} from './replays';
 
 
 const WHITE_PIECE_SETUP = [
@@ -58,8 +64,14 @@ class ChessGame {
         this.gameState = GAME_STATE.NOT_STARTED;
         this.turns = [];
 
+        this.replayTurnIndex = null;
+
         this.board.setOnSpaceSelectListener(this.onBoardSpaceSelect.bind(this));
         this.board.render();
+
+        $('#load-button').on('click', this.loadReplayGame.bind(this));
+        $('#restart-button').on('click', this.loadReplayGame.bind(this));
+        $('#next-move-button').on('click', this.executeNextReplayTurn.bind(this));
 
         this.startGame();
         console.log(this);
@@ -79,6 +91,9 @@ class ChessGame {
     }
 
     get currentTurn() {
+        if (this.replayTurnIndex !== null) {
+            return this.turns[this.replayTurnIndex];
+        }
         return this.turns[this.turns.length - 1];
     }
 
@@ -114,6 +129,18 @@ class ChessGame {
 
     get currentSidePieces() {
         return this.currentSide === SIDE.WHITE ? this.whitePieces : this.blackPieces;
+    }
+
+    loadReplayGame() {
+        this.turns = _.map(KASPAROV_TOPALOV_1999.turns, turn => ChessTurn.deserialize(turn));
+        this.gameState = GAME_STATE.REPLAY;
+        this.replayTurnIndex = 0;
+    }
+
+    executeNextReplayTurn() {
+        this.board.executeTurn(this.currentTurn);
+        this.board.refreshBoard();
+        this.endTurn();
     }
 
     onBoardSpaceSelect(space) {
@@ -225,7 +252,11 @@ class ChessGame {
             this.endGame();
         } else {
             this.currentSide = this.currentSide === SIDE.WHITE ? SIDE.BLACK : SIDE.WHITE;
-            this.startNextTurn();
+            if (this.gameState === GAME_STATE.PLAYING) {
+                this.startNextTurn();
+            } else if (this.gameState === GAME_STATE.REPLAY) {
+                this.replayTurnIndex += 1;
+            }
         }
     }
 }
