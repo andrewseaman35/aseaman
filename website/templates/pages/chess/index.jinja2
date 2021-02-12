@@ -16,7 +16,14 @@
             this thing will work. My eventual goal is to enable playing online with a friend!
         </p>
         <div id="chess-container">
-            <div id="board-container"></div>
+            <div id="board-outer-container">
+                <div id="board-container"></div>
+                <div id="actions-container">
+                    <button id="load-button">Load</button>
+                    <button id="restart-button">Restart</button>
+                    <button id="next-move-button">Next</button>
+                </div>
+            </div>
             <div id="game-info-container">
                 <div id="game-info-turn"></div>
                 <div id="game-info-checks"></div>
