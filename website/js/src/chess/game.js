@@ -26,7 +26,7 @@ import {
 
 import {
     KASPAROV_TOPALOV_1999,
-    SCHOLARS_MATE
+    SCHOLARS_MATE,
 } from './replays';
 
 
@@ -135,6 +135,10 @@ class ChessGame {
         this.turns = _.map(KASPAROV_TOPALOV_1999.turns, turn => ChessTurn.deserialize(turn));
         this.gameState = GAME_STATE.REPLAY;
         this.replayTurnIndex = 0;
+
+        $('#load-button').hide();
+        $('#restart-button').show();
+        $('#next-move-button').show();
     }
 
     executeNextReplayTurn() {
