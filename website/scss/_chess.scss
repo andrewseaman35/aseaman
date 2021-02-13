@@ -80,6 +80,10 @@ $space-light: #CB9053;
 #actions-container {
     padding: 12px;
     justify-content: space-evenly;
+
+    #next-move-button {
+        display: none;
+    }
 }
 
 #game-info-container {
