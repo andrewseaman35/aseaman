@@ -56,6 +56,7 @@ const MOVE_TYPE = {
     KINGSIDE_CASTLE: 'kingside_castle',
     QUEENSIDE_CASTLE: 'queenside_castle',
     EN_PASSANT: 'en_passant',
+    PROMOTION: 'promotion',
 };
 
 module.exports = {
