@@ -52,8 +52,8 @@ const BLACK_PIECE_SETUP = [
 class ChessGame {
     constructor() {
         this.board = new Board();
-        this.gameInfo = new GameInfo();
         this.analyzer = new Analyzer();
+        this.gameInfo = new GameInfo();
 
         this.whitePieces = this.initializePieces(WHITE_PIECE_SETUP, SIDE.WHITE);
         this.blackPieces = this.initializePieces(BLACK_PIECE_SETUP, SIDE.BLACK);
@@ -65,6 +65,8 @@ class ChessGame {
         this.turns = [];
 
         this.replayTurnIndex = null;
+
+        this.gameInfo.setOnPromotionSelectListener(this.onPromotionSelect.bind(this));
 
         this.board.setOnSpaceSelectListener(this.onBoardSpaceSelect.bind(this));
         this.board.render();
@@ -147,6 +149,19 @@ class ChessGame {
         this.endTurn();
     }
 
+    onPromotionSelect(event) {
+        if (this.gameState !== GAME_STATE.AWAITING_INPUT) {
+            return;
+        }
+        this.gameState = GAME_STATE.PLAYING;
+        this.gameInfo.hidePromotionOptions();
+
+        const newPiece = this.currentTurn.finishPromotionTurn(event.currentTarget.dataset.piece, this.board);
+        this.currentSidePieces.push(newPiece);
+        this.board.refreshBoard();
+        this.endTurn();
+    }
+
     onBoardSpaceSelect(space) {
         console.log(space);
 
@@ -186,7 +201,13 @@ class ChessGame {
                 this.currentTurn.setType(moveType);
                 this.board.executeTurn(this.currentTurn);
                 this.board.refreshBoard();
-                this.endTurn();
+
+                if (this.currentTurn.isPromotion && this.currentTurn.promotedToPiece === null) {
+                    this.gameState = GAME_STATE.AWAITING_INPUT;
+                    this.gameInfo.displayPromotionOptions(this.currentTurn.side);
+                } else {
+                    this.endTurn();
+                }
             }
         }
     }

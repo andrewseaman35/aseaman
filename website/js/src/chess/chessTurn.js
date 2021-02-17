@@ -5,6 +5,13 @@ import {
     MOVE_TYPE,
 } from './constants';
 
+import {
+    Queen,
+    Rook,
+    Knight,
+    Bishop,
+} from './piece';
+
 
 class ChessTurn {
     constructor(side) {
@@ -18,6 +25,8 @@ class ChessTurn {
         this.type = null;
         this.startingSpacePosition = null;
         this.endingSpacePosition = null;
+
+        this.promotedToPiece = null;
     }
 
     get pieceNotation() {
@@ -56,6 +65,14 @@ class ChessTurn {
         return this.type === MOVE_TYPE.EN_PASSANT;
     }
 
+    get isPromotion() {
+        return this.type === MOVE_TYPE.PROMOTION;
+    }
+
+    get isWhite() {
+        return this.side === SIDE.WHITE;
+    }
+
     executeNormalMove(board) {
         const startingSpace = board.spaceByPosition(this.startingSpacePosition);
         const endingSpace = board.spaceByPosition(this.endingSpacePosition);
@@ -74,15 +91,15 @@ class ChessTurn {
         this.executed = true;
     }
 
-    executeCastle(board, castleMove) {
+    executeCastle(board) {
         let rookStartingPosition;
         let rookEndingPosition;
-        if (castleMove === MOVE_TYPE.KINGSIDE_CASTLE) {
-            rookStartingPosition = this.side === SIDE.WHITE ? 'H1' : 'H8';
-            rookEndingPosition = this.side === SIDE.WHITE ? 'F1' : 'F8';
+        if (this.isKingsideCastle) {
+            rookStartingPosition = this.isWhite ? 'H1' : 'H8';
+            rookEndingPosition = this.isWhite ? 'F1' : 'F8';
         } else {
-            rookStartingPosition = this.side === SIDE.WHITE ? 'A1' : 'A8';
-            rookEndingPosition = this.side === SIDE.WHITE ? 'D1' : 'D8';
+            rookStartingPosition = this.isWhite ? 'A1' : 'A8';
+            rookEndingPosition = this.isWhite ? 'D1' : 'D8';
         }
 
         const kingStartingSpace = board.spaceByPosition(this.startingSpacePosition);
@@ -120,7 +137,7 @@ class ChessTurn {
 
     execute(board) {
         if (this.isCastle) {
-            this.executeCastle(board, this.type);
+            this.executeCastle(board);
         } else if(this.isEnPassant) {
             this.executeEnPassant(board);
         } else {
@@ -130,6 +147,8 @@ class ChessTurn {
 
     toAlgebraicNotation() {
         // TODO: Not quite there yet.. this should be understandable, but not nice and minimized like it should be
+        // Really, it'd be great to remove the serialization methods and to just serialize through algebraic
+        // notation...
         if (this.isKingsideCastle) {
             return '0-0';
         } else if (this.isQueensideCastle) {
@@ -185,6 +204,38 @@ class ChessTurn {
 
     isInState(state) {
         return this.state === state;
+    }
+
+    finishPromotionTurn(pieceNotation, board) {
+        if (!this.isPromotion) {
+            throw new Error('attempted to finish promotion on non-promotion turn');
+        }
+        if (this.promotedToPiece !== null) {
+            throw new Error('attempted to re-set promotion piece');
+        }
+        const endingSpace = board.spaceByPosition(this.endingSpacePosition);
+        this.promotedToPiece = pieceNotation;
+        endingSpace.piece.hasBeenPromoted = true;
+        endingSpace.piece.promotedToPiece = pieceNotation;
+
+        console.log(pieceNotation)
+        console.log(PIECE_NOTATION)
+        let promotedPiece;
+        if (pieceNotation === PIECE_NOTATION.QUEEN) {
+            promotedPiece = new Queen(this.side, endingSpace.piece.startingPosition);
+        } else if (pieceNotation === PIECE_NOTATION.ROOK) {
+            promotedPiece = new Rook(this.side, endingSpace.piece.startingPosition);
+        } else if (pieceNotation === PIECE_NOTATION.KNIGHT) {
+            promotedPiece = new Knight(this.side, endingSpace.piece.startingPosition);
+        } else if (pieceNotation === PIECE_NOTATION.BISHOP) {
+            promotedPiece = new Bishop(this.side, endingSpace.piece.startingPosition);
+        } else {
+            throw new Error(`invalid promotion piece notation ${pieceNotation}`);
+        }
+        endingSpace.piece = null;
+        board.setPiece(promotedPiece, endingSpace.position);
+
+        return promotedPiece;
     }
 }
 

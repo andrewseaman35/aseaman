@@ -85,7 +85,7 @@ class AnalyzableBoard extends Board {
 }
 
 
-class Analyzer {
+export default class Analyzer {
     constructor() {
         this.analyzableBoard = new AnalyzableBoard();
         this.reset();
@@ -211,5 +211,3 @@ class Analyzer {
         return this.analyzableBoard.findSpacesCausingCheckAgainst(sideInCheck);
     }
 }
-
-module.exports = Analyzer;

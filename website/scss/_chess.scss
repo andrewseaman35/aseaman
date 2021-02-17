@@ -112,3 +112,32 @@ $space-light: #CB9053;
         margin-left: 16px;
     }
 }
+
+#game-info-promotion-options {
+    display: flex;
+    justify-content: space-around;
+
+    img {
+        display: none;
+        padding: 4px;
+
+        &.white {
+            background-color: $blackish;
+        }
+
+        &.black {
+            border: 1px solid $blackish;
+        }
+
+        &:hover {
+            cursor: pointer;
+
+            &.white {
+                background-color: $gray;
+            }
+            &.black {
+                background-color: $gray;
+            }
+        }
+    }
+}
