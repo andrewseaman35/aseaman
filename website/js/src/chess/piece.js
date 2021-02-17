@@ -20,7 +20,6 @@ import {
 } from './utils';
 
 import Analyzer from './analyzer';
-import GameInfo from './gameInfo';
 
 
 class Piece {
@@ -83,7 +82,7 @@ class Piece {
         return attackedPositions;
     }
 
-    getPossibleMoves(board, space, previousTurn) {
+    getNormalMoves(board, space) {
         const moves = [];
         const movementPaths = this.getMovementPaths(board, space);
         _.each(movementPaths, (path) => {
@@ -108,8 +107,15 @@ class Piece {
             });
         });
 
+        return moves;
+    }
+
+    getPossibleMoves(board, space, previousTurn) {
+        const moves = [];
         const specialMoves = this.getSpecialMoves(board, space, previousTurn);
-        moves.push(...specialMoves);
+        const normalMoves = this.getNormalMoves(board, space);
+
+        moves.push(...specialMoves, ...normalMoves);
         return _.filter(moves, move => move.position);
     }
 
@@ -121,6 +127,22 @@ class Piece {
 class Pawn extends Piece {
     constructor(side, startingPosition) {
         super(side, PIECE_NOTATION.PAWN, startingPosition);
+
+        this.isPromoted = false;
+    }
+
+    getPossibleMoves(board, space, previousTurn) {
+        const possibleMoves = super.getPossibleMoves(board, space, previousTurn);
+        const rankBeforePromotion = this.isWhite ? 7 : 2;
+        const rankOfPromotion = this.isWhite ? 8 : 1;
+        if (rankFromPosition(space.position) === rankBeforePromotion) {
+            _.each(possibleMoves, (move) => {
+                if (rankFromPosition(move.position) === rankOfPromotion) {
+                    move.type = MOVE_TYPE.PROMOTION;
+                }
+            });
+        }
+        return possibleMoves;
     }
 
     getSpecialMoves(board, space, previousTurn) {
@@ -165,8 +187,8 @@ class Pawn extends Piece {
         const movementPaths = [];
 
         const forwardPosition = space.getRelativeSpacePosition(...[0, this.forwardRankIncrement]);
-        const forwardSpace = board.spaceByPosition(forwardPosition);
-        if (!forwardSpace.isOccupied) {
+        const forwardSpace = forwardPosition ? board.spaceByPosition(forwardPosition) : null;
+        if (forwardSpace && !forwardSpace.isOccupied) {
             movementPaths.push([[0, this.forwardRankIncrement]]);
 
             if (!this.hasMoved) {

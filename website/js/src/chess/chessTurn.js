@@ -120,7 +120,7 @@ class ChessTurn {
 
     execute(board) {
         if (this.isCastle) {
-            this.executeCastle(board);
+            this.executeCastle(board, this.type);
         } else if(this.isEnPassant) {
             this.executeEnPassant(board);
         } else {
