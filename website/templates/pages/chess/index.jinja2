@@ -27,6 +27,24 @@
             <div id="game-info-container">
                 <div id="game-info-turn"></div>
                 <div id="game-info-checks"></div>
+                <div id="game-info-promotion-options">
+                    <div class="promotion-option" data-piece="Q">
+                        <img class="piece-image white" src="{{ macros.image_url('chess/pieces/q_white.svg') }}">
+                        <img class="piece-image black" src="{{ macros.image_url('chess/pieces/q_black.svg') }}">
+                    </div>
+                    <div class="promotion-option" data-piece="R">
+                        <img class="piece-image white" src="{{ macros.image_url('chess/pieces/r_white.svg') }}">
+                        <img class="piece-image black" src="{{ macros.image_url('chess/pieces/r_black.svg') }}">
+                    </div>
+                    <div class="promotion-option" data-piece="N">
+                        <img class="piece-image white" src="{{ macros.image_url('chess/pieces/n_white.svg') }}">
+                        <img class="piece-image black" src="{{ macros.image_url('chess/pieces/n_black.svg') }}">
+                    </div>
+                    <div class="promotion-option" data-piece="B">
+                        <img class="piece-image white" src="{{ macros.image_url('chess/pieces/b_white.svg') }}">
+                        <img class="piece-image black" src="{{ macros.image_url('chess/pieces/b_black.svg') }}">
+                    </div>
+                </div>
 
                 <h3 id="game-log-header">Log:</h3>
                 <div id="game-log-container">

@@ -34,6 +34,8 @@ class Piece {
         this.hasMoved = false;
         this.isCaptured = false;
         this.isWhite = this.side === SIDE.WHITE;
+
+        this.isPromotedPiece = false;
     }
 
     get forwardRankIncrement() {
@@ -128,7 +130,8 @@ class Pawn extends Piece {
     constructor(side, startingPosition) {
         super(side, PIECE_NOTATION.PAWN, startingPosition);
 
-        this.isPromoted = false;
+        this.hasBeenPromoted = false;
+        this.promotedToPiece = null;
     }
 
     getPossibleMoves(board, space, previousTurn) {

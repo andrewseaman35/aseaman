@@ -1,9 +1,20 @@
 import $ from 'jquery';
 
+import { SIDE } from './constants';
+
+
 
 class GameInfo {
     constructor() {
         this.container = $('#game-info-container');
+
+        $('#game-info-promotion-options .promotion-option').on('click', this.handlePromotionOptionClick.bind(this));
+
+        console.log(this);
+    }
+
+    setOnPromotionSelectListener(listener) {
+        this.onPromotionSelectListener = listener;
     }
 
     static log(note) {
@@ -16,6 +27,27 @@ class GameInfo {
         if (note && note.length) {
             $('#game-info-note').append(`<span class="small-log">${note}<br></span>`);
         }
+    }
+
+    handlePromotionOptionClick(e) {
+        this.onPromotionSelectListener(e);
+    }
+
+    displayPromotionOptions(side) {
+        const showWhite = side === SIDE.WHITE;
+        const whitePieces = $('#game-info-promotion-options img.white');
+        const blackPieces = $('#game-info-promotion-options img.black');
+        if (showWhite) {
+            blackPieces.hide();
+            whitePieces.show();
+        } else {
+            whitePieces.hide();
+            blackPieces.show();
+        }
+    }
+
+    hidePromotionOptions() {
+        $('#game-info-promotion-options img').hide();
     }
 
     setNote(note) {

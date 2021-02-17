@@ -32,6 +32,7 @@ const TURN_STATE = {
 const GAME_STATE = {
     REPLAY: 'replay',
     NOT_STARTED: 'not_started',
+    AWAITING_INPUT: 'awaiting_input',
     PLAYING: 'playing',
     COMPLETE: 'complete',
 };
