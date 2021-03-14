@@ -61,7 +61,7 @@ local_venv: local_requirements.txt
 freeze_local_venv:
 	local_venv/bin/pip freeze > local_requirements.txt
 
-start_local:
+start_local: local_venv
 	local_venv/bin/python local_backend.py
 
 clean:
