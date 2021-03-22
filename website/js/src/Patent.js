@@ -71,7 +71,7 @@ class Patent extends React.Component {
                             <tr>
                                 <th></th>
                                 <th>App# {HAPTIC_APPLICATION_NUMBER}</th>
-                                <th>App# {HAPTIC_APPLICATION_NUMBER}</th>
+                                <th>App# {PEDIGREE_APPLICATION_NUMBER}</th>
                             </tr>
                         </thead>
                         <tbody>
