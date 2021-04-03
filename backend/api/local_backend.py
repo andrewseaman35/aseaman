@@ -33,7 +33,7 @@ def get_curl_payload(request):
     payload = {
         'action': string_payload['action'],
         'payload': json.loads(string_payload['payload']),
-        'local': True, 
+        'local': True,
     }
     return payload
 
@@ -79,6 +79,13 @@ def salt_level():
 def compare_acnh():
     payload = get_payload(request)
     result = make_lambda_request('compare_acnh', payload, None)
+    return convert_to_response(result)
+
+
+@app.route('/chess', methods=['POST'])
+def chess():
+    payload = get_payload(request)
+    result = make_lambda_request('chess', payload, None)
     return convert_to_response(result)
 
 
