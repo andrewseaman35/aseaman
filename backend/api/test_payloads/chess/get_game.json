@@ -1,0 +1,6 @@
+{
+    "action": "get_game",
+    "payload": {
+        "game_id": "YMJLU2"
+    }
+}
