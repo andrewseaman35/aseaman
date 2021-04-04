@@ -25,10 +25,17 @@ import {
 } from './piece';
 
 import {
+    createNewGame,
+    fetchGame,
+    saveTurn,
+} from  './api';
+
+import {
     KASPAROV_TOPALOV_1999,
     SCHOLARS_MATE,
 } from './replays';
 
+const GAME_ID_LENGTH = 6;
 
 const WHITE_PIECE_SETUP = [
     { Piece: Pawn, startingPositions: ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2'] },
@@ -58,6 +65,7 @@ class ChessGame {
         this.whitePieces = this.initializePieces(WHITE_PIECE_SETUP, SIDE.WHITE);
         this.blackPieces = this.initializePieces(BLACK_PIECE_SETUP, SIDE.BLACK);
 
+        this.gameId = null;
         this.isInCheck = false;
         this.isInCheckmate = false;
         this.currentSide = null;
@@ -66,17 +74,28 @@ class ChessGame {
 
         this.replayTurnIndex = null;
 
-        this.gameInfo.setOnPromotionSelectListener(this.onPromotionSelect.bind(this));
-
-        this.board.setOnSpaceSelectListener(this.onBoardSpaceSelect.bind(this));
         this.board.render();
+
+        this.initializeGameStartModal();
+        console.log(this);
+    }
+
+    initializeGameStartModal() {
+        $('#load-game-button').on('click', this.onLoadGameButtonClick.bind(this));
+        $('#load-game-id-input').on('input', this.onLoadGameButtonChange.bind(this));
+        $('#new-game-button').on('click', this.onStartNewGameButtonClick.bind(this));
+    }
+
+    initializeAndStartGame() {
+        $('#game-start-modal').hide();
+        this.gameInfo.setOnPromotionSelectListener(this.onPromotionSelect.bind(this));
+        this.board.setOnSpaceSelectListener(this.onBoardSpaceSelect.bind(this));
 
         $('#load-button').on('click', this.loadReplayGame.bind(this));
         $('#restart-button').on('click', this.loadReplayGame.bind(this));
         $('#next-move-button').on('click', this.executeNextReplayTurn.bind(this));
 
         this.startGame();
-        console.log(this);
     }
 
     initializePieces(pieceSetup, side) {
@@ -133,6 +152,49 @@ class ChessGame {
         return this.currentSide === SIDE.WHITE ? this.whitePieces : this.blackPieces;
     }
 
+    onLoadGameButtonClick() {
+        const gameId = $('#load-game-id-input')[0].value;
+        $('#load-error').hide();
+        fetchGame(gameId).then(
+            (response) => {
+                this.gameId = response.game_id;
+                this.gameInfo.setGameId(this.gameId);
+                this.turns = _.map(response.turns, turn => ChessTurn.deserialize(turn));
+                this.gameState = GAME_STATE.REPLAY;
+                this.replayTurnIndex = 0;
+                _.times(this.turns.length, () => {
+                    this.executeNextReplayTurn();
+                });
+                this.initializeAndStartGame();
+            },
+            (error) => {
+                $('#load-error').text(error.responseJSON.message);
+                $('#load-error').show();
+            }
+        );
+    }
+
+    onLoadGameButtonChange() {
+        const gameId = $('#load-game-id-input')[0].value;
+        $('#load-error').hide();
+        $('#load-game-button').attr('disabled', (gameId.length < GAME_ID_LENGTH));
+    }
+
+    onStartNewGameButtonClick() {
+        $('#new-game-error').hide();
+        createNewGame().then(
+            (response) => {
+                this.gameId = response.game_id;
+                this.gameInfo.setGameId(this.gameId);
+                this.initializeAndStartGame();
+            },
+            (error) => {
+                $('#new-game-error').text(error.responseJSON.message);
+                $('#new-game-error').show();
+            }
+        );
+    }
+
     loadReplayGame() {
         this.turns = _.map(KASPAROV_TOPALOV_1999.turns, turn => ChessTurn.deserialize(turn));
         this.gameState = GAME_STATE.REPLAY;
@@ -144,6 +206,7 @@ class ChessGame {
     }
 
     executeNextReplayTurn() {
+        this.currentSide = this.currentTurn.side;
         this.board.executeTurn(this.currentTurn);
         this.board.refreshBoard();
         this.endTurn();
@@ -163,7 +226,6 @@ class ChessGame {
     }
 
     onBoardSpaceSelect(space) {
-        console.log(space);
 
         if (this.gameState !== GAME_STATE.PLAYING) {
             return;
@@ -212,9 +274,14 @@ class ChessGame {
         }
     }
 
+    determineNextSideTurn() {
+        return this.turns.length % 2 === 1 ? SIDE.BLACK : SIDE.WHITE;
+    }
+
     startGame() {
+        this.replayTurnIndex = null;
         this.gameState = GAME_STATE.PLAYING;
-        this.currentSide = SIDE.WHITE;
+        this.currentSide = this.determineNextSideTurn();
         this.startNextTurn();
     }
 
@@ -270,6 +337,9 @@ class ChessGame {
     }
 
     endTurn() {
+        if (this.gameState === GAME_STATE.PLAYING) {
+            saveTurn(this.gameId, this.currentTurn.serialize());
+        }
         this.analyzer.setup(this.board);
         this.logTurn();
         this.setPlayConditions();

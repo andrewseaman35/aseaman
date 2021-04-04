@@ -16,15 +16,28 @@
             this thing will work. My eventual goal is to enable playing online with a friend!
         </p>
         <div id="chess-container">
-            <div id="board-outer-container">
-                <div id="board-container"></div>
-                <div id="actions-container">
-                    <button id="load-button">Load Kasparov vs. Topalov Replay</button>
-                    {# <button id="restart-button">Restart</button> #}
-                    <button id="next-move-button">Next</button>
+            <div id="game-start-modal" class="modal">
+                <div class="load-container">
+                    <input
+                        id="load-game-id-input"
+                        type="text"
+                        placeholder="Game ID"
+                        maxlength="6"
+                    />
+                    <button disabled id="load-game-button">Load game</button>
+                    <div id="load-error" class="error-message"></div>
+                </div>
+                <div class="new-container">
+                    <p>Or</p>
+                    <button id="new-game-button">Start a new game</button>
                 </div>
             </div>
+            <div id="board-outer-container">
+                <div id="board-container"></div>
+                <div id="actions-container"></div>
+            </div>
             <div id="game-info-container">
+                <div id="game-info-game-id">Game id: </div>
                 <div id="game-info-turn"></div>
                 <div id="game-info-checks"></div>
                 <div id="game-info-promotion-options">

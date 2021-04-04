@@ -50,6 +50,10 @@ class GameInfo {
         $('#game-info-promotion-options img').hide();
     }
 
+    setGameId(gameId) {
+        $('#game-info-game-id').text(`Game id: ${gameId}`);
+    }
+
     setNote(note) {
         $('#game-note').empty();
         $('#game-note').append(`<span>${note}</span>`);
@@ -70,7 +74,7 @@ class GameInfo {
 
     setTurn(turn) {
         if (turn) {
-            $('#game-info-turn').text(`Turn: ${turn.side}`);
+            $('#game-info-turn').text(`Turn: ${turn.side.toLowerCase()}`);
         } else {
             $('#game-info-turn').empty();
         }
