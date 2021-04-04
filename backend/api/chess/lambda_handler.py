@@ -17,6 +17,9 @@ LOCAL_TABLE_NAME = 'chess_game'
 GAME_ID_LENGTH = 6
 TURN_REGEX_PATTERN = r'(?P<side>WHITE|BLACK)\|(?P<starting_space>[A-Z]\d)\|(?P<ending_space>[A-Z]\d)\|(?P<turn_type>\w+)\|(?P<options>\w*)'
 
+VERSION = "0.0.1"
+
+
 class ChessLambdaHandler(APILambdaHandlerBase):
     require_auth = False
 
@@ -67,7 +70,8 @@ class ChessLambdaHandler(APILambdaHandlerBase):
         }
 
     def _validate_new_game(self):
-        pass
+        if 'game_mode' not in self.payload:
+            raise BadRequestException('game_mode parameter required')
 
     def _validate_get_game(self):
         if 'game_id' not in self.payload:
@@ -86,14 +90,15 @@ class ChessLambdaHandler(APILambdaHandlerBase):
         return str(int(time.time()))
 
     def _format_ddb_item(self, ddbItem):
-        print(ddbItem)
         return {
             'game_id': ddbItem['game_id']['S'],
+            'game_mode': ddbItem['game_mode']['S'],
             'turns': [
                 turn['S'] for turn in ddbItem['turns']['L']
             ],
             'time_created': ddbItem['time_created']['N'],
             'time_updated': ddbItem['time_updated']['N'],
+            'version': ddbItem['version']['S'],
         }
 
     def _build_new_game_ddb_item(self):
@@ -101,6 +106,9 @@ class ChessLambdaHandler(APILambdaHandlerBase):
         return {
             'game_id': {
                 'S': self._new_game_id(),
+            },
+            'game_mode': {
+                'S': self.payload['game_mode'],
             },
             'turns': {
                 'L': [],
@@ -110,6 +118,9 @@ class ChessLambdaHandler(APILambdaHandlerBase):
             },
             'time_updated': {
                 'N': timestamp,
+            },
+            'version': {
+                'S': VERSION,
             },
         }
 
@@ -143,7 +154,7 @@ class ChessLambdaHandler(APILambdaHandlerBase):
         print("saving new turn")
         new_turn = self._deserialize_turn(self.payload['turn'])
         game = self.__fetch_game(self.payload['game_id'])
-        print(game)
+
         if game['turns']:
             serialized_last_turn = game['turns'][-1]
             last_turn = self._deserialize_turn(serialized_last_turn)
