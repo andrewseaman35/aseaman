@@ -7,6 +7,7 @@ import {
     GAME_STATE,
     SPACE_STATE,
     TURN_STATE,
+    GAME_MODE,
     MOVE_TYPE,
 } from './constants';
 
@@ -36,6 +37,7 @@ import {
 } from './replays';
 
 const GAME_ID_LENGTH = 6;
+const POLL_INTERVAL = 5000;
 
 const WHITE_PIECE_SETUP = [
     { Piece: Pawn, startingPositions: ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2'] },
@@ -66,6 +68,9 @@ class ChessGame {
         this.blackPieces = this.initializePieces(BLACK_PIECE_SETUP, SIDE.BLACK);
 
         this.gameId = null;
+        this.gameMode = null;
+        this.localPlayerSide;
+
         this.isInCheck = false;
         this.isInCheckmate = false;
         this.currentSide = null;
@@ -83,19 +88,13 @@ class ChessGame {
     initializeGameStartModal() {
         $('#load-game-button').on('click', this.onLoadGameButtonClick.bind(this));
         $('#load-game-id-input').on('input', this.onLoadGameButtonChange.bind(this));
-        $('#new-game-button').on('click', this.onStartNewGameButtonClick.bind(this));
+        $('.new-game-button').on('click', this.onStartNewGameButtonClick.bind(this));
     }
 
-    initializeAndStartGame() {
+    initializeGame() {
         $('#game-start-modal').hide();
         this.gameInfo.setOnPromotionSelectListener(this.onPromotionSelect.bind(this));
         this.board.setOnSpaceSelectListener(this.onBoardSpaceSelect.bind(this));
-
-        $('#load-button').on('click', this.loadReplayGame.bind(this));
-        $('#restart-button').on('click', this.loadReplayGame.bind(this));
-        $('#next-move-button').on('click', this.executeNextReplayTurn.bind(this));
-
-        this.startGame();
     }
 
     initializePieces(pieceSetup, side) {
@@ -154,22 +153,37 @@ class ChessGame {
 
     onLoadGameButtonClick() {
         const gameId = $('#load-game-id-input')[0].value;
+        $('#load-game-button').attr('disabled', true);
         $('#load-error').hide();
         fetchGame(gameId).then(
             (response) => {
                 this.gameId = response.game_id;
+                this.gameMode = response.game_mode;
                 this.gameInfo.setGameId(this.gameId);
+                this.gameInfo.setGameMode(this.gameMode);
+                if (this.gameMode === GAME_MODE.NETWORK) {
+                    this.localPlayerSide = SIDE.BLACK;
+                }
                 this.turns = _.map(response.turns, turn => ChessTurn.deserialize(turn));
                 this.gameState = GAME_STATE.REPLAY;
                 this.replayTurnIndex = 0;
                 _.times(this.turns.length, () => {
                     this.executeNextReplayTurn();
                 });
-                this.initializeAndStartGame();
+                this.initializeGame();
+
+                if (this.turns.length % 2 === 0) {
+                    // If there are an even amount of turns (or zero), it's white's turn.
+                    // Since we loaded the game, we have to wait for the game creator to make their move.
+                    this.pollForNextTurn();
+                } else {
+                    this.startGame();
+                }
             },
             (error) => {
                 $('#load-error').text(error.responseJSON.message);
                 $('#load-error').show();
+                $('#load-game-button').attr('disabled', false);
             }
         );
     }
@@ -180,17 +194,50 @@ class ChessGame {
         $('#load-game-button').attr('disabled', (gameId.length < GAME_ID_LENGTH));
     }
 
-    onStartNewGameButtonClick() {
+    onStartNewGameButtonClick(event) {
         $('#new-game-error').hide();
-        createNewGame().then(
+        $('.new-game-button').attr('disabled', true);
+        this.gameMode = event.currentTarget.dataset.gameMode;
+        this.gameInfo.setGameMode(this.gameMode);
+        this.localPlayerSide = SIDE.WHITE;
+        createNewGame(this.gameMode).then(
             (response) => {
                 this.gameId = response.game_id;
                 this.gameInfo.setGameId(this.gameId);
-                this.initializeAndStartGame();
+                this.initializeGame();
+                this.startGame();
             },
             (error) => {
+                this.gameMode = null;
                 $('#new-game-error').text(error.responseJSON.message);
                 $('#new-game-error').show();
+                $('.new-game-button').attr('disabled', false);
+            }
+        );
+    }
+
+    pollForNextTurn() {
+        this.gameInfo.setNetworkPlayState('Waiting for opponent...');
+        fetchGame(this.gameId).then(
+            (response) => {
+                const turns = response.turns;
+                const lastTurn = turns.length ? ChessTurn.deserialize(_.last(turns)) : null;
+                if (lastTurn && lastTurn.side !== this.localPlayerSide && turns.length >= this.turns.length) {
+                    this.gameState = GAME_STATE.REPLAY;
+                    this.replayTurnIndex = this.turns.length;
+                    console.log(lastTurn)
+                    this.turns.push(lastTurn);
+                    this.executeNextReplayTurn();
+                    this.gameState = GAME_STATE.PLAYING;
+                    this.replayTurnIndex = null;
+                    this.startGame();
+                    this.gameInfo.setNetworkPlayState('');
+                } else {
+                    setTimeout(this.pollForNextTurn.bind(this), POLL_INTERVAL);
+                }
+            },
+            (error) => {
+
             }
         );
     }
@@ -351,7 +398,11 @@ class ChessGame {
         } else {
             this.currentSide = this.currentSide === SIDE.WHITE ? SIDE.BLACK : SIDE.WHITE;
             if (this.gameState === GAME_STATE.PLAYING) {
-                this.startNextTurn();
+                if (this.gameMode === GAME_MODE.LOCAL) {
+                    this.startNextTurn();
+                } else {
+                    this.pollForNextTurn();
+                }
             } else if (this.gameState === GAME_STATE.REPLAY) {
                 this.replayTurnIndex += 1;
             }

@@ -54,6 +54,10 @@ class GameInfo {
         $('#game-info-game-id').text(`Game id: ${gameId}`);
     }
 
+    setGameMode(gameMode) {
+        $('#game-info-game-mode').text(`Mode: ${gameMode}`);
+    }
+
     setNote(note) {
         $('#game-note').empty();
         $('#game-note').append(`<span>${note}</span>`);
@@ -78,6 +82,10 @@ class GameInfo {
         } else {
             $('#game-info-turn').empty();
         }
+    }
+
+    setNetworkPlayState(val) {
+        $('#game-info-netplay-state').text(val);
     }
 }
 

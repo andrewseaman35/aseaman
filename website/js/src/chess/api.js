@@ -36,9 +36,12 @@ function saveTurn(gameId, turn) {
     }).promise();
 }
 
-function createNewGame() {
+function createNewGame(gameMode) {
     const postData = {
         action: 'new_game',
+        payload: {
+            'game_mode': gameMode,
+        },
     };
     return $.ajax({
         type: 'POST',

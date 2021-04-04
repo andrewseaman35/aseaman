@@ -37,6 +37,11 @@ const GAME_STATE = {
     COMPLETE: 'complete',
 };
 
+const GAME_MODE = {
+    LOCAL: 'local',
+    NETWORK: 'network',
+};
+
 const MOVEMENT_GROUPS = {
     DIAGONALS: [
         [[1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 6], [7, 7]],
@@ -64,6 +69,7 @@ module.exports = {
     BOARD_HEIGHT,
     BOARD_WIDTH,
 
+    GAME_MODE,
     GAME_STATE,
     SPACE_STATE,
     TURN_STATE,
