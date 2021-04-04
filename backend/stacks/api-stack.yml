@@ -625,17 +625,16 @@ Resources:
                   - "ssm:GetParameter"
                 Resource: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/*"
         -
-          PolicyName: "s3"
+          PolicyName: "chesstable"
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
               - Effect: "Allow"
                 Action:
-                  - "s3:GetObject"
-                  - "s3:ListBucket"
-                Resource:
-                  - "arn:aws:s3:::aseaman-public-bucket"
-                  - "arn:aws:s3:::aseaman-public-bucket/*"
+                  - "dynamodb:GetItem"
+                Resource: !Sub
+                  - "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${ChessGameTable}"
+                  - { ChessGameTable: "chess_game" }
 
   ChessAPIPolicy:
     Type: "AWS::IAM::InstanceProfile"
