@@ -86,6 +86,20 @@ $space-light: #CB9053;
     }
 }
 
+#game-start-modal {
+    input {
+        text-transform: uppercase;
+    }
+
+    #load-error {
+        display: none;
+    }
+
+    .new-container p {
+        text-align: center;
+    }
+}
+
 #game-info-container {
     width: 200px;
     border: 1px solid $blackish;
