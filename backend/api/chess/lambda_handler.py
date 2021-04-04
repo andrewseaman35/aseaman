@@ -15,7 +15,7 @@ TABLE_NAME = 'chess_game'
 LOCAL_TABLE_NAME = 'chess_game'
 
 GAME_ID_LENGTH = 6
-TURN_REGEX_PATTERN = r'(?P<side>WHITE|BLACK)\|(?P<starting_space>[A-Z]\d)\|(?P<ending_space>[A-Z]\d)\|(?P<turn_type>\w+)'
+TURN_REGEX_PATTERN = r'(?P<side>WHITE|BLACK)\|(?P<starting_space>[A-Z]\d)\|(?P<ending_space>[A-Z]\d)\|(?P<turn_type>\w+)\|(?P<options>\w*)'
 
 class ChessLambdaHandler(APILambdaHandlerBase):
     require_auth = False
@@ -63,6 +63,7 @@ class ChessLambdaHandler(APILambdaHandlerBase):
             'starting_space': starting_space,
             'ending_space': ending_space,
             'turn_type': turn_type,
+            'options': options,
         }
 
     def _validate_new_game(self):

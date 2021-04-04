@@ -208,6 +208,10 @@ class ChessGame {
     executeNextReplayTurn() {
         this.currentSide = this.currentTurn.side;
         this.board.executeTurn(this.currentTurn);
+        if (this.currentTurn.isPromotion) {
+            const newPiece = this.currentTurn.finishPromotionTurn(this.currentTurn.promotedToPiece, this.board);
+            this.currentSidePieces.push(newPiece);
+        }
         this.board.refreshBoard();
         this.endTurn();
     }
@@ -226,7 +230,6 @@ class ChessGame {
     }
 
     onBoardSpaceSelect(space) {
-
         if (this.gameState !== GAME_STATE.PLAYING) {
             return;
         }

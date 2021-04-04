@@ -163,8 +163,16 @@ class ChessTurn {
         return `${piece}${start} ${cap}${end}${check}${mate}`;
     }
 
+    serializedOptions() {
+        if (this.isPromotion) {
+            return this.promotedToPiece;
+        }
+        return '';
+    }
+
     serialize() {
-        return `${this.side}|${this.startingSpacePosition}|${this.endingSpacePosition}|${this.type}`;
+        const options = this.serializedOptions();
+        return `${this.side}|${this.startingSpacePosition}|${this.endingSpacePosition}|${this.type}|${options}`;
     }
 
     static deserialize(serialized) {
@@ -173,6 +181,11 @@ class ChessTurn {
         turn.startingSpacePosition = split[1];
         turn.endingSpacePosition = split[2];
         turn.type = split[3];
+
+        const options =  split[4];
+        if (turn.isPromotion) {
+            turn.promotedToPiece = options;
+        }
 
         return turn;
     }
@@ -210,16 +223,11 @@ class ChessTurn {
         if (!this.isPromotion) {
             throw new Error('attempted to finish promotion on non-promotion turn');
         }
-        if (this.promotedToPiece !== null) {
-            throw new Error('attempted to re-set promotion piece');
-        }
         const endingSpace = board.spaceByPosition(this.endingSpacePosition);
         this.promotedToPiece = pieceNotation;
         endingSpace.piece.hasBeenPromoted = true;
         endingSpace.piece.promotedToPiece = pieceNotation;
 
-        console.log(pieceNotation)
-        console.log(PIECE_NOTATION)
         let promotedPiece;
         if (pieceNotation === PIECE_NOTATION.QUEEN) {
             promotedPiece = new Queen(this.side, endingSpace.piece.startingPosition);
