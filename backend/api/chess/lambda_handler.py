@@ -53,7 +53,7 @@ class ChessLambdaHandler(APILambdaHandlerBase):
         match = self.turn_regex_pattern.match(turn)
         if not match:
             raise BadRequestException('invalid turn format')
-        side, starting_space, ending_space, turn_type = match.groups()
+        side, starting_space, ending_space, turn_type, options = match.groups()
         if side not in {'WHITE', 'BLACK'}:
             raise BadRequestException('invalid side')
         if turn_type not in {'normal', 'kingside_castle', 'queenside_castle', 'en_passant', 'promotion'}:
