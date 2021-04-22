@@ -15,6 +15,7 @@ import Analyzer from './analyzer';
 import Board from './board';
 import ChessTurn from './chessTurn';
 import GameInfo from './gameInfo';
+import RemoteChess from './remoteChess';
 
 import {
     Pawn,
@@ -63,6 +64,7 @@ class ChessGame {
         this.board = new Board();
         this.analyzer = new Analyzer();
         this.gameInfo = new GameInfo();
+        this.remoteChess = new RemoteChess();
 
         this.whitePieces = this.initializePieces(WHITE_PIECE_SETUP, SIDE.WHITE);
         this.blackPieces = this.initializePieces(BLACK_PIECE_SETUP, SIDE.BLACK);
@@ -312,6 +314,7 @@ class ChessGame {
                 const moveType = specialMove ? specialMove.type :  MOVE_TYPE.NORMAL;
                 this.currentTurn.setType(moveType);
                 this.board.executeTurn(this.currentTurn);
+                // this.remoteChess.performMoves(this.currentTurn.getRemoteChessMoves(this.board));
                 this.board.refreshBoard();
 
                 if (this.currentTurn.isPromotion && this.currentTurn.promotedToPiece === null) {

@@ -58,6 +58,11 @@ class Board {
         return null;
     }
 
+    findNearbyEmptySpacePosition(space) {
+        // TODO
+        return 'A5'; // apparently this is the least visited space.. lol :)
+    }
+
     findPositionOfPiece(piece) {
         const space = this.getSpaceOfPiece(piece);
         if (space) {

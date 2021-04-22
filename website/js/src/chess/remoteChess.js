@@ -34,11 +34,32 @@ class RemoteChess {
         }).promise();
     }
 
+    initializeOctoPrint() {
+        $.ajax({
+            type: 'GET',
+            url: `${this.baseUrl}/chess_v1/initialize_octoprint`,
+        }).promise();
+    }
+
+    homeAxes() {
+        $.ajax({
+            type: 'GET',
+            url: `${this.baseUrl}/chess_v1/home_axes`,
+        }).promise();
+    }
+
+    getControllerSerialStatus() {
+        $.ajax({
+            type: 'GET',
+            url: `${this.baseUrl}/chess_v1/controller_serial_status`,
+        }).promise();
+    }
+
     initializeController() {
         $.ajax({
             type: 'GET',
             url: `${this.baseUrl}/chess_v1/initialize_controller`,
-        }).then((r) => console.log(r));
+        }).promise();
     }
 
     getConfig() {
@@ -60,14 +81,27 @@ class RemoteChess {
         }).promise();
     }
 
-    sendTurn() {
+    movePiece(startingSpace, endingSpace) {
         $.ajax({
             type: 'POST',
-            url: `${this.baseUrl}/chess_v1/`,
+            url: `${this.baseUrl}/chess_v1/perform_moves`,
             contentType: 'application/json',
             data: JSON.stringify({
-                key: key,
-                value: value,
+                moves: [
+                    [startingSpace, endingSpace],
+                ],
+            })
+        }).promise();
+    }
+
+
+    performMoves(moves) {
+        $.ajax({
+            type: 'POST',
+            url: `${this.baseUrl}/chess_v1/perform_moves`,
+            contentType: 'application/json',
+            data: JSON.stringify({
+                moves: moves,
             })
         }).promise();
     }
