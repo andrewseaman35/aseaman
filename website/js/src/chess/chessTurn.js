@@ -73,6 +73,31 @@ class ChessTurn {
         return this.side === SIDE.WHITE;
     }
 
+    getRemoteChessMoves(board) {
+        // TODO: change this to return an array of obejcts
+        // {action: [move|capture], startingSpace: B3, endingSpace: A1}
+        const moves = [];
+        if (this.isCastle) {
+            const swapSpacePosition = board.findNearbyEmptySpacePosition(this.startingSpacePosition);
+            moves.push(
+                [this.startingSpacePosition, swapSpacePosition],
+                [this.endingSpacePosition, this.startingSpacePosition],
+                [swapSpacePosition, this.endingSpacePosition]
+            );
+        } else if(this.isEnPassant) {
+            moves.push(
+                [this.startingSpacePosition, this.endingSpacePosition],
+                [this.capturedSpacePosition, this.capturedSpacePosition]  // capture
+            );
+        } else {
+            // TODO: captures.
+            moves.push(
+                [this.startingSpacePosition, this.endingSpacePosition]
+            );
+        }
+        return moves
+    }
+
     executeNormalMove(board) {
         const startingSpace = board.spaceByPosition(this.startingSpacePosition);
         const endingSpace = board.spaceByPosition(this.endingSpacePosition);
