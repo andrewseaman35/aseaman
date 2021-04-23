@@ -314,7 +314,7 @@ class ChessGame {
                 const moveType = specialMove ? specialMove.type :  MOVE_TYPE.NORMAL;
                 this.currentTurn.setType(moveType);
                 this.board.executeTurn(this.currentTurn);
-                // this.remoteChess.performMoves(this.currentTurn.getRemoteChessMoves(this.board));
+                // this.remoteChess.processTurn(this.board, this.currentTurn);
                 this.board.refreshBoard();
 
                 if (this.currentTurn.isPromotion && this.currentTurn.promotedToPiece === null) {
