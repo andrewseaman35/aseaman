@@ -15,6 +15,11 @@ const PIECE_NOTATION = {
     KING: 'K',
 };
 
+const REMOTE_CHESS_ACTION_TYPE = {
+    MOVE_TO_SPACE: 'move_to_space',
+    REMOVE_FROM_BOARD: 'remove_from_board',
+};
+
 const SPACE_STATE = {
     SELECTED: 'selected',
     POSSIBLE_MOVE: 'possible-move',
@@ -78,4 +83,5 @@ module.exports = {
     PIECE_NOTATION,
     MOVEMENT_GROUPS,
     MOVE_TYPE,
+    REMOTE_CHESS_ACTION_TYPE,
 };
