@@ -10,6 +10,7 @@ class RemoteChess {
     constructor() {
         this.ipAddress = '127.0.0.1';
         this.port = '5000';
+        this.initialized = false;
     }
 
     setRemoteServerAddress(address, port) {
@@ -78,43 +79,43 @@ class RemoteChess {
         this.performMoves(this.getMovePayloadFromTurn(board, turn));
     }
 
-    checkServerStatus() {
-        $.ajax({
+    getServerStatus() {
+        return $.ajax({
             type: 'GET',
             url: `${this.baseUrl}/status`,
         }).promise();
     }
 
     getOctoPrintStatus() {
-        $.ajax({
+        return $.ajax({
             type: 'GET',
             url: `${this.baseUrl}/chess_v1/octoprint_status`,
         }).promise();
     }
 
     initializeOctoPrint() {
-        $.ajax({
+        return $.ajax({
             type: 'GET',
             url: `${this.baseUrl}/chess_v1/initialize_octoprint`,
         }).promise();
     }
 
     homeAxes() {
-        $.ajax({
+        return $.ajax({
             type: 'GET',
             url: `${this.baseUrl}/chess_v1/home_axes`,
         }).promise();
     }
 
     getControllerSerialStatus() {
-        $.ajax({
+        return $.ajax({
             type: 'GET',
             url: `${this.baseUrl}/chess_v1/controller_serial_status`,
         }).promise();
     }
 
     initializeController() {
-        $.ajax({
+        return $.ajax({
             type: 'GET',
             url: `${this.baseUrl}/chess_v1/initialize_controller`,
         }).promise();

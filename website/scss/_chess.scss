@@ -98,6 +98,24 @@ $space-light: #CB9053;
     .new-container p {
         text-align: center;
     }
+
+    .remote-setup-container {
+        display: none;
+        margin-bottom: 36px;
+
+        .status-item span {
+            font-weight: 600;
+        }
+
+        #remote-hand-connected-octoprint,
+        #remote-refresh-controller,
+        #remote-refresh-octoprint,
+        #remote-homing-octoprint,
+        #remote-initialize-controller,
+        #remote-initialize-octoprint {
+            display: none;
+        }
+    }
 }
 
 #game-info-container {

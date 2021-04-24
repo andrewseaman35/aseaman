@@ -17,20 +17,79 @@
         </p>
         <div id="chess-container">
             <div id="game-start-modal" class="modal">
-                <div class="load-container">
-                    <input
-                        id="load-game-id-input"
-                        type="text"
-                        placeholder="Game ID"
-                        maxlength="6"
-                    />
-                    <button disabled id="load-game-button">Load game</button>
-                    <div id="load-error" class="error-message"></div>
+                <div class="remote-setup-container">
+                    <h3>Remote Setup</h3>
+                    <div class="server-status">
+                        <h4>Server Status: <span class="toplevel-status"></span></h4>
+                    </div>
+                    <div class="octoprint-status">
+                        <h4>OctoPrint Status
+                            <span class="toplevel-status"></span>
+                            <button class="link-button refresh-button" id="remote-refresh-octoprint">
+                                refresh
+                            </button>
+                        </h4>
+                        <div class="status-container">
+                            <div class="status-item">Initialized:
+                                <span class="initialized"></span>
+                                <button class="link-button" id="remote-initialize-octoprint">
+                                    run initialization
+                                </button>
+                            </div>
+                            <div class="status-item">Version: <span class="version"></span></div>
+                            <div class="status-item">Connection: <span class="connection"></span></div>
+                            <div class="status-item">Job Status: <span class="job"></span></div>
+                            <div class="status-item">Homed:
+                                <span class="homed"></span>
+                                <button class="link-button" id="remote-home-octoprint">
+                                    run homing (REMOVE HAND FIRST)
+                                </button>
+                            </div>
+                            <div class="status-item">Hand:
+                                <span class="hand"></span>
+                                <button class="link-button" id="remote-hand-connected-octoprint">
+                                    I've mounted the hand!
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="controller-status">
+                        <h4>
+                            Controller
+                            <span class="toplevel-status"></span>
+                            <button class="link-button" id="remote-refresh-controller">
+                                refresh
+                            </button>
+                        </h4>
+                        <div class="status-container">
+                            <div class="status-item">Initialized:
+                                <span class="initialized"></span>
+                                <button class="link-button" id="remote-initialize-controller">
+                                    run initialization
+                                </button>
+                            </div>
+                            <div class="status-item">Serial: <span class="serial"></span></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="new-container">
-                    <p>Or start a new game</p>
-                    <button data-game-mode="local" class="new-game-button">Local 2P</button>
-                    <button data-game-mode="network" class="new-game-button">Network 2P</button>
+                <div class="game-setup-container">
+                    <h3>Game Setup</h3>
+                    <div class="load-container">
+                        <input
+                            id="load-game-id-input"
+                            type="text"
+                            placeholder="Game ID"
+                            maxlength="6"
+                        />
+                        <button disabled id="load-game-button">Load game</button>
+                        <div>Note: remote chess not available for loaded games</div>
+                        <div id="load-error" class="error-message"></div>
+                    </div>
+                    <div class="new-container">
+                        <p>Or start a new game</p>
+                        <button data-game-mode="local" class="new-game-button">Local 2P</button>
+                        <button data-game-mode="network" class="new-game-button">Network 2P</button>
+                    </div>
                 </div>
             </div>
             <div id="board-outer-container">
