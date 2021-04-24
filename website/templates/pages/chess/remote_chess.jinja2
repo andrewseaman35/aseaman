@@ -1,0 +1,75 @@
+{% extends 'base.jinja2' %}
+
+{% block page_id %}remote-chess{% endblock %}
+{% block body_class %}chess{% endblock %}
+
+{% block content %}
+<div class="inner">
+    <div>
+        <h1>
+            Remote Chess
+        </h1>
+        <p>
+            When building the online chess game I have {{ macros.link_to('chess/index.html', 'here') }},
+            I realized I thought it'd be cool to be able to play physical chess with someone but
+            remotely. The goal is to be able to play chess with a remote friend, but on physical
+            boards. Moves I make on my board are translated to the other board and vice versa.
+        </p>
+        <p>
+            As of writing this, I'm still working on my proof of concept. I'm taking advantage of my
+            3d printer for XYZ movement (eventually, I'd like to build my own system). I have a
+            Raspberry Pi running a local server that controls the printer through OctoPrint as well as
+            an Arduino that's controlling a hand that grabs the pieces.
+        </p>
+        <p>
+            I'll add some nicer pages here later once I compile all my images and whatnot. For now, you
+            can check out the source for what's running the game on this website
+            {{ macros.external_link("https://github.com/andrewseaman35/aseaman/tree/master/website/js/src/chess", "here") }}
+            or the source for what will run to support this system
+            {{ macros.external_link("https://github.com/andrewseaman35/remote_chess", "here") }}.
+        </p>
+        <div class="list">
+            <h4 class="list-header">Proof of concept progress</h4>
+            <ul>
+                <li>
+                    <b>Pick up piece:</b> [done] <br/>
+                    • designed a printable grabby hand, all pieces will have bases that work with the
+                    grabby hand
+                </li>
+                <li>
+                    <b>Board:</b> [done(ish)] <br/>
+                    • designed pieces and spaces that fit together to ensure expected positioning for grabby hand<br/>
+                    • printed minimal set of pieces and spaces for testing
+                </li>
+                <li>
+                    <b>Grab pieces:</b> [done] <br/>
+                    • added z-axis movement and hand close movement to grabby hand controlled via Arduino
+                    and stepper motors
+                </li>
+                <li>
+                    <b>Access spaces:</b> [done] <br/>
+                    • using 3D printer with OctoPrint as a crutch (for now), set up a server that
+                    translates a space ("A5" or "E1") to an OctoPrint request that moves printhead to
+                    corresponding position on print bed.
+                </li>
+                <li>
+                    <b>Grab pieces on 3D printer:</b> [done] <br/>
+                    • designed a way to mount the grabby hand to the print head of the 3D printer
+                </li>
+                <li>
+                    <b>Move piece:</b> [in progress] <br/>
+                    • given the movement of piece (A1 --> A3), move the print via OctoPrint API and the
+                    hand via the Arduino <br/>
+                    • buuuut, there's some issue with translation. Moves near A1 (0, 0) work well, but the as I send the head farther along a rank or file, the head falls shorter of the expected
+                    position. I'm thinking I can just ignore this for now, since it should be easily
+                    resolvable once I have my own X-Y axis system
+                </li>
+                <li>
+                    <b>Play online chess with physical output:</b> [in progress] <br/>
+                    • hook up online chess game to remote chess API to perform every move once it's been executed in browser
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
