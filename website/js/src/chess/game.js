@@ -107,6 +107,7 @@ class ChessGame {
         // Let's make a coordinator sort of class that contains `ChessGame`, these popup panels
         // in a separate class, and `GameInfo`. But I guess this works for now.
         $('.remote-setup-container').show();
+        $('#toggle-remote-setup').on('click', this.toggleRemoteSetupContents.bind(this));
         $('#remote-initialize-controller').on('click', this.onInitializeController.bind(this));
         $('#remote-initialize-octoprint').on('click', this.onInitializeOctoPrint.bind(this));
         $('#remote-refresh-octoprint').on('click', this.refreshOctoPrintStatus.bind(this));
@@ -360,12 +361,29 @@ class ChessGame {
         );
     }
 
+    toggleRemoteSetupContents() {
+        const isVisible = $('.remote-setup-content:visible').length > 0;
+        $('.remote-setup-content').toggle();
+        $('#toggle-remote-setup').text(isVisible ? 'show' : 'hide');
+    }
+
+    initializedRemoteChessIfReady() {
+        // DON'T LOOK AT ME, I'M HIDEOUS!
+        // Yeah, ignore this. This all will be pulled out into another component and the data
+        // will be managed properly there, I promise. But the UI is perfectly capable of managing state,
+        // right? ... RIGHT???
+        const octoprintInitialized = $('.octoprint-status .toplevel-status').textContent === 'OK';
+        const controllerInitialized = $('.controller-status .toplevel-status').textContent === 'OK';
+        const serverInitialized = $('.server-status .toplevel-status').textContent === 'OK';
+        this.remoteChess.initialized = octoprintInitialized && controllerInitialized && serverInitialized;
+    }
+
     onLoadGameButtonChange() {
         const gameId = $('#load-game-id-input')[0].value;
         $('#load-error').hide();
         $('#load-game-button').attr('disabled', (gameId.length < GAME_ID_LENGTH));
         if (this.remoteChess) {
-            this.remoteChess.initialized = true;
+            this.initializedRemoteChessIfReady();
         }
     }
 
@@ -376,7 +394,7 @@ class ChessGame {
         this.gameInfo.setGameMode(this.gameMode);
         this.localPlayerSide = SIDE.WHITE;
         if (this.remoteChess) {
-            this.remoteChess.initialized = true;
+            this.initializedRemoteChessIfReady();
         }
         createNewGame(this.gameMode).then(
             (response) => {
