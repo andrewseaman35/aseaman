@@ -74,61 +74,6 @@ class ChessTurn {
         return this.side === SIDE.WHITE;
     }
 
-    getRemoteChessMoves(board) {
-        // TODO: Move this to the remove chess class
-        // {action: [move|capture], startingSpace: B3, endingSpace: A1}
-        const moves = [];
-        if (this.isCastle) {
-            const swapSpacePosition = board.findNearbyEmptySpacePosition(this.startingSpacePosition);
-            moves.push(
-                {
-                    action: REMOTE_CHESS_ACTION_TYPE.MOVE_TO_SPACE,
-                    starting_space: this.startingSpacePosition,
-                    ending_space: swapSpacePosition,
-                },
-                {
-                    action: REMOTE_CHESS_ACTION_TYPE.MOVE_TO_SPACE,
-                    starting_space: this.endingSpacePosition,
-                    ending_space: this.startingSpacePosition,
-                },
-                {
-                    action: REMOTE_CHESS_ACTION_TYPE.MOVE_TO_SPACE,
-                    starting_space: swapSpacePosition,
-                    ending_space: this.endingSpacePosition,
-                }
-            );
-        } else if(this.isEnPassant) {
-            moves.push(
-                {
-                    action: REMOTE_CHESS_ACTION_TYPE.MOVE_TO_SPACE,
-                    starting_space: this.startingSpacePosition,
-                    ending_space: this.endingSpacePosition,
-                },
-                {
-                    action: REMOTE_CHESS_ACTION_TYPE.REMOVE_FROM_BOARD,
-                    space: this.capturedSpacePosition,
-                }
-            );
-        } else {
-            if (this.capturedSpacePosition != null) {
-                moves.push(
-                    {
-                        action: REMOTE_CHESS_ACTION_TYPE.REMOVE_FROM_BOARD,
-                        space: this.capturedSpacePosition,
-                    }
-                );
-            }
-            moves.push(
-                {
-                    action: REMOTE_CHESS_ACTION_TYPE.MOVE_TO_SPACE,
-                    starting_space: this.startingSpacePosition,
-                    ending_space: this.endingSpacePosition,
-                }
-            );
-        }
-        return moves;
-    }
-
     executeNormalMove(board) {
         const startingSpace = board.spaceByPosition(this.startingSpacePosition);
         const endingSpace = board.spaceByPosition(this.endingSpacePosition);
