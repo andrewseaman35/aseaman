@@ -3,7 +3,7 @@ data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 
 locals {
-  lambda_function_name = "${var.api_name}-${var.deploy_env}-${var.nonce}-test"
+  lambda_function_name = "${var.api_name}-${var.deploy_env}-test"
   aws_region           = data.aws_region.current.name
   aws_account_id       = data.aws_caller_identity.current.account_id
 }
@@ -64,6 +64,41 @@ resource "aws_api_gateway_integration" "post_integration" {
   uri                     = aws_lambda_function.api_lambda_function.invoke_arn
 }
 
+resource "aws_api_gateway_method_response" "post_200" {
+    rest_api_id = var.rest_api_id
+    resource_id   = aws_api_gateway_resource.api_respource.id
+    http_method   = aws_api_gateway_method.post.http_method
+    status_code   = "200"
+    response_models = {
+        "application/json" = "Empty"
+    }
+    response_parameters = {
+        "method.response.header.Access-Control-Allow-Headers" = true,
+        "method.response.header.Access-Control-Allow-Methods" = true,
+        "method.response.header.Access-Control-Allow-Origin" = true
+    }
+    depends_on = [
+      aws_api_gateway_method.post
+    ]
+}
+
+resource "aws_api_gateway_integration_response" "post_integration_response" {
+  rest_api_id = var.rest_api_id
+  resource_id = aws_api_gateway_resource.api_respource.id
+  http_method = aws_api_gateway_method.post.http_method
+  status_code = aws_api_gateway_method_response.post_200.status_code
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+    "method.response.header.Access-Control-Allow-Methods" = "'GET,OPTIONS,POST,PUT'",
+    "method.response.header.Access-Control-Allow-Origin" = "'*'"
+  }
+
+  depends_on = [
+    aws_api_gateway_integration.post_integration
+  ]
+}
+
 resource "aws_api_gateway_method" "options" {
   authorization = "NONE"
   http_method   = "OPTIONS"
@@ -78,6 +113,42 @@ resource "aws_api_gateway_integration" "options_integration" {
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.api_lambda_function.invoke_arn
+  passthrough_behavior    = "NEVER"
+}
+
+resource "aws_api_gateway_method_response" "options_200" {
+    rest_api_id = var.rest_api_id
+    resource_id   = aws_api_gateway_resource.api_respource.id
+    http_method   = aws_api_gateway_method.options.http_method
+    status_code   = "200"
+    response_models = {
+        "application/json" = "Empty"
+    }
+    response_parameters = {
+        "method.response.header.Access-Control-Allow-Headers" = true,
+        "method.response.header.Access-Control-Allow-Methods" = true,
+        "method.response.header.Access-Control-Allow-Origin" = true
+    }
+    depends_on = [
+      aws_api_gateway_method.options
+    ]
+}
+
+resource "aws_api_gateway_integration_response" "options_integration_response" {
+  rest_api_id = var.rest_api_id
+  resource_id = aws_api_gateway_resource.api_respource.id
+  http_method = aws_api_gateway_method.options.http_method
+  status_code = aws_api_gateway_method_response.options_200.status_code
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+    "method.response.header.Access-Control-Allow-Methods" = "'GET,OPTIONS,POST,PUT'",
+    "method.response.header.Access-Control-Allow-Origin" = "'*'"
+  }
+
+  depends_on = [
+    aws_api_gateway_integration.options_integration
+  ]
 }
 
 resource "aws_lambda_permission" "api_invoke_function" {
