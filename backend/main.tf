@@ -75,6 +75,105 @@ module "salt_level_api_iam_role_policy" {
   api_name = "salt_level-api"
 }
 
+module "whisky_api" {
+  source = "./modules/serverless_api"
+
+  branch             = "master"
+  deploy_env         = "live"
+  api_name           = "whisky-api"
+  nonce              = var.nonce
+  path_part          = "whisky"
+
+  rest_api_root_resource_id = aws_api_gateway_rest_api.rest_api.root_resource_id
+  rest_api_id = aws_api_gateway_rest_api.rest_api.id
+}
+
+module "whisky_api_iam_role_policy" {
+  source = "./modules/roles/whisky"
+  role = module.whisky_api.api_role_id
+
+  api_name = "whisky-api"
+}
+
+module "draw_jasper_api" {
+  source = "./modules/serverless_api"
+
+  branch             = "master"
+  deploy_env         = "live"
+  api_name           = "draw_jasper-api"
+  nonce              = var.nonce
+  path_part          = "draw_jasper"
+
+  rest_api_root_resource_id = aws_api_gateway_rest_api.rest_api.root_resource_id
+  rest_api_id = aws_api_gateway_rest_api.rest_api.id
+}
+
+module "draw_jasper_iam_role_policy" {
+  source = "./modules/roles/draw_jasper"
+  role = module.draw_jasper_api.api_role_id
+
+  api_name = "draw_jasper-api"
+}
+
+module "compare_acnh_api" {
+  source = "./modules/serverless_api"
+
+  branch             = "master"
+  deploy_env         = "live"
+  api_name           = "compare_acnh-api"
+  nonce              = var.nonce
+  path_part          = "compare_acnh"
+
+  rest_api_root_resource_id = aws_api_gateway_rest_api.rest_api.root_resource_id
+  rest_api_id = aws_api_gateway_rest_api.rest_api.id
+}
+
+module "compare_acnh_iam_role_policy" {
+  source = "./modules/roles/compare_acnh"
+  role = module.compare_acnh_api.api_role_id
+
+  api_name = "compare_acnh-api"
+}
+
+module "mame_highscore_api" {
+  source = "./modules/serverless_api"
+
+  branch             = "master"
+  deploy_env         = "live"
+  api_name           = "mame_highscore-api"
+  nonce              = var.nonce
+  path_part          = "mame_highscore"
+
+  rest_api_root_resource_id = aws_api_gateway_rest_api.rest_api.root_resource_id
+  rest_api_id = aws_api_gateway_rest_api.rest_api.id
+}
+
+module "mame_highscore_iam_role_policy" {
+  source = "./modules/roles/mame_highscore"
+  role = module.mame_highscore_api.api_role_id
+
+  api_name = "mame_highscore-api"
+}
+
+module "chess_api" {
+  source = "./modules/serverless_api"
+
+  branch             = "master"
+  deploy_env         = "live"
+  api_name           = "chess-api"
+  nonce              = var.nonce
+  path_part          = "chess"
+
+  rest_api_root_resource_id = aws_api_gateway_rest_api.rest_api.root_resource_id
+  rest_api_id = aws_api_gateway_rest_api.rest_api.id
+}
+
+module "chess_iam_role_policy" {
+  source = "./modules/roles/chess"
+  role = module.chess_api.api_role_id
+
+  api_name = "chess-api"
+}
 
 resource "aws_api_gateway_deployment" "api_gateway_deployment" {
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
@@ -86,12 +185,71 @@ resource "aws_api_gateway_deployment" "api_gateway_deployment" {
       module.state_api.api_gateway_post_integration_id,
       module.state_api.api_gateway_options_method_id,
       module.state_api.api_gateway_options_integration_id,
+
+      module.salt_level_api.api_resource_id,
+      module.salt_level_api.api_gateway_post_method_id,
+      module.salt_level_api.api_gateway_post_integration_id,
+      module.salt_level_api.api_gateway_options_method_id,
+      module.salt_level_api.api_gateway_options_integration_id,
+
+      module.whisky_api.api_resource_id,
+      module.whisky_api.api_gateway_post_method_id,
+      module.whisky_api.api_gateway_post_integration_id,
+      module.whisky_api.api_gateway_options_method_id,
+      module.whisky_api.api_gateway_options_integration_id,
+
+      module.draw_jasper_api.api_resource_id,
+      module.draw_jasper_api.api_gateway_post_method_id,
+      module.draw_jasper_api.api_gateway_post_integration_id,
+      module.draw_jasper_api.api_gateway_options_method_id,
+      module.draw_jasper_api.api_gateway_options_integration_id,
+
+      module.compare_acnh_api.api_resource_id,
+      module.compare_acnh_api.api_gateway_post_method_id,
+      module.compare_acnh_api.api_gateway_post_integration_id,
+      module.compare_acnh_api.api_gateway_options_method_id,
+      module.compare_acnh_api.api_gateway_options_integration_id,
+
+      module.mame_highscore_api.api_resource_id,
+      module.mame_highscore_api.api_gateway_post_method_id,
+      module.mame_highscore_api.api_gateway_post_integration_id,
+      module.mame_highscore_api.api_gateway_options_method_id,
+      module.mame_highscore_api.api_gateway_options_integration_id,
+
+      module.chess_api.api_resource_id,
+      module.chess_api.api_gateway_post_method_id,
+      module.chess_api.api_gateway_post_integration_id,
+      module.chess_api.api_gateway_options_method_id,
+      module.chess_api.api_gateway_options_integration_id,
     ]))
   }
 
   lifecycle {
     create_before_destroy = true
   }
+
+  depends_on = [
+    module.state_api.aws_api_gateway_method,
+    module.state_api.aws_api_gateway_integration,
+
+    module.salt_level_api.aws_api_gateway_method,
+    module.salt_level_api.aws_api_gateway_integration,
+
+    module.whisky_api.aws_api_gateway_method,
+    module.whisky_api.aws_api_gateway_integration,
+
+    module.draw_jasper_api.aws_api_gateway_method,
+    module.draw_jasper_api.aws_api_gateway_integration,
+
+    module.compare_acnh_api.aws_api_gateway_method,
+    module.compare_acnh_api.aws_api_gateway_integration,
+
+    module.mame_highscore_api.aws_api_gateway_method,
+    module.mame_highscore_api.aws_api_gateway_integration,
+
+    module.chess_api.aws_api_gateway_method,
+    module.chess_api.aws_api_gateway_integration,
+  ]
 }
 
 resource "aws_api_gateway_stage" "stage" {

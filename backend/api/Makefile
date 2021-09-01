@@ -74,5 +74,4 @@ clean:
 	rm -rf ./venv/
 	rm -rf $(PACKAGE_DIR)
 
-.PHONY: package package_dir upload clean
-
+.PHONY: package package_dir upload clean start_local
