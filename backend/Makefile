@@ -15,23 +15,11 @@ DEPLOY_PARAMETERS:= \
 	ParameterKey=HostedZoneId,ParameterValue="$(HOSTED_ZONE_ID)" \
 	ParameterKey=ApiCertificateId,ParameterValue="$(API_CERTIFICATE_ID)"
 
-API_CERTIFICATE_ID := 5af2f809-2459-4293-ae2d-d611ae4045bd
-HOSTED_ZONE_ID := Z1NTL75ESDHPUU
-API_URL := test-api.test.andrewcseaman.com
-DEPLOY_ENV ?= dev
-# NONCE ?= 1619239047
-NONCE ?= $(shell date +%s)
-
 package:
 	make -C api package
 
-upload:
-	make -C api upload
-
 tfplan: #package
-	cd deployments/stage && terraform plan \
-		-out=terraform.tfplan \
-		-var='nonce=$(NONCE)' 
+	cd deployments/stage && terraform plan -out=terraform.tfplan 
 	# cd deployments/stage && terraform apply terraform.tfplan 
 
 tfapply:

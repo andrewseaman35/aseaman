@@ -14,7 +14,3 @@ variable api_url {
   type = string
   description = "API Url for custom domain and DNS record set"
 }
-variable nonce {
-  type = string
-  description = "nonce it up"
-}

@@ -31,9 +31,12 @@ resource "aws_iam_instance_profile" "api_instance_profile" {
   role = aws_iam_role.api_role.name
 }
 
+locals {
+  lambda_function_package_md5 = filemd5("${var.zip_file}")
+}
 resource "aws_s3_bucket_object" "lambda_function_package" {
   bucket = "aseaman-lambda-functions"
-  key    = "${var.deploy_env}/${var.api_name}-${var.deploy_env}-${var.nonce}.zip"
+  key    = "${var.deploy_env}/${var.api_name}-${var.deploy_env}-${local.lambda_function_package_md5}.zip"
   source = "${var.zip_file}"
 
   etag = filemd5("${var.zip_file}")
@@ -44,7 +47,7 @@ resource "aws_lambda_function" "api_lambda_function" {
   role          = aws_iam_role.api_role.arn
   handler       = "lambda_handler.lambda_handler"
   s3_bucket     = "aseaman-lambda-functions"
-  s3_key        = "${var.deploy_env}/${var.api_name}-${var.deploy_env}-${var.nonce}.zip"
+  s3_key        = "${var.deploy_env}/${var.api_name}-${var.deploy_env}-${local.lambda_function_package_md5}.zip"
 
   runtime = "python3.6"
   timeout = 10

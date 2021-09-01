@@ -10,10 +10,6 @@ variable deploy_env {
   type = string
   description = "environment to deploy to"
 }
-variable nonce {
-  type = string
-  description = "nonce it up"
-}
 variable api_name {
   type = string
   description = "State API Lambda function name"
