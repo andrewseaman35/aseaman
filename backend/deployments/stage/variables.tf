@@ -18,7 +18,3 @@ variable api_url {
   description = "API Url for custom domain and DNS record set"
   default = "api.stage.andrewcseaman.com"
 }
-variable nonce {
-  type = string
-  description = "nonce it up"
-}

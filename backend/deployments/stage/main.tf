@@ -37,5 +37,4 @@ module "backend" {
     deploy_env = var.deploy_env
     hosted_zone_id = var.hosted_zone_id
     api_url = var.api_url
-    nonce = var.nonce
 }

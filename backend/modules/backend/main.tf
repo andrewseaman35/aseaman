@@ -19,7 +19,6 @@ module "state_api" {
   branch             = "master"
   path_part          = "state_check"
   deploy_env         = var.deploy_env
-  nonce              = var.nonce
 
   rest_api_root_resource_id = aws_api_gateway_rest_api.rest_api.root_resource_id
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
@@ -41,7 +40,6 @@ module "salt_level_api" {
   branch             = "master"
   path_part          = "salt_level"
   deploy_env         = var.deploy_env
-  nonce              = var.nonce
 
   rest_api_root_resource_id = aws_api_gateway_rest_api.rest_api.root_resource_id
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
@@ -63,7 +61,6 @@ module "whisky_api" {
   branch             = "master"
   path_part          = "whisky"
   deploy_env         = var.deploy_env
-  nonce              = var.nonce
 
   rest_api_root_resource_id = aws_api_gateway_rest_api.rest_api.root_resource_id
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
@@ -85,7 +82,6 @@ module "whisky_api_iam_role_policy" {
 #   branch             = "master"
 #   path_part          = "draw_jasper"
 #   deploy_env         = var.deploy_env
-#   nonce              = var.nonce
 
 #   rest_api_root_resource_id = aws_api_gateway_rest_api.rest_api.root_resource_id
 #   rest_api_id = aws_api_gateway_rest_api.rest_api.id
@@ -107,7 +103,6 @@ module "compare_acnh_api" {
   branch             = "master"
   path_part          = "compare_acnh"
   deploy_env         = var.deploy_env
-  nonce              = var.nonce
 
   rest_api_root_resource_id = aws_api_gateway_rest_api.rest_api.root_resource_id
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
@@ -129,7 +124,6 @@ module "mame_highscore_api" {
   branch             = "master"
   path_part          = "mame_highscore"
   deploy_env         = var.deploy_env
-  nonce              = var.nonce
 
   rest_api_root_resource_id = aws_api_gateway_rest_api.rest_api.root_resource_id
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
@@ -151,7 +145,6 @@ module "chess_api" {
   branch             = "master"
   path_part          = "chess"
   deploy_env         = var.deploy_env
-  nonce              = var.nonce
 
   rest_api_root_resource_id = aws_api_gateway_rest_api.rest_api.root_resource_id
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
