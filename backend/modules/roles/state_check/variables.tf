@@ -6,3 +6,8 @@ variable role {
 variable api_name {
     type = string
 }
+
+variable deploy_env {
+  type = string
+  description = "environment to deploy to"
+}
