@@ -31,6 +31,14 @@ resource "aws_iam_instance_profile" "api_instance_profile" {
   role = aws_iam_role.api_role.name
 }
 
+resource "aws_s3_bucket_object" "lambda_function_package" {
+  bucket = "aseaman-lambda-functions"
+  key    = "${var.deploy_env}/${var.api_name}-${var.deploy_env}-${var.nonce}.zip"
+  source = "${var.zip_file}"
+
+  etag = filemd5("${var.zip_file}")
+}
+
 resource "aws_lambda_function" "api_lambda_function" {
   function_name = local.lambda_function_name
   role          = aws_iam_role.api_role.arn
@@ -40,6 +48,10 @@ resource "aws_lambda_function" "api_lambda_function" {
 
   runtime = "python3.6"
   timeout = 10
+
+  depends_on = [
+    aws_s3_bucket_object.lambda_function_package
+  ]
 }
 
 resource "aws_api_gateway_resource" "api_respource" {
