@@ -2,10 +2,6 @@ variable zip_file {
   type = string
   description = "path to zip file"
 }
-variable branch {
-  type = string
-  description = "branch being deployed"
-}
 variable deploy_env {
   type = string
   description = "environment to deploy to"
