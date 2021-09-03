@@ -23,3 +23,9 @@ variable rest_api_root_resource_id {
 variable rest_api_id {
   type = string
 }
+
+variable lambda_timeout {
+  description = "Lambda function timeout"
+  type = number
+  default = 5
+}
