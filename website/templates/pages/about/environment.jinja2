@@ -1,17 +1,18 @@
 {% extends 'base.jinja2' %}
 
-{% block page_id %}about-frontend{% endblock %}
+{% block page_id %}about-environment{% endblock %}
 {% block body_class %}about{% endblock %}
 
 {% block content %}
     <div class="inner">
         <h1>This Website</h1>
-        <h2>Front End Development</h2>
+        <h2>Development Environment</h2>
         <h4>Tools</h4>
         <p>
-            This page outlines the front end development environment and some of the tooling I've
-            built to make it easier. I've listed some of the main tools and technologies that
-            I'm using below. I'll try to keep this list updated as I add more things.
+            This page outlines the development environment and some of the tooling I've
+            built to make it easier to work on this website. I've listed some of the main tools 
+            and technologies that I'm using below. I'll try to keep this list updated as I add 
+            more things.
         </p>
         <div class="tools">
             <ul>
@@ -41,7 +42,8 @@
         <h4>Watchers</h4>
         <a href="https://github.com/andrewseaman35/aseaman/blob/master/scripts/run_watchers.py" target="_blank">Source</a>
         <p>
-            In order to make development as smooth as possible, I wrote a script that runs threaded watchers: one for Jinja templates, one for JavaScript files, and one for SCSS file. When I
+            In order to make development as smooth as possible, I wrote a script that runs threaded watchers: 
+            one for Jinja templates, one for JavaScript files, and one for SCSS files. When I
             develop, I run these in the background by executing `make watch` in the `website/` directory.
             When they detect a change to any of the associated files, it'll automatically rebuild that
             set of files. For example, if the Jinja watcher detects a change to and .jinja2 file, it'll
@@ -52,7 +54,7 @@
             Here's a snippet of what the output looks like when I make changes:
         </p>
         <div class="code-block">
-2020-04-22 17:01:20: jinja watcher - Detected change in frontend.jinja2
+2020-04-22 17:01:20: jinja watcher - Detected change in environment.jinja2
 2020-04-22 17:01:20: jinja watcher - Files updated
 2020-04-22 17:02:38: js watcher - Detected change in DrawJasper.js
 2020-04-22 17:02:43: js watcher - Files updated
@@ -64,16 +66,34 @@
         <a href="https://github.com/andrewseaman35/aseaman/blob/master/scripts/compile_html.py" target="_blank">Source</a>
         <p>
             I wanted to take advantage of templating when generating my webpages. Since the website will
-            be statically hosted, the templating has to be applied as a build step of the website as
+            be statically hosted, the template processing has to be applied as a build step of the website as
             opposed to something like server-side templating when the page is being accessed.
         </p>
         <p>
             I set up a directory for my template files (`website/templates/`) and a subdirectory
             (`website/templates/pages/`) to define all the webpages. Every navigatable HTML page will have
-            a corresponding .jinja file somewhere within the `pages/` subdirectory. I wrote a script (source
-            <a href="https://github.com/andrewseaman35/aseaman/blob/master/scripts/compile_html.py" target="_blank">here</a>) that files all the .jinja2 files in `pages/` and renders the templates to the
+            a corresponding .jinja file somewhere within the `pages/` subdirectory. The path of the .jinja2 file 
+            defines the path of the page once it's hosted (the source for this page is at 
+            `websites/templates/pages/about/environment.jinja2`, for instance).
+        </p>
+        <p>
+            I wrote a script (source <a href="https://github.com/andrewseaman35/aseaman/blob/master/scripts/compile_html.py" target="_blank">here</a>) 
+            that traverses all the .jinja2 files in `pages/` and renders the templates to the
             corresponding location in `public/`. Since the website is statically hosted on AWS, the URLs for
             the pages is the same as the path to the file.
+        </p>
+
+        <h4>Local API</h4>
+        <a href="https://github.com/andrewseaman35/aseaman/blob/master/backend/api/local_backend.py" target="_blank">Source</a>
+        <p>
+            This website is backed by a serverless API running on AWS. The API is set up through API Gateway 
+            and requests are handled by a series of Lambda functions. 
+        </p>
+        <p>    
+            To enable local development of the backend I set up a Flask server to be the middle man between 
+            the frontend and the series of lambda functions. This server accepts requests from the frontend, 
+            uses the path to determine which lambda function should process it, dynamically imports the 
+            function, and processes and returns the repsonse.
         </p>
 
         {{ macros.still_interested("about/index.html", "page about this website") }}

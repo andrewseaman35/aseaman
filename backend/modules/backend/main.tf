@@ -241,6 +241,17 @@ resource "aws_api_gateway_stage" "stage" {
   stage_name    = "test"
 }
 
+resource "aws_api_gateway_method_settings" "example" {
+  rest_api_id = aws_api_gateway_rest_api.rest_api.id
+  stage_name  = aws_api_gateway_stage.stage.stage_name
+  method_path = "*/*"
+
+  settings {
+    metrics_enabled = true
+    logging_level   = "INFO"
+  }
+}
+
 resource "aws_api_gateway_domain_name" "api_domain_name" {
   domain_name              = var.api_url
   regional_certificate_arn = "arn:aws:acm:${local.aws_region}:${local.aws_account_id}:certificate/${var.api_certificate_id}"
