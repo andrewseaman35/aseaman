@@ -74,26 +74,27 @@ module "whisky_api_iam_role_policy" {
   api_name = "whisky-api"
 }
 
-# module "draw_jasper_api" {
-#   source = "../serverless_api"
-#   zip_file = "../../api/packages/draw_jasper_api.zip"
+module "draw_jasper_api" {
+  source = "../serverless_api"
+  zip_file = "../../api/packages/draw_jasper_api.zip"
 
-#   api_name           = "draw_jasper-api"
-#   branch             = "master"
-#   path_part          = "draw_jasper"
-#   deploy_env         = var.deploy_env
+  api_name           = "draw_jasper-api"
+  branch             = "master"
+  path_part          = "draw_jasper"
+  deploy_env         = var.deploy_env
+  lambda_timeout     = 30
 
-#   rest_api_root_resource_id = aws_api_gateway_rest_api.rest_api.root_resource_id
-#   rest_api_id = aws_api_gateway_rest_api.rest_api.id
-# }
+  rest_api_root_resource_id = aws_api_gateway_rest_api.rest_api.root_resource_id
+  rest_api_id = aws_api_gateway_rest_api.rest_api.id
+}
 
-# module "draw_jasper_iam_role_policy" {
-#   source = "../roles/draw_jasper"
-#   role = module.draw_jasper_api.api_role_id
-#   deploy_env = var.deploy_env
+module "draw_jasper_iam_role_policy" {
+  source = "../roles/draw_jasper"
+  role = module.draw_jasper_api.api_role_id
+  deploy_env = var.deploy_env
 
-#   api_name = "draw_jasper-api"
-# }
+  api_name = "draw_jasper-api"
+}
 
 module "compare_acnh_api" {
   source = "../serverless_api"
@@ -181,11 +182,11 @@ resource "aws_api_gateway_deployment" "api_gateway_deployment" {
       module.whisky_api.api_gateway_options_method_id,
       module.whisky_api.api_gateway_options_integration_id,
 
-      # module.draw_jasper_api.api_resource_id,
-      # module.draw_jasper_api.api_gateway_post_method_id,
-      # module.draw_jasper_api.api_gateway_post_integration_id,
-      # module.draw_jasper_api.api_gateway_options_method_id,
-      # module.draw_jasper_api.api_gateway_options_integration_id,
+      module.draw_jasper_api.api_resource_id,
+      module.draw_jasper_api.api_gateway_post_method_id,
+      module.draw_jasper_api.api_gateway_post_integration_id,
+      module.draw_jasper_api.api_gateway_options_method_id,
+      module.draw_jasper_api.api_gateway_options_integration_id,
 
       module.compare_acnh_api.api_resource_id,
       module.compare_acnh_api.api_gateway_post_method_id,
@@ -221,8 +222,8 @@ resource "aws_api_gateway_deployment" "api_gateway_deployment" {
     module.whisky_api.aws_api_gateway_method,
     module.whisky_api.aws_api_gateway_integration,
 
-    # module.draw_jasper_api.aws_api_gateway_method,
-    # module.draw_jasper_api.aws_api_gateway_integration,
+    module.draw_jasper_api.aws_api_gateway_method,
+    module.draw_jasper_api.aws_api_gateway_integration,
 
     module.compare_acnh_api.aws_api_gateway_method,
     module.compare_acnh_api.aws_api_gateway_integration,
