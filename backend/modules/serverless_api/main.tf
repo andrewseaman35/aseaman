@@ -3,13 +3,13 @@ data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 
 locals {
-  lambda_function_name = "${var.api_name}-${var.deploy_env}-test"
+  lambda_function_name = "${var.api_name}-${var.deploy_env}"
   aws_region           = data.aws_region.current.name
   aws_account_id       = data.aws_caller_identity.current.account_id
 }
 
 resource "aws_iam_role" "api_role" {
-  name = "${var.api_name}_role"
+  name = "${var.api_name}_role-${var.deploy_env}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -27,7 +27,7 @@ resource "aws_iam_role" "api_role" {
 }
 
 resource "aws_iam_instance_profile" "api_instance_profile" {
-  name = "${var.api_name}_instance_profile"
+  name = "${var.api_name}_instance_profile-${var.deploy_env}"
   role = aws_iam_role.api_role.name
 }
 

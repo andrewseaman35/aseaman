@@ -16,7 +16,6 @@ module "state_api" {
   zip_file = "../../api/packages/state_api.zip"
 
   api_name           = "state-api"
-  branch             = "master"
   path_part          = "state_check"
   deploy_env         = var.deploy_env
 
@@ -31,13 +30,11 @@ module "state_api_iam_role_policy" {
   api_name           = "state-api"
 }
 
-
 module "salt_level_api" {
   source = "../serverless_api"
   zip_file = "../../api/packages/salt_level_api.zip"
 
   api_name           = "salt_level-api"
-  branch             = "master"
   path_part          = "salt_level"
   deploy_env         = var.deploy_env
 
@@ -58,7 +55,6 @@ module "whisky_api" {
   zip_file = "../../api/packages/whisky_api.zip"
 
   api_name           = "whisky-api"
-  branch             = "master"
   path_part          = "whisky"
   deploy_env         = var.deploy_env
 
@@ -79,7 +75,6 @@ module "draw_jasper_api" {
   zip_file = "../../api/packages/draw_jasper_api.zip"
 
   api_name           = "draw_jasper-api"
-  branch             = "master"
   path_part          = "draw_jasper"
   deploy_env         = var.deploy_env
   lambda_timeout     = 30
@@ -101,7 +96,6 @@ module "compare_acnh_api" {
   zip_file = "../../api/packages/compare_acnh_api.zip"
 
   api_name           = "compare_acnh-api"
-  branch             = "master"
   path_part          = "compare_acnh"
   deploy_env         = var.deploy_env
 
@@ -122,7 +116,6 @@ module "mame_highscore_api" {
   zip_file = "../../api/packages/mame_highscore_api.zip"
 
   api_name           = "mame_highscore-api"
-  branch             = "master"
   path_part          = "mame_highscore"
   deploy_env         = var.deploy_env
 
@@ -143,7 +136,6 @@ module "chess_api" {
   zip_file = "../../api/packages/chess_api.zip"
 
   api_name           = "chess-api"
-  branch             = "master"
   path_part          = "chess"
   deploy_env         = var.deploy_env
 

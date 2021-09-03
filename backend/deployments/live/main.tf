@@ -8,7 +8,7 @@ terraform {
 
   backend "s3" {
     bucket         = "aseaman-tf-state"
-    key            = "aseaman-website/stage.tfstate"
+    key            = "aseaman-website/live.tfstate"
     profile        = "aseaman"
     region         = "us-east-1"
   }
