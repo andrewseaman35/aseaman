@@ -8,16 +8,9 @@
     "BRANCH": {
         "source": "env"
     },
-
-    "API_ID": {
-        "source": "stack_param",
-        "key": "ApiId"
-    },
     "API_URL": {
-        "source": "stack_param",
-        "key": "ApiUrl"
+        "source": "env"
     },
-
     "LOCAL": {
         "source": "public",
         "key": "use_local_backend"

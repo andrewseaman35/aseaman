@@ -7,18 +7,17 @@ export \
 
 if [ "$TRAVIS_BRANCH" == "develop" ]; then
     export DEPLOY_ENV="stage"
-    export \
-        STACKNAME=stack-$DEPLOY_ENV-$NONCE \
-        API_URL=api-$NONCE.stage.andrewcseaman.com \
-        STATE_API_NAME=state-api-$DEPLOY_ENV-$NONCE \
-        WHISKY_API_NAME=whisky-api-$DEPLOY_ENV-$NONCE \
-        DRAW_JASPER_API_NAME=draw_jasper-api-$DEPLOY_ENV-$NONCE \
-        SALT_LEVEL_API_NAME=salt_level-api-$DEPLOY_ENV-$NONCE \
-        COMPARE_ACNH_API_NAME=compare_acnh-api-$DEPLOY_ENV-$NONCE \
-        MAME_HIGHSCORE_API_NAME=mame_highscore-api-$DEPLOY_ENV-$NONCE \
-        CHESS_API_NAME=chess-api-$DEPLOY_ENV-$NONCE \
-        HOSTED_ZONE_ID=Z1NTL75ESDHPUU \
-        API_CERTIFICATE_ID=3aa91cb0-9bcb-4883-9fce-bb7a5d9da69d
+    export API_URL="api.stage.andrewcseaman.com"
+        # STACKNAME=stack-$DEPLOY_ENV-$NONCE \
+        # STATE_API_NAME=state-api-$DEPLOY_ENV-$NONCE \
+        # WHISKY_API_NAME=whisky-api-$DEPLOY_ENV-$NONCE \
+        # DRAW_JASPER_API_NAME=draw_jasper-api-$DEPLOY_ENV-$NONCE \
+        # SALT_LEVEL_API_NAME=salt_level-api-$DEPLOY_ENV-$NONCE \
+        # COMPARE_ACNH_API_NAME=compare_acnh-api-$DEPLOY_ENV-$NONCE \
+        # MAME_HIGHSCORE_API_NAME=mame_highscore-api-$DEPLOY_ENV-$NONCE \
+        # CHESS_API_NAME=chess-api-$DEPLOY_ENV-$NONCE \
+        # HOSTED_ZONE_ID=Z1NTL75ESDHPUU \
+        # API_CERTIFICATE_ID=3aa91cb0-9bcb-4883-9fce-bb7a5d9da69d
 elif [ "$TRAVIS_BRANCH" == "master" ]; then
     export DEPLOY_ENV="live"
     export \
@@ -50,7 +49,7 @@ else
 fi
 
 if [ "$TRAVIS_BRANCH" == "develop" ]; then
-    make deploy
+    make tfdeploy
 elif [ "$TRAVIS_BRANCH" == "master" ]; then
     make deploy
 else

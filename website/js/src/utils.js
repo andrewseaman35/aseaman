@@ -7,7 +7,7 @@ function getAPIUrl(path) {
     if (CONFIG.LOCAL) {
         return `http://0.0.0.0:8099/${path}`;
     }
-    return `https://${CONFIG.API_URL}/v1/test/${path}`;
+    return `https://${CONFIG.API_URL}/${path}`;
 }
 
 function setCookie(name, value, expiration) {
