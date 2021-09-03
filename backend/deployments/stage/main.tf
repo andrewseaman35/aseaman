@@ -20,6 +20,13 @@ terraform {
 provider "aws" {
   profile = "aseaman"
   region  = "us-east-1"
+
+  default_tags {
+    tags = {
+      Environment = "Stage"
+      Repo = "aseaman"
+    }
+  }
 }
 
 data "aws_region" "current" {}

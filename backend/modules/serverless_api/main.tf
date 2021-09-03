@@ -24,11 +24,19 @@ resource "aws_iam_role" "api_role" {
       },
     ]
   })
+
+  tags = {
+    Service = var.api_name
+  }
 }
 
 resource "aws_iam_instance_profile" "api_instance_profile" {
   name = "${var.api_name}_instance_profile-${var.deploy_env}"
   role = aws_iam_role.api_role.name
+
+  tags = {
+    Service = var.api_name
+  }
 }
 
 locals {
@@ -40,6 +48,9 @@ resource "aws_s3_bucket_object" "lambda_function_package" {
   source = "${var.zip_file}"
 
   etag = filemd5("${var.zip_file}")
+  tags = {
+    Environment = "Shared"
+  }
 }
 
 resource "aws_lambda_function" "api_lambda_function" {
@@ -55,6 +66,10 @@ resource "aws_lambda_function" "api_lambda_function" {
   depends_on = [
     aws_s3_bucket_object.lambda_function_package
   ]
+
+  tags = {
+    Service = var.api_name
+  }
 }
 
 resource "aws_api_gateway_resource" "api_respource" {
@@ -80,21 +95,21 @@ resource "aws_api_gateway_integration" "post_integration" {
 }
 
 resource "aws_api_gateway_method_response" "post_200" {
-    rest_api_id = var.rest_api_id
-    resource_id   = aws_api_gateway_resource.api_respource.id
-    http_method   = aws_api_gateway_method.post.http_method
-    status_code   = "200"
-    response_models = {
-        "application/json" = "Empty"
-    }
-    response_parameters = {
-        "method.response.header.Access-Control-Allow-Headers" = true,
-        "method.response.header.Access-Control-Allow-Methods" = true,
-        "method.response.header.Access-Control-Allow-Origin" = true
-    }
-    depends_on = [
-      aws_api_gateway_method.post
-    ]
+  rest_api_id = var.rest_api_id
+  resource_id   = aws_api_gateway_resource.api_respource.id
+  http_method   = aws_api_gateway_method.post.http_method
+  status_code   = "200"
+  response_models = {
+      "application/json" = "Empty"
+  }
+  response_parameters = {
+      "method.response.header.Access-Control-Allow-Headers" = true,
+      "method.response.header.Access-Control-Allow-Methods" = true,
+      "method.response.header.Access-Control-Allow-Origin" = true
+  }
+  depends_on = [
+    aws_api_gateway_method.post
+  ]
 }
 
 resource "aws_api_gateway_integration_response" "post_integration_response" {
@@ -132,21 +147,24 @@ resource "aws_api_gateway_integration" "options_integration" {
 }
 
 resource "aws_api_gateway_method_response" "options_200" {
-    rest_api_id = var.rest_api_id
-    resource_id   = aws_api_gateway_resource.api_respource.id
-    http_method   = aws_api_gateway_method.options.http_method
-    status_code   = "200"
-    response_models = {
-        "application/json" = "Empty"
-    }
-    response_parameters = {
-        "method.response.header.Access-Control-Allow-Headers" = true,
-        "method.response.header.Access-Control-Allow-Methods" = true,
-        "method.response.header.Access-Control-Allow-Origin" = true
-    }
-    depends_on = [
-      aws_api_gateway_method.options
-    ]
+  rest_api_id = var.rest_api_id
+  resource_id   = aws_api_gateway_resource.api_respource.id
+  http_method   = aws_api_gateway_method.options.http_method
+  status_code   = "200"
+
+  response_models = {
+      "application/json" = "Empty"
+  }
+
+  response_parameters = {
+      "method.response.header.Access-Control-Allow-Headers" = true,
+      "method.response.header.Access-Control-Allow-Methods" = true,
+      "method.response.header.Access-Control-Allow-Origin" = true
+  }
+
+  depends_on = [
+    aws_api_gateway_method.options
+  ]
 }
 
 resource "aws_api_gateway_integration_response" "options_integration_response" {
