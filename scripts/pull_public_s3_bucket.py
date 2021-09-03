@@ -32,7 +32,7 @@ class PullPublicS3Bucket(BaseScript):
             raise Exception('destination please')
         if self.args.download:
             confirm = input("this will overwrite any matched files in the destination, you sure? ")
-            if confirm.lower() not in {'y, yes'}:
+            if confirm.strip().lower() not in {'y', 'yes'}:
                 raise Exception('nah')
 
     def _download_dir(self, prefix, local, bucket, download=False):
@@ -62,7 +62,10 @@ class PullPublicS3Bucket(BaseScript):
                             pass
 
     def _run(self):
-        self._download_dir(WEBSITE_PREFIX, self.args.destination, BUCKET_NAME, self.args.download)
+        destination = self.args.destination
+        if destination[-1] != "/":
+            destination += "/"
+        self._download_dir(WEBSITE_PREFIX, destination, BUCKET_NAME, self.args.download)
 
 
 if __name__ == '__main__':
