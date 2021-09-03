@@ -36,16 +36,12 @@ class GenerateConfig(BaseScript):
 
     def _setup_parser(self):
         super(GenerateConfig, self)._setup_parser()
-        self.parser.add_argument("--stack-name", dest="stack_name", help="cloudformation stack name")
         self.parser.add_argument("--deploy-env", dest="deploy_env", help="test, stage, live")
 
     def _validate_args(self):
         super(GenerateConfig, self)._validate_args()
-        self.stack_name = self.args.stack_name
         self.deploy_env = self.args.deploy_env
         if not self.local:
-            if self.stack_name is None:
-                raise ValueError("--stack-name is required")
             if self.deploy_env is None:
                 raise ValueError("--deploy-env is required")
             if self.deploy_env not in VALID_ENVS:

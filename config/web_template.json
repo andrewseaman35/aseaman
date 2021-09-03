@@ -2,12 +2,6 @@
     "DEPLOY_ENV": {
         "source": "env"
     },
-    "STACKNAME": {
-        "source": "env"
-    },
-    "BRANCH": {
-        "source": "env"
-    },
     "API_URL": {
         "source": "env"
     },
@@ -15,25 +9,20 @@
         "source": "public",
         "key": "use_local_backend"
     },
-
     "GA_TRACKING_ID": {
         "source": "ssm",
         "key": "ga_tracking_id"
     },
-
     "PUBLIC_BUCKET_URL": {
         "source": "ssm",
         "key": "public_bucket_url"
     },
-
     "CLIENT_ID": {
         "source": "public",
         "key": "client_id"
     },
-
     "ROOT_URL": {
         "source": "public",
         "key": "root_url"
     }
-
 }
