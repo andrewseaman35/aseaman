@@ -14,7 +14,7 @@ local_config: $(CONFIG)/web_template.json $(SCRIPTS)/generate_config.py
 	$(VENV_PYTHON) $(SCRIPTS)/generate_config.py --local
 
 config: $(CONFIG)/web_template.json $(SCRIPTS)/generate_config.py
-	$(VENV_PYTHON) $(SCRIPTS)/generate_config.py --stack-name=${STACKNAME} --deploy-env=${DEPLOY_ENV}
+	$(VENV_PYTHON) $(SCRIPTS)/generate_config.py --deploy-env=${DEPLOY_ENV}
 
 package-lock.json: package.json
 	npm update

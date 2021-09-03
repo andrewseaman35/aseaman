@@ -19,6 +19,8 @@ class RemoveOldStacks(BaseScript):
     """
     Deletes old stacks.
 
+    THIS IS OBSOLETE DUE TO THE MOVE TO TERRAFORM.
+
     Requires environment variables:
         DEPLOY_ENV: current deploy environment ('test', 'stage', 'live')
         STACKNAME: name of currently deployed stack in environment (is not deleted)
