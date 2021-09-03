@@ -20,6 +20,10 @@ package:
 website: venv
 	make -C website
 
+tfdeploy:
+	make -C backend tfapply
+	make deploy_website
+
 deploy_api:
 	make -C backend deploy
 

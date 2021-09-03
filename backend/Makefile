@@ -23,7 +23,7 @@ tfplan: #package
 	# cd deployments/stage && terraform apply terraform.tfplan 
 
 tfapply:
-	cd deployments/stage && terraform apply terraform.tfplan 
+	cd deployments/$(DEPLOY_ENV) && terraform apply
 
 validate:
 	aws cloudformation validate-template \
