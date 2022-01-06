@@ -2,8 +2,7 @@
 set -euxo pipefail
 
 export \
-    BRANCH="$TRAVIS_BRANCH" \
-    NONCE=$(date +%s)
+    BRANCH="$TRAVIS_BRANCH" 
 
 if [ "$TRAVIS_BRANCH" == "develop" ]; then
     export DEPLOY_ENV="stage"
@@ -28,11 +27,9 @@ else
 fi
 
 if [ "$TRAVIS_BRANCH" == "develop" ]; then
-    make tfdeploy
+    make deploy
 elif [ "$TRAVIS_BRANCH" == "master" ]; then
-    make tfdeploy
+    make deploy
 else
     make deploy_test
 fi
-
-make remove_old_stacks
