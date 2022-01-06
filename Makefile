@@ -6,10 +6,10 @@ ifeq ($(DEPLOY_ENV), stage)
 	API_URL := api.stage.andrewcseaman.com
 else ifeq ($(DEPLOY_ENV), live)
 	API_URL := api.live.andrewcseaman.com
-else 
-$(error DEPLOY_ENV must be set to either [stage, live])
+else ifneq ($(DEPLOY_ENV), local)
+$(error DEPLOY_ENV must be set to either [local, stage, live])
 endif
-	
+
 venv: requirements.txt
 	virtualenv venv --python=python3
 	venv/bin/pip install -r requirements.txt
