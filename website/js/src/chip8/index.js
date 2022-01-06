@@ -30,6 +30,17 @@ function setupROMList() {
     });
 }
 
+function setupThemeList() {
+    _.each(CONST.COLORS.ACTIVE, (hex, theme) => {
+        const selected = hex === CONST.DEFAULT_ACTIVE ? 'selected' : '';
+        $('#foreground-select').append(`<option ${selected} value="${hex}">${theme}</option>`);
+    });
+    _.each(CONST.COLORS.INACTIVE, (hex, theme) => {
+        const selected = hex === CONST.DEFAULT_INACTIVE ? 'selected' : '';
+        $('#background-select').append(`<option ${selected} value="${hex}">${theme}</option>`);
+    });
+}
+
 function initButtons() {
     $('#pause-play-btn').on('click', () => {
         const rom = ROMS_BY_ID[$('#rom-select').val()];
@@ -53,6 +64,7 @@ function initButtons() {
 
 function initChip8(elementId) {
     setupROMList();
+    setupThemeList();
     initButtons();
 
     chip8 = new Chip8();
@@ -72,6 +84,16 @@ function initChip8(elementId) {
             running = false;
             $('#button-container button').prop('disabled', true);
         }
+    });
+
+    $('#foreground-select').on('change', function() {
+        $(this).blur();
+        display.setActiveColor(this.value);
+    });
+
+    $('#background-select').on('change', function() {
+        $(this).blur();
+        display.setInactiveColor(this.value);
     });
 
     document.addEventListener('keydown', (e) => {
