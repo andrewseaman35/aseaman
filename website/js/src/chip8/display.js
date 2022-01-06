@@ -7,16 +7,14 @@ const CANVAS_HEIGHT = 512;
 const X_PIXEL_COUNT = 64;
 const Y_PIXEL_COUNT = 32;
 
-const COLORS = {
-    ON: '#00FFFF',
-    OFF: '#000000',
-}
-
 
 class Display {
     constructor() {
         this.pixelWidth = CANVAS_WIDTH / X_PIXEL_COUNT;
         this.pixelHeight = CANVAS_HEIGHT / Y_PIXEL_COUNT;
+        this.inactiveColor = CONST.DEFAULT_INACTIVE;
+        this.activeColor = CONST.DEFAULT_ACTIVE;
+        this.display = null;
     }
 
     init(elementId) {
@@ -29,6 +27,10 @@ class Display {
 
     renderDefault() {
         this.setDisplay(_.map(CONST.DEFAULT_DISPLAY_ARRAY, Number));
+    }
+
+    refreshDisplay() {
+        this.setDisplay(this.display);
     }
 
     setPixel(x, y, color) {
@@ -50,13 +52,24 @@ class Display {
     }
 
     setDisplay(display) {
+        this.display = display;
         let index = 0;
         for (let y = 0; y < Y_PIXEL_COUNT; y++) {
             for (let x = 0; x < X_PIXEL_COUNT; x++) {
-                this.setPixel(x, y, display[index] ? COLORS.ON : COLORS.OFF);
+                this.setPixel(x, y, display[index] ? this.activeColor : this.inactiveColor);
                 index += 1;
             }
         }
+    }
+
+    setActiveColor(color) {
+        this.activeColor = color;
+        this.refreshDisplay();
+    }
+
+    setInactiveColor(color) {
+        this.inactiveColor = color;
+        this.refreshDisplay();
     }
 }
 

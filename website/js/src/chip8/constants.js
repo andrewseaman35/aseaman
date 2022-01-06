@@ -1,6 +1,40 @@
 const MEMORY_SIZE = 4096;
 const INTERPRETER_SIZE = 512;
 
+const COLORS = {
+    INACTIVE: {
+        black: '#000000',
+        coffee: '#433A3F',
+        'dark purple': '#370926',
+        indigo: '#1B4965',
+        liver: '#DDF8E8',
+        mauve: '#5D2E46',
+        purple: '#42113C',
+        space: '#3D5A6C',
+        umber: '#60594D',
+        violet: '#513B56',
+    },
+    ACTIVE: {
+        aquamarine: '#5DD39E',
+        copper: '#AD6A6C',
+        coral: '#FF8966',
+        cyan: '#00FFFF',
+        eggshell: '#F8F4E3',
+        flame: '#EB6534',
+        gray: '#757780',
+        grullo: '#9C9583',
+        honeydew: '#DDF8E8',
+        lavender: '#E1E5F2',
+        'light blue': '#BEE9E8',
+        lilac: '#B08EA2',
+        redwood: '#AD5D4E',
+        white: '#FFFFFF',
+        'yellow green': '#98CE00',
+    }
+};
+const DEFAULT_INACTIVE = COLORS.INACTIVE.black;
+const DEFAULT_ACTIVE = COLORS.ACTIVE.cyan;
+
 const DISPLAY_WIDTH = 64;
 const DISPLAY_HEIGHT = 32;
 
@@ -74,6 +108,9 @@ module.exports = {
     INTERPRETER_SIZE,
     DISPLAY_WIDTH,
     DISPLAY_HEIGHT,
+    COLORS,
+    DEFAULT_INACTIVE,
+    DEFAULT_ACTIVE,
     WINDOW_WIDTH,
     WINDOW_HEIGHT,
     PIXEL_COLOR,
