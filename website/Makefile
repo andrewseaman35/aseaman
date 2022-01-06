@@ -24,7 +24,9 @@ package-lock.json: package.json
 	npm update
 
 node_modules: package.json package-lock.json
-	npm -g install . --all
+	npm install -g browserify
+	npm install -g sass
+	npm install . --all
 
 html: $(SCRIPTS)/compile_html.py
 	$(VENV_PYTHON) $(SCRIPTS)/compile_html.py
