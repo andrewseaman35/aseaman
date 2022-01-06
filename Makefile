@@ -1,6 +1,5 @@
 export
 VENV_PYTHON := venv/bin/python
-LOCAL_PORT := 8123
 
 ifeq ($(DEPLOY_ENV), stage)
 	API_URL := api.stage.andrewcseaman.com
@@ -29,10 +28,6 @@ deploy: deploy_api deploy_website
 
 watch: venv
 	$(VENV_PYTHON) scripts/run_watchers.py
-
-start_local: venv
-	make -C website local
-	cd website/public/ && python3 -m http.server $(LOCAL_PORT)
 
 clean:
 	rm -rf venv

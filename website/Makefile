@@ -3,6 +3,7 @@ ROOTDIR := $(shell git rev-parse --show-toplevel)
 VENV_PYTHON := $(ROOTDIR)/venv/bin/python
 SCRIPTS := $(ROOTDIR)/scripts
 CONFIG := $(ROOTDIR)/config
+LOCAL_PORT := 8123
 
 all: config website
 
@@ -15,6 +16,9 @@ local_config: $(CONFIG)/web_template.json $(SCRIPTS)/generate_config.py
 
 config: $(CONFIG)/web_template.json $(SCRIPTS)/generate_config.py
 	$(VENV_PYTHON) $(SCRIPTS)/generate_config.py --deploy-env=${DEPLOY_ENV}
+
+start_local: local
+	cd public/ && $(VENV_PYTHON) -m http.server $(LOCAL_PORT)
 
 package-lock.json: package.json
 	npm update
