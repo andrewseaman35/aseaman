@@ -1,10 +1,10 @@
+import argparse
 import importlib
 import json
 
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 
-# from whisky_shelf import lambda_handler as whisky_api
 
 app = Flask(__name__)
 CORS(app)
@@ -89,5 +89,12 @@ def chess():
     return convert_to_response(result)
 
 
+def get_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--port", metavar='N', default=8099)
+    return parser.parse_args()
+
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8099)
+    args = get_args()
+    app.run(host='0.0.0.0', port=args.port)
