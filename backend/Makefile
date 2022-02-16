@@ -10,7 +10,7 @@ tfapply: #package <-- disabled for now since I can't rebuild the draw_jasper api
 build_local:
 	docker build --file development/Dockerfile --tag aseaman-local:latest .
 
-start_local:
+start_local: build_local
 	docker run \
 		-d \
 		-p 8099:8099 \
