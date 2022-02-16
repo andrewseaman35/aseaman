@@ -55,19 +55,9 @@ package: package_dir venv
 	cd $(PACKAGE_DIR)/$(MAME_HIGHSCORE_API_NAME) && zip -r ../$(MAME_HIGHSCORE_API_NAME).zip * > /dev/null
 	cd $(PACKAGE_DIR)/$(CHESS_API_NAME) && zip -r ../$(CHESS_API_NAME).zip * > /dev/null
 
-local_venv: local_requirements.txt
-	virtualenv local_venv --python=python3
-	local_venv/bin/pip install -r local_requirements.txt
-
-freeze_local_venv:
-	local_venv/bin/pip freeze > local_requirements.txt
-
-start_local: local_venv
-	local_venv/bin/python local_backend.py
-
 clean:
 	rm -rf ./deploy_venv/
 	rm -rf ./venv/
 	rm -rf $(PACKAGE_DIR)
 
-.PHONY: package package_dir upload clean start_local
+.PHONY: package package_dir upload clean
