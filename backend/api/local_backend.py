@@ -97,4 +97,4 @@ def get_args():
 
 if __name__ == '__main__':
     args = get_args()
-    app.run(host='0.0.0.0', port=args.port)
+    app.run(host='0.0.0.0', debug=True, port=args.port)
