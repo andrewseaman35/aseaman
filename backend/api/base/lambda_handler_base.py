@@ -85,8 +85,7 @@ class APILambdaHandlerBase(object):
 
     def __parse_payload(self, payload):
         if self.rest_enabled:
-            self.payload = payload
-            return
+            raise Exception("shouldn't be used for rest_enabled")
 
         self._parse_payload(payload)
         if self.require_auth:
@@ -108,6 +107,7 @@ class APILambdaHandlerBase(object):
             params = {}
             if self.event['httpMethod'] == 'GET':
                 params = self.event['queryStringParameters'] or {}
+                params.update(self.event['multiValueQueryStringParameters'] or {})
             elif self.event['httpMethod'] == 'POST':
                 params = json.loads(self.event['body'])
             self.params = params
@@ -167,7 +167,6 @@ class APILambdaHandlerBase(object):
             self._handle_error(e)
             response = APIException().to_json_response()
 
-        print(response)
         return response
 
     def handle(self):

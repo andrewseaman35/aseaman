@@ -4,43 +4,40 @@ import { getAPIUrl } from '../utils';
 
 
 function fetchAllSummaries() {
-    const postData = {
-        action: 'all_summary_items',
-    };
     return $.ajax({
-        type: 'POST',
-        url: getAPIUrl('compare_acnh'),
-        data: JSON.stringify(postData),
+        type: 'GET',
+        url: getAPIUrl('compare_acnh') + "summary/",
         contentType: 'application/json',
     }).promise();
 }
 
 function fetchVillagerSummaries(villagerIds) {
-    const postData = {
-        action: 'get_summary_items',
-        payload: {
-            villager_ids: villagerIds,
-        },
-    };
+    var data = $.param({ villager_id: villagerIds }, true);
     return $.ajax({
-        type: 'POST',
+        type: 'GET',
         url: getAPIUrl('compare_acnh'),
-        data: JSON.stringify(postData),
+        data: data,
         contentType: 'application/json',
     }).promise();
 }
 
 function fetchVillagerResults(villagerId) {
-    const postData = {
-        action: 'results',
-        payload: {
-            villager_id: villagerId,
-        },
-    };
+    return $.ajax({
+        type: 'GET',
+        url: getAPIUrl('compare_acnh') + "result/",
+        data: { villager_id: villagerId },
+        contentType: 'application/json',
+    }).promise();
+}
+
+function submitResult(winnerId, loserId) {
     return $.ajax({
         type: 'POST',
-        url: getAPIUrl('compare_acnh'),
-        data: JSON.stringify(postData),
+        url: getAPIUrl('compare_acnh') + "result/",
+        data: JSON.stringify({
+            winnerId: winnerId,
+            loserId: loserId,
+        }),
         contentType: 'application/json',
     }).promise();
 }
@@ -49,4 +46,5 @@ module.exports = {
     fetchAllSummaries,
     fetchVillagerSummaries,
     fetchVillagerResults,
+    submitResult,
 }

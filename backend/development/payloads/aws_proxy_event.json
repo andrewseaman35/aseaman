@@ -4,14 +4,8 @@
     "path": "/path/to/resource",
     "httpMethod": "POST",
     "isBase64Encoded": true,
-    "queryStringParameters": {
-      "foo": "bar"
-    },
-    "multiValueQueryStringParameters": {
-      "foo": [
-        "bar"
-      ]
-    },
+    "queryStringParameters": null,
+    "multiValueQueryStringParameters": null,
     "pathParameters": {
       "proxy": "/path/to/resource"
     },
