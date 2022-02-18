@@ -7,7 +7,6 @@ import time
 from base.lambda_handler_base import APILambdaHandlerBase
 from base.api_exceptions import (
     BadRequestException,
-    UnauthorizedException,
     NotFoundException,
 )
 
@@ -27,30 +26,10 @@ class ChessLambdaHandler(APILambdaHandlerBase):
 
     def _init(self):
         self.table_name = LOCAL_TABLE_NAME if self.is_local else TABLE_NAME
-        self.actions = {
-            'new_game': self._new_game,
-            'get_game': self._get_game,
-            'save_turn': self._save_turn,
-        }
-        self.validation_actions = {
-            'new_game': self._validate_new_game,
-            'get_game': self._validate_get_game,
-            'save_turn': self._validate_save_turn,
-        }
-
         self.turn_regex_pattern = re.compile(TURN_REGEX_PATTERN)
 
     def _init_aws(self):
         self.ddb_client = self.aws_session.client('dynamodb', region_name='us-east-1')
-
-    def _parse_payload(self, payload):
-        self.action = payload.get('action')
-        if not self.action:
-            raise BadRequestException('action parameter required')
-        self.action = self.action.lower()
-        if self.action not in self.actions:
-            raise BadRequestException('invalid action')
-        self.payload = payload.get('payload')
 
     def _deserialize_turn(self, turn):
         match = self.turn_regex_pattern.match(turn)
@@ -68,20 +47,6 @@ class ChessLambdaHandler(APILambdaHandlerBase):
             'turn_type': turn_type,
             'options': options,
         }
-
-    def _validate_new_game(self):
-        if 'game_mode' not in self.payload:
-            raise BadRequestException('game_mode parameter required')
-
-    def _validate_get_game(self):
-        if 'game_id' not in self.payload:
-            raise BadRequestException('game_id parameter required')
-
-    def _validate_save_turn(self):
-        if 'game_id' not in self.payload:
-            raise BadRequestException('game_id parameter required')
-        if 'turn' not in self.payload:
-            raise BadRequestException('turn parameter required')
 
     def _new_game_id(self):
         return ''.join(random.choices(string.ascii_uppercase + string.digits, k=GAME_ID_LENGTH))
@@ -101,14 +66,14 @@ class ChessLambdaHandler(APILambdaHandlerBase):
             'version': ddbItem['version']['S'],
         }
 
-    def _build_new_game_ddb_item(self):
+    def _build_new_game_ddb_item(self, game_mode):
         timestamp = self._get_timestamp()
         return {
             'game_id': {
                 'S': self._new_game_id(),
             },
             'game_mode': {
-                'S': self.payload['game_mode'],
+                'S': game_mode,
             },
             'turns': {
                 'L': [],
@@ -138,22 +103,19 @@ class ChessLambdaHandler(APILambdaHandlerBase):
 
         return self._format_ddb_item(ddbItem['Item'])
 
-    def _get_game(self):
-        return self.__fetch_game(self.payload['game_id'])
-
-    def _new_game(self):
+    def _new_game(self, game_mode):
         print("Creating new game")
-        ddbItem = self._build_new_game_ddb_item()
+        ddbItem = self._build_new_game_ddb_item(game_mode)
         self.ddb_client.put_item(
             TableName=self.table_name,
             Item=ddbItem,
         )
         return self._format_ddb_item(ddbItem)
 
-    def _save_turn(self):
+    def _save_turn(self, game_id, turn):
         print("saving new turn")
-        new_turn = self._deserialize_turn(self.payload['turn'])
-        game = self.__fetch_game(self.payload['game_id'])
+        new_turn = self._deserialize_turn(turn)
+        game = self.__fetch_game(game_id)
 
         if game['turns']:
             serialized_last_turn = game['turns'][-1]
@@ -165,7 +127,7 @@ class ChessLambdaHandler(APILambdaHandlerBase):
             TableName=self.table_name,
             Key={
                 'game_id': {
-                    'S': self.payload['game_id']
+                    'S': game_id
                 },
             },
             UpdateExpression="SET turns = list_append(#t, :t), #tu = :tu",
@@ -174,24 +136,50 @@ class ChessLambdaHandler(APILambdaHandlerBase):
                 '#tu': 'time_updated',
             },
             ExpressionAttributeValues={
-                ':t': {'L': [{ 'S': self.payload['turn'] }]},
+                ':t': {'L': [{ 'S': turn }]},
                 ':tu': { 'N': self._get_timestamp() },
             },
             ReturnValues='ALL_NEW',
         )
         return response
 
-    def _run(self):
-        result = self.actions[self.action]()
+    def handle_get(self):
+        path_parts = self.event['path'].strip('/').split('/')
+        resource = path_parts[1] if len(path_parts) > 1 else None
+
+        if resource == 'game':
+            game_id = self.params.get('game_id')
+            if not game_id:
+                raise Exception('need game_id')
+            result = self.__fetch_game(game_id)
+        else:
+            raise Exception('unsupported resource: {}'.format(resource))
 
         return {
-            "isBase64Encoded": False,
-            "statusCode": 200,
-            "headers": {
-                "Access-Control-Allow-Origin": "*"
-            },
-            "multiValueHeaders": {},
-            "body": json.dumps(result)
+            **self._empty_response(),
+            'body': json.dumps(result),
+        }
+
+    def handle_post(self):
+        print("handling post")
+        path_parts = self.event['path'].strip('/').split('/')
+        resource = path_parts[1] if len(path_parts) > 1 else None
+
+        if resource == 'game':
+            game_mode = self.params.get('game_mode')
+            if not game_mode:
+                raise Exception('need game_mode')
+            result = self._new_game(game_mode)
+        elif resource == 'turn':
+            game_id = self.params.get('game_id')
+            turn = self.params.get('turn')
+            if not game_id or not turn:
+                raise Exception('game_id and turn required')
+            result = self._save_turn(game_id, turn)
+
+        return {
+            **self._empty_response(),
+            'body': json.dumps(result)
         }
 
 

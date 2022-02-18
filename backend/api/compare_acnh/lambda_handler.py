@@ -22,7 +22,6 @@ def summarySortKey(item):
 
 class CompareACNHHandler(APILambdaHandlerBase):
     require_auth = False
-    rest_enabled = True
 
     def _init(self):
         self.summary_table_name = LOCAL_SUMMARY_TABLE_NAME if self.is_local else SUMMARY_TABLE_NAME

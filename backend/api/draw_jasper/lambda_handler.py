@@ -11,7 +11,7 @@ import sys
 import tempfile
 
 from base.lambda_handler_base import APILambdaHandlerBase
-from base.api_exceptions import BadRequestException, UnauthorizedException
+from base.api_exceptions import APIException, BadRequestException, BaseAPIException, UnauthorizedException
 
 BUCKET_NAME = "aseaman-public-bucket"
 JASPER_PREFIX = "aseaman/images/jasper"
@@ -45,6 +45,7 @@ def crop_to_content(img, invert=True):
 class DrawJasperLambdaHandler(APILambdaHandlerBase):
     require_auth = False
     action = 'handle_upload'
+    rest_enabled = False
 
     def _init(self):
         self.id = uuid.uuid4().hex
@@ -63,11 +64,24 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
         self.ddb_client = self.aws_session.client('dynamodb', region_name='us-east-1')
         self.s3_client = self.aws_session.client('s3', region_name='us-east-1')
 
-    def _parse_payload(self, payload):
-        # return
+    def __parse_payload(self, payload):
         if not payload.get('img'):
             raise BadRequestException('img parameter required')
         self.img_bytes = base64.b64decode(payload['img'].split(',')[1])
+
+        if self.require_auth:
+            self.api_key = payload.get('api_key')
+            if not self.api_key:
+                raise UnauthorizedException('api_key parameter required')
+            if not self.__api_key or not self.api_key == self.__api_key:
+                raise UnauthorizedException('invalid api key')
+
+    def __parse_event(self, event):
+        print(" -- Received event --")
+        print(json.dumps(event, indent=4))
+        print(" --                --")
+        payload = event if self.is_local else json.loads(event['body'])
+        self.__parse_payload(payload)
 
     def _validate_uploaded_image(self):
         numpy_array = np.fromstring(self.img_bytes, np.uint8)
@@ -194,6 +208,21 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
             "multiValueHeaders": {},
             "body": json.dumps(result)
         }
+
+    def handle(self):
+        result = self._empty_response()
+        try:
+            self.__before_run()
+            result = self._run()
+        except BaseAPIException as e:
+            self._handle_api_error(e)
+            result = e.to_json_response()
+        except Exception as e:
+            self._handle_error(e)
+            result = APIException().to_json_response()
+
+        print (result)
+        return result
 
 
 def lambda_handler(event, context):
