@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM python:3.9-slim-buster
 
 RUN apt-get update -y && \
     apt-get install -y python-pip python-dev
@@ -11,7 +11,7 @@ ENV AWS_SHARED_CREDENTIALS_FILE="/.aws/credentials"
 
 RUN pip install -r requirements.txt
 
-COPY development/ /app
+COPY development/ /aseaman
 
 ENTRYPOINT [ "python" ]
 

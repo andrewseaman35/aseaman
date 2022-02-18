@@ -13,6 +13,7 @@ SSM_API_KEY = 'lambda-api-key'
 class APILambdaHandlerBase(object):
     require_auth = True
     action = None
+    rest_enabled = False
     validation_actions = {}
 
     def __init__(self, event, context):
@@ -67,23 +68,28 @@ class APILambdaHandlerBase(object):
         return {
             "isBase64Encoded": False,
             "statusCode": 200,
-            "headers": {},
+            "headers": {
+                "Access-Control-Allow-Origin": "*"
+            },
+            "multiValueHeaders": {},
             "body": json.dumps({})
         }
 
     def _preflight_response(self):
         return {
-            "isBase64Encoded": False,
-            "statusCode": 200,
+            **self._empty_response(),
             "headers": {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Headers': 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers',
             },
-            "body": json.dumps({})
         }
 
     def __parse_payload(self, payload):
+        if self.rest_enabled:
+            self.payload = payload
+            return
+
         self._parse_payload(payload)
         if self.require_auth:
             self.api_key = payload.get('api_key')
@@ -100,8 +106,16 @@ class APILambdaHandlerBase(object):
         print(json.dumps(event, indent=4))
         print(" --                --")
 
-        payload = event if self.is_local else json.loads(event['body'])
-        self.__parse_payload(payload)
+        if self.rest_enabled:
+            params = {}
+            if self.event['httpMethod'] == 'GET':
+                params = self.event['queryStringParameters']
+            elif self.event['httpMethod'] == 'POST':
+                params = json.loads(self.event['body'])
+            self.params = params
+        else:
+            payload = event if self.is_local else json.loads(event['body'])
+            self.__parse_payload(payload)
 
     def __validate_event(self):
         if not self.action:
@@ -114,7 +128,8 @@ class APILambdaHandlerBase(object):
         self._init()
         self.__init_aws()
         self.__parse_event(self.event)
-        self.__validate_event()
+        if not self.rest_enabled:
+            self.__validate_event()
         self._before_run()
 
     def _before_run(self):
@@ -123,13 +138,46 @@ class APILambdaHandlerBase(object):
     def _run(self):
         raise NotImplementedError()
 
-    def __after_run(self, result):
-        self._after_run(result)
+    def handle_options(self):
+        print("-- handling options")
+        return self._preflight_response()
 
-    def _after_run(self, result):
-        print("result: {}".format(result))
+    def handle_get(self):
+        print("-- handling get")
+        raise NotImplemented('no get')
+
+    def handle_post(self):
+        print("-- handling post")
+        raise NotImplemented('blargh')
+
+    def handle_rest(self):
+        print(self.event)
+        print("Handling: {}".format(self.event.get('httpMethod')))
+        # Handle preflight
+        if self.event.get('httpMethod') == 'OPTIONS':
+            return self.handle_options()
+
+        response = self._empty_response()
+        try:
+            self.__before_run()
+            if self.event.get('httpMethod') == 'GET':
+                response = self.handle_get()
+            elif self.event.get('httpMethod') == 'POST':
+                response = self.handle_post()
+        except BaseAPIException as e:
+            self._handle_api_error(e)
+            response = e.to_json_response()
+        except Exception as e:
+            self._handle_error(e)
+            response = APIException().to_json_response()
+
+        print(response)
+        return response
 
     def handle(self):
+        if self.rest_enabled:
+            return self.handle_rest()
+
         self.is_preflight = self.event.get('httpMethod') == 'OPTIONS'
         if self.is_preflight:
             return self._preflight_response()
@@ -138,7 +186,6 @@ class APILambdaHandlerBase(object):
         try:
             self.__before_run()
             result = self._run()
-            self.__after_run(result)
         except BaseAPIException as e:
             self._handle_api_error(e)
             result = e.to_json_response()
@@ -158,4 +205,3 @@ class APILambdaHandlerBase(object):
         print('Uh oh, error!')
         print("error: {}".format(e))
         traceback.print_exc()
-

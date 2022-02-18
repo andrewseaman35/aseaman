@@ -8,13 +8,8 @@ function list(water_softener_id) {
         payload.water_softener_id = water_softener_id
     }
     return $.ajax({
-        type: 'POST',
+        type: 'GET',
         url: getAPIUrl('salt_level'),
-        data: JSON.stringify({
-            action: 'list',
-            payload: payload,
-        }),
-        contentType: 'application/json',
     }).promise();
 }
 
