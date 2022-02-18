@@ -13,7 +13,6 @@ class Patent extends React.Component {
         super();
         this.renderStatusTable = this.renderStatusTable.bind(this);
         this.retrievePatentStatus = this.retrievePatentStatus.bind(this);
-        this.patentUrl = getAPIUrl('state_check');
 
         this.state = {
             displayError: false,
@@ -37,15 +36,12 @@ class Patent extends React.Component {
     }
 
     retrievePatentStatus(applicationNumber) {
-        const payload = {
-            state_id: `patent_application-${applicationNumber}`,
-        };
         return $.ajax({
-            type: 'POST',
-            url: this.patentUrl,
-            data: JSON.stringify(payload),
-            processData: false,
-            contentType: 'application/json',
+            type: 'GET',
+            url: getAPIUrl('state_check'),
+            data: {
+                state_id: `patent_application-${applicationNumber}`,
+            },
         }).promise();
     }
 

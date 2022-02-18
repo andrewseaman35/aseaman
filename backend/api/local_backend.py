@@ -74,7 +74,7 @@ def whisky():
     return convert_to_response(result)
 
 
-@app.route('/state_check/', methods=['POST'])
+@app.route('/state_check/', methods=['GET', 'POST'])
 def state_check():
     payload = get_payload(request)
     result = make_lambda_request('state_check', request, payload, None)
