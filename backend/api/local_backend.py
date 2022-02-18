@@ -60,13 +60,10 @@ def get_curl_payload(request):
     }
     return payload
 
-@app.route('/mame_highscore/', methods=['POST'])
-def mame_highscore():
-    try:
-        payload = get_payload(request)
-        payload['payload'].get
-    except:
-        payload = get_curl_payload(request)
+@app.route('/mame_highscore/<resource>/', methods=['GET', 'POST'])
+@app.route('/mame_highscore/', methods=['GET', 'POST'], defaults={'resource': None})
+def mame_highscore(resource):
+    payload = get_payload(request)
     result = make_lambda_request('mame_highscore', request, payload, None)
     return convert_to_response(result)
 
