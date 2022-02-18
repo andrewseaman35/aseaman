@@ -10,6 +10,16 @@ from .api_exceptions import APIException, BadRequestException, UnauthorizedExcep
 
 SSM_API_KEY = 'lambda-api-key'
 
+EMPTY_RESPONSE = {
+    "isBase64Encoded": False,
+    "statusCode": 200,
+    "headers": {
+        "Access-Control-Allow-Origin": "*"
+    },
+    "multiValueHeaders": {},
+    "body": json.dumps({})
+}
+
 class APILambdaHandlerBase(object):
     require_auth = True
     action = None
@@ -64,27 +74,6 @@ class APILambdaHandlerBase(object):
         else:
             raise Exception('unsupported value: {}'.format(value_type))
 
-    def _empty_response(self):
-        return {
-            "isBase64Encoded": False,
-            "statusCode": 200,
-            "headers": {
-                "Access-Control-Allow-Origin": "*"
-            },
-            "multiValueHeaders": {},
-            "body": json.dumps({})
-        }
-
-    def _preflight_response(self):
-        return {
-            **self._empty_response(),
-            "headers": {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Headers': 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers',
-            },
-        }
-
     def __parse_payload(self, payload):
         if self.rest_enabled:
             self.payload = payload
@@ -138,10 +127,6 @@ class APILambdaHandlerBase(object):
     def _run(self):
         raise NotImplementedError()
 
-    def handle_options(self):
-        print("-- handling options")
-        return self._preflight_response()
-
     def handle_get(self):
         print("-- handling get")
         raise NotImplemented('no get')
@@ -153,9 +138,6 @@ class APILambdaHandlerBase(object):
     def handle_rest(self):
         print(self.event)
         print("Handling: {}".format(self.event.get('httpMethod')))
-        # Handle preflight
-        if self.event.get('httpMethod') == 'OPTIONS':
-            return self.handle_options()
 
         response = self._empty_response()
         try:
@@ -164,6 +146,8 @@ class APILambdaHandlerBase(object):
                 response = self.handle_get()
             elif self.event.get('httpMethod') == 'POST':
                 response = self.handle_post()
+            else:
+                response = {**EMPTY_RESPONSE, "statusCode": 403,}
         except BaseAPIException as e:
             self._handle_api_error(e)
             response = e.to_json_response()
@@ -178,11 +162,7 @@ class APILambdaHandlerBase(object):
         if self.rest_enabled:
             return self.handle_rest()
 
-        self.is_preflight = self.event.get('httpMethod') == 'OPTIONS'
-        if self.is_preflight:
-            return self._preflight_response()
-
-        result = self._empty_response()
+        result = {**EMPTY_RESPONSE}
         try:
             self.__before_run()
             result = self._run()

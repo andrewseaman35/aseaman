@@ -72,7 +72,7 @@ resource "aws_lambda_function" "api_lambda_function" {
   }
 }
 
-resource "aws_api_gateway_resource" "api_respource" {
+resource "aws_api_gateway_resource" "api_resource" {
   parent_id   = var.rest_api_root_resource_id
   path_part   = var.path_part
   rest_api_id = var.rest_api_id
@@ -81,13 +81,13 @@ resource "aws_api_gateway_resource" "api_respource" {
 resource "aws_api_gateway_method" "any" {
   authorization = "NONE"
   http_method   = "ANY"
-  resource_id   = aws_api_gateway_resource.api_respource.id
+  resource_id   = aws_api_gateway_resource.api_resource.id
   rest_api_id   = var.rest_api_id
 }
 
 resource "aws_api_gateway_integration" "any_integration" {
   rest_api_id             = var.rest_api_id
-  resource_id             = aws_api_gateway_resource.api_respource.id
+  resource_id             = aws_api_gateway_resource.api_resource.id
   http_method             = aws_api_gateway_method.any.http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
@@ -96,11 +96,11 @@ resource "aws_api_gateway_integration" "any_integration" {
 
 resource "aws_api_gateway_method_response" "any_200" {
   rest_api_id = var.rest_api_id
-  resource_id   = aws_api_gateway_resource.api_respource.id
+  resource_id   = aws_api_gateway_resource.api_resource.id
   http_method   = aws_api_gateway_method.any.http_method
-  status_code   = "200"
+  status_code   = 200
   response_models = {
-      "application/json" = "Empty"
+    "application/json" = "Empty"
   }
   response_parameters = {
       "method.response.header.Access-Control-Allow-Headers" = true,
@@ -114,9 +114,9 @@ resource "aws_api_gateway_method_response" "any_200" {
 
 resource "aws_api_gateway_integration_response" "any_integration_response" {
   rest_api_id = var.rest_api_id
-  resource_id = aws_api_gateway_resource.api_respource.id
+  resource_id = aws_api_gateway_resource.api_resource.id
   http_method = aws_api_gateway_method.any.http_method
-  status_code = aws_api_gateway_method_response.any_200.status_code
+  status_code = "${aws_api_gateway_method_response.any_200.status_code}"
 
   response_parameters = {
     "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
@@ -130,30 +130,33 @@ resource "aws_api_gateway_integration_response" "any_integration_response" {
 }
 
 resource "aws_api_gateway_method" "options" {
-  authorization = "NONE"
-  http_method   = "OPTIONS"
-  resource_id   = aws_api_gateway_resource.api_respource.id
   rest_api_id   = var.rest_api_id
+  resource_id   = aws_api_gateway_resource.api_resource.id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
 }
 
 resource "aws_api_gateway_integration" "options_integration" {
   rest_api_id             = var.rest_api_id
-  resource_id             = aws_api_gateway_resource.api_respource.id
+  resource_id             = aws_api_gateway_resource.api_resource.id
   http_method             = aws_api_gateway_method.options.http_method
-  integration_http_method = "POST"
-  type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.api_lambda_function.invoke_arn
-  passthrough_behavior    = "NEVER"
+  type                    = "MOCK"
+
+  depends_on = [aws_api_gateway_method.options]
+
+  request_templates = {
+    "application/json" = "{\"statusCode\": 200}"
+  }
 }
 
 resource "aws_api_gateway_method_response" "options_200" {
-  rest_api_id = var.rest_api_id
-  resource_id   = aws_api_gateway_resource.api_respource.id
+  rest_api_id   = var.rest_api_id
+  resource_id   = aws_api_gateway_resource.api_resource.id
   http_method   = aws_api_gateway_method.options.http_method
   status_code   = "200"
 
   response_models = {
-      "application/json" = "Empty"
+    "application/json" = "Empty"
   }
 
   response_parameters = {
@@ -163,15 +166,15 @@ resource "aws_api_gateway_method_response" "options_200" {
   }
 
   depends_on = [
-    aws_api_gateway_method.options
+    aws_api_gateway_integration.options_integration
   ]
 }
 
 resource "aws_api_gateway_integration_response" "options_integration_response" {
   rest_api_id = var.rest_api_id
-  resource_id = aws_api_gateway_resource.api_respource.id
+  resource_id = aws_api_gateway_resource.api_resource.id
   http_method = aws_api_gateway_method.options.http_method
-  status_code = aws_api_gateway_method_response.options_200.status_code
+  status_code = "${aws_api_gateway_method_response.options_200.status_code}"
 
   response_parameters = {
     "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
@@ -179,8 +182,12 @@ resource "aws_api_gateway_integration_response" "options_integration_response" {
     "method.response.header.Access-Control-Allow-Origin" = "'*'"
   }
 
+  response_templates = {
+    "application/json" = ""
+  }
+
   depends_on = [
-    aws_api_gateway_integration.options_integration
+    aws_api_gateway_method_response.options_200
   ]
 }
 
@@ -197,7 +204,7 @@ output "api_role_id" {
 }
 
 output "api_resource_id" {
-  value = aws_api_gateway_resource.api_respource.id
+  value = aws_api_gateway_resource.api_resource.id
 }
 
 output "api_gateway_any_method_id" {
