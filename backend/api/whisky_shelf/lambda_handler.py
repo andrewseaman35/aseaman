@@ -1,7 +1,7 @@
 import json
 
 from base.lambda_handler_base import APILambdaHandlerBase
-from base.api_exceptions import BadRequestException, UnauthorizedException
+from base.api_exceptions import BadRequestException
 
 TABLE_NAME = 'whisky'
 LOCAL_TABLE_NAME = 'whisky_local'
@@ -106,7 +106,7 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
         distillery = self.params.get('distillery')
         name = self.params.get('name')
         if not distillery or not name:
-            raise Exception('distillery and name required')
+            raise BadRequestException('distillery and name required')
 
         self._remove_from_shelf(distillery, name)
 
@@ -118,7 +118,7 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
         distillery = self.params.get('distillery')
         name = self.params.get('name')
         if not distillery or not name:
-            raise Exception('distillery and name required')
+            raise BadRequestException('distillery and name required')
 
         item = self._get_item(distillery, name)
         if item is None:

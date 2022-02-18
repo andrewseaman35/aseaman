@@ -1,6 +1,7 @@
 import json
 
 from base.lambda_handler_base import APILambdaHandlerBase
+from base.api_exceptions import BadRequestException
 
 TABLE_NAME = 'states'
 
@@ -33,7 +34,7 @@ class StateCheckAPILambdaHandler(APILambdaHandlerBase):
     def handle_get(self):
         state_id = self.params.get('state_id')
         if not state_id:
-            raise Exception('state_id required')
+            raise BadRequestException('state_id required')
         result = self._get_state_data(state_id)
         return {
             **self._empty_response(),

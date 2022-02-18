@@ -2,7 +2,6 @@ import json
 import time
 
 from base.lambda_handler_base import APILambdaHandlerBase
-from base.api_exceptions import BadRequestException, UnauthorizedException
 
 TABLE_NAME = 'salt_level'
 LOCAL_TABLE_NAME = 'salt_level_local'

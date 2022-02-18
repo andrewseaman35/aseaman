@@ -5,7 +5,13 @@ import traceback
 
 import boto3
 
-from .api_exceptions import APIException, BadRequestException, UnauthorizedException, BaseAPIException
+from .api_exceptions import (
+    APIException,
+    BadRequestException,
+    UnauthorizedException,
+    BaseAPIException,
+    MethodNotAllowedException,
+)
 
 
 SSM_API_KEY = 'lambda-api-key'
@@ -75,7 +81,7 @@ class APILambdaHandlerBase(object):
                 key: cls._parse_ddb_value_type_map(val) for (key, val) in value.items()
             }
         else:
-            raise Exception('unsupported value: {}'.format(value_type))
+            raise BadRequestException('unsupported value: {}'.format(value_type))
 
     @classmethod
     def _parse_ddb_item_list(self, ddb_items):
@@ -114,17 +120,16 @@ class APILambdaHandlerBase(object):
         return {**EMPTY_RESPONSE}
 
     def handle_get(self):
-        raise NotImplemented('GET not implemented')
+        raise MethodNotAllowedException('GET not supported')
 
     def handle_post(self):
-        raise NotImplemented('POST not implemented')
+        raise MethodNotAllowedException('POST not supported')
 
     def handle_delete(self):
-        raise NotImplemented('DELETE not implemented')
+        raise MethodNotAllowedException('DELETE not supported')
 
     def handle(self):
         print(self.event)
-        print("Handling: {}".format(self.event.get('httpMethod')))
 
         response = {**EMPTY_RESPONSE}
         try:
@@ -133,7 +138,7 @@ class APILambdaHandlerBase(object):
             if handler:
                 response = handler()
             else:
-                response = {**EMPTY_RESPONSE, "statusCode": 405}
+                raise MethodNotAllowedException('method not supported')
         except BaseAPIException as e:
             self._handle_api_error(e)
             response = e.to_json_response()

@@ -46,3 +46,8 @@ class UnauthorizedException(BaseAPIException):
 class NotFoundException(BaseAPIException):
     STATUS_CODE = 404
     DEFAULT_MESSAGE = 'not found'
+
+
+class MethodNotAllowedException(BaseAPIException):
+    STATUS_CODE = 405
+    DEFAULT_MESSAGE = 'method not allowed'
