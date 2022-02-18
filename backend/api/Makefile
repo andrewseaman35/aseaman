@@ -23,7 +23,7 @@ package_dir:
 	mkdir -p $(PACKAGE_DIR)/$(STATE_API_NAME)
 	mkdir -p $(PACKAGE_DIR)/$(WHISKY_API_NAME)
 
-package: venv
+package: venv # package_dir
 	echo "Packaging backend lambda functions"
 	venv/bin/pip install -r state_check/requirements.txt -t $(PACKAGE_DIR)/$(STATE_API_NAME)
 	venv/bin/pip install -r whisky_shelf/requirements.txt -t $(PACKAGE_DIR)/$(WHISKY_API_NAME)
@@ -55,9 +55,12 @@ package: venv
 	cd $(PACKAGE_DIR)/$(MAME_HIGHSCORE_API_NAME) && zip -r ../$(MAME_HIGHSCORE_API_NAME).zip * > /dev/null
 	cd $(PACKAGE_DIR)/$(CHESS_API_NAME) && zip -r ../$(CHESS_API_NAME).zip * > /dev/null
 
+test:
+	python -m unittest
+
 clean:
 	rm -rf ./deploy_venv/
 	rm -rf ./venv/
 	rm -rf $(PACKAGE_DIR)
 
-.PHONY: package package_dir upload clean
+.PHONY: package package_dir upload clean test
