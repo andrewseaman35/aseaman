@@ -4,29 +4,20 @@ import { getAPIUrl } from '../../utils';
 
 
 function getMetadata() {
-    const postData = {
-        action: 'metadata',
-        payload: {},
-    };
     return $.ajax({
-        type: 'POST',
-        url: getAPIUrl('mame_highscore'),
-        data: JSON.stringify(postData),
+        type: 'GET',
+        url: getAPIUrl('mame_highscore') + "metadata/",
         contentType: 'application/json',
     }).promise();
 }
 
 function getScoresByGameId(gameId) {
-    const postData = {
-        action: 'get_by_game_id',
-        payload: {
-            game_id: gameId,
-        }
-    };
     return $.ajax({
-        type: 'POST',
-        url: getAPIUrl('mame_highscore'),
-        data: JSON.stringify(postData),
+        type: 'GET',
+        url: getAPIUrl('mame_highscore') + "score/",
+        data: {
+            game_id: gameId,
+        },
         contentType: 'application/json',
     }).promise();
 }

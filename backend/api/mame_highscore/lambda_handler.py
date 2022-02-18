@@ -20,42 +20,16 @@ BUCKET_NAME = "aseaman-public-bucket"
 
 class MameHighscoreLambdaHandler(APILambdaHandlerBase):
     require_auth = False
+    rest_enabled = True
     primary_partition_key = 'user'
 
     def _init(self):
         self.s3_key_format = 'hi/{game_id}.hi'
 
-        self.actions = {
-            'metadata': self._get_metadata,
-            'get_by_game_id': self._get_by_game_id,
-            'list': self._list,
-        }
-        self.validation_actions = {
-            'get_by_game_id': self._validate_get_by_game_id,
-            'list': self._validate_list,
-        }
-
     def _init_aws(self):
         self.s3_client = self.aws_session.client('s3', region_name='us-east-1')
 
-    def _parse_payload(self, payload):
-        self.action = payload.get('action')
-        if not self.action:
-            raise BadRequestException('action parameter required')
-        self.action = self.action.lower()
-        if self.action not in self.actions:
-            raise BadRequestException('invalid action')
-        self.payload = payload.get('payload')
-
-    def _validate_get_by_game_id(self):
-        self.game_id = self.payload.get('game_id')
-        if self.game_id is None:
-            raise BadRequestException('game_id parameter required')
-
-    def _validate_list(self):
-        return True
-
-    def _list(self):
+    def _list_hiscore_files(self):
         response = self.s3_client.list_objects_v2(
             Bucket=BUCKET_NAME,
             Prefix='hi/',
@@ -72,7 +46,7 @@ class MameHighscoreLambdaHandler(APILambdaHandlerBase):
 
     def _get_metadata(self):
         files = []
-        for file in [f for f in self._list()['Contents'] if f['Key'] != 'hi/']:
+        for file in [f for f in self._list_hiscore_files()['Contents'] if f['Key'] != 'hi/']:
             game_id = file['Key'].split('.hi')[0].split('hi/')[1]
             has_parser = HighScoreParser.implemented(game_id)
             game_name = HighScoreParser.get_game_title(game_id)
@@ -100,8 +74,7 @@ class MameHighscoreLambdaHandler(APILambdaHandlerBase):
             data = f.read()
         return data
 
-    def _get_by_game_id(self):
-        game_id = self.payload['game_id']
+    def _get_by_game_id(self, game_id):
         if not HighScoreParser.implemented(game_id):
             return {
                 'errorMessage': '{} parser not set up'.format(game_id)
@@ -123,6 +96,24 @@ class MameHighscoreLambdaHandler(APILambdaHandlerBase):
             "body": json.dumps(result)
         }
 
+    def handle_get(self):
+        path_parts = self.event['path'].strip('/').split('/')
+        resource = path_parts[1] if len(path_parts) > 1 else None
+
+        if resource == "metadata":
+            result = self._get_metadata()
+        elif resource ==  'score':
+            game_id = self.params.get('game_id')
+            if not game_id:
+                raise Exception('game_id required')
+            result = self._get_by_game_id(game_id)
+        else:
+            raise Exception('unsupported resource: {}'.format(resource))
+
+        return {
+            **self._empty_response(),
+            'body': json.dumps(result)
+        }
 
 def lambda_handler(event, context):
     return MameHighscoreLambdaHandler(event, context).handle()
