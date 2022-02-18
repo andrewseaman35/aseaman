@@ -1,7 +1,8 @@
 import json
 
+
 class BaseAPIException(Exception):
-    DEFAULT_MESSAGE = 'error'
+    DEFAULT_MESSAGE = "error"
 
     def __init__(self, message=None):
         self.message = message or self.DEFAULT_MESSAGE
@@ -9,15 +10,15 @@ class BaseAPIException(Exception):
 
     @property
     def body(self):
-        return json.dumps({
-            'message': self.message,
-        })
+        return json.dumps(
+            {
+                "message": self.message,
+            }
+        )
 
     @property
     def headers(self):
-        return {
-            "Access-Control-Allow-Origin": "*"
-        }
+        return {"Access-Control-Allow-Origin": "*"}
 
     def to_json_response(self):
         return {
@@ -40,14 +41,14 @@ class BadRequestException(BaseAPIException):
 
 class UnauthorizedException(BaseAPIException):
     STATUS_CODE = 401
-    DEFAULT_MESSAGE = 'unauthorized'
+    DEFAULT_MESSAGE = "unauthorized"
 
 
 class NotFoundException(BaseAPIException):
     STATUS_CODE = 404
-    DEFAULT_MESSAGE = 'not found'
+    DEFAULT_MESSAGE = "not found"
 
 
 class MethodNotAllowedException(BaseAPIException):
     STATUS_CODE = 405
-    DEFAULT_MESSAGE = 'method not allowed'
+    DEFAULT_MESSAGE = "method not allowed"

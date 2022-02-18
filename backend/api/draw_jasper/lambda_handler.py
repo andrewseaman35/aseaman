@@ -11,12 +11,17 @@ import sys
 import tempfile
 
 from base.lambda_handler_base import APILambdaHandlerBase
-from base.api_exceptions import APIException, BadRequestException, BaseAPIException, UnauthorizedException
+from base.api_exceptions import (
+    APIException,
+    BadRequestException,
+    BaseAPIException,
+    UnauthorizedException,
+)
 
 BUCKET_NAME = "aseaman-public-bucket"
 JASPER_PREFIX = "aseaman/images/jasper"
-TABLE_NAME = 'whisky'
-LOCAL_TABLE_NAME = 'whisky_local'
+TABLE_NAME = "whisky"
+LOCAL_TABLE_NAME = "whisky_local"
 
 MAX_WORKERS = 10
 RESPONSE_COUNT = 3
@@ -36,66 +41,68 @@ def crop_to_content(img, invert=True):
     """
     Crops image to fit content
     """
-    inverted_image = cv2.bitwise_not(img) if invert else img  # invert image -- black background (zeroes)
+    inverted_image = (
+        cv2.bitwise_not(img) if invert else img
+    )  # invert image -- black background (zeroes)
     coords = cv2.findNonZero(inverted_image)  # find coordinates of all non-zero values
     x, y, w, h = cv2.boundingRect(coords)  # find bounding box of non-zero coordinates
-    return img[y:y+h, x:x+w]  # return image, cropped
+    return img[y : y + h, x : x + w]  # return image, cropped
 
 
 class DrawJasperLambdaHandler(APILambdaHandlerBase):
     require_auth = False
-    action = 'handle_upload'
+    action = "handle_upload"
     rest_enabled = False
 
     def _init(self):
         self.id = uuid.uuid4().hex
         self.table_name = LOCAL_TABLE_NAME if self.is_local else TABLE_NAME
         self.date = datetime.datetime.now()
-        self.s3_key_prefix = 'aseaman/images/jasper/jobs/{date}/{id}'.format(
+        self.s3_key_prefix = "aseaman/images/jasper/jobs/{date}/{id}".format(
             date=datetime.datetime.now().date(),
             id=self.id,
         )
-        self.s3_key_format = self.s3_key_prefix + '/{}'
+        self.s3_key_format = self.s3_key_prefix + "/{}"
         self.validation_actions = {
-            'handle_upload': self._validate_uploaded_image,
+            "handle_upload": self._validate_uploaded_image,
         }
 
     def _init_aws(self):
-        self.ddb_client = self.aws_session.client('dynamodb', region_name='us-east-1')
-        self.s3_client = self.aws_session.client('s3', region_name='us-east-1')
+        self.ddb_client = self.aws_session.client("dynamodb", region_name="us-east-1")
+        self.s3_client = self.aws_session.client("s3", region_name="us-east-1")
 
     def __parse_payload(self, payload):
-        if not payload.get('img'):
-            raise BadRequestException('img parameter required')
-        self.img_bytes = base64.b64decode(payload['img'].split(',')[1])
+        if not payload.get("img"):
+            raise BadRequestException("img parameter required")
+        self.img_bytes = base64.b64decode(payload["img"].split(",")[1])
 
         if self.require_auth:
-            self.api_key = payload.get('api_key')
+            self.api_key = payload.get("api_key")
             if not self.api_key:
-                raise UnauthorizedException('api_key parameter required')
+                raise UnauthorizedException("api_key parameter required")
             if not self.__api_key or not self.api_key == self.__api_key:
-                raise UnauthorizedException('invalid api key')
+                raise UnauthorizedException("invalid api key")
 
     def __parse_event(self, event):
         print(" -- Received event --")
         print(json.dumps(event, indent=4))
         print(" --                --")
-        payload = event if self.is_local else json.loads(event['body'])
+        payload = event if self.is_local else json.loads(event["body"])
         self.__parse_payload(payload)
 
     def _validate_uploaded_image(self):
         numpy_array = np.fromstring(self.img_bytes, np.uint8)
         img = cv2.imdecode(numpy_array, cv2.IMREAD_GRAYSCALE)
         if not img.shape == IMG_SHAPE:
-            raise BadRequestException('bad image dimensions')
+            raise BadRequestException("bad image dimensions")
         if not sys.getsizeof(self.img_bytes) <= IMG_MAX_SIZE:
-            raise BadRequestException('image too big')
+            raise BadRequestException("image too big")
 
     def _download(self, key):
         tmpdir = tempfile.gettempdir()
-        filename = key.split('/')[-1]
+        filename = key.split("/")[-1]
         local_filename = os.path.join(tmpdir, filename)
-        with open(local_filename, 'wb') as data:
+        with open(local_filename, "wb") as data:
             self.s3_client.download_fileobj(BUCKET_NAME, key, data)
         return local_filename
 
@@ -103,13 +110,20 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
         mask_response = self.s3_client.list_objects_v2(
             Bucket=BUCKET_NAME,
             MaxKeys=50,
-            Prefix='{}/data/masks/'.format(JASPER_PREFIX),
+            Prefix="{}/data/masks/".format(JASPER_PREFIX),
         )
 
-        mask_keys = [file['Key'] for file in mask_response['Contents'] if file['Key'].endswith('.png')]
+        mask_keys = [
+            file["Key"]
+            for file in mask_response["Contents"]
+            if file["Key"].endswith(".png")
+        ]
 
         with futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-            future_to_key = {executor.submit(self._download, key): key.split('/')[-1].split('.')[0] for key in mask_keys}
+            future_to_key = {
+                executor.submit(self._download, key): key.split("/")[-1].split(".")[0]
+                for key in mask_keys
+            }
 
             for future in futures.as_completed(future_to_key):
                 key = future_to_key[future]
@@ -120,7 +134,7 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
                     yield key, exception
 
     def _save_file_to_local_temp(self):
-        filename = '{}.png'.format(self.id)
+        filename = "{}.png".format(self.id)
         tmpdir = tempfile.gettempdir()
         local_filename = os.path.join(tmpdir, filename)
         with open(local_filename, "wb") as fh:
@@ -135,7 +149,7 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
             Bucket=BUCKET_NAME,
             Key=key,
         )
-        return key.split('aseaman/')[1]
+        return key.split("aseaman/")[1]
 
     def _save_cv2_image_to_s3(self, cv2_image, filename, ext=".png"):
         img_bytes = cv2.imencode(ext, cv2_image)[1].tobytes()
@@ -147,7 +161,9 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
         drawing_cropped = crop_to_content(drawing)
         mask_cropped = crop_to_content(mask, invert=False)
 
-        cropped_return_path = self._save_cv2_image_to_s3(drawing_cropped, 'cropped_drawing.png')
+        cropped_return_path = self._save_cv2_image_to_s3(
+            drawing_cropped, "cropped_drawing.png"
+        )
 
         # Match their drawing size to ours
         # (this has to be before converting to black and white, I think there are interpolation issues)
@@ -165,25 +181,42 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
         padding_left = math.floor((larger_width - smaller_width) / 2)
         padding_right = math.ceil((larger_width - smaller_width) / 2)
         if larger_width == drawing_width:
-            mask_padded = cv2.copyMakeBorder(mask_sized, 0, 0, padding_left, padding_right, cv2.BORDER_CONSTANT, value=[0,0,0])
+            mask_padded = cv2.copyMakeBorder(
+                mask_sized,
+                0,
+                0,
+                padding_left,
+                padding_right,
+                cv2.BORDER_CONSTANT,
+                value=[0, 0, 0],
+            )
             drawing_padded = drawing_sized
         else:
-            drawing_padded = cv2.copyMakeBorder(drawing_sized, 0, 0, padding_left, padding_right, cv2.BORDER_CONSTANT, value=[0,0,0])
+            drawing_padded = cv2.copyMakeBorder(
+                drawing_sized,
+                0,
+                0,
+                padding_left,
+                padding_right,
+                cv2.BORDER_CONSTANT,
+                value=[0, 0, 0],
+            )
             mask_padded = mask_sized
         difference = cv2.subtract(mask_padded, drawing_padded)
         difference_2 = cv2.subtract(drawing_padded, mask_padded)
         both_differences = cv2.add(difference, difference_2)
         non_zero_count = cv2.countNonZero(both_differences)
 
-        difference_return_path = self._save_cv2_image_to_s3(both_differences, 'difference.png')
+        difference_return_path = self._save_cv2_image_to_s3(
+            both_differences, "difference.png"
+        )
 
         return {
-            'non_zero_count': non_zero_count,
-            'differences': difference_return_path,
-            'cropped_return_path': cropped_return_path,
-            'difference_return_path': difference_return_path,
+            "non_zero_count": non_zero_count,
+            "differences": difference_return_path,
+            "cropped_return_path": cropped_return_path,
+            "difference_return_path": difference_return_path,
         }
-
 
     def _run(self):
         input_drawing_path = self._save_image_to_s3(self.img_bytes, "input_drawing.png")
@@ -191,22 +224,20 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
         results = []
         for (key, filepath) in self._download_all_masks():
             comparison = self._run_comparison(user_drawing_filename, filepath)
-            non_zero_count = comparison['non_zero_count']
-            comparison['matchId'] = key
+            non_zero_count = comparison["non_zero_count"]
+            comparison["matchId"] = key
             results.append((non_zero_count, comparison))
 
         result = {
-            'results': sorted(results),
+            "results": sorted(results),
         }
 
         return {
             "isBase64Encoded": False,
             "statusCode": 200,
-            "headers": {
-                "Access-Control-Allow-Origin": "*"
-            },
+            "headers": {"Access-Control-Allow-Origin": "*"},
             "multiValueHeaders": {},
-            "body": json.dumps(result)
+            "body": json.dumps(result),
         }
 
     def handle(self):
@@ -221,7 +252,7 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
             self._handle_error(e)
             result = APIException().to_json_response()
 
-        print (result)
+        print(result)
         return result
 
 

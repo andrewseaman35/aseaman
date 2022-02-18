@@ -39,7 +39,7 @@ class WhiskyShelf extends React.Component {
         const { sort } = this.state;
         const order = SORT[sort.key];
         const sortKey = (item) => (
-            order.map(key => item[key] && item[key].toLowerCase())
+            order.map(key => item[key] && item[key].toLowerCase && item[key].toLowerCase())
         )
         const reverseMultiplier = sort.reversed ? -1 : 1;
         return this.props.items.concat().sort((a, b) => (
