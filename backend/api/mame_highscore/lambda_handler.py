@@ -10,7 +10,7 @@ CURR_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(CURR_DIR)
 
 from base.lambda_handler_base import APILambdaHandlerBase
-from base.api_exceptions import BadRequestException, UnauthorizedException
+from base.api_exceptions import BadRequestException, NotFoundException
 
 from high_score_parser import HighScoreParser
 
@@ -75,9 +75,7 @@ class MameHighscoreLambdaHandler(APILambdaHandlerBase):
 
     def _get_by_game_id(self, game_id):
         if not HighScoreParser.implemented(game_id):
-            return {
-                'errorMessage': '{} parser not set up'.format(game_id)
-            }
+            raise NotFoundException('{} parser not found'.format(game_id))
 
         highscore_data = self._get_highscore_data_by_game_id(game_id)
         return HighScoreParser.parse(game_id, highscore_data)
@@ -91,10 +89,10 @@ class MameHighscoreLambdaHandler(APILambdaHandlerBase):
         elif resource ==  'score':
             game_id = self.params.get('game_id')
             if not game_id:
-                raise Exception('game_id required')
+                raise BadRequestException('game_id required')
             result = self._get_by_game_id(game_id)
         else:
-            raise Exception('unsupported resource: {}'.format(resource))
+            raise NotFoundException('unsupported resource: {}'.format(resource))
 
         return {
             **self._empty_response(),

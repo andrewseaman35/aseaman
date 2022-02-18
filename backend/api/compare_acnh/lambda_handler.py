@@ -3,7 +3,10 @@ import json
 from boto3.dynamodb.conditions import Key
 
 from base.lambda_handler_base import APILambdaHandlerBase
-from base.api_exceptions import BadRequestException, UnauthorizedException
+from base.api_exceptions import (
+    BadRequestException,
+    NotFoundException,
+)
 
 SUMMARY_TABLE_NAME = 'compare_acnh_summary'
 LOCAL_SUMMARY_TABLE_NAME = 'compare_acnh_summary_local'
@@ -142,7 +145,7 @@ class CompareACNHHandler(APILambdaHandlerBase):
             villager_id = self.params['villager_id']
             results = self._get_results(villager_id)
         else:
-            raise Exception('unsupported resource: {}'.format(resource))
+            raise NotFoundException('unsupported resource: {}'.format(resource))
 
         return {
             **self._empty_response(),
@@ -157,10 +160,10 @@ class CompareACNHHandler(APILambdaHandlerBase):
             winner_id = self.params.get('winnerId')
             loser_id = self.params.get('loserId')
             if not winner_id or not loser_id:
-                raise Exception('incomplete request body')
+                raise BadRequestException('winnerId and loserId required')
             self._save_result(winner_id, loser_id)
         else:
-            raise Exception('unsupported resource: {}'.format(resource))
+            raise NotFoundException('unsupported resource: {}'.format(resource))
 
         return self._empty_response()
 

@@ -150,10 +150,10 @@ class ChessLambdaHandler(APILambdaHandlerBase):
         if resource == 'game':
             game_id = self.params.get('game_id')
             if not game_id:
-                raise Exception('need game_id')
+                raise BadRequestException('game_id required')
             result = self.__fetch_game(game_id)
         else:
-            raise Exception('unsupported resource: {}'.format(resource))
+            raise NotFoundException('unsupported resource: {}'.format(resource))
 
         return {
             **self._empty_response(),
@@ -168,13 +168,13 @@ class ChessLambdaHandler(APILambdaHandlerBase):
         if resource == 'game':
             game_mode = self.params.get('game_mode')
             if not game_mode:
-                raise Exception('need game_mode')
+                raise BadRequestException('need game_mode')
             result = self._new_game(game_mode)
         elif resource == 'turn':
             game_id = self.params.get('game_id')
             turn = self.params.get('turn')
             if not game_id or not turn:
-                raise Exception('game_id and turn required')
+                raise BadRequestException('game_id and turn required')
             result = self._save_turn(game_id, turn)
 
         return {
