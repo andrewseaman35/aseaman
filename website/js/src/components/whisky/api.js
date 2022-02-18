@@ -18,8 +18,8 @@ function addWhisky(item) {
 
     const postData = {
         action: 'add_to_shelf',
-        api_key: AUTH.getApiKey(),
         payload: {
+            api_key: AUTH.getApiKey(),
             distillery: distillery,
             name: name,
             type: type,
@@ -33,26 +33,29 @@ function addWhisky(item) {
     return $.ajax({
         type: 'POST',
         url: getAPIUrl('whisky'),
-        data: JSON.stringify(postData),
+        data: JSON.stringify({
+            api_key: AUTH.getApiKey(),
+            distillery: distillery,
+            name: name,
+            type: type,
+            region: region,
+            country: country,
+            style: style,
+            age: age,
+        }),
         contentType: 'application/json',
     }).promise();
 };
 
 function removeWhisky(distillery, name) {
-    console.log('removing', distillery, name);
-
-    const postData = {
-        action: 'remove_from_shelf',
+    const queryString = $.param({
+        distillery: distillery,
+        name: name,
         api_key: AUTH.getApiKey(),
-        payload: {
-            distillery: distillery,
-            name: name
-        }
-    };
+    })
     return $.ajax({
-        type: 'POST',
-        url: getAPIUrl('whisky'),
-        data: JSON.stringify(postData),
+        type: 'DELETE',
+        url: getAPIUrl('whisky') + `?${queryString}`,
         contentType: 'application/json',
     }).promise();
 };
