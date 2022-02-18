@@ -74,6 +74,15 @@ class APILambdaHandlerBase(object):
         else:
             raise Exception('unsupported value: {}'.format(value_type))
 
+    @classmethod
+    def _parse_ddb_item_list(self, ddb_items):
+        return [
+            {
+                key: value[list(value.keys())[0]]
+                for key, value in ddb_item.items()
+            } for ddb_item in ddb_items
+        ]
+
     def __parse_payload(self, payload):
         if self.rest_enabled:
             self.payload = payload
@@ -127,6 +136,9 @@ class APILambdaHandlerBase(object):
     def _run(self):
         raise NotImplementedError()
 
+    def _empty_response(self):
+        return {**EMPTY_RESPONSE}
+
     def handle_get(self):
         print("-- handling get")
         raise NotImplemented('no get')
@@ -139,7 +151,7 @@ class APILambdaHandlerBase(object):
         print(self.event)
         print("Handling: {}".format(self.event.get('httpMethod')))
 
-        response = self._empty_response()
+        response = {**EMPTY_RESPONSE}
         try:
             self.__before_run()
             if self.event.get('httpMethod') == 'GET':
@@ -147,7 +159,7 @@ class APILambdaHandlerBase(object):
             elif self.event.get('httpMethod') == 'POST':
                 response = self.handle_post()
             else:
-                response = {**EMPTY_RESPONSE, "statusCode": 403,}
+                response = {**EMPTY_RESPONSE, "statusCode": 405}
         except BaseAPIException as e:
             self._handle_api_error(e)
             response = e.to_json_response()

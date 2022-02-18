@@ -8,7 +8,6 @@ LOCAL_TABLE_NAME = 'whisky_local'
 
 class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
     auth_actions = {
-        'get_current_shelf': False,
         'add_to_shelf': True,
         'remove_from_shelf': True,
     }
@@ -17,10 +16,13 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
     def require_auth(self):
         return self.auth_actions[self.action]
 
+    @property
+    def rest_enabled(self):
+        return self.event.get('httpMethod') == 'GET'
+
     def _init(self):
         self.table_name = LOCAL_TABLE_NAME if self.is_local else TABLE_NAME
         self.actions = {
-            'get_current_shelf': self._get_current_shelf,
             'add_to_shelf': self._add_to_shelf,
             'remove_from_shelf': self._remove_from_shelf,
         }
@@ -189,7 +191,15 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
         if item is not None and item['current']['BOOL']:
             self._update_item(self.distillery, self.name, False)
 
-    def _get_current_shelf(self):
+    def _run(self):
+        result = self.actions[self.action]()
+
+        return {
+            **self._empty_response(),
+            "body": json.dumps(result)
+        }
+
+    def handle_get(self):
         ddb_items = self.ddb_client.scan(
             TableName=self.table_name,
             ExpressionAttributeNames={
@@ -202,25 +212,11 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
             },
             FilterExpression='#cur = :true',
         )['Items']
-        items = [
-            {
-                key: value[list(value.keys())[0]]
-                for key, value in ddb_item.items()
-            } for ddb_item in ddb_items
-        ]
-        return items
-
-    def _run(self):
-        result = self.actions[self.action]()
+        items = self._parse_ddb_item_list(ddb_items)
 
         return {
-            "isBase64Encoded": False,
-            "statusCode": 200,
-            "headers": {
-                "Access-Control-Allow-Origin": "*"
-            },
-            "multiValueHeaders": {},
-            "body": json.dumps(result)
+            **self._empty_response(),
+            'body': json.dumps(items),
         }
 
 

@@ -45,13 +45,7 @@ class SaltLevelLambdaHandler(APILambdaHandlerBase):
         else:
             ddb_items = self._scan_all()
 
-        items = [
-            {
-                key: value[list(value.keys())[0]]
-                for key, value in ddb_item.items()
-            } for ddb_item in ddb_items
-        ]
-
+        items = self._parse_ddb_item_list(ddb_items)
         return {
             **self._empty_response(),
             'body': json.dumps(items),
