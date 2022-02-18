@@ -51,15 +51,6 @@ def get_payload(request):
         })
     return payload
 
-def get_curl_payload(request):
-    string_payload = json.loads(request.data)
-    payload = {
-        'action': string_payload['action'],
-        'payload': json.loads(string_payload['payload']),
-        'local': True,
-    }
-    return payload
-
 @app.route('/mame_highscore/<resource>/', methods=['GET', 'POST'])
 @app.route('/mame_highscore/', methods=['GET', 'POST'], defaults={'resource': None})
 def mame_highscore(resource):
@@ -104,8 +95,9 @@ def compare_acnh(resource):
     return convert_to_response(result)
 
 
-@app.route('/chess/', methods=['POST'])
-def chess():
+@app.route('/chess/', methods=['GET', 'POST'], defaults={'resource': None})
+@app.route('/chess/<resource>/', methods=['GET', 'POST'])
+def chess(resource):
     payload = get_payload(request)
     result = make_lambda_request('chess', request, payload, None)
     return convert_to_response(result)

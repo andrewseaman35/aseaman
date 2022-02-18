@@ -7,8 +7,6 @@ TABLE_NAME = 'whisky'
 LOCAL_TABLE_NAME = 'whisky_local'
 
 class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
-    rest_enabled = True
-
     def _init(self):
         self.table_name = LOCAL_TABLE_NAME if self.is_local else TABLE_NAME
 

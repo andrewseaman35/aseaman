@@ -22,14 +22,17 @@ EMPTY_RESPONSE = {
 
 class APILambdaHandlerBase(object):
     require_auth = True
-    action = None
-    rest_enabled = False
-    validation_actions = {}
+    rest_enabled = True
 
     def __init__(self, event, context):
         self.event = event
         self.context = context
         self.api_key = None
+        self.handlers_by_method = {
+            'GET': self.handle_get,
+            'POST': self.handle_post,
+            'DELETE': self.handle_delete,
+        }
 
     def __init_aws(self):
         self.aws_session = (boto3.session.Session(profile_name='aseaman') if self.is_local
@@ -83,92 +86,52 @@ class APILambdaHandlerBase(object):
             } for ddb_item in ddb_items
         ]
 
-    def __parse_payload(self, payload):
-        if self.rest_enabled:
-            raise Exception("shouldn't be used for rest_enabled")
-
-        self._parse_payload(payload)
-        if self.require_auth:
-            self.api_key = payload.get('api_key')
-            if not self.api_key:
-                raise UnauthorizedException('api_key parameter required')
-            if not self.__api_key or not self.api_key == self.__api_key:
-                raise UnauthorizedException('invalid api key')
-
-    def _parse_payload(self, payload):
-        raise NotImplementedError
-
     def __parse_event(self, event):
         print(" -- Received event --")
         print(json.dumps(event, indent=4))
         print(" --                --")
 
-        if self.rest_enabled:
-            params = {}
-            if self.event['httpMethod'] in {'GET', 'DELETE'}:
-                params = self.event['queryStringParameters'] or {}
-                params.update(self.event['multiValueQueryStringParameters'] or {})
-            elif self.event['httpMethod'] == 'POST':
-                params = json.loads(self.event['body'])
-            self.params = params
-        else:
-            payload = event if self.is_local else json.loads(event['body'])
-            self.__parse_payload(payload)
+        params = {}
+        if self.event['httpMethod'] in {'GET', 'DELETE'}:
+            params = self.event['queryStringParameters'] or {}
+            params.update(self.event['multiValueQueryStringParameters'] or {})
+        elif self.event['httpMethod'] == 'POST':
+            params = json.loads(self.event['body'])
+        self.params = params
 
     def _validate_auth(self):
         api_key = self.params.get('api_key')
         if not self.__api_key or not api_key == self.__api_key:
             raise UnauthorizedException('invalid api key')
 
-    def __validate_event(self):
-        if not self.action:
-            return
-        validate = self.validation_actions.get(self.action, lambda: True)
-        validate()
-
     def __before_run(self):
         self.is_local = self.event.get('local', False)
         self._init()
         self.__init_aws()
         self.__parse_event(self.event)
-        if not self.rest_enabled:
-            self.__validate_event()
-        self._before_run()
-
-    def _before_run(self):
-        pass
-
-    def _run(self):
-        raise NotImplementedError()
 
     def _empty_response(self):
         return {**EMPTY_RESPONSE}
 
     def handle_get(self):
-        print("-- handling get")
-        raise NotImplemented('no get')
+        raise NotImplemented('GET not implemented')
 
     def handle_post(self):
-        print("-- handling post")
-        raise NotImplemented('blargh')
+        raise NotImplemented('POST not implemented')
 
     def handle_delete(self):
         raise NotImplemented('DELETE not implemented')
 
-    def handle_rest(self):
+    def handle(self):
         print(self.event)
         print("Handling: {}".format(self.event.get('httpMethod')))
 
         response = {**EMPTY_RESPONSE}
         try:
             self.__before_run()
-            method = self.event.get('httpMethod')
-            if method == 'GET':
-                response = self.handle_get()
-            elif method == 'POST':
-                response = self.handle_post()
-            elif method == 'DELETE':
-                response = self.handle_delete()
+            handler = self.handlers_by_method.get(self.event.get('httpMethod'), None)
+            if handler:
+                response = handler()
             else:
                 response = {**EMPTY_RESPONSE, "statusCode": 405}
         except BaseAPIException as e:
@@ -179,24 +142,6 @@ class APILambdaHandlerBase(object):
             response = APIException().to_json_response()
 
         return response
-
-    def handle(self):
-        if self.rest_enabled:
-            return self.handle_rest()
-
-        result = {**EMPTY_RESPONSE}
-        try:
-            self.__before_run()
-            result = self._run()
-        except BaseAPIException as e:
-            self._handle_api_error(e)
-            result = e.to_json_response()
-        except Exception as e:
-            self._handle_error(e)
-            result = APIException().to_json_response()
-
-        print (result)
-        return result
 
     def _handle_api_error(self, e):
         print('API error!')

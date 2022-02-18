@@ -20,7 +20,6 @@ BUCKET_NAME = "aseaman-public-bucket"
 
 class MameHighscoreLambdaHandler(APILambdaHandlerBase):
     require_auth = False
-    rest_enabled = True
     primary_partition_key = 'user'
 
     def _init(self):
@@ -82,19 +81,6 @@ class MameHighscoreLambdaHandler(APILambdaHandlerBase):
 
         highscore_data = self._get_highscore_data_by_game_id(game_id)
         return HighScoreParser.parse(game_id, highscore_data)
-
-    def _run(self):
-        result = self.actions[self.action]()
-
-        return {
-            "isBase64Encoded": False,
-            "statusCode": 200,
-            "headers": {
-                "Access-Control-Allow-Origin": "*"
-            },
-            "multiValueHeaders": {},
-            "body": json.dumps(result)
-        }
 
     def handle_get(self):
         path_parts = self.event['path'].strip('/').split('/')
