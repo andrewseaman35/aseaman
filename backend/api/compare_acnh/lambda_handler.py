@@ -22,52 +22,14 @@ def summarySortKey(item):
 
 class CompareACNHHandler(APILambdaHandlerBase):
     require_auth = False
+    rest_enabled = True
 
     def _init(self):
         self.summary_table_name = LOCAL_SUMMARY_TABLE_NAME if self.is_local else SUMMARY_TABLE_NAME
         self.results_table_name = LOCAL_RESULTS_TABLE_NAME if self.is_local else RESULTS_TABLE_NAME
-        self.actions = {
-            'all_summary_items': self._get_all_summary_items,
-            'get_summary_items': self._get_summary_items,
-            'results': self._get_results,
-            'save': self._save_result,
-        }
-        self.validation_actions = {
-            'get_summary_items': self._validate_get_summary_items,
-            'results': self._validate_get_results,
-            'save': self._validate_save_result,
-        }
 
     def _init_aws(self):
         self.ddb_client = self.aws_session.client('dynamodb', region_name='us-east-1')
-
-    def _parse_payload(self, payload):
-        self.action = payload.get('action')
-        if not self.action:
-            raise BadRequestException('action parameter required')
-        self.action = self.action.lower()
-        if self.action not in self.actions:
-            raise BadRequestException('invalid action')
-        self.payload = payload.get('payload')
-
-    def _validate_get_results(self):
-        self.villager_id = self.payload.get('villager_id')
-        if self.villager_id is None:
-            raise BadRequestException('villager_id parameter required')
-
-    def _validate_save_result(self):
-        self.winner = self.payload.get('winner')
-        if self.winner is None:
-            raise BadRequestException('winner parameter required')
-
-        self.loser = self.payload.get('loser')
-        if self.loser is None:
-            raise BadRequestException('loser parameter required')
-
-    def _validate_get_summary_items(self):
-        self.villager_ids = self.payload.get('villager_ids')
-        if self.villager_ids is None:
-            raise BadRequestException('villager_ids parameter required')
 
     def _complete_summary_items(self, items):
         for item in items:
@@ -79,7 +41,6 @@ class CompareACNHHandler(APILambdaHandlerBase):
             item['win_percentage'] = win_percentage
         return items
 
-
     def _get_all_summary_items(self):
         ddb_items = self.ddb_client.scan(
             TableName=self.summary_table_name,
@@ -89,12 +50,12 @@ class CompareACNHHandler(APILambdaHandlerBase):
         )
         return sorted(items, key=summarySortKey)
 
-    def _get_summary_items(self):
+    def _get_summary_items(self, villager_ids):
         request_keys = [{
             'villager_id': {
                 'S': villager_id
             }
-        } for villager_id in self.villager_ids]
+        } for villager_id in villager_ids]
 
         result = self.ddb_client.batch_get_item(
             RequestItems={
@@ -111,7 +72,7 @@ class CompareACNHHandler(APILambdaHandlerBase):
 
         return sorted(items, key=summarySortKey)
 
-    def _get_results(self):
+    def _get_results(self, villager_id):
         result = self.ddb_client.query(
             TableName=self.results_table_name,
             Select='ALL_ATTRIBUTES',
@@ -119,7 +80,7 @@ class CompareACNHHandler(APILambdaHandlerBase):
             KeyConditionExpression='v_id = :vid',
             ExpressionAttributeValues={
                 ':vid': {
-                    'S': self.villager_id,
+                    'S': villager_id,
                 },
             },
         )
@@ -164,25 +125,45 @@ class CompareACNHHandler(APILambdaHandlerBase):
             },
         )
 
-    def _save_result(self):
-        self._increment_summary_count(self.winner, 'wins')
-        self._increment_result_count(self.winner, self.loser, 'wins')
+    def _save_result(self, winner, loser):
+        self._increment_summary_count(winner, 'wins')
+        self._increment_result_count(winner, loser, 'wins')
 
-        self._increment_summary_count(self.loser, 'losses')
-        self._increment_result_count(self.loser, self.winner, 'losses')
+        self._increment_summary_count(loser, 'losses')
+        self._increment_result_count(loser, winner, 'losses')
 
-    def _run(self):
-        result = self.actions[self.action]()
+    def handle_get(self):
+        path_parts = self.event['path'].strip('/').split('/')
+        resource = path_parts[1] if len(path_parts) > 1 else None
+
+        if resource == 'summary':
+            villager_ids = self.params.get('villager_id')
+            results = self._get_summary_items(villager_ids) if villager_ids else self._get_all_summary_items()
+        elif resource == 'result':
+            villager_id = self.params['villager_id']
+            results = self._get_results(villager_id)
+        else:
+            raise Exception('unsupported resource: {}'.format(resource))
 
         return {
-            "isBase64Encoded": False,
-            "statusCode": 200,
-            "headers": {
-                "Access-Control-Allow-Origin": "*"
-            },
-            "multiValueHeaders": {},
-            "body": json.dumps(result)
+            **self._empty_response(),
+            'body': json.dumps(results)
         }
+
+    def handle_post(self):
+        path_parts = self.event['path'].strip('/').split('/')
+        resource = path_parts[1] if len(path_parts) > 1 else None
+
+        if resource == "result":
+            winner_id = self.params.get('winnerId')
+            loser_id = self.params.get('loserId')
+            if not winner_id or not loser_id:
+                raise Exception('incomplete request body')
+            self._save_result(winner_id, loser_id)
+        else:
+            raise Exception('unsupported resource: {}'.format(resource))
+
+        return self._empty_response()
 
 
 def lambda_handler(event, context):
