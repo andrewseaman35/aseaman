@@ -5,11 +5,8 @@ import { getAPIUrl } from '../../utils';
 
 function getCurrentShelf() {
     return $.ajax({
-        type: 'POST',
+        type: 'GET',
         url: getAPIUrl('whisky'),
-        data: JSON.stringify({
-            action: 'get_current_shelf'
-        }),
         contentType: 'application/json',
     }).promise();
 }

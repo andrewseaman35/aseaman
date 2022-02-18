@@ -78,7 +78,7 @@ def mame_highscore():
     result = make_lambda_request('mame_highscore', request.method, payload, None)
     return convert_to_response(result)
 
-@app.route('/whisky', methods=['POST'])
+@app.route('/whisky', methods=['GET', 'POST'])
 def whisky():
     payload = get_payload(request)
     result = make_lambda_request('whisky_shelf', request.method, payload, None)
