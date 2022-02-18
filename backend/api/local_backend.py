@@ -99,8 +99,9 @@ def salt_level():
     return convert_to_response(result)
 
 
-@app.route('/compare_acnh/', methods=['POST'])
-def compare_acnh():
+@app.route('/compare_acnh/', methods=['GET', 'POST'], defaults={'resource': None})
+@app.route('/compare_acnh/<resource>/', methods=['GET', 'POST'])
+def compare_acnh(resource):
     payload = get_payload(request)
     result = make_lambda_request('compare_acnh', request, payload, None)
     return convert_to_response(result)
