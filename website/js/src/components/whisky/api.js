@@ -16,20 +16,6 @@ function addWhisky(item) {
         distillery, name, country, region, type, style, age,
     } = item;
 
-    const postData = {
-        action: 'add_to_shelf',
-        payload: {
-            api_key: AUTH.getApiKey(),
-            distillery: distillery,
-            name: name,
-            type: type,
-            region: region,
-            country: country,
-            style: style,
-            age: age,
-        }
-    };
-
     return $.ajax({
         type: 'POST',
         url: getAPIUrl('whisky'),
