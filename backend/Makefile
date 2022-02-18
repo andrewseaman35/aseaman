@@ -1,7 +1,7 @@
 export
 ROOT := $(shell pwd)
 
-tfplan: package
+tfplan: #package
 	cd deployments/stage && terraform plan
 
 tfapply: #package <-- disabled for now since I can't rebuild the draw_jasper api on an M1 yet

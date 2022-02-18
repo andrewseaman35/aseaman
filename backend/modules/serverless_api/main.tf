@@ -78,6 +78,58 @@ resource "aws_api_gateway_resource" "api_respource" {
   rest_api_id = var.rest_api_id
 }
 
+resource "aws_api_gateway_method" "get" {
+  authorization = "NONE"
+  http_method   = "GET"
+  resource_id   = aws_api_gateway_resource.api_respource.id
+  rest_api_id   = var.rest_api_id
+}
+
+resource "aws_api_gateway_integration" "get_integration" {
+  rest_api_id             = var.rest_api_id
+  resource_id             = aws_api_gateway_resource.api_respource.id
+  http_method             = aws_api_gateway_method.get.http_method
+  integration_http_method = "GET"
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.api_lambda_function.invoke_arn
+}
+
+resource "aws_api_gateway_method_response" "get_200" {
+  rest_api_id = var.rest_api_id
+  resource_id   = aws_api_gateway_resource.api_respource.id
+  http_method   = aws_api_gateway_method.get.http_method
+  status_code   = "200"
+  response_models = {
+      "application/json" = "Empty"
+  }
+  response_parameters = {
+      "method.response.header.Access-Control-Allow-Headers" = true,
+      "method.response.header.Access-Control-Allow-Methods" = true,
+      "method.response.header.Access-Control-Allow-Origin" = true
+  }
+  depends_on = [
+    aws_api_gateway_method.post
+  ]
+}
+
+resource "aws_api_gateway_integration_response" "get_integration_response" {
+  rest_api_id = var.rest_api_id
+  resource_id = aws_api_gateway_resource.api_respource.id
+  http_method = aws_api_gateway_method.get.http_method
+  status_code = aws_api_gateway_method_response.get_200.status_code
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+    "method.response.header.Access-Control-Allow-Methods" = "'GET,OPTIONS,POST,PUT'",
+    "method.response.header.Access-Control-Allow-Origin" = "'*'"
+  }
+
+  depends_on = [
+    aws_api_gateway_integration.get_integration
+  ]
+}
+
+
 resource "aws_api_gateway_method" "post" {
   authorization = "NONE"
   http_method   = "POST"
