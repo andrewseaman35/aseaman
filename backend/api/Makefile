@@ -23,7 +23,7 @@ package_dir:
 	mkdir -p $(PACKAGE_DIR)/$(STATE_API_NAME)
 	mkdir -p $(PACKAGE_DIR)/$(WHISKY_API_NAME)
 
-package: package_dir venv
+package: venv
 	echo "Packaging backend lambda functions"
 	venv/bin/pip install -r state_check/requirements.txt -t $(PACKAGE_DIR)/$(STATE_API_NAME)
 	venv/bin/pip install -r whisky_shelf/requirements.txt -t $(PACKAGE_DIR)/$(WHISKY_API_NAME)
