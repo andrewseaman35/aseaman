@@ -2,9 +2,9 @@ import React from 'react';
 import _ from 'lodash';
 import $ from 'jquery';
 
-import { getAPIUrl, KEY_CODE } from '../utils';
+import { KEY_CODE } from '../utils';
 
-import { fetchAllSummaries } from './api';
+import { fetchAllSummaries, submitResult } from './api';
 import VillagerCard from './VillagerCard';
 import villagers from './acnh_villagers.js'
 
@@ -143,36 +143,13 @@ class CompareACNH extends React.Component {
         this.setState({ loading: true, winnerId: winnerId });
 
         $('.compare-card').blur();
-        const postData = {
-            action: 'save',
-            payload: {
-                winner: winnerId,
-                loser: loserId,
-            },
-        };
-        $.ajax({
-            type: 'POST',
-            url: getAPIUrl('compare_acnh'),
-            data: JSON.stringify(postData),
-            contentType: 'application/json',
-        }).then(() => {
+        submitResult(winnerId, loserId).then(() => {
             this.completed.add(this.toKey(villagerA, villagerB));
             this.nextComparison();
         });
     }
 
     renderCard(villager) {
-        const {
-            id,
-            name,
-            imageUrl,
-            gender,
-            personality,
-            species,
-            birthday,
-            catchPhrase,
-            hobbies,
-        } = villager;
         let cardClass = 'villager-compare';
         if (this.state.winnerId !== null) {
             cardClass += this.state.winnerId === villager.id ? ' winner' : ' loser';
