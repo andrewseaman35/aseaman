@@ -35,7 +35,7 @@ def convert_to_response(result):
 
 def get_payload(request):
     payload = {}
-    if request.method == 'GET':
+    if request.method in {'GET', 'DELETE'}:
         payload.update({
             'queryStringParameters': {
                 **request.args,
@@ -67,7 +67,7 @@ def mame_highscore(resource):
     result = make_lambda_request('mame_highscore', request, payload, None)
     return convert_to_response(result)
 
-@app.route('/whisky/', methods=['GET', 'POST'])
+@app.route('/whisky/', methods=['GET', 'DELETE', 'POST'])
 def whisky():
     payload = get_payload(request)
     result = make_lambda_request('whisky_shelf', request, payload, None)
