@@ -1,0 +1,30 @@
+{% extends 'base.jinja2' %}
+
+{% block page_id %}pokedex-index{% endblock %}
+{% block body_class %}pokedex{% endblock %}
+
+{% block content %}
+    <div class="inner">
+        <h1>Pokédex</h1>
+        <p>
+            I'm building a Pokédex! 
+        </p>
+
+        <div class="list">
+            <div class="list-header">Here's what I've done so far:</div>
+            <ul>
+                <li>
+                    {{ macros.link_to('pokedex/build.html', 'Build') }}
+                </li>
+                <li>
+                    {{ macros.link_to('pokedex/software.html', 'Software') }}
+                </li>
+            </ul>
+        </div>
+        <p>
+            And this is what it looks like right now:
+        </p>
+        {{ macros.captioned_image('mame/build/just_functional.jpg') }}
+    </div>
+{% endblock %}
+

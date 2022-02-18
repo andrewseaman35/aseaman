@@ -4,49 +4,35 @@ import { getAPIUrl } from '../utils';
 
 
 function fetchGame(gameId) {
-    const postData = {
-        'action': 'get_game',
-        'payload': {
+    return $.ajax({
+        type: 'GET',
+        url: getAPIUrl('chess') + "game/",
+        data: {
             'game_id': gameId,
         },
-    };
-
-    return $.ajax({
-        type: 'POST',
-        url: getAPIUrl('chess'),
-        data: JSON.stringify(postData),
         contentType: 'application/json',
     }).promise();
 }
 
 function saveTurn(gameId, turn) {
-    const postData = {
-        'action': 'save_turn',
-        'payload': {
-            'game_id': gameId,
-            'turn': turn,
-        }
-    };
-
     return $.ajax({
         type: 'POST',
-        url: getAPIUrl('chess'),
-        data: JSON.stringify(postData),
+        url: getAPIUrl('chess') + "turn/",
+        data: JSON.stringify({
+            'game_id': gameId,
+            'turn': turn,
+        }),
         contentType: 'application/json',
     }).promise();
 }
 
 function createNewGame(gameMode) {
-    const postData = {
-        action: 'new_game',
-        payload: {
-            'game_mode': gameMode,
-        },
-    };
     return $.ajax({
         type: 'POST',
-        url: getAPIUrl('chess'),
-        data: JSON.stringify(postData),
+        url: getAPIUrl('chess') + "game/",
+        data: JSON.stringify({
+            'game_mode': gameMode,
+        }),
         contentType: 'application/json',
     });
 }
