@@ -78,78 +78,26 @@ resource "aws_api_gateway_resource" "api_respource" {
   rest_api_id = var.rest_api_id
 }
 
-resource "aws_api_gateway_method" "get" {
+resource "aws_api_gateway_method" "any" {
   authorization = "NONE"
-  http_method   = "GET"
+  http_method   = "ANY"
   resource_id   = aws_api_gateway_resource.api_respource.id
   rest_api_id   = var.rest_api_id
 }
 
-resource "aws_api_gateway_integration" "get_integration" {
+resource "aws_api_gateway_integration" "any_integration" {
   rest_api_id             = var.rest_api_id
   resource_id             = aws_api_gateway_resource.api_respource.id
-  http_method             = aws_api_gateway_method.get.http_method
-  integration_http_method = "GET"
-  type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.api_lambda_function.invoke_arn
-}
-
-resource "aws_api_gateway_method_response" "get_200" {
-  rest_api_id = var.rest_api_id
-  resource_id   = aws_api_gateway_resource.api_respource.id
-  http_method   = aws_api_gateway_method.get.http_method
-  status_code   = "200"
-  response_models = {
-      "application/json" = "Empty"
-  }
-  response_parameters = {
-      "method.response.header.Access-Control-Allow-Headers" = true,
-      "method.response.header.Access-Control-Allow-Methods" = true,
-      "method.response.header.Access-Control-Allow-Origin" = true
-  }
-  depends_on = [
-    aws_api_gateway_method.post
-  ]
-}
-
-resource "aws_api_gateway_integration_response" "get_integration_response" {
-  rest_api_id = var.rest_api_id
-  resource_id = aws_api_gateway_resource.api_respource.id
-  http_method = aws_api_gateway_method.get.http_method
-  status_code = aws_api_gateway_method_response.get_200.status_code
-
-  response_parameters = {
-    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-    "method.response.header.Access-Control-Allow-Methods" = "'GET,OPTIONS,POST,PUT'",
-    "method.response.header.Access-Control-Allow-Origin" = "'*'"
-  }
-
-  depends_on = [
-    aws_api_gateway_integration.get_integration
-  ]
-}
-
-
-resource "aws_api_gateway_method" "post" {
-  authorization = "NONE"
-  http_method   = "POST"
-  resource_id   = aws_api_gateway_resource.api_respource.id
-  rest_api_id   = var.rest_api_id
-}
-
-resource "aws_api_gateway_integration" "post_integration" {
-  rest_api_id             = var.rest_api_id
-  resource_id             = aws_api_gateway_resource.api_respource.id
-  http_method             = aws_api_gateway_method.post.http_method
+  http_method             = aws_api_gateway_method.any.http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.api_lambda_function.invoke_arn
 }
 
-resource "aws_api_gateway_method_response" "post_200" {
+resource "aws_api_gateway_method_response" "any_200" {
   rest_api_id = var.rest_api_id
   resource_id   = aws_api_gateway_resource.api_respource.id
-  http_method   = aws_api_gateway_method.post.http_method
+  http_method   = aws_api_gateway_method.any.http_method
   status_code   = "200"
   response_models = {
       "application/json" = "Empty"
@@ -160,15 +108,15 @@ resource "aws_api_gateway_method_response" "post_200" {
       "method.response.header.Access-Control-Allow-Origin" = true
   }
   depends_on = [
-    aws_api_gateway_method.post
+    aws_api_gateway_method.any
   ]
 }
 
-resource "aws_api_gateway_integration_response" "post_integration_response" {
+resource "aws_api_gateway_integration_response" "any_integration_response" {
   rest_api_id = var.rest_api_id
   resource_id = aws_api_gateway_resource.api_respource.id
-  http_method = aws_api_gateway_method.post.http_method
-  status_code = aws_api_gateway_method_response.post_200.status_code
+  http_method = aws_api_gateway_method.any.http_method
+  status_code = aws_api_gateway_method_response.any_200.status_code
 
   response_parameters = {
     "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
@@ -177,7 +125,7 @@ resource "aws_api_gateway_integration_response" "post_integration_response" {
   }
 
   depends_on = [
-    aws_api_gateway_integration.post_integration
+    aws_api_gateway_integration.any_integration
   ]
 }
 
@@ -252,16 +200,16 @@ output "api_resource_id" {
   value = aws_api_gateway_resource.api_respource.id
 }
 
-output "api_gateway_post_method_id" {
-  value = aws_api_gateway_method.post.id
+output "api_gateway_any_method_id" {
+  value = aws_api_gateway_method.any.id
 }
 
 output "api_gateway_options_method_id" {
   value = aws_api_gateway_method.options.id
 }
 
-output "api_gateway_post_integration_id" {
-  value = aws_api_gateway_integration.post_integration.id
+output "api_gateway_any_integration_id" {
+  value = aws_api_gateway_integration.any_integration.id
 }
 
 output "api_gateway_options_integration_id" {

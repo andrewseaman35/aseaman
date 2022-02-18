@@ -157,44 +157,44 @@ resource "aws_api_gateway_deployment" "api_gateway_deployment" {
   triggers = {
     redeployment = sha1(jsonencode([
       module.state_api.api_resource_id,
-      module.state_api.api_gateway_post_method_id,
-      module.state_api.api_gateway_post_integration_id,
+      module.state_api.api_gateway_any_method_id,
+      module.state_api.api_gateway_any_integration_id,
       module.state_api.api_gateway_options_method_id,
       module.state_api.api_gateway_options_integration_id,
 
       module.salt_level_api.api_resource_id,
-      module.salt_level_api.api_gateway_post_method_id,
-      module.salt_level_api.api_gateway_post_integration_id,
+      module.salt_level_api.api_gateway_any_method_id,
+      module.salt_level_api.api_gateway_any_integration_id,
       module.salt_level_api.api_gateway_options_method_id,
       module.salt_level_api.api_gateway_options_integration_id,
 
       module.whisky_api.api_resource_id,
-      module.whisky_api.api_gateway_post_method_id,
-      module.whisky_api.api_gateway_post_integration_id,
+      module.whisky_api.api_gateway_any_method_id,
+      module.whisky_api.api_gateway_any_integration_id,
       module.whisky_api.api_gateway_options_method_id,
       module.whisky_api.api_gateway_options_integration_id,
 
       module.draw_jasper_api.api_resource_id,
-      module.draw_jasper_api.api_gateway_post_method_id,
-      module.draw_jasper_api.api_gateway_post_integration_id,
+      module.draw_jasper_api.api_gateway_any_method_id,
+      module.draw_jasper_api.api_gateway_any_integration_id,
       module.draw_jasper_api.api_gateway_options_method_id,
       module.draw_jasper_api.api_gateway_options_integration_id,
 
       module.compare_acnh_api.api_resource_id,
-      module.compare_acnh_api.api_gateway_post_method_id,
-      module.compare_acnh_api.api_gateway_post_integration_id,
+      module.compare_acnh_api.api_gateway_any_method_id,
+      module.compare_acnh_api.api_gateway_any_integration_id,
       module.compare_acnh_api.api_gateway_options_method_id,
       module.compare_acnh_api.api_gateway_options_integration_id,
 
       module.mame_highscore_api.api_resource_id,
-      module.mame_highscore_api.api_gateway_post_method_id,
-      module.mame_highscore_api.api_gateway_post_integration_id,
+      module.mame_highscore_api.api_gateway_any_method_id,
+      module.mame_highscore_api.api_gateway_any_integration_id,
       module.mame_highscore_api.api_gateway_options_method_id,
       module.mame_highscore_api.api_gateway_options_integration_id,
 
       module.chess_api.api_resource_id,
-      module.chess_api.api_gateway_post_method_id,
-      module.chess_api.api_gateway_post_integration_id,
+      module.chess_api.api_gateway_any_method_id,
+      module.chess_api.api_gateway_any_integration_id,
       module.chess_api.api_gateway_options_method_id,
       module.chess_api.api_gateway_options_integration_id,
     ]))
@@ -273,4 +273,3 @@ resource "aws_route53_record" "api_dns_record" {
     zone_id                = aws_api_gateway_domain_name.api_domain_name.regional_zone_id
   }
 }
-

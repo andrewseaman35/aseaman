@@ -109,7 +109,7 @@ class APILambdaHandlerBase(object):
         if self.rest_enabled:
             params = {}
             if self.event['httpMethod'] == 'GET':
-                params = self.event['queryStringParameters']
+                params = self.event['queryStringParameters'] or {}
             elif self.event['httpMethod'] == 'POST':
                 params = json.loads(self.event['body'])
             self.params = params
