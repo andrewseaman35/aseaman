@@ -5,9 +5,13 @@ ifeq ($(DEPLOY_ENV), stage)
 	API_URL := api.stage.andrewcseaman.com
 else ifeq ($(DEPLOY_ENV), live)
 	API_URL := api.live.andrewcseaman.com
-else ifneq ($(DEPLOY_ENV), local)
-$(error DEPLOY_ENV must be set to either [local, stage, live])
 endif
+
+assert_deploy_vars:
+	@if [ "$(API_URL)" = "" ]; then\
+		echo "DEPLOY_ENV not set correctly: [stage, live] permitted";\
+		exit 2;\
+	fi
 
 venv: requirements.txt
 	virtualenv venv --python=python3
@@ -24,7 +28,7 @@ deploy_website: website
 	aws s3 rm s3://$(DEPLOY_ENV).andrewcseaman.com --recursive > /dev/null
 	aws s3 cp --recursive --exclude=website/js/src/* website/public/ s3://$(DEPLOY_ENV).andrewcseaman.com > /dev/null
 
-deploy: deploy_api deploy_website
+deploy: assert_deploy_vars deploy_api deploy_website
 
 watch: venv
 	$(VENV_PYTHON) scripts/run_watchers.py

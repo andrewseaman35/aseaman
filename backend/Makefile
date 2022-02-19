@@ -11,14 +11,19 @@ tfapply: #package <-- disabled for now since I can't rebuild the draw_jasper api
 	cd deployments/$(DEPLOY_ENV) && terraform apply
 
 assert_running:
-ifeq ($(CONTAINER_ID),)
-	$(error Container not running; run `make start_local`)
-endif
+	@if [ "$(CONTAINER_ID)" = "" ]; then\
+		echo "Container not running; run 'make start_local'";\
+		exit 2;\
+	fi
 
 assert_not_running:
-ifneq ($(CONTAINER_ID),)
-	$(error Container already running: $(CONTAINER_ID))
-endif
+	@if [ ! "$(CONTAINER_ID)" = "" ]; then\
+		echo "Container running: $(CONTAINER_ID)";\
+		exit 2;\
+	fi
+
+test:
+	make -C api test
 
 build:
 	docker build --file development/Dockerfile --tag aseaman-local:latest .
@@ -32,9 +37,9 @@ start: build assert_not_running
 		aseaman-local
 
 stop:
-ifneq ($(CONTAINER_ID),)
-	docker kill $(CONTAINER_ID)
-endif
+	@if [ ! "$(CONTAINER_ID)" = "" ]; then\
+		docker kill $(CONTAINER_ID);\
+	fi
 
 restart: stop start
 
