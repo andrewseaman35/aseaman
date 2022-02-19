@@ -55,6 +55,10 @@ class APILambdaHandlerBase(object):
         pass
 
     @property
+    def is_local(self):
+        return os.environ.get("IN_DOCKER_API") == "true"
+
+    @property
     def __api_key(self):
         response = self.ssm_client.get_parameter(Name=SSM_API_KEY)
         value = response["Parameter"]["Value"]
@@ -106,7 +110,6 @@ class APILambdaHandlerBase(object):
             raise UnauthorizedException("invalid api key")
 
     def __before_run(self):
-        self.is_local = self.event.get("local", False)
         self._init()
         self.__init_aws()
         self.__parse_event(self.event)
