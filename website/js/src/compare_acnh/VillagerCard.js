@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { getImageSrc } from '../utils';
+
 
 const VillagerCard = (props) => {
     const outerClass = `villager ${props.forCompare ? 'compare-card' : ''} ${props.class}`;
@@ -15,7 +17,7 @@ const VillagerCard = (props) => {
     return (
         <div className={outerClass} onClick={onClick} role={role}>
             <div className="compare-inner">
-                <img src={props.imageUrl}></img>
+                <img src={getImageSrc(`images/acnh/villagers/${props.id}.png`)}></img>
                 <div className="detail-container">
                     <div className="name-and-record">
                         <span className="name">{props.name}</span>
@@ -91,6 +93,7 @@ VillagerCard.defaultProps = {
 };
 
 VillagerCard.propTypes = {
+    id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     gender: PropTypes.string.isRequired,
     personality: PropTypes.string.isRequired,

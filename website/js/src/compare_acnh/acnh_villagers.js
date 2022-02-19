@@ -2,7 +2,6 @@ const villagers = [
     {
         "id": "admiral",
         "name": "Admiral",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/52/NH-Admiral_poster.png/revision/latest?cb=20200522013249",
         "gender": "M",
         "personality": "Cranky",
         "species": "Bird",
@@ -13,7 +12,6 @@ const villagers = [
     {
         "id": "agent_s",
         "name": "Agent S",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/dd/NH-Agent_S_poster.png/revision/latest?cb=20200410184209",
         "gender": "F",
         "personality": "Peppy",
         "species": "Squirrel",
@@ -24,7 +22,6 @@ const villagers = [
     {
         "id": "agnes",
         "name": "Agnes",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/e/e8/NH-Agnes_poster.png/revision/latest?cb=20200410185748",
         "gender": "F",
         "personality": "Sisterly",
         "species": "Pig",
@@ -35,7 +32,6 @@ const villagers = [
     {
         "id": "al",
         "name": "Al",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/9/90/NH-Al_poster.png/revision/latest?cb=20200522013430",
         "gender": "M",
         "personality": "Lazy",
         "species": "Gorilla",
@@ -46,7 +42,6 @@ const villagers = [
     {
         "id": "alfonso",
         "name": "Alfonso",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/0/0d/NH-Alfonso_poster.png/revision/latest?cb=20200522013539",
         "gender": "M",
         "personality": "Lazy",
         "species": "Alligator",
@@ -57,7 +52,6 @@ const villagers = [
     {
         "id": "alice",
         "name": "Alice",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/9/96/NH-Alice_poster.png/revision/latest?cb=20200522013639",
         "gender": "F",
         "personality": "Normal",
         "species": "Koala",
@@ -68,7 +62,6 @@ const villagers = [
     {
         "id": "alli",
         "name": "Alli",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/e/e8/NH-Alli_poster.png/revision/latest?cb=20200522013709",
         "gender": "F",
         "personality": "Snooty",
         "species": "Alligator",
@@ -79,7 +72,6 @@ const villagers = [
     {
         "id": "amelia",
         "name": "Amelia",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/9/9d/NH-Amelia_poster.png/revision/latest?cb=20200410191249",
         "gender": "F",
         "personality": "Snooty",
         "species": "Eagle",
@@ -90,7 +82,6 @@ const villagers = [
     {
         "id": "anabelle",
         "name": "Anabelle",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/b/bd/NH-Anabelle_poster.png/revision/latest?cb=20200522013805",
         "gender": "F",
         "personality": "Peppy",
         "species": "Anteater",
@@ -101,7 +92,6 @@ const villagers = [
     {
         "id": "anchovy",
         "name": "Anchovy",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/f/fc/NH-Anchovy_poster.png/revision/latest?cb=20200522013831",
         "gender": "M",
         "personality": "Lazy",
         "species": "Bird",
@@ -112,7 +102,6 @@ const villagers = [
     {
         "id": "ankha",
         "name": "Ankha",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/9/9a/NH-Ankha_poster.png/revision/latest?cb=20200410182618",
         "gender": "F",
         "personality": "Snooty",
         "species": "Cat",
@@ -123,7 +112,6 @@ const villagers = [
     {
         "id": "angus",
         "name": "Angus",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/e/e9/NH-Angus_poster.png/revision/latest?cb=20200522013857",
         "gender": "M",
         "personality": "Cranky",
         "species": "Bull",
@@ -134,7 +122,6 @@ const villagers = [
     {
         "id": "anicotti",
         "name": "Anicotti",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/e/e1/NH-Anicotti_poster.png/revision/latest?cb=20200410192311",
         "gender": "F",
         "personality": "Peppy",
         "species": "Mouse",
@@ -145,7 +132,6 @@ const villagers = [
     {
         "id": "annalisa",
         "name": "Annalisa",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/6/64/NH-Annalisa_poster.png/revision/latest?cb=20200522013931",
         "gender": "F",
         "personality": "Normal",
         "species": "Anteater",
@@ -156,7 +142,6 @@ const villagers = [
     {
         "id": "annalise",
         "name": "Annalise",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/2/26/NH-Annalise_poster.png/revision/latest?cb=20200522013957",
         "gender": "F",
         "personality": "Snooty",
         "species": "Horse",
@@ -167,7 +152,6 @@ const villagers = [
     {
         "id": "antonio",
         "name": "Antonio",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/d0/NH-Antonio_poster.png/revision/latest?cb=20200522014023",
         "gender": "M",
         "personality": "Jock",
         "species": "Anteater",
@@ -178,7 +162,6 @@ const villagers = [
     {
         "id": "apollo",
         "name": "Apollo",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/7/78/NH-Apollo_poster.png/revision/latest?cb=20200410191419",
         "gender": "M",
         "personality": "Cranky",
         "species": "Eagle",
@@ -189,7 +172,6 @@ const villagers = [
     {
         "id": "apple",
         "name": "Apple",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/3/37/NH-Apple_poster.png/revision/latest?cb=20200522014055",
         "gender": "F",
         "personality": "Peppy",
         "species": "Hamster",
@@ -200,7 +182,6 @@ const villagers = [
     {
         "id": "astrid",
         "name": "Astrid",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/3/3f/NH-Astrid_poster.png/revision/latest?cb=20200522014120",
         "gender": "F",
         "personality": "Snooty",
         "species": "Kangaroo",
@@ -211,7 +192,6 @@ const villagers = [
     {
         "id": "audie",
         "name": "Audie",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/a/ac/NH-Audie_poster.png/revision/latest?cb=20200410183255",
         "gender": "F",
         "personality": "Peppy",
         "species": "Wolf",
@@ -222,7 +202,6 @@ const villagers = [
     {
         "id": "aurora",
         "name": "Aurora",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/3/33/NH-Aurora_poster.png/revision/latest?cb=20200410190924",
         "gender": "F",
         "personality": "Normal",
         "species": "Penguin",
@@ -233,7 +212,6 @@ const villagers = [
     {
         "id": "ava",
         "name": "Ava",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/2/25/NH-Ava_poster.png/revision/latest?cb=20200522014146",
         "gender": "F",
         "personality": "Normal",
         "species": "Chicken",
@@ -244,7 +222,6 @@ const villagers = [
     {
         "id": "avery",
         "name": "Avery",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/9/95/NH-Avery_poster.png/revision/latest?cb=20200410191139",
         "gender": "M",
         "personality": "Cranky",
         "species": "Eagle",
@@ -255,7 +232,6 @@ const villagers = [
     {
         "id": "axel",
         "name": "Axel",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/c/c5/NH-Axel_poster.png/revision/latest?cb=20200522014220",
         "gender": "M",
         "personality": "Jock",
         "species": "Elephant",
@@ -266,7 +242,6 @@ const villagers = [
     {
         "id": "baabara",
         "name": "Baabara",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/d0/NH-Baabara_poster.png/revision/latest?cb=20200410184807",
         "gender": "F",
         "personality": "Snooty",
         "species": "Sheep",
@@ -277,7 +252,6 @@ const villagers = [
     {
         "id": "bam",
         "name": "Bam",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/b/b2/NH-Bam_poster.png/revision/latest?cb=20200522020326",
         "gender": "M",
         "personality": "Jock",
         "species": "Deer",
@@ -288,7 +262,6 @@ const villagers = [
     {
         "id": "bangle",
         "name": "Bangle",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/c/c7/NH-Bangle_poster.png/revision/latest?cb=20200410183706",
         "gender": "F",
         "personality": "Peppy",
         "species": "Tiger",
@@ -299,7 +272,6 @@ const villagers = [
     {
         "id": "barold",
         "name": "Barold",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/9/99/NH-Barold_poster.png/revision/latest?cb=20200522020415",
         "gender": "M",
         "personality": "Lazy",
         "species": "Cub",
@@ -310,7 +282,6 @@ const villagers = [
     {
         "id": "bea",
         "name": "Bea",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/c/ca/NH-Bea_poster.png/revision/latest?cb=20200522020603",
         "gender": "F",
         "personality": "Normal",
         "species": "Dog",
@@ -321,7 +292,6 @@ const villagers = [
     {
         "id": "beardo",
         "name": "Beardo",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/c/c7/NH-Beardo_poster.png/revision/latest?cb=20200522020636",
         "gender": "M",
         "personality": "Smug",
         "species": "Bear",
@@ -332,7 +302,6 @@ const villagers = [
     {
         "id": "beau",
         "name": "Beau",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/2/2a/NH-Beau_poster.png/revision/latest?cb=20200522020451",
         "gender": "M",
         "personality": "Lazy",
         "species": "Deer",
@@ -343,7 +312,6 @@ const villagers = [
     {
         "id": "becky",
         "name": "Becky",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/e/ec/NH-Becky_poster.png/revision/latest?cb=20200522020704",
         "gender": "F",
         "personality": "Snooty",
         "species": "Chicken",
@@ -354,7 +322,6 @@ const villagers = [
     {
         "id": "bella",
         "name": "Bella",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/1e/NH-Bella_poster.png/revision/latest?cb=20200410192458",
         "gender": "F",
         "personality": "Peppy",
         "species": "Mouse",
@@ -365,7 +332,6 @@ const villagers = [
     {
         "id": "benedict",
         "name": "Benedict",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/0/0e/NH-Benedict_poster.png/revision/latest?cb=20200522020807",
         "gender": "M",
         "personality": "Lazy",
         "species": "Chicken",
@@ -376,7 +342,6 @@ const villagers = [
     {
         "id": "benjamin",
         "name": "Benjamin",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/5f/NH-Benjamin_poster.png/revision/latest?cb=20200522021534",
         "gender": "M",
         "personality": "Lazy",
         "species": "Dog",
@@ -387,7 +352,6 @@ const villagers = [
     {
         "id": "bertha",
         "name": "Bertha",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/3/3f/NH-Bertha_poster.png/revision/latest?cb=20200522021717",
         "gender": "F",
         "personality": "Normal",
         "species": "Hippo",
@@ -398,7 +362,6 @@ const villagers = [
     {
         "id": "bettina",
         "name": "Bettina",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/a/a9/NH-Bettina_poster.png/revision/latest?cb=20200410192221",
         "gender": "F",
         "personality": "Normal",
         "species": "Mouse",
@@ -409,7 +372,6 @@ const villagers = [
     {
         "id": "bianca",
         "name": "Bianca",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/e/e2/NH-Bianca_poster.png/revision/latest?cb=20200410183555",
         "gender": "F",
         "personality": "Peppy",
         "species": "Tiger",
@@ -420,7 +382,6 @@ const villagers = [
     {
         "id": "biff",
         "name": "Biff",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/2/2c/NH-Biff_poster.png/revision/latest?cb=20200522022022",
         "gender": "M",
         "personality": "Jock",
         "species": "Hippo",
@@ -431,7 +392,6 @@ const villagers = [
     {
         "id": "big_top",
         "name": "Big Top",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/c/ca/NH-Big_Top_poster.png/revision/latest?cb=20200522022102",
         "gender": "M",
         "personality": "Lazy",
         "species": "Elephant",
@@ -442,7 +402,6 @@ const villagers = [
     {
         "id": "bill",
         "name": "Bill",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/4/4c/NH-Bill_poster.png/revision/latest?cb=20200522022341",
         "gender": "M",
         "personality": "Jock",
         "species": "Duck",
@@ -453,7 +412,6 @@ const villagers = [
     {
         "id": "billy",
         "name": "Billy",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/d3/NH-Billy_poster.png/revision/latest?cb=20200522022646",
         "gender": "M",
         "personality": "Jock",
         "species": "Goat",
@@ -464,7 +422,6 @@ const villagers = [
     {
         "id": "biskit",
         "name": "Biskit",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/c/c8/NH-Biskit_poster.png/revision/latest?cb=20200522023459",
         "gender": "M",
         "personality": "Lazy",
         "species": "Dog",
@@ -475,7 +432,6 @@ const villagers = [
     {
         "id": "bitty",
         "name": "Bitty",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/7/7c/NH-Bitty_poster.png/revision/latest?cb=20200522023552",
         "gender": "F",
         "personality": "Snooty",
         "species": "Hippo",
@@ -486,7 +442,6 @@ const villagers = [
     {
         "id": "blaire",
         "name": "Blaire",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/f/f3/NH-Blaire_poster.png/revision/latest?cb=20200410184330",
         "gender": "F",
         "personality": "Snooty",
         "species": "Squirrel",
@@ -497,7 +452,6 @@ const villagers = [
     {
         "id": "blanche",
         "name": "Blanche",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/18/NH-Blanche_poster.png/revision/latest?cb=20200410191641",
         "gender": "F",
         "personality": "Snooty",
         "species": "Ostrich",
@@ -508,7 +462,6 @@ const villagers = [
     {
         "id": "bluebear",
         "name": "Bluebear",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/50/NH-Bluebear_poster.png/revision/latest?cb=20200522023616",
         "gender": "F",
         "personality": "Peppy",
         "species": "Cub",
@@ -519,7 +472,6 @@ const villagers = [
     {
         "id": "bob",
         "name": "Bob",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/14/NH-Bob_poster.png/revision/latest?cb=20200410181927",
         "gender": "M",
         "personality": "Lazy",
         "species": "Cat",
@@ -530,7 +482,6 @@ const villagers = [
     {
         "id": "bonbon",
         "name": "Bonbon",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/7/75/NH-Bonbon_poster.png/revision/latest?cb=20200410185137",
         "gender": "F",
         "personality": "Peppy",
         "species": "Rabbit",
@@ -541,7 +492,6 @@ const villagers = [
     {
         "id": "bones",
         "name": "Bones",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/9/91/NH-Bones_poster.png/revision/latest?cb=20200522023638",
         "gender": "M",
         "personality": "Lazy",
         "species": "Dog",
@@ -552,7 +502,6 @@ const villagers = [
     {
         "id": "boomer",
         "name": "Boomer",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/12/NH-Boomer_poster.png/revision/latest?cb=20200410190457",
         "gender": "M",
         "personality": "Lazy",
         "species": "Penguin",
@@ -563,7 +512,6 @@ const villagers = [
     {
         "id": "boone",
         "name": "Boone",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/9/9c/NH-Boone_poster.png/revision/latest?cb=20200522023703",
         "gender": "M",
         "personality": "Jock",
         "species": "Gorilla",
@@ -574,7 +522,6 @@ const villagers = [
     {
         "id": "boots",
         "name": "Boots",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/f/f3/NH-Boots_poster.png/revision/latest?cb=20200522023756",
         "gender": "M",
         "personality": "Jock",
         "species": "Alligator",
@@ -585,7 +532,6 @@ const villagers = [
     {
         "id": "boris",
         "name": "Boris",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/54/NH-Boris_poster.png/revision/latest?cb=20200410190014",
         "gender": "M",
         "personality": "Cranky",
         "species": "Pig",
@@ -596,7 +542,6 @@ const villagers = [
     {
         "id": "boyd",
         "name": "Boyd",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/9/9d/NH-Boyd_poster.png/revision/latest?cb=20200522023834",
         "gender": "M",
         "personality": "Cranky",
         "species": "Gorilla",
@@ -607,7 +552,6 @@ const villagers = [
     {
         "id": "bree",
         "name": "Bree",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/4/42/NH-Bree_poster.png/revision/latest?cb=20200410192442",
         "gender": "F",
         "personality": "Snooty",
         "species": "Mouse",
@@ -618,7 +562,6 @@ const villagers = [
     {
         "id": "broccolo",
         "name": "Broccolo",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/10/NH-Broccolo_poster.png/revision/latest?cb=20200410192254",
         "gender": "M",
         "personality": "Lazy",
         "species": "Mouse",
@@ -629,7 +572,6 @@ const villagers = [
     {
         "id": "broffina",
         "name": "Broffina",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/c/c9/NH-Broffina_poster.png/revision/latest?cb=20200522024006",
         "gender": "F",
         "personality": "Snooty",
         "species": "Chicken",
@@ -640,7 +582,6 @@ const villagers = [
     {
         "id": "bruce",
         "name": "Bruce",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/6/6d/NH-Bruce_poster.png/revision/latest?cb=20200522023923",
         "gender": "M",
         "personality": "Cranky",
         "species": "Deer",
@@ -651,7 +592,6 @@ const villagers = [
     {
         "id": "bubbles",
         "name": "Bubbles",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/8/8d/NH-Bubbles_poster.png/revision/latest?cb=20200522024110",
         "gender": "F",
         "personality": "Peppy",
         "species": "Hippo",
@@ -662,7 +602,6 @@ const villagers = [
     {
         "id": "buck",
         "name": "Buck",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/b/b2/NH-Buck_poster.png/revision/latest?cb=20200522024142",
         "gender": "M",
         "personality": "Jock",
         "species": "Horse",
@@ -673,7 +612,6 @@ const villagers = [
     {
         "id": "bud",
         "name": "Bud",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/a/ab/NH-Bud_poster.png/revision/latest?cb=20200522024206",
         "gender": "M",
         "personality": "Jock",
         "species": "Lion",
@@ -684,7 +622,6 @@ const villagers = [
     {
         "id": "bunnie",
         "name": "Bunnie",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/8/83/NH-Bunnie_poster.png/revision/latest?cb=20200410185724",
         "gender": "F",
         "personality": "Peppy",
         "species": "Rabbit",
@@ -695,7 +632,6 @@ const villagers = [
     {
         "id": "butch",
         "name": "Butch",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/9/9a/NH-Butch_poster.png/revision/latest?cb=20200522024229",
         "gender": "M",
         "personality": "Cranky",
         "species": "Dog",
@@ -706,7 +642,6 @@ const villagers = [
     {
         "id": "buzz",
         "name": "Buzz",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/f/f2/NH-Buzz_poster.png/revision/latest?cb=20200410191156",
         "gender": "M",
         "personality": "Cranky",
         "species": "Eagle",
@@ -717,7 +652,6 @@ const villagers = [
     {
         "id": "cally",
         "name": "Cally",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/0/01/NH-Cally_poster.png/revision/latest?cb=20200410184015",
         "gender": "F",
         "personality": "Normal",
         "species": "Squirrel",
@@ -728,7 +662,6 @@ const villagers = [
     {
         "id": "camofrog",
         "name": "Camofrog",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/9/91/NH-Camofrog_poster.png/revision/latest?cb=20200522045135",
         "gender": "M",
         "personality": "Cranky",
         "species": "Frog",
@@ -739,7 +672,6 @@ const villagers = [
     {
         "id": "canberra",
         "name": "Canberra",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/f/fd/NH-Canberra_poster.png/revision/latest?cb=20200522045240",
         "gender": "F",
         "personality": "Sisterly",
         "species": "Koala",
@@ -750,7 +682,6 @@ const villagers = [
     {
         "id": "candi",
         "name": "Candi",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/c/ce/NH-Candi_poster.png/revision/latest?cb=20200410192349",
         "gender": "F",
         "personality": "Peppy",
         "species": "Mouse",
@@ -761,7 +692,6 @@ const villagers = [
     {
         "id": "carmen",
         "name": "Carmen",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/1b/NH-Carmen_poster.png/revision/latest?cb=20200410185152",
         "gender": "F",
         "personality": "Peppy",
         "species": "Rabbit",
@@ -772,7 +702,6 @@ const villagers = [
     {
         "id": "caroline",
         "name": "Caroline",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/a/a5/NH-Caroline_poster.png/revision/latest?cb=20200410184152",
         "gender": "F",
         "personality": "Normal",
         "species": "Squirrel",
@@ -783,7 +712,6 @@ const villagers = [
     {
         "id": "carrie",
         "name": "Carrie",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/0/0d/NH-Carrie_poster.png/revision/latest?cb=20200522045312",
         "gender": "F",
         "personality": "Normal",
         "species": "Kangaroo",
@@ -794,7 +722,6 @@ const villagers = [
     {
         "id": "cashmere",
         "name": "Cashmere",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/8/8a/NH-Cashmere_poster.png/revision/latest?cb=20200410184707",
         "gender": "F",
         "personality": "Snooty",
         "species": "Sheep",
@@ -805,7 +732,6 @@ const villagers = [
     {
         "id": "celia",
         "name": "Celia",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/8/8a/NH-Celia_poster.png/revision/latest?cb=20200522045441",
         "gender": "F",
         "personality": "Normal",
         "species": "Eagle",
@@ -816,7 +742,6 @@ const villagers = [
     {
         "id": "cesar",
         "name": "Cesar",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/f/fd/NH-Cesar_poster.png/revision/latest?cb=20200522045504",
         "gender": "M",
         "personality": "Cranky",
         "species": "Gorilla",
@@ -827,7 +752,6 @@ const villagers = [
     {
         "id": "chadder",
         "name": "Chadder",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/3/33/NH-Chadder_poster.png/revision/latest?cb=20200410192119",
         "gender": "M",
         "personality": "Smug",
         "species": "Mouse",
@@ -838,7 +762,6 @@ const villagers = [
     {
         "id": "charlise",
         "name": "Charlise",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/7/71/NH-Charlise_poster.png/revision/latest?cb=20200522045539",
         "gender": "F",
         "personality": "Sisterly",
         "species": "Bear",
@@ -849,7 +772,6 @@ const villagers = [
     {
         "id": "cheri",
         "name": "Cheri",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/5c/NH-Cheri_poster.png/revision/latest?cb=20200522045610",
         "gender": "F",
         "personality": "Peppy",
         "species": "Cub",
@@ -860,7 +782,6 @@ const villagers = [
     {
         "id": "cherry",
         "name": "Cherry",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/6/6e/NH-Cherry_poster.png/revision/latest?cb=20200522045634",
         "gender": "F",
         "personality": "Sisterly",
         "species": "Dog",
@@ -871,7 +792,6 @@ const villagers = [
     {
         "id": "chester",
         "name": "Chester",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/c/cf/NH-Chester_poster.png/revision/latest?cb=20200522045921",
         "gender": "M",
         "personality": "Lazy",
         "species": "Cub",
@@ -882,7 +802,6 @@ const villagers = [
     {
         "id": "chevre",
         "name": "Chevre",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/f/f4/NH-Chevre_poster.png/revision/latest?cb=20200522045944",
         "gender": "F",
         "personality": "Normal",
         "species": "Goat",
@@ -893,7 +812,6 @@ const villagers = [
     {
         "id": "chief",
         "name": "Chief",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/56/NH-Chief_poster.png/revision/latest?cb=20200410183536",
         "gender": "M",
         "personality": "Cranky",
         "species": "Wolf",
@@ -904,7 +822,6 @@ const villagers = [
     {
         "id": "chops",
         "name": "Chops",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/6/6d/NH-Chops_poster.png/revision/latest?cb=20200410185841",
         "gender": "M",
         "personality": "Smug",
         "species": "Pig",
@@ -915,7 +832,6 @@ const villagers = [
     {
         "id": "chow",
         "name": "Chow",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/b/b7/NH-Chow_poster.png/revision/latest?cb=20200522050009",
         "gender": "M",
         "personality": "Cranky",
         "species": "Bear",
@@ -926,7 +842,6 @@ const villagers = [
     {
         "id": "chrissy",
         "name": "Chrissy",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/1f/NH-Chrissy_poster.png/revision/latest?cb=20200410185303",
         "gender": "F",
         "personality": "Peppy",
         "species": "Rabbit",
@@ -937,7 +852,6 @@ const villagers = [
     {
         "id": "claude",
         "name": "Claude",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/19/NH-Claude_poster.png/revision/latest?cb=20200410185347",
         "gender": "M",
         "personality": "Lazy",
         "species": "Rabbit",
@@ -948,7 +862,6 @@ const villagers = [
     {
         "id": "claudia",
         "name": "Claudia",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/b/b1/NH-Claudia_poster.png/revision/latest?cb=20200410183623",
         "gender": "F",
         "personality": "Snooty",
         "species": "Tiger",
@@ -959,7 +872,6 @@ const villagers = [
     {
         "id": "clay",
         "name": "Clay",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/0/0a/NH-Clay_poster.png/revision/latest?cb=20200522050111",
         "gender": "M",
         "personality": "Lazy",
         "species": "Hamster",
@@ -970,7 +882,6 @@ const villagers = [
     {
         "id": "cleo",
         "name": "Cleo",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/5e/NH-Cleo_poster.png/revision/latest?cb=20200522050148",
         "gender": "F",
         "personality": "Snooty",
         "species": "Horse",
@@ -981,7 +892,6 @@ const villagers = [
     {
         "id": "clyde",
         "name": "Clyde",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/9/93/NH-Clyde_poster.png/revision/latest?cb=20200522050211",
         "gender": "M",
         "personality": "Lazy",
         "species": "Horse",
@@ -992,7 +902,6 @@ const villagers = [
     {
         "id": "coach",
         "name": "Coach",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/a/a3/NH-Coach_poster.png/revision/latest?cb=20200522050254",
         "gender": "M",
         "personality": "Jock",
         "species": "Bull",
@@ -1003,7 +912,6 @@ const villagers = [
     {
         "id": "cobb",
         "name": "Cobb",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/6/6d/NH-Cobb_poster.png/revision/latest?cb=20200410190041",
         "gender": "M",
         "personality": "Jock",
         "species": "Pig",
@@ -1014,7 +922,6 @@ const villagers = [
     {
         "id": "coco",
         "name": "Coco",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/3/37/NH-Coco_poster.png/revision/latest?cb=20200410185633",
         "gender": "F",
         "personality": "Normal",
         "species": "Rabbit",
@@ -1025,7 +932,6 @@ const villagers = [
     {
         "id": "cole",
         "name": "Cole",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/6/60/NH-Cole_poster.png/revision/latest?cb=20200410185107",
         "gender": "M",
         "personality": "Lazy",
         "species": "Rabbit",
@@ -1036,7 +942,6 @@ const villagers = [
     {
         "id": "colton",
         "name": "Colton",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/0/04/NH-Colton_poster.png/revision/latest?cb=20200522050356",
         "gender": "M",
         "personality": "Smug",
         "species": "Horse",
@@ -1047,7 +952,6 @@ const villagers = [
     {
         "id": "cookie",
         "name": "Cookie",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/8/85/NH-Cookie_poster.png/revision/latest?cb=20200522050431",
         "gender": "F",
         "personality": "Peppy",
         "species": "Dog",
@@ -1058,7 +962,6 @@ const villagers = [
     {
         "id": "cousteau",
         "name": "Cousteau",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/4/41/NH-Cousteau_poster.png/revision/latest?cb=20200522050709",
         "gender": "M",
         "personality": "Jock",
         "species": "Frog",
@@ -1069,7 +972,6 @@ const villagers = [
     {
         "id": "cranston",
         "name": "Cranston",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/7/75/NH-Cranston_poster.png/revision/latest?cb=20200410191717",
         "gender": "M",
         "personality": "Lazy",
         "species": "Ostrich",
@@ -1080,7 +982,6 @@ const villagers = [
     {
         "id": "croque",
         "name": "Croque",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/9/9a/NH-Croque_poster.png/revision/latest?cb=20200522050646",
         "gender": "M",
         "personality": "Cranky",
         "species": "Frog",
@@ -1091,7 +992,6 @@ const villagers = [
     {
         "id": "cube",
         "name": "Cube",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/c/c6/NH-Cube_poster.png/revision/latest?cb=20200522050627",
         "gender": "M",
         "personality": "Lazy",
         "species": "Penguin",
@@ -1102,7 +1002,6 @@ const villagers = [
     {
         "id": "curlos",
         "name": "Curlos",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/15/NH-Curlos_poster.png/revision/latest?cb=20200410184634",
         "gender": "M",
         "personality": "Smug",
         "species": "Sheep",
@@ -1113,7 +1012,6 @@ const villagers = [
     {
         "id": "curly",
         "name": "Curly",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/14/NH-Curly_poster.png/revision/latest?cb=20200410190319",
         "gender": "M",
         "personality": "Jock",
         "species": "Pig",
@@ -1124,7 +1022,6 @@ const villagers = [
     {
         "id": "curt",
         "name": "Curt",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/e/ef/NH-Curt_poster.png/revision/latest?cb=20200522050603",
         "gender": "M",
         "personality": "Cranky",
         "species": "Bear",
@@ -1135,7 +1032,6 @@ const villagers = [
     {
         "id": "cyd",
         "name": "Cyd",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/9/9b/NH-Cyd_poster.png/revision/latest?cb=20200522050546",
         "gender": "M",
         "personality": "Cranky",
         "species": "Elephant",
@@ -1146,7 +1042,6 @@ const villagers = [
     {
         "id": "cyrano",
         "name": "Cyrano",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/6/65/NH-Cyrano_poster.png/revision/latest?cb=20200522050528",
         "gender": "M",
         "personality": "Cranky",
         "species": "Anteater",
@@ -1157,7 +1052,6 @@ const villagers = [
     {
         "id": "daisy",
         "name": "Daisy",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/a/a8/NH-Daisy_poster.png/revision/latest?cb=20200522052353",
         "gender": "F",
         "personality": "Normal",
         "species": "Dog",
@@ -1168,7 +1062,6 @@ const villagers = [
     {
         "id": "deena",
         "name": "Deena",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/f/f5/NH-Deena_poster.png/revision/latest?cb=20200522052417",
         "gender": "F",
         "personality": "Normal",
         "species": "Duck",
@@ -1179,7 +1072,6 @@ const villagers = [
     {
         "id": "deirdre",
         "name": "Deirdre",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/c/c0/NH-Deirdre_poster.png/revision/latest?cb=20200522052447",
         "gender": "F",
         "personality": "Sisterly",
         "species": "Deer",
@@ -1190,7 +1082,6 @@ const villagers = [
     {
         "id": "del",
         "name": "Del",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/c/c2/NH-Del_poster.png/revision/latest?cb=20200522052532",
         "gender": "M",
         "personality": "Cranky",
         "species": "Alligator",
@@ -1201,7 +1092,6 @@ const villagers = [
     {
         "id": "deli",
         "name": "Deli",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/0/03/NH-Deli_poster.png/revision/latest?cb=20200410192638",
         "gender": "M",
         "personality": "Lazy",
         "species": "Monkey",
@@ -1212,7 +1102,6 @@ const villagers = [
     {
         "id": "derwin",
         "name": "Derwin",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/9/95/NH-Derwin_poster.png/revision/latest?cb=20200522052553",
         "gender": "M",
         "personality": "Lazy",
         "species": "Duck",
@@ -1223,7 +1112,6 @@ const villagers = [
     {
         "id": "diana",
         "name": "Diana",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/10/NH-Diana_poster.png/revision/latest?cb=20200522052616",
         "gender": "F",
         "personality": "Snooty",
         "species": "Deer",
@@ -1234,7 +1122,6 @@ const villagers = [
     {
         "id": "diva",
         "name": "Diva",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/e/e7/NH-Diva_poster.png/revision/latest?cb=20200522052648",
         "gender": "F",
         "personality": "Sisterly",
         "species": "Frog",
@@ -1245,7 +1132,6 @@ const villagers = [
     {
         "id": "dizzy",
         "name": "Dizzy",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/6/65/NH-Dizzy_poster.png/revision/latest?cb=20200522052719",
         "gender": "M",
         "personality": "Lazy",
         "species": "Elephant",
@@ -1256,7 +1142,6 @@ const villagers = [
     {
         "id": "dobie",
         "name": "Dobie",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/9/90/NH-Dobie_poster.png/revision/latest?cb=20200410183359",
         "gender": "M",
         "personality": "Cranky",
         "species": "Wolf",
@@ -1267,7 +1152,6 @@ const villagers = [
     {
         "id": "doc",
         "name": "Doc",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/52/NH-Doc_poster.png/revision/latest?cb=20200410185403",
         "gender": "M",
         "personality": "Lazy",
         "species": "Rabbit",
@@ -1278,7 +1162,6 @@ const villagers = [
     {
         "id": "dom",
         "name": "Dom",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/b/b2/NH-Dom_poster.png/revision/latest?cb=20200410184416",
         "gender": "M",
         "personality": "Jock",
         "species": "Sheep",
@@ -1289,7 +1172,6 @@ const villagers = [
     {
         "id": "dora",
         "name": "Dora",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/e/ed/NH-Dora_poster.png/revision/latest?cb=20200522052746",
         "gender": "F",
         "personality": "Normal",
         "species": "Mouse",
@@ -1300,7 +1182,6 @@ const villagers = [
     {
         "id": "dotty",
         "name": "Dotty",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/7/72/NH-Dotty_poster.png/revision/latest?cb=20200410185658",
         "gender": "F",
         "personality": "Peppy",
         "species": "Rabbit",
@@ -1311,7 +1192,6 @@ const villagers = [
     {
         "id": "drago",
         "name": "Drago",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/52/NH-Drago_poster.png/revision/latest?cb=20200522052808",
         "gender": "M",
         "personality": "Lazy",
         "species": "Alligator",
@@ -1322,7 +1202,6 @@ const villagers = [
     {
         "id": "drake",
         "name": "Drake",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/16/NH-Drake_poster.png/revision/latest?cb=20200522052837",
         "gender": "M",
         "personality": "Lazy",
         "species": "Duck",
@@ -1333,7 +1212,6 @@ const villagers = [
     {
         "id": "drift",
         "name": "Drift",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/7/7f/NH-Drift_poster.png/revision/latest?cb=20200522053217",
         "gender": "M",
         "personality": "Jock",
         "species": "Frog",
@@ -1344,7 +1222,6 @@ const villagers = [
     {
         "id": "ed",
         "name": "Ed",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/2/20/NH-Ed_poster.png/revision/latest?cb=20200522053254",
         "gender": "M",
         "personality": "Smug",
         "species": "Horse",
@@ -1355,7 +1232,6 @@ const villagers = [
     {
         "id": "egbert",
         "name": "Egbert",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/d8/NH-Egbert_poster.png/revision/latest?cb=20200522053317",
         "gender": "M",
         "personality": "Lazy",
         "species": "Chicken",
@@ -1366,7 +1242,6 @@ const villagers = [
     {
         "id": "elise",
         "name": "Elise",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/c/cf/NH-Elise_poster.png/revision/latest?cb=20200522053343",
         "gender": "F",
         "personality": "Snooty",
         "species": "Monkey",
@@ -1377,7 +1252,6 @@ const villagers = [
     {
         "id": "ellie",
         "name": "Ellie",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/12/NH-Ellie_poster.png/revision/latest?cb=20200522053412",
         "gender": "F",
         "personality": "Normal",
         "species": "Elephant",
@@ -1388,7 +1262,6 @@ const villagers = [
     {
         "id": "elmer",
         "name": "Elmer",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/a/a5/NH-Elmer_poster.png/revision/latest?cb=20200522053439",
         "gender": "M",
         "personality": "Lazy",
         "species": "Horse",
@@ -1399,7 +1272,6 @@ const villagers = [
     {
         "id": "eloise",
         "name": "Eloise",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/d1/NH-Eloise_poster.png/revision/latest?cb=20200522053508",
         "gender": "F",
         "personality": "Snooty",
         "species": "Elephant",
@@ -1410,7 +1282,6 @@ const villagers = [
     {
         "id": "elvis",
         "name": "Elvis",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/3/36/NH-Elvis_poster.png/revision/latest?cb=20200522053535",
         "gender": "M",
         "personality": "Cranky",
         "species": "Lion",
@@ -1421,7 +1292,6 @@ const villagers = [
     {
         "id": "erik",
         "name": "Erik",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/f/fc/NH-Erik_poster.png/revision/latest?cb=20200522053559",
         "gender": "M",
         "personality": "Lazy",
         "species": "Deer",
@@ -1432,7 +1302,6 @@ const villagers = [
     {
         "id": "eunice",
         "name": "Eunice",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/a/a4/NH-Eunice_poster.png/revision/latest?cb=20200410184747",
         "gender": "F",
         "personality": "Normal",
         "species": "Sheep",
@@ -1443,7 +1312,6 @@ const villagers = [
     {
         "id": "eugene",
         "name": "Eugene",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/f/f7/NH-Eugene_poster.png/revision/latest?cb=20200410192826",
         "gender": "M",
         "personality": "Smug",
         "species": "Koala",
@@ -1454,7 +1322,6 @@ const villagers = [
     {
         "id": "fang",
         "name": "Fang",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/7/77/NH-Fang_poster.png/revision/latest?cb=20200410183143",
         "gender": "M",
         "personality": "Cranky",
         "species": "Wolf",
@@ -1465,7 +1332,6 @@ const villagers = [
     {
         "id": "fauna",
         "name": "Fauna",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/b/b4/NH-Fauna_poster.png/revision/latest?cb=20200522053652",
         "gender": "F",
         "personality": "Normal",
         "species": "Deer",
@@ -1476,7 +1342,6 @@ const villagers = [
     {
         "id": "felicity",
         "name": "Felicity",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/8/80/NH-Felicity_poster.png/revision/latest?cb=20200410182504",
         "gender": "F",
         "personality": "Peppy",
         "species": "Cat",
@@ -1487,7 +1352,6 @@ const villagers = [
     {
         "id": "filbert",
         "name": "Filbert",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/3/3e/NH-Filbert_poster.png/revision/latest?cb=20200410184309",
         "gender": "M",
         "personality": "Lazy",
         "species": "Squirrel",
@@ -1498,7 +1362,6 @@ const villagers = [
     {
         "id": "flip",
         "name": "Flip",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/19/NH-Flip_poster.png/revision/latest?cb=20200522053720",
         "gender": "M",
         "personality": "Jock",
         "species": "Monkey",
@@ -1509,7 +1372,6 @@ const villagers = [
     {
         "id": "flo",
         "name": "Flo",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/9/97/NH-Flo_poster.png/revision/latest?cb=20200410190352",
         "gender": "F",
         "personality": "Sisterly",
         "species": "Penguin",
@@ -1520,7 +1382,6 @@ const villagers = [
     {
         "id": "flora",
         "name": "Flora",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/4/46/NH-Flora_poster.png/revision/latest?cb=20200410191616",
         "gender": "F",
         "personality": "Peppy",
         "species": "Ostrich",
@@ -1531,7 +1392,6 @@ const villagers = [
     {
         "id": "flurry",
         "name": "Flurry",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/a/a3/NH-Flurry_poster.png/revision/latest?cb=20200522053750",
         "gender": "F",
         "personality": "Normal",
         "species": "Hamster",
@@ -1542,7 +1402,6 @@ const villagers = [
     {
         "id": "francine",
         "name": "Francine",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/a/a1/NH-Francine_poster.png/revision/latest?cb=20200410185321",
         "gender": "F",
         "personality": "Snooty",
         "species": "Rabbit",
@@ -1553,7 +1412,6 @@ const villagers = [
     {
         "id": "frank",
         "name": "Frank",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/8/86/NH-Frank_poster.png/revision/latest?cb=20200410191050",
         "gender": "M",
         "personality": "Cranky",
         "species": "Eagle",
@@ -1564,7 +1422,6 @@ const villagers = [
     {
         "id": "freckles",
         "name": "Freckles",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/e/ea/NH-Freckles_poster.png/revision/latest?cb=20200522053826",
         "gender": "F",
         "personality": "Peppy",
         "species": "Duck",
@@ -1575,7 +1432,6 @@ const villagers = [
     {
         "id": "freya",
         "name": "Freya",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/19/NH-Freya_poster.png/revision/latest?cb=20200410183241",
         "gender": "F",
         "personality": "Snooty",
         "species": "Wolf",
@@ -1586,7 +1442,6 @@ const villagers = [
     {
         "id": "friga",
         "name": "Friga",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/7/75/NH-Friga_poster.png/revision/latest?cb=20200410190835",
         "gender": "F",
         "personality": "Snooty",
         "species": "Penguin",
@@ -1597,7 +1452,6 @@ const villagers = [
     {
         "id": "frita",
         "name": "Frita",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/5e/NH-Frita_poster.png/revision/latest?cb=20200410184508",
         "gender": "F",
         "personality": "Sisterly",
         "species": "Sheep",
@@ -1608,7 +1462,6 @@ const villagers = [
     {
         "id": "frobert",
         "name": "Frobert",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/5a/NH-Frobert_poster.png/revision/latest?cb=20200522053855",
         "gender": "M",
         "personality": "Jock",
         "species": "Frog",
@@ -1619,7 +1472,6 @@ const villagers = [
     {
         "id": "fuchsia",
         "name": "Fuchsia",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/b/bf/NH-Fuchsia_poster.png/revision/latest?cb=20200522053932",
         "gender": "F",
         "personality": "Sisterly",
         "species": "Deer",
@@ -1630,7 +1482,6 @@ const villagers = [
     {
         "id": "gabi",
         "name": "Gabi",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/8/8b/NH-Gabi_poster.png/revision/latest?cb=20200410185547",
         "gender": "F",
         "personality": "Peppy",
         "species": "Rabbit",
@@ -1641,7 +1492,6 @@ const villagers = [
     {
         "id": "gala",
         "name": "Gala",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/8/87/NH-Gala_poster.png/revision/latest?cb=20200410185906",
         "gender": "F",
         "personality": "Normal",
         "species": "Pig",
@@ -1652,7 +1502,6 @@ const villagers = [
     {
         "id": "gaston",
         "name": "Gaston",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/6/6f/NH-Gaston_poster.png/revision/latest?cb=20200410185604",
         "gender": "M",
         "personality": "Cranky",
         "species": "Rabbit",
@@ -1663,7 +1512,6 @@ const villagers = [
     {
         "id": "gayle",
         "name": "Gayle",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/e/ee/NH-Gayle_poster.png/revision/latest?cb=20200522061322",
         "gender": "F",
         "personality": "Normal",
         "species": "Alligator",
@@ -1674,7 +1522,6 @@ const villagers = [
     {
         "id": "genji",
         "name": "Genji",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/7/70/NH-Genji_poster.png/revision/latest?cb=20200410185443",
         "gender": "M",
         "personality": "Jock",
         "species": "Rabbit",
@@ -1685,7 +1532,6 @@ const villagers = [
     {
         "id": "gigi",
         "name": "Gigi",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/4/44/NH-Gigi_poster.png/revision/latest?cb=20200522061648",
         "gender": "F",
         "personality": "Snooty",
         "species": "Frog",
@@ -1696,7 +1542,6 @@ const villagers = [
     {
         "id": "gladys",
         "name": "Gladys",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/6/65/NH-Gladys_poster.png/revision/latest?cb=20200410191858",
         "gender": "F",
         "personality": "Normal",
         "species": "Ostrich",
@@ -1707,7 +1552,6 @@ const villagers = [
     {
         "id": "gloria",
         "name": "Gloria",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/4/4d/NH-Gloria_poster.png/revision/latest?cb=20200522061718",
         "gender": "F",
         "personality": "Snooty",
         "species": "Duck",
@@ -1718,7 +1562,6 @@ const villagers = [
     {
         "id": "goldie",
         "name": "Goldie",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/e/e6/NH-Goldie_poster.png/revision/latest?cb=20200522061740",
         "gender": "F",
         "personality": "Normal",
         "species": "Dog",
@@ -1729,7 +1572,6 @@ const villagers = [
     {
         "id": "gonzo",
         "name": "Gonzo",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/de/NH-Gonzo_poster.png/revision/latest?cb=20200522061802",
         "gender": "M",
         "personality": "Cranky",
         "species": "Koala",
@@ -1740,7 +1582,6 @@ const villagers = [
     {
         "id": "goose",
         "name": "Goose",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/a/ab/NH-Goose_poster.png/revision/latest?cb=20200522063919",
         "gender": "M",
         "personality": "Jock",
         "species": "Chicken",
@@ -1751,7 +1592,6 @@ const villagers = [
     {
         "id": "graham",
         "name": "Graham",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/c/cf/NH-Graham_poster.png/revision/latest?cb=20200522061907",
         "gender": "M",
         "personality": "Smug",
         "species": "Hamster",
@@ -1762,7 +1602,6 @@ const villagers = [
     {
         "id": "greta",
         "name": "Greta",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/1c/NH-Greta_poster.png/revision/latest?cb=20200410192204",
         "gender": "F",
         "personality": "Snooty",
         "species": "Mouse",
@@ -1773,7 +1612,6 @@ const villagers = [
     {
         "id": "grizzly",
         "name": "Grizzly",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/9/96/NH-Grizzly_poster.png/revision/latest?cb=20200522061950",
         "gender": "M",
         "personality": "Cranky",
         "species": "Bear",
@@ -1784,7 +1622,6 @@ const villagers = [
     {
         "id": "groucho",
         "name": "Groucho",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/f/f7/NH-Groucho_poster.png/revision/latest?cb=20200522062020",
         "gender": "M",
         "personality": "Cranky",
         "species": "Bear",
@@ -1795,7 +1632,6 @@ const villagers = [
     {
         "id": "gruff",
         "name": "Gruff",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/4/44/NH-Gruff_poster.png/revision/latest?cb=20200522063653",
         "gender": "M",
         "personality": "Cranky",
         "species": "Goat",
@@ -1806,7 +1642,6 @@ const villagers = [
     {
         "id": "gwen",
         "name": "Gwen",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/0/04/NH-Gwen_poster.png/revision/latest?cb=20200410190543",
         "gender": "F",
         "personality": "Snooty",
         "species": "Penguin",
@@ -1817,7 +1652,6 @@ const villagers = [
     {
         "id": "hamlet",
         "name": "Hamlet",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/b/b2/NH-Hamlet_poster.png/revision/latest?cb=20200522062149",
         "gender": "M",
         "personality": "Jock",
         "species": "Hamster",
@@ -1828,7 +1662,6 @@ const villagers = [
     {
         "id": "hamphrey",
         "name": "Hamphrey",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/56/NH-Hamphrey_poster.png/revision/latest?cb=20200522062214",
         "gender": "M",
         "personality": "Cranky",
         "species": "Hamster",
@@ -1839,7 +1672,6 @@ const villagers = [
     {
         "id": "hans",
         "name": "Hans",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/e/eb/NH-Hans_poster.png/revision/latest?cb=20200522062237",
         "gender": "M",
         "personality": "Smug",
         "species": "Gorilla",
@@ -1850,7 +1682,6 @@ const villagers = [
     {
         "id": "harry",
         "name": "Harry",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/8/8d/NH-Harry_poster.png/revision/latest?cb=20200522062306",
         "gender": "M",
         "personality": "Cranky",
         "species": "Hippo",
@@ -1861,7 +1692,6 @@ const villagers = [
     {
         "id": "hazel",
         "name": "Hazel",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/4/48/NH-Hazel_poster.png/revision/latest?cb=20200410183827",
         "gender": "F",
         "personality": "Sisterly",
         "species": "Squirrel",
@@ -1872,7 +1702,6 @@ const villagers = [
     {
         "id": "henry",
         "name": "Henry",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/2/24/NH-Henry_poster.png/revision/latest?cb=20200522062351",
         "gender": "M",
         "personality": "Smug",
         "species": "Frog",
@@ -1883,7 +1712,6 @@ const villagers = [
     {
         "id": "hippeux",
         "name": "Hippeux",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/a/a3/NH-Hippeux_poster.png/revision/latest?cb=20200522062422",
         "gender": "M",
         "personality": "Smug",
         "species": "Hippo",
@@ -1894,7 +1722,6 @@ const villagers = [
     {
         "id": "hopkins",
         "name": "Hopkins",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/0/00/NH-Hopkins_poster.png/revision/latest?cb=20200410185246",
         "gender": "M",
         "personality": "Lazy",
         "species": "Rabbit",
@@ -1905,7 +1732,6 @@ const villagers = [
     {
         "id": "hopper",
         "name": "Hopper",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/0/01/NH-Hopper_poster.png/revision/latest?cb=20200410190612",
         "gender": "M",
         "personality": "Cranky",
         "species": "Penguin",
@@ -1916,7 +1742,6 @@ const villagers = [
     {
         "id": "hornsby",
         "name": "Hornsby",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/4/48/NH-Hornsby_poster.png/revision/latest?cb=20200410184934",
         "gender": "M",
         "personality": "Lazy",
         "species": "Rhino",
@@ -1927,7 +1752,6 @@ const villagers = [
     {
         "id": "huck",
         "name": "Huck",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/b/ba/NH-Huck_poster.png/revision/latest?cb=20200522062452",
         "gender": "M",
         "personality": "Smug",
         "species": "Frog",
@@ -1938,7 +1762,6 @@ const villagers = [
     {
         "id": "hugh",
         "name": "Hugh",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/3/3e/NH-Hugh_poster.png/revision/latest?cb=20200410190230",
         "gender": "M",
         "personality": "Lazy",
         "species": "Pig",
@@ -1949,7 +1772,6 @@ const villagers = [
     {
         "id": "iggly",
         "name": "Iggly",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/4/48/NH-Iggly_poster.png/revision/latest?cb=20200410190437",
         "gender": "M",
         "personality": "Jock",
         "species": "Penguin",
@@ -1960,7 +1782,6 @@ const villagers = [
     {
         "id": "ike",
         "name": "Ike",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/3/33/NH-Ike_poster.png/revision/latest?cb=20200522062526",
         "gender": "M",
         "personality": "Cranky",
         "species": "Bear",
@@ -1971,7 +1792,6 @@ const villagers = [
     {
         "id": "jacob",
         "name": "Jacob",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/6/65/NH-Jacob_poster.png/revision/latest?cb=20200522062554",
         "gender": "M",
         "personality": "Lazy",
         "species": "Bird",
@@ -1982,7 +1802,6 @@ const villagers = [
     {
         "id": "jacques",
         "name": "Jacques",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/b/bf/NH-Jacques_poster.png/revision/latest?cb=20200522062617",
         "gender": "M",
         "personality": "Smug",
         "species": "Bird",
@@ -1993,7 +1812,6 @@ const villagers = [
     {
         "id": "jambette",
         "name": "Jambette",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/a/ab/NH-Jambette_poster.png/revision/latest?cb=20200522063434",
         "gender": "F",
         "personality": "Normal",
         "species": "Frog",
@@ -2004,7 +1822,6 @@ const villagers = [
     {
         "id": "jay",
         "name": "Jay",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/e/e6/NH-Jay_poster.png/revision/latest?cb=20200522063408",
         "gender": "M",
         "personality": "Jock",
         "species": "Bird",
@@ -2015,7 +1832,6 @@ const villagers = [
     {
         "id": "jeremiah",
         "name": "Jeremiah",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/c/cd/NH-Jeremiah_poster.png/revision/latest?cb=20200522063336",
         "gender": "M",
         "personality": "Lazy",
         "species": "Frog",
@@ -2026,7 +1842,6 @@ const villagers = [
     {
         "id": "jitters",
         "name": "Jitters",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/de/NH-Jitters_poster.png/revision/latest?cb=20200522063309",
         "gender": "M",
         "personality": "Jock",
         "species": "Bird",
@@ -2037,7 +1852,6 @@ const villagers = [
     {
         "id": "joey",
         "name": "Joey",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/e/e4/NH-Joey_poster.png/revision/latest?cb=20200522063240",
         "gender": "M",
         "personality": "Lazy",
         "species": "Duck",
@@ -2048,7 +1862,6 @@ const villagers = [
     {
         "id": "judy",
         "name": "Judy",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/50/NH-Judy_poster.png/revision/latest?cb=20200522063219",
         "gender": "F",
         "personality": "Snooty",
         "species": "Cub",
@@ -2059,7 +1872,6 @@ const villagers = [
     {
         "id": "julia",
         "name": "Julia",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/f/fc/NH-Julia_poster.png/revision/latest?cb=20200410191747",
         "gender": "F",
         "personality": "Snooty",
         "species": "Ostrich",
@@ -2070,7 +1882,6 @@ const villagers = [
     {
         "id": "julian",
         "name": "Julian",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/f/f4/NH-Julian_poster.png/revision/latest?cb=20200410192747",
         "gender": "M",
         "personality": "Smug",
         "species": "Horse",
@@ -2081,7 +1892,6 @@ const villagers = [
     {
         "id": "june",
         "name": "June",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/9/90/NH-June_poster.png/revision/latest?cb=20200522063156",
         "gender": "F",
         "personality": "Normal",
         "species": "Cub",
@@ -2092,7 +1902,6 @@ const villagers = [
     {
         "id": "kabuki",
         "name": "Kabuki",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/f/f1/NH-Kabuki_poster.png/revision/latest?cb=20200410182309",
         "gender": "M",
         "personality": "Cranky",
         "species": "Cat",
@@ -2103,7 +1912,6 @@ const villagers = [
     {
         "id": "katt",
         "name": "Katt",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/e/ee/NH-Katt_poster.png/revision/latest?cb=20200410182946",
         "gender": "F",
         "personality": "Sisterly",
         "species": "Cat",
@@ -2114,7 +1922,6 @@ const villagers = [
     {
         "id": "keaton",
         "name": "Keaton",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/e/e5/NH-Keaton_poster.png/revision/latest?cb=20200522063126",
         "gender": "M",
         "personality": "Smug",
         "species": "Eagle",
@@ -2125,7 +1932,6 @@ const villagers = [
     {
         "id": "ken",
         "name": "Ken",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/2/2d/NH-Ken_poster.png/revision/latest?cb=20200522063105",
         "gender": "M",
         "personality": "Smug",
         "species": "Chicken",
@@ -2136,7 +1942,6 @@ const villagers = [
     {
         "id": "ketchup",
         "name": "Ketchup",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/e/e1/NH-Ketchup_poster.png/revision/latest?cb=20200522063044",
         "gender": "F",
         "personality": "Peppy",
         "species": "Duck",
@@ -2147,7 +1952,6 @@ const villagers = [
     {
         "id": "kevin",
         "name": "Kevin",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/2/20/NH-Kevin_poster.png/revision/latest?cb=20200410185817",
         "gender": "M",
         "personality": "Jock",
         "species": "Pig",
@@ -2158,7 +1962,6 @@ const villagers = [
     {
         "id": "kid_cat",
         "name": "Kid Cat",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/3/30/NH-Kid_Cat_poster.png/revision/latest?cb=20200410182348",
         "gender": "M",
         "personality": "Jock",
         "species": "Cat",
@@ -2169,7 +1972,6 @@ const villagers = [
     {
         "id": "kidd",
         "name": "Kidd",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/4/46/NH-Kidd_poster.png/revision/latest?cb=20200522063019",
         "gender": "M",
         "personality": "Smug",
         "species": "Goat",
@@ -2180,7 +1982,6 @@ const villagers = [
     {
         "id": "kiki",
         "name": "Kiki",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/3/34/NH-Kiki_poster.png/revision/latest?cb=20200410182200",
         "gender": "F",
         "personality": "Normal",
         "species": "Cat",
@@ -2191,7 +1992,6 @@ const villagers = [
     {
         "id": "kitt",
         "name": "Kitt",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/e/ed/NH-Kitt_poster.png/revision/latest?cb=20200522062950",
         "gender": "F",
         "personality": "Normal",
         "species": "Kangaroo",
@@ -2202,7 +2002,6 @@ const villagers = [
     {
         "id": "kitty",
         "name": "Kitty",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/7/7a/NH-Kitty_poster.png/revision/latest?cb=20200410182820",
         "gender": "F",
         "personality": "Snooty",
         "species": "Cat",
@@ -2213,7 +2012,6 @@ const villagers = [
     {
         "id": "klaus",
         "name": "Klaus",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/56/NH-Klaus_poster.png/revision/latest?cb=20200522062928",
         "gender": "M",
         "personality": "Smug",
         "species": "Bear",
@@ -2224,7 +2022,6 @@ const villagers = [
     {
         "id": "knox",
         "name": "Knox",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/4/45/NH-Knox_poster.png/revision/latest?cb=20200522062907",
         "gender": "M",
         "personality": "Cranky",
         "species": "Chicken",
@@ -2235,7 +2032,6 @@ const villagers = [
     {
         "id": "kody",
         "name": "Kody",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/3/30/NH-Kody_poster.png/revision/latest?cb=20200522062831",
         "gender": "M",
         "personality": "Jock",
         "species": "Cub",
@@ -2246,7 +2042,6 @@ const villagers = [
     {
         "id": "kyle",
         "name": "Kyle",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/9/93/NH-Kyle_poster.png/revision/latest?cb=20200410183323",
         "gender": "M",
         "personality": "Smug",
         "species": "Wolf",
@@ -2257,7 +2052,6 @@ const villagers = [
     {
         "id": "leonardo",
         "name": "Leonardo",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/1a/NH-Leonardo_poster.png/revision/latest?cb=20200410183650",
         "gender": "M",
         "personality": "Jock",
         "species": "Tiger",
@@ -2268,7 +2062,6 @@ const villagers = [
     {
         "id": "leopold",
         "name": "Leopold",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/dc/NH-Leopold_poster.png/revision/latest?cb=20200410192806",
         "gender": "M",
         "personality": "Smug",
         "species": "Lion",
@@ -2279,7 +2072,6 @@ const villagers = [
     {
         "id": "lily",
         "name": "Lily",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/f/f0/NH-Lily_poster.png/revision/latest?cb=20200522070016",
         "gender": "F",
         "personality": "Normal",
         "species": "Frog",
@@ -2290,7 +2082,6 @@ const villagers = [
     {
         "id": "limberg",
         "name": "Limberg",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/12/NH-Limberg_poster.png/revision/latest?cb=20200410192555",
         "gender": "M",
         "personality": "Cranky",
         "species": "Mouse",
@@ -2301,7 +2092,6 @@ const villagers = [
     {
         "id": "lionel",
         "name": "Lionel",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/b/b1/NH-Lionel_poster.png/revision/latest?cb=20200522065956",
         "gender": "M",
         "personality": "Smug",
         "species": "Lion",
@@ -2312,7 +2102,6 @@ const villagers = [
     {
         "id": "lobo",
         "name": "Lobo",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/f/f8/NH-Lobo_poster.png/revision/latest?cb=20200410183522",
         "gender": "M",
         "personality": "Cranky",
         "species": "Wolf",
@@ -2323,7 +2112,6 @@ const villagers = [
     {
         "id": "lolly",
         "name": "Lolly",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/b/b0/NH-Lolly_poster.png/revision/latest?cb=20200410182533",
         "gender": "F",
         "personality": "Normal",
         "species": "Cat",
@@ -2334,7 +2122,6 @@ const villagers = [
     {
         "id": "lopez",
         "name": "Lopez",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/dc/NH-Lopez_poster.png/revision/latest?cb=20200522065932",
         "gender": "M",
         "personality": "Smug",
         "species": "Deer",
@@ -2345,7 +2132,6 @@ const villagers = [
     {
         "id": "louie",
         "name": "Louie",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/13/NH-Louie_poster.png/revision/latest?cb=20200522065914",
         "gender": "M",
         "personality": "Jock",
         "species": "Gorilla",
@@ -2356,7 +2142,6 @@ const villagers = [
     {
         "id": "lucha",
         "name": "Lucha",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/dc/NH-Lucha_poster.png/revision/latest?cb=20200522065852",
         "gender": "M",
         "personality": "Smug",
         "species": "Bird",
@@ -2367,7 +2152,6 @@ const villagers = [
     {
         "id": "lucky",
         "name": "Lucky",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/4/4d/NH-Lucky_poster.png/revision/latest?cb=20200522065833",
         "gender": "M",
         "personality": "Lazy",
         "species": "Dog",
@@ -2378,7 +2162,6 @@ const villagers = [
     {
         "id": "lucy",
         "name": "Lucy",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/14/NH-Lucy_poster.png/revision/latest?cb=20200410190214",
         "gender": "F",
         "personality": "Normal",
         "species": "Pig",
@@ -2389,7 +2172,6 @@ const villagers = [
     {
         "id": "lyman",
         "name": "Lyman",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/1a/NH-Lyman_poster.png/revision/latest?cb=20200522065812",
         "gender": "M",
         "personality": "Jock",
         "species": "Koala",
@@ -2400,7 +2182,6 @@ const villagers = [
     {
         "id": "mac",
         "name": "Mac",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/4/4d/NH-Mac_poster.png/revision/latest?cb=20200522065753",
         "gender": "M",
         "personality": "Jock",
         "species": "Dog",
@@ -2411,7 +2192,6 @@ const villagers = [
     {
         "id": "maddie",
         "name": "Maddie",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/0/07/NH-Maddie_poster.png/revision/latest?cb=20200522065730",
         "gender": "F",
         "personality": "Peppy",
         "species": "Dog",
@@ -2422,7 +2202,6 @@ const villagers = [
     {
         "id": "maelle",
         "name": "Maelle",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/de/NH-Maelle_poster.png/revision/latest?cb=20200522065709",
         "gender": "F",
         "personality": "Snooty",
         "species": "Duck",
@@ -2433,7 +2212,6 @@ const villagers = [
     {
         "id": "maggie",
         "name": "Maggie",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/4/4f/NH-Maggie_poster.png/revision/latest?cb=20200410185952",
         "gender": "F",
         "personality": "Normal",
         "species": "Pig",
@@ -2444,7 +2222,6 @@ const villagers = [
     {
         "id": "mallary",
         "name": "Mallary",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/3/35/NH-Mallary_poster.png/revision/latest?cb=20200522065649",
         "gender": "F",
         "personality": "Snooty",
         "species": "Duck",
@@ -2455,7 +2232,6 @@ const villagers = [
     {
         "id": "maple",
         "name": "Maple",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/d1/NH-Maple_poster.png/revision/latest?cb=20200522065624",
         "gender": "F",
         "personality": "Normal",
         "species": "Cub",
@@ -2466,7 +2242,6 @@ const villagers = [
     {
         "id": "marcel",
         "name": "Marcel",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/e/e5/NH-Marcel_poster.png/revision/latest?cb=20200522065604",
         "gender": "M",
         "personality": "Lazy",
         "species": "Dog",
@@ -2477,7 +2252,6 @@ const villagers = [
     {
         "id": "marcie",
         "name": "Marcie",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/db/NH-Marcie_poster.png/revision/latest?cb=20200522065544",
         "gender": "F",
         "personality": "Normal",
         "species": "Kangaroo",
@@ -2488,7 +2262,6 @@ const villagers = [
     {
         "id": "margie",
         "name": "Margie",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/f/ff/NH-Margie_poster.png/revision/latest?cb=20200522065513",
         "gender": "F",
         "personality": "Normal",
         "species": "Elephant",
@@ -2499,7 +2272,6 @@ const villagers = [
     {
         "id": "marina",
         "name": "Marina",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/f/fd/NH-Marina_poster.png/revision/latest?cb=20200410192009",
         "gender": "F",
         "personality": "Normal",
         "species": "Octopus",
@@ -2510,7 +2282,6 @@ const villagers = [
     {
         "id": "marshal",
         "name": "Marshal",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/e/e6/NH-Marshal_poster.png/revision/latest?cb=20200522065451",
         "gender": "M",
         "personality": "Smug",
         "species": "Squirrel",
@@ -2521,7 +2292,6 @@ const villagers = [
     {
         "id": "mathilda",
         "name": "Mathilda",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/8/81/NH-Mathilda_poster.png/revision/latest?cb=20200522065431",
         "gender": "F",
         "personality": "Snooty",
         "species": "Kangaroo",
@@ -2532,7 +2302,6 @@ const villagers = [
     {
         "id": "megan",
         "name": "Megan",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/18/NH-Megan_poster.png/revision/latest?cb=20200522065410",
         "gender": "F",
         "personality": "Normal",
         "species": "Bear",
@@ -2543,7 +2312,6 @@ const villagers = [
     {
         "id": "melba",
         "name": "Melba",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/57/NH-Melba_poster.png/revision/latest?cb=20200522065347",
         "gender": "F",
         "personality": "Normal",
         "species": "Koala",
@@ -2554,7 +2322,6 @@ const villagers = [
     {
         "id": "merengue",
         "name": "Merengue",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/9/9d/NH-Merengue_poster.png/revision/latest?cb=20200410184909",
         "gender": "F",
         "personality": "Normal",
         "species": "Rhino",
@@ -2565,7 +2332,6 @@ const villagers = [
     {
         "id": "merry",
         "name": "Merry",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/f/f0/NH-Merry_poster.png/revision/latest?cb=20200410182436",
         "gender": "F",
         "personality": "Peppy",
         "species": "Cat",
@@ -2576,7 +2342,6 @@ const villagers = [
     {
         "id": "midge",
         "name": "Midge",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/8/86/NH-Midge_poster.png/revision/latest?cb=20200522065322",
         "gender": "F",
         "personality": "Normal",
         "species": "Bird",
@@ -2587,7 +2352,6 @@ const villagers = [
     {
         "id": "mint",
         "name": "Mint",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/2/2a/NH-Mint_poster.png/revision/latest?cb=20200410184044",
         "gender": "F",
         "personality": "Snooty",
         "species": "Squirrel",
@@ -2598,7 +2362,6 @@ const villagers = [
     {
         "id": "mira",
         "name": "Mira",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/7/79/NH-Mira_poster.png/revision/latest?cb=20200410185049",
         "gender": "F",
         "personality": "Sisterly",
         "species": "Rabbit",
@@ -2609,7 +2372,6 @@ const villagers = [
     {
         "id": "miranda",
         "name": "Miranda",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/f/f4/NH-Miranda_poster.png/revision/latest?cb=20200522065300",
         "gender": "F",
         "personality": "Snooty",
         "species": "Duck",
@@ -2620,7 +2382,6 @@ const villagers = [
     {
         "id": "mitzi",
         "name": "Mitzi",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/2/20/NH-Mitzi_poster.png/revision/latest?cb=20200410182006",
         "gender": "F",
         "personality": "Normal",
         "species": "Cat",
@@ -2631,7 +2392,6 @@ const villagers = [
     {
         "id": "moe",
         "name": "Moe",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/7/7e/NH-Moe_poster.png/revision/latest?cb=20200410182701",
         "gender": "M",
         "personality": "Lazy",
         "species": "Cat",
@@ -2642,7 +2402,6 @@ const villagers = [
     {
         "id": "molly",
         "name": "Molly",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/0/00/NH-Molly_poster.png/revision/latest?cb=20200522065237",
         "gender": "F",
         "personality": "Normal",
         "species": "Duck",
@@ -2653,7 +2412,6 @@ const villagers = [
     {
         "id": "monique",
         "name": "Monique",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/d3/NH-Monique_poster.png/revision/latest?cb=20200410182724",
         "gender": "F",
         "personality": "Snooty",
         "species": "Cat",
@@ -2664,7 +2422,6 @@ const villagers = [
     {
         "id": "monty",
         "name": "Monty",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/2/2b/NH-Monty_poster.png/revision/latest?cb=20200522065214",
         "gender": "M",
         "personality": "Cranky",
         "species": "Monkey",
@@ -2675,7 +2432,6 @@ const villagers = [
     {
         "id": "moose",
         "name": "Moose",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/b/b2/NH-Moose_poster.png/revision/latest?cb=20200410192236",
         "gender": "M",
         "personality": "Jock",
         "species": "Mouse",
@@ -2686,7 +2442,6 @@ const villagers = [
     {
         "id": "mott",
         "name": "Mott",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/6/66/NH-Mott_poster.png/revision/latest?cb=20200522065136",
         "gender": "M",
         "personality": "Jock",
         "species": "Lion",
@@ -2697,7 +2452,6 @@ const villagers = [
     {
         "id": "muffy",
         "name": "Muffy",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/7/70/NH-Muffy_poster.png/revision/latest?cb=20200410184450",
         "gender": "F",
         "personality": "Sisterly",
         "species": "Sheep",
@@ -2708,7 +2462,6 @@ const villagers = [
     {
         "id": "murphy",
         "name": "Murphy",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/6/69/NH-Murphy_poster.png/revision/latest?cb=20200522065115",
         "gender": "M",
         "personality": "Cranky",
         "species": "Cub",
@@ -2719,7 +2472,6 @@ const villagers = [
     {
         "id": "nan",
         "name": "Nan",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/de/NH-Nan_poster.png/revision/latest?cb=20200522184645",
         "gender": "F",
         "personality": "Normal",
         "species": "Goat",
@@ -2730,7 +2482,6 @@ const villagers = [
     {
         "id": "nana",
         "name": "Nana",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/6/64/NH-Nana_poster.png/revision/latest?cb=20200522184710",
         "gender": "F",
         "personality": "Normal",
         "species": "Monkey",
@@ -2741,7 +2492,6 @@ const villagers = [
     {
         "id": "naomi",
         "name": "Naomi",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/9/97/NH-Naomi_poster.png/revision/latest?cb=20200522184727",
         "gender": "F",
         "personality": "Snooty",
         "species": "Cow",
@@ -2752,7 +2502,6 @@ const villagers = [
     {
         "id": "nate",
         "name": "Nate",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/1a/NH-Nate_poster.png/revision/latest?cb=20200522184748",
         "gender": "M",
         "personality": "Lazy",
         "species": "Bear",
@@ -2763,7 +2512,6 @@ const villagers = [
     {
         "id": "nibbles",
         "name": "Nibbles",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/d5/NH-Nibbles_poster.png/revision/latest?cb=20200410184229",
         "gender": "F",
         "personality": "Peppy",
         "species": "Squirrel",
@@ -2774,7 +2522,6 @@ const villagers = [
     {
         "id": "norma",
         "name": "Norma",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/9/94/NH-Norma_poster.png/revision/latest?cb=20200522184806",
         "gender": "F",
         "personality": "Normal",
         "species": "Cow",
@@ -2785,7 +2532,6 @@ const villagers = [
     {
         "id": "octavian",
         "name": "Octavian",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/8/82/NH-Octavian_poster.png/revision/latest?cb=20200410192036",
         "gender": "M",
         "personality": "Cranky",
         "species": "Octopus",
@@ -2796,7 +2542,6 @@ const villagers = [
     {
         "id": "o'hare",
         "name": "O'Hare",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/57/NH-O%27Hare_poster.png/revision/latest?cb=20200410185212",
         "gender": "M",
         "personality": "Smug",
         "species": "Rabbit",
@@ -2807,7 +2552,6 @@ const villagers = [
     {
         "id": "olaf",
         "name": "Olaf",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/5c/NH-Olaf_poster.png/revision/latest?cb=20200522184827",
         "gender": "M",
         "personality": "Smug",
         "species": "Anteater",
@@ -2818,7 +2562,6 @@ const villagers = [
     {
         "id": "olive",
         "name": "Olive",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/f/fd/NH-Olive_poster.png/revision/latest?cb=20200522184858",
         "gender": "F",
         "personality": "Normal",
         "species": "Cub",
@@ -2829,7 +2572,6 @@ const villagers = [
     {
         "id": "olivia",
         "name": "Olivia",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/5a/NH-Olivia_poster.png/revision/latest?cb=20200410182136",
         "gender": "F",
         "personality": "Snooty",
         "species": "Cat",
@@ -2840,7 +2582,6 @@ const villagers = [
     {
         "id": "opal",
         "name": "Opal",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/7/73/NH-Opal_poster.png/revision/latest?cb=20200522184918",
         "gender": "F",
         "personality": "Snooty",
         "species": "Elephant",
@@ -2851,7 +2592,6 @@ const villagers = [
     {
         "id": "ozzie",
         "name": "Ozzie",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/2/2c/NH-Ozzie_poster.png/revision/latest?cb=20200522185151",
         "gender": "M",
         "personality": "Lazy",
         "species": "Koala",
@@ -2862,7 +2602,6 @@ const villagers = [
     {
         "id": "pancetti",
         "name": "Pancetti",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/4/49/NH-Pancetti_poster.png/revision/latest?cb=20200410185802",
         "gender": "F",
         "personality": "Snooty",
         "species": "Pig",
@@ -2873,7 +2612,6 @@ const villagers = [
     {
         "id": "pango",
         "name": "Pango",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/d3/NH-Pango_poster.png/revision/latest?cb=20200522185217",
         "gender": "F",
         "personality": "Peppy",
         "species": "Anteater",
@@ -2884,7 +2622,6 @@ const villagers = [
     {
         "id": "paolo",
         "name": "Paolo",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/f/fc/NH-Paolo_poster.png/revision/latest?cb=20200522185319",
         "gender": "M",
         "personality": "Lazy",
         "species": "Elephant",
@@ -2895,7 +2632,6 @@ const villagers = [
     {
         "id": "papi",
         "name": "Papi",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/6/6d/NH-Papi_poster.png/revision/latest?cb=20200522185246",
         "gender": "M",
         "personality": "Lazy",
         "species": "Horse",
@@ -2906,7 +2642,6 @@ const villagers = [
     {
         "id": "pashmina",
         "name": "Pashmina",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/2/29/NH-Pashmina_poster.png/revision/latest?cb=20200522185339",
         "gender": "F",
         "personality": "Sisterly",
         "species": "Goat",
@@ -2917,7 +2652,6 @@ const villagers = [
     {
         "id": "pate",
         "name": "Pate",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/2/20/NH-Pate_poster.png/revision/latest?cb=20200522185358",
         "gender": "F",
         "personality": "Peppy",
         "species": "Duck",
@@ -2928,7 +2662,6 @@ const villagers = [
     {
         "id": "patty",
         "name": "Patty",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/f/f8/NH-Patty_poster.png/revision/latest?cb=20200522185417",
         "gender": "F",
         "personality": "Peppy",
         "species": "Cow",
@@ -2939,7 +2672,6 @@ const villagers = [
     {
         "id": "paula",
         "name": "Paula",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/7/79/NH-Paula_poster.png/revision/latest?cb=20200522185438",
         "gender": "F",
         "personality": "Sisterly",
         "species": "Bear",
@@ -2950,7 +2682,6 @@ const villagers = [
     {
         "id": "peaches",
         "name": "Peaches",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/8/8a/NH-Peaches_poster.png/revision/latest?cb=20200522185456",
         "gender": "F",
         "personality": "Normal",
         "species": "Horse",
@@ -2961,7 +2692,6 @@ const villagers = [
     {
         "id": "peanut",
         "name": "Peanut",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/6/68/NH-Peanut_poster.png/revision/latest?cb=20200522185516",
         "gender": "F",
         "personality": "Peppy",
         "species": "Squirrel",
@@ -2972,7 +2702,6 @@ const villagers = [
     {
         "id": "pecan",
         "name": "Pecan",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/4/48/NH-Pecan_poster.png/revision/latest?cb=20200410184245",
         "gender": "F",
         "personality": "Snooty",
         "species": "Squirrel",
@@ -2983,7 +2712,6 @@ const villagers = [
     {
         "id": "peck",
         "name": "Peck",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/d8/NH-Peck_poster.png/revision/latest?cb=20200522185539",
         "gender": "M",
         "personality": "Jock",
         "species": "Bird",
@@ -2994,7 +2722,6 @@ const villagers = [
     {
         "id": "peewee",
         "name": "Peewee",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/c/cb/NH-Peewee_poster.png/revision/latest?cb=20200522185601",
         "gender": "M",
         "personality": "Cranky",
         "species": "Gorilla",
@@ -3005,7 +2732,6 @@ const villagers = [
     {
         "id": "peggy",
         "name": "Peggy",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/a/a1/NH-Peggy_poster.png/revision/latest?cb=20200410185931",
         "gender": "F",
         "personality": "Peppy",
         "species": "Pig",
@@ -3016,7 +2742,6 @@ const villagers = [
     {
         "id": "pekoe",
         "name": "Pekoe",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/6/6a/NH-Pekoe_poster.png/revision/latest?cb=20200522185628",
         "gender": "F",
         "personality": "Normal",
         "species": "Cub",
@@ -3027,7 +2752,6 @@ const villagers = [
     {
         "id": "penelope",
         "name": "Penelope",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/7/72/NH-Penelope_poster.png/revision/latest?cb=20200410192138",
         "gender": "F",
         "personality": "Peppy",
         "species": "Mouse",
@@ -3038,7 +2762,6 @@ const villagers = [
     {
         "id": "phil",
         "name": "Phil",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/2/26/NH-Phil_poster.png/revision/latest?cb=20200410191701",
         "gender": "M",
         "personality": "Smug",
         "species": "Ostrich",
@@ -3049,7 +2772,6 @@ const villagers = [
     {
         "id": "phoebe",
         "name": "Phoebe",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/8/8b/NH-Phoebe_poster.png/revision/latest?cb=20200410191547",
         "gender": "F",
         "personality": "Sisterly",
         "species": "Ostrich",
@@ -3060,7 +2782,6 @@ const villagers = [
     {
         "id": "pierce",
         "name": "Pierce",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/8/8f/NH-Pierce_poster.png/revision/latest?cb=20200410191226",
         "gender": "M",
         "personality": "Jock",
         "species": "Eagle",
@@ -3071,7 +2792,6 @@ const villagers = [
     {
         "id": "pietro",
         "name": "Pietro",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/2/21/NH-Pietro_poster.png/revision/latest?cb=20200522185656",
         "gender": "M",
         "personality": "Smug",
         "species": "Sheep",
@@ -3082,7 +2802,6 @@ const villagers = [
     {
         "id": "pinky",
         "name": "Pinky",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/e/ea/NH-Pinky_poster.png/revision/latest?cb=20200522185718",
         "gender": "F",
         "personality": "Peppy",
         "species": "Bear",
@@ -3093,7 +2812,6 @@ const villagers = [
     {
         "id": "piper",
         "name": "Piper",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/4/47/NH-Piper_poster.png/revision/latest?cb=20200522185742",
         "gender": "F",
         "personality": "Peppy",
         "species": "Bird",
@@ -3104,7 +2822,6 @@ const villagers = [
     {
         "id": "pippy",
         "name": "Pippy",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/8/8c/NH-Pippy_poster.png/revision/latest?cb=20200410185526",
         "gender": "F",
         "personality": "Peppy",
         "species": "Rabbit",
@@ -3115,7 +2832,6 @@ const villagers = [
     {
         "id": "plucky",
         "name": "Plucky",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/6/62/NH-Plucky_poster.png/revision/latest?cb=20200522185801",
         "gender": "F",
         "personality": "Sisterly",
         "species": "Chicken",
@@ -3126,7 +2842,6 @@ const villagers = [
     {
         "id": "pompom",
         "name": "Pompom",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/18/NH-Pompom_poster.png/revision/latest?cb=20200522185820",
         "gender": "F",
         "personality": "Peppy",
         "species": "Duck",
@@ -3137,7 +2852,6 @@ const villagers = [
     {
         "id": "poncho",
         "name": "Poncho",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/e/ea/NH-Poncho_poster.png/revision/latest?cb=20200522185838",
         "gender": "M",
         "personality": "Jock",
         "species": "Cub",
@@ -3148,7 +2862,6 @@ const villagers = [
     {
         "id": "poppy",
         "name": "Poppy",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/5c/NH-Poppy_poster.png/revision/latest?cb=20200410183916",
         "gender": "F",
         "personality": "Normal",
         "species": "Squirrel",
@@ -3159,7 +2872,6 @@ const villagers = [
     {
         "id": "portia",
         "name": "Portia",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/7/79/NH-Portia_poster.png/revision/latest?cb=20200522185904",
         "gender": "F",
         "personality": "Snooty",
         "species": "Dog",
@@ -3170,7 +2882,6 @@ const villagers = [
     {
         "id": "prince",
         "name": "Prince",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/0/0b/NH-Prince_poster.png/revision/latest?cb=20200522185927",
         "gender": "M",
         "personality": "Lazy",
         "species": "Frog",
@@ -3181,7 +2892,6 @@ const villagers = [
     {
         "id": "puck",
         "name": "Puck",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/52/NH-Puck_poster.png/revision/latest?cb=20200410190527",
         "gender": "M",
         "personality": "Lazy",
         "species": "Penguin",
@@ -3192,7 +2902,6 @@ const villagers = [
     {
         "id": "puddles",
         "name": "Puddles",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/7/78/NH-Puddles_poster.png/revision/latest?cb=20200522185948",
         "gender": "F",
         "personality": "Peppy",
         "species": "Frog",
@@ -3203,7 +2912,6 @@ const villagers = [
     {
         "id": "pudge",
         "name": "Pudge",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/2/2b/NH-Pudge_poster.png/revision/latest?cb=20200522190008",
         "gender": "M",
         "personality": "Lazy",
         "species": "Cub",
@@ -3214,7 +2922,6 @@ const villagers = [
     {
         "id": "punchy",
         "name": "Punchy",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/d2/NH-Punchy_poster.png/revision/latest?cb=20200410182252",
         "gender": "M",
         "personality": "Lazy",
         "species": "Cat",
@@ -3225,7 +2932,6 @@ const villagers = [
     {
         "id": "purrl",
         "name": "Purrl",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/3/3d/NH-Purrl_poster.png/revision/latest?cb=20200410182641",
         "gender": "F",
         "personality": "Snooty",
         "species": "Cat",
@@ -3236,7 +2942,6 @@ const villagers = [
     {
         "id": "queenie",
         "name": "Queenie",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/c/c6/NH-Queenie_poster.png/revision/latest?cb=20200410191922",
         "gender": "F",
         "personality": "Snooty",
         "species": "Ostrich",
@@ -3247,7 +2952,6 @@ const villagers = [
     {
         "id": "quillson",
         "name": "Quillson",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/6/69/NH-Quillson_poster.png/revision/latest?cb=20200522190041",
         "gender": "M",
         "personality": "Smug",
         "species": "Duck",
@@ -3258,7 +2962,6 @@ const villagers = [
     {
         "id": "raddle",
         "name": "Raddle",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/5b/NH-Raddle_poster.png/revision/latest?cb=20200522190100",
         "gender": "M",
         "personality": "Lazy",
         "species": "Frog",
@@ -3269,7 +2972,6 @@ const villagers = [
     {
         "id": "rasher",
         "name": "Rasher",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/b/ba/NH-Rasher_poster.png/revision/latest?cb=20200410190250",
         "gender": "M",
         "personality": "Cranky",
         "species": "Pig",
@@ -3280,7 +2982,6 @@ const villagers = [
     {
         "id": "raymond",
         "name": "Raymond",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/8/8e/NH-Raymond_poster.png/revision/latest?cb=20200522190120",
         "gender": "M",
         "personality": "Smug",
         "species": "Cat",
@@ -3291,7 +2992,6 @@ const villagers = [
     {
         "id": "renee",
         "name": "Renée",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/d8/NH-Ren%C3%A9e_poster.png/revision/latest?cb=20200522190140",
         "gender": "F",
         "personality": "Sisterly",
         "species": "Rhino",
@@ -3302,7 +3002,6 @@ const villagers = [
     {
         "id": "reneigh",
         "name": "Reneigh",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/3/33/NH-Reneigh_poster.png/revision/latest?cb=20200522190158",
         "gender": "F",
         "personality": "Sisterly",
         "species": "Horse",
@@ -3313,7 +3012,6 @@ const villagers = [
     {
         "id": "rex",
         "name": "Rex",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/a/a7/NH-Rex_poster.png/revision/latest?cb=20200522190216",
         "gender": "M",
         "personality": "Lazy",
         "species": "Lion",
@@ -3324,7 +3022,6 @@ const villagers = [
     {
         "id": "rhonda",
         "name": "Rhonda",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/12/NH-Rhonda_poster.png/revision/latest?cb=20200410185017",
         "gender": "F",
         "personality": "Normal",
         "species": "Rhino",
@@ -3335,7 +3032,6 @@ const villagers = [
     {
         "id": "ribbot",
         "name": "Ribbot",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/4/4e/NH-Ribbot_poster.png/revision/latest?cb=20200522190235",
         "gender": "M",
         "personality": "Jock",
         "species": "Frog",
@@ -3346,7 +3042,6 @@ const villagers = [
     {
         "id": "ricky",
         "name": "Ricky",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/6/6b/NH-Ricky_poster.png/revision/latest?cb=20200410184030",
         "gender": "M",
         "personality": "Cranky",
         "species": "Squirrel",
@@ -3357,7 +3052,6 @@ const villagers = [
     {
         "id": "rizzo",
         "name": "Rizzo",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/9/93/NH-Rizzo_poster.png/revision/latest?cb=20200410192330",
         "gender": "M",
         "personality": "Cranky",
         "species": "Mouse",
@@ -3368,7 +3062,6 @@ const villagers = [
     {
         "id": "roald",
         "name": "Roald",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/4/4f/NH-Roald_poster.png/revision/latest?cb=20200410190858",
         "gender": "M",
         "personality": "Jock",
         "species": "Penguin",
@@ -3379,7 +3072,6 @@ const villagers = [
     {
         "id": "robin",
         "name": "Robin",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/6/62/NH-Robin_poster.png/revision/latest?cb=20200522190258",
         "gender": "F",
         "personality": "Snooty",
         "species": "Bird",
@@ -3390,7 +3082,6 @@ const villagers = [
     {
         "id": "rocco",
         "name": "Rocco",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/3/32/NH-Rocco_poster.png/revision/latest?cb=20200522190320",
         "gender": "M",
         "personality": "Cranky",
         "species": "Hippo",
@@ -3401,7 +3092,6 @@ const villagers = [
     {
         "id": "rocket",
         "name": "Rocket",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/d3/NH-Rocket_poster.png/revision/latest?cb=20200522190339",
         "gender": "F",
         "personality": "Sisterly",
         "species": "Gorilla",
@@ -3412,7 +3102,6 @@ const villagers = [
     {
         "id": "rod",
         "name": "Rod",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/10/NH-Rod_poster.png/revision/latest?cb=20200410192406",
         "gender": "M",
         "personality": "Jock",
         "species": "Mouse",
@@ -3423,7 +3112,6 @@ const villagers = [
     {
         "id": "rodeo",
         "name": "Rodeo",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/15/NH-Rodeo_poster.png/revision/latest?cb=20200522190402",
         "gender": "M",
         "personality": "Lazy",
         "species": "Bull",
@@ -3434,7 +3122,6 @@ const villagers = [
     {
         "id": "rodney",
         "name": "Rodney",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/58/NH-Rodney_poster.png/revision/latest?cb=20200522190421",
         "gender": "M",
         "personality": "Smug",
         "species": "Hamster",
@@ -3445,7 +3132,6 @@ const villagers = [
     {
         "id": "rolf",
         "name": "Rolf",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/5c/NH-Rolf_poster.png/revision/latest?cb=20200410183806",
         "gender": "M",
         "personality": "Cranky",
         "species": "Tiger",
@@ -3456,7 +3142,6 @@ const villagers = [
     {
         "id": "rooney",
         "name": "Rooney",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/3/36/NH-Rooney_poster.png/revision/latest?cb=20200522191451",
         "gender": "M",
         "personality": "Cranky",
         "species": "Kangaroo",
@@ -3467,7 +3152,6 @@ const villagers = [
     {
         "id": "rory",
         "name": "Rory",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/f/f3/NH-Rory_poster.png/revision/latest?cb=20200522190446",
         "gender": "M",
         "personality": "Jock",
         "species": "Lion",
@@ -3478,7 +3162,6 @@ const villagers = [
     {
         "id": "roscoe",
         "name": "Roscoe",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/0/01/NH-Roscoe_poster.png/revision/latest?cb=20200522190504",
         "gender": "M",
         "personality": "Cranky",
         "species": "Horse",
@@ -3489,7 +3172,6 @@ const villagers = [
     {
         "id": "rosie",
         "name": "Rosie",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/4/46/NH-Rosie_poster.png/revision/latest?cb=20200410182055",
         "gender": "F",
         "personality": "Peppy",
         "species": "Cat",
@@ -3500,7 +3182,6 @@ const villagers = [
     {
         "id": "rowan",
         "name": "Rowan",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/4/41/NH-Rowan_poster.png/revision/latest?cb=20200410183742",
         "gender": "M",
         "personality": "Jock",
         "species": "Tiger",
@@ -3511,7 +3192,6 @@ const villagers = [
     {
         "id": "ruby",
         "name": "Ruby",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/5c/NH-Ruby_poster.png/revision/latest?cb=20200410185420",
         "gender": "F",
         "personality": "Peppy",
         "species": "Rabbit",
@@ -3522,7 +3202,6 @@ const villagers = [
     {
         "id": "rudy",
         "name": "Rudy",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/c/c1/NH-Rudy_poster.png/revision/latest?cb=20200410182928",
         "gender": "M",
         "personality": "Jock",
         "species": "Cat",
@@ -3533,7 +3212,6 @@ const villagers = [
     {
         "id": "sally",
         "name": "Sally",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/5d/NH-Sally_poster.png/revision/latest?cb=20200410184136",
         "gender": "F",
         "personality": "Normal",
         "species": "Squirrel",
@@ -3544,7 +3222,6 @@ const villagers = [
     {
         "id": "samson",
         "name": "Samson",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/d7/NH-Samson_poster.png/revision/latest?cb=20200410192424",
         "gender": "M",
         "personality": "Jock",
         "species": "Mouse",
@@ -3555,7 +3232,6 @@ const villagers = [
     {
         "id": "sandy",
         "name": "Sandy",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/9/93/NH-Sandy_poster.png/revision/latest?cb=20200410191836",
         "gender": "F",
         "personality": "Normal",
         "species": "Ostrich",
@@ -3566,7 +3242,6 @@ const villagers = [
     {
         "id": "savannah",
         "name": "Savannah",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/10/NH-Savannah_poster.png/revision/latest?cb=20200522190527",
         "gender": "F",
         "personality": "Normal",
         "species": "Horse",
@@ -3577,7 +3252,6 @@ const villagers = [
     {
         "id": "scoot",
         "name": "Scoot",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/9/9d/NH-Scoot_poster.png/revision/latest?cb=20200522190547",
         "gender": "M",
         "personality": "Jock",
         "species": "Duck",
@@ -3588,7 +3262,6 @@ const villagers = [
     {
         "id": "shari",
         "name": "Shari",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/4/47/NH-Shari_poster.png/revision/latest?cb=20200410192655",
         "gender": "F",
         "personality": "Sisterly",
         "species": "Monkey",
@@ -3599,7 +3272,6 @@ const villagers = [
     {
         "id": "sheldon",
         "name": "Sheldon",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/8/8e/NH-Sheldon_poster.png/revision/latest?cb=20200410183900",
         "gender": "M",
         "personality": "Jock",
         "species": "Squirrel",
@@ -3610,7 +3282,6 @@ const villagers = [
     {
         "id": "shep",
         "name": "Shep",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/e/e9/NH-Shep_poster.png/revision/latest?cb=20200522190611",
         "gender": "M",
         "personality": "Smug",
         "species": "Dog",
@@ -3621,7 +3292,6 @@ const villagers = [
     {
         "id": "sherb",
         "name": "Sherb",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/0/04/Sherb_Poster_NH.png/revision/latest?cb=20200319185254",
         "gender": "M",
         "personality": "Lazy",
         "species": "Goat",
@@ -3632,7 +3302,6 @@ const villagers = [
     {
         "id": "simon",
         "name": "Simon",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/6/6a/NH-Simon_poster.png/revision/latest?cb=20200522190630",
         "gender": "M",
         "personality": "Lazy",
         "species": "Monkey",
@@ -3643,7 +3312,6 @@ const villagers = [
     {
         "id": "skye",
         "name": "Skye",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/10/NH-Skye_poster.png/revision/latest?cb=20200410183340",
         "gender": "F",
         "personality": "Normal",
         "species": "Wolf",
@@ -3654,7 +3322,6 @@ const villagers = [
     {
         "id": "sly",
         "name": "Sly",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/7/7f/NH-Sly_poster.png/revision/latest?cb=20200522190705",
         "gender": "M",
         "personality": "Jock",
         "species": "Alligator",
@@ -3665,7 +3332,6 @@ const villagers = [
     {
         "id": "snake",
         "name": "Snake",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/2/2c/NH-Snake_poster.png/revision/latest?cb=20200410185619",
         "gender": "M",
         "personality": "Jock",
         "species": "Rabbit",
@@ -3676,7 +3342,6 @@ const villagers = [
     {
         "id": "snooty",
         "name": "Snooty",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/d2/NH-Snooty_poster.png/revision/latest?cb=20200522190727",
         "gender": "F",
         "personality": "Snooty",
         "species": "Anteater",
@@ -3687,7 +3352,6 @@ const villagers = [
     {
         "id": "soleil",
         "name": "Soleil",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/9/9f/NH-Soleil_poster.png/revision/latest?cb=20200522190746",
         "gender": "F",
         "personality": "Snooty",
         "species": "Hamster",
@@ -3698,7 +3362,6 @@ const villagers = [
     {
         "id": "sparro",
         "name": "Sparro",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/6/69/NH-Sparro_poster.png/revision/latest?cb=20200522190812",
         "gender": "M",
         "personality": "Jock",
         "species": "Bird",
@@ -3709,7 +3372,6 @@ const villagers = [
     {
         "id": "spike",
         "name": "Spike",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/9/95/NH-Spike_poster.png/revision/latest?cb=20200410185000",
         "gender": "M",
         "personality": "Cranky",
         "species": "Rhino",
@@ -3720,7 +3382,6 @@ const villagers = [
     {
         "id": "spork",
         "name": "Spork",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/db/NH-Spork_poster.png/revision/latest?cb=20200522190834",
         "gender": "M",
         "personality": "Lazy",
         "species": "Pig",
@@ -3731,7 +3392,6 @@ const villagers = [
     {
         "id": "sprinkle",
         "name": "Sprinkle",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/e/e5/NH-Sprinkle_poster.png/revision/latest?cb=20200410190333",
         "gender": "F",
         "personality": "Peppy",
         "species": "Penguin",
@@ -3742,7 +3402,6 @@ const villagers = [
     {
         "id": "sprocket",
         "name": "Sprocket",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/e/e6/NH-Sprocket_poster.png/revision/latest?cb=20200410191806",
         "gender": "M",
         "personality": "Jock",
         "species": "Ostrich",
@@ -3753,7 +3412,6 @@ const villagers = [
     {
         "id": "static",
         "name": "Static",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/f/ff/NH-Static_poster.png/revision/latest?cb=20200410184107",
         "gender": "M",
         "personality": "Cranky",
         "species": "Squirrel",
@@ -3764,7 +3422,6 @@ const villagers = [
     {
         "id": "stella",
         "name": "Stella",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/50/NH-Stella_poster.png/revision/latest?cb=20200410184731",
         "gender": "F",
         "personality": "Normal",
         "species": "Sheep",
@@ -3775,7 +3432,6 @@ const villagers = [
     {
         "id": "sterling",
         "name": "Sterling",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/0/0a/NH-Sterling_poster.png/revision/latest?cb=20200410191029",
         "gender": "M",
         "personality": "Jock",
         "species": "Eagle",
@@ -3786,7 +3442,6 @@ const villagers = [
     {
         "id": "stinky",
         "name": "Stinky",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/c/cc/NH-Stinky_poster.png/revision/latest?cb=20200522190854",
         "gender": "M",
         "personality": "Jock",
         "species": "Cat",
@@ -3797,7 +3452,6 @@ const villagers = [
     {
         "id": "stitches",
         "name": "Stitches",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/0/0a/NH-Stitches_poster.png/revision/latest?cb=20200522190915",
         "gender": "M",
         "personality": "Lazy",
         "species": "Cub",
@@ -3808,7 +3462,6 @@ const villagers = [
     {
         "id": "stu",
         "name": "Stu",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/f/fc/NH-Stu_poster.png/revision/latest?cb=20200522190934",
         "gender": "M",
         "personality": "Lazy",
         "species": "Bull",
@@ -3819,7 +3472,6 @@ const villagers = [
     {
         "id": "sydney",
         "name": "Sydney",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/f/f6/NH-Sydney_poster.png/revision/latest?cb=20200522190951",
         "gender": "F",
         "personality": "Normal",
         "species": "Koala",
@@ -3830,7 +3482,6 @@ const villagers = [
     {
         "id": "sylvana",
         "name": "Sylvana",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/4/41/NH-Sylvana_poster.png/revision/latest?cb=20200410183935",
         "gender": "F",
         "personality": "Normal",
         "species": "Squirrel",
@@ -3841,7 +3492,6 @@ const villagers = [
     {
         "id": "sylvia",
         "name": "Sylvia",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/4/4b/NH-Sylvia_poster.png/revision/latest?cb=20200522191011",
         "gender": "F",
         "personality": "Sisterly",
         "species": "Kangaroo",
@@ -3852,7 +3502,6 @@ const villagers = [
     {
         "id": "tabby",
         "name": "Tabby",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/d7/NH-Tabby_poster.png/revision/latest?cb=20200410182747",
         "gender": "F",
         "personality": "Peppy",
         "species": "Cat",
@@ -3863,7 +3512,6 @@ const villagers = [
     {
         "id": "tad",
         "name": "Tad",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/c/c8/NH-Tad_poster.png/revision/latest?cb=20200522182923",
         "gender": "M",
         "personality": "Jock",
         "species": "Frog",
@@ -3874,7 +3522,6 @@ const villagers = [
     {
         "id": "tammi",
         "name": "Tammi",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/d1/NH-Tammi_poster.png/revision/latest?cb=20200522182953",
         "gender": "F",
         "personality": "Peppy",
         "species": "Monkey",
@@ -3885,7 +3532,6 @@ const villagers = [
     {
         "id": "tammy",
         "name": "Tammy",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/6/66/NH-Tammy_poster.png/revision/latest?cb=20200522183012",
         "gender": "F",
         "personality": "Sisterly",
         "species": "Cub",
@@ -3896,7 +3542,6 @@ const villagers = [
     {
         "id": "tangy",
         "name": "Tangy",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/c/c8/NH-Tangy_poster.png/revision/latest?cb=20200410182223",
         "gender": "F",
         "personality": "Peppy",
         "species": "Cat",
@@ -3907,7 +3552,6 @@ const villagers = [
     {
         "id": "tank",
         "name": "Tank",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/e/eb/NH-Tank_poster.png/revision/latest?cb=20200410185033",
         "gender": "M",
         "personality": "Jock",
         "species": "Rhino",
@@ -3918,7 +3562,6 @@ const villagers = [
     {
         "id": "tasha",
         "name": "Tasha",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/d3/NH-Tasha_poster.png/revision/latest?cb=20200522183129",
         "gender": "F",
         "personality": "Snooty",
         "species": "Squirrel",
@@ -3929,7 +3572,6 @@ const villagers = [
     {
         "id": "t-bone",
         "name": "T-Bone",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/c/ca/NH-T-Bone_poster.png/revision/latest?cb=20200522183035",
         "gender": "M",
         "personality": "Cranky",
         "species": "Bull",
@@ -3940,7 +3582,6 @@ const villagers = [
     {
         "id": "teddy",
         "name": "Teddy",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/11/NH-Teddy_poster.png/revision/latest?cb=20200522183157",
         "gender": "M",
         "personality": "Jock",
         "species": "Bear",
@@ -3951,7 +3592,6 @@ const villagers = [
     {
         "id": "tex",
         "name": "Tex",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/a/a1/NH-Tex_poster.png/revision/latest?cb=20200410190412",
         "gender": "M",
         "personality": "Smug",
         "species": "Penguin",
@@ -3962,7 +3602,6 @@ const villagers = [
     {
         "id": "tia",
         "name": "Tia",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/4/41/NH-Tia_poster.png/revision/latest?cb=20200522183230",
         "gender": "F",
         "personality": "Normal",
         "species": "Elephant",
@@ -3973,7 +3612,6 @@ const villagers = [
     {
         "id": "tiffany",
         "name": "Tiffany",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/f/fb/NH-Tiffany_poster.png/revision/latest?cb=20200410185508",
         "gender": "F",
         "personality": "Snooty",
         "species": "Rabbit",
@@ -3984,7 +3622,6 @@ const villagers = [
     {
         "id": "timbra",
         "name": "Timbra",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/6/6a/NH-Timbra_poster.png/revision/latest?cb=20200410184616",
         "gender": "F",
         "personality": "Snooty",
         "species": "Sheep",
@@ -3995,7 +3632,6 @@ const villagers = [
     {
         "id": "tipper",
         "name": "Tipper",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/6/64/NH-Tipper_poster.png/revision/latest?cb=20200522183257",
         "gender": "F",
         "personality": "Snooty",
         "species": "Cow",
@@ -4006,7 +3642,6 @@ const villagers = [
     {
         "id": "tom",
         "name": "Tom",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/7/7d/NH-Tom_poster.png/revision/latest?cb=20200522183324",
         "gender": "M",
         "personality": "Cranky",
         "species": "Cat",
@@ -4017,7 +3652,6 @@ const villagers = [
     {
         "id": "truffles",
         "name": "Truffles",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/c/c9/NH-Truffles_poster.png/revision/latest?cb=20200522183349",
         "gender": "F",
         "personality": "Peppy",
         "species": "Pig",
@@ -4028,7 +3662,6 @@ const villagers = [
     {
         "id": "tucker",
         "name": "Tucker",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/3/32/NH-Tucker_poster.png/revision/latest?cb=20200522183418",
         "gender": "M",
         "personality": "Lazy",
         "species": "Elephant",
@@ -4039,7 +3672,6 @@ const villagers = [
     {
         "id": "tutu",
         "name": "Tutu",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/9/95/NH-Tutu_poster.png/revision/latest?cb=20200522183436",
         "gender": "F",
         "personality": "Peppy",
         "species": "Bear",
@@ -4050,7 +3682,6 @@ const villagers = [
     {
         "id": "twiggy",
         "name": "Twiggy",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/52/NH-Twiggy_poster.png/revision/latest?cb=20200522183456",
         "gender": "F",
         "personality": "Peppy",
         "species": "Bird",
@@ -4061,7 +3692,6 @@ const villagers = [
     {
         "id": "tybalt",
         "name": "Tybalt",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/dc/NH-Tybalt_poster.png/revision/latest?cb=20200410183724",
         "gender": "M",
         "personality": "Jock",
         "species": "Tiger",
@@ -4072,7 +3702,6 @@ const villagers = [
     {
         "id": "ursala",
         "name": "Ursala",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/2/23/NH-Ursala_poster.png/revision/latest?cb=20200522183519",
         "gender": "F",
         "personality": "Sisterly",
         "species": "Bear",
@@ -4083,7 +3712,6 @@ const villagers = [
     {
         "id": "velma",
         "name": "Velma",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/17/NH-Velma_poster.png/revision/latest?cb=20200522183543",
         "gender": "F",
         "personality": "Snooty",
         "species": "Goat",
@@ -4094,7 +3722,6 @@ const villagers = [
     {
         "id": "vesta",
         "name": "Vesta",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/8/8f/NH-Vesta_poster.png/revision/latest?cb=20200410184828",
         "gender": "F",
         "personality": "Normal",
         "species": "Sheep",
@@ -4105,7 +3732,6 @@ const villagers = [
     {
         "id": "vic",
         "name": "Vic",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/b/b9/NH-Vic_poster.png/revision/latest?cb=20200522183604",
         "gender": "M",
         "personality": "Cranky",
         "species": "Bull",
@@ -4116,7 +3742,6 @@ const villagers = [
     {
         "id": "victoria",
         "name": "Victoria",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/4/46/NH-Victoria_poster.png/revision/latest?cb=20200522183627",
         "gender": "F",
         "personality": "Peppy",
         "species": "Horse",
@@ -4127,7 +3752,6 @@ const villagers = [
     {
         "id": "violet",
         "name": "Violet",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/b/b7/NH-Violet_poster.png/revision/latest?cb=20200522183649",
         "gender": "F",
         "personality": "Snooty",
         "species": "Gorilla",
@@ -4138,7 +3762,6 @@ const villagers = [
     {
         "id": "vivian",
         "name": "Vivian",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/d2/NH-Vivian_poster.png/revision/latest?cb=20200410183210",
         "gender": "F",
         "personality": "Snooty",
         "species": "Wolf",
@@ -4149,7 +3772,6 @@ const villagers = [
     {
         "id": "vladimir",
         "name": "Vladimir",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/7/7c/NH-Vladimir_poster.png/revision/latest?cb=20200522183708",
         "gender": "M",
         "personality": "Cranky",
         "species": "Cub",
@@ -4160,7 +3782,6 @@ const villagers = [
     {
         "id": "wade",
         "name": "Wade",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/8/8e/NH-Wade_poster.png/revision/latest?cb=20200410190514",
         "gender": "M",
         "personality": "Lazy",
         "species": "Penguin",
@@ -4171,7 +3792,6 @@ const villagers = [
     {
         "id": "walker",
         "name": "Walker",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/e/e0/NH-Walker_poster.png/revision/latest?cb=20200522183727",
         "gender": "M",
         "personality": "Lazy",
         "species": "Dog",
@@ -4182,7 +3802,6 @@ const villagers = [
     {
         "id": "walt",
         "name": "Walt",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/3/3a/NH-Walt_poster.png/revision/latest?cb=20200522183748",
         "gender": "M",
         "personality": "Cranky",
         "species": "Kangaroo",
@@ -4193,7 +3812,6 @@ const villagers = [
     {
         "id": "wart_jr.",
         "name": "Wart Jr.",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/d/d7/NH-WartJr_poster.png/revision/latest?cb=20200522183806",
         "gender": "M",
         "personality": "Cranky",
         "species": "Frog",
@@ -4204,7 +3822,6 @@ const villagers = [
     {
         "id": "weber",
         "name": "Weber",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/5/54/NH-Weber_poster.png/revision/latest?cb=20200522183823",
         "gender": "M",
         "personality": "Lazy",
         "species": "Duck",
@@ -4215,7 +3832,6 @@ const villagers = [
     {
         "id": "wendy",
         "name": "Wendy",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/4/4e/NH-Wendy_poster.png/revision/latest?cb=20200410184538",
         "gender": "F",
         "personality": "Peppy",
         "species": "Sheep",
@@ -4226,7 +3842,6 @@ const villagers = [
     {
         "id": "whitney",
         "name": "Whitney",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/b/b0/NH-Whitney_poster.png/revision/latest?cb=20200410183425",
         "gender": "F",
         "personality": "Snooty",
         "species": "Wolf",
@@ -4237,7 +3852,6 @@ const villagers = [
     {
         "id": "willow",
         "name": "Willow",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/0/05/NH-Willow_poster.png/revision/latest?cb=20200522183842",
         "gender": "F",
         "personality": "Snooty",
         "species": "Sheep",
@@ -4248,7 +3862,6 @@ const villagers = [
     {
         "id": "winnie",
         "name": "Winnie",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/7/76/NH-Winnie_poster.png/revision/latest?cb=20200522184108",
         "gender": "F",
         "personality": "Peppy",
         "species": "Horse",
@@ -4259,7 +3872,6 @@ const villagers = [
     {
         "id": "wolfgang",
         "name": "Wolfgang",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/19/NH-Wolfgang_poster.png/revision/latest?cb=20200410183450",
         "gender": "M",
         "personality": "Cranky",
         "species": "Wolf",
@@ -4270,7 +3882,6 @@ const villagers = [
     {
         "id": "yuka",
         "name": "Yuka",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/b/b6/NH-Yuka_poster.png/revision/latest?cb=20200522183928",
         "gender": "F",
         "personality": "Snooty",
         "species": "Koala",
@@ -4281,7 +3892,6 @@ const villagers = [
     {
         "id": "zell",
         "name": "Zell",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/c/c8/NH-Zell_poster.png/revision/latest?cb=20200522183947",
         "gender": "M",
         "personality": "Smug",
         "species": "Deer",
@@ -4292,7 +3902,6 @@ const villagers = [
     {
         "id": "zucker",
         "name": "Zucker",
-        "imageUrl": "https://vignette.wikia.nocookie.net/animalcrossing/images/1/10/NH-Zucker_poster.png/revision/latest?cb=20200522184009",
         "gender": "M",
         "personality": "Lazy",
         "species": "Octopus",

@@ -8,7 +8,7 @@ import VillagerCard from './VillagerCard';
 import villagers from './acnh_villagers'
 import { fetchVillagerResults, fetchAllSummaries } from './api';
 
-import { getAPIUrl, getUrlTo, KEY_CODE } from '../utils';
+import { getUrlTo } from '../utils';
 
 
 

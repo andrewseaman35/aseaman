@@ -1,13 +1,12 @@
 import React from 'react';
 import _ from 'lodash';
-import $ from 'jquery';
 
 import Toggle from '../components/Toggle';
 
 import villagers from './acnh_villagers'
 
 import { fetchAllSummaries } from './api';
-import { getAPIUrl, getUrlTo, KEY_CODE, setQueryStringParameter } from '../utils';
+import { getImageSrc, getUrlTo, setQueryStringParameter } from '../utils';
 
 
 const LEADERBOARD_COUNT = 5;
@@ -20,7 +19,7 @@ const VIEWS = {
 }
 
 function urlForVillager(villagerId) {
-    return getUrlTo(`acnh/villager.html?villager_id=${villagerId}`)
+    return getUrlTo(`acnh/villager.html?villager_id=${villagerId}`);
 }
 
 
@@ -37,8 +36,6 @@ class ACNHRankings extends React.Component {
 
         const view = this.getViewFromQueryString().toLowerCase();
         const selectedSpecies = view === VIEWS.ALL ? this.getSpeciesFromQueryString() : null;
-        console.log(view)
-        console.log(selectedSpecies)
 
         this.state = {
             loaded: false,
@@ -170,7 +167,7 @@ class ACNHRankings extends React.Component {
             <a key={position} href={urlForVillager(villager.id)}>
                 <div className="leader">
                     {badge}
-                    <img src={villager.imageUrl} />
+                    <img src={getImageSrc(`images/acnh/villagers/${villager.id}.png`)} />
                     <div className="leader-details">
                         <div className="name">{villager.name}</div>
                         <div className="record">{`(${record.wins} - ${record.losses})`}</div>
