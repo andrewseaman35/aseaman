@@ -8,6 +8,7 @@ COPY local_requirements.txt /app/requirements.txt
 WORKDIR /app
 
 ENV AWS_SHARED_CREDENTIALS_FILE="/.aws/credentials"
+ENV IN_DOCKER_API="true"
 
 RUN pip install -r requirements.txt
 

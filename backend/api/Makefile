@@ -56,7 +56,12 @@ package: venv # package_dir
 	cd $(PACKAGE_DIR)/$(CHESS_API_NAME) && zip -r ../$(CHESS_API_NAME).zip * > /dev/null
 
 test:
-	python -m unittest
+	@if [ "$(IN_DOCKER_API)" = "true" ]; then\
+		python -m unittest;\
+	else\
+		echo "Run tests from within API Docker container";\
+		exit 2;\
+	fi
 
 clean:
 	rm -rf ./deploy_venv/
