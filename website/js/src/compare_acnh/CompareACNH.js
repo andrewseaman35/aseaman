@@ -109,7 +109,6 @@ class CompareACNH extends React.Component {
                 this.nextComparison();
             });
         }
-        let villagersSelected = false;
         let villagerA = null;
         let villagerB = null;
         for (let i = 0; i < NEW_RANDOM_ATTEMPTS; i += 1) {

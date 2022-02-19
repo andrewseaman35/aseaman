@@ -40,7 +40,6 @@ def get_payload(request):
             {
                 "queryStringParameters": {
                     **request.args,
-                    "local": True,
                 },
             }
         )
@@ -50,7 +49,6 @@ def get_payload(request):
                 "body": json.dumps(
                     {
                         **request.json,
-                        "local": True,
                     }
                 )
             }
