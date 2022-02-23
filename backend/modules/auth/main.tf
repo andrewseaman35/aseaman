@@ -50,6 +50,11 @@ resource "aws_cognito_user_pool_client" "client" {
   logout_urls = ["https://${var.env}.andrewcseaman.com/logout.html"]
 }
 
+resource "aws_cognito_user_group" "admin" {
+  name         = "admin"
+  user_pool_id = aws_cognito_user_pool.user_pool.id
+}
+
 resource "aws_cognito_identity_pool" "main" {
   identity_pool_name               = "aseaman-identity-pool-${var.env}"
   allow_unauthenticated_identities = false
