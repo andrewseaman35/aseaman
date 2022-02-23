@@ -25,3 +25,28 @@ variable lambda_timeout {
   type = number
   default = 5
 }
+
+variable cognito_user_pool_arn {
+  type = string
+  description = "arn of cognito user pool for authorization"
+}
+
+variable get_method_authorization {
+  type = string
+  default = "COGNITO_USER_POOLS"
+}
+
+variable post_method_authorization {
+  type = string
+  default = "COGNITO_USER_POOLS"
+}
+
+variable get_proxy_method_authorization {
+  type = string
+  default = "COGNITO_USER_POOLS"
+}
+
+variable post_proxy_method_authorization {
+  type = string
+  default = "COGNITO_USER_POOLS"
+}
