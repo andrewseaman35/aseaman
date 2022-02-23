@@ -1,8 +1,8 @@
 const utils = require('./utils');
 const CONST = require('./constants');
 
-const setToken = function(token) {
-    utils.setCookie('id_token', token, CONST.TOKEN_EXPIRATION_TIME);
+const setToken = function(token, expiry) {
+    utils.setCookie('id_token', token, expiry);
 };
 
 const getToken = function() {
@@ -47,7 +47,7 @@ const authenticate = function() {
     if (!components) {
         return false;
     }
-    setToken(components.id_token);
+    setToken(components.id_token, components.expires_in);
     window.location.replace('/');
 };
 

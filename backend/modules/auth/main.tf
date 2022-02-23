@@ -36,6 +36,7 @@ resource "aws_cognito_user_pool_client" "client" {
     "phone",
     "email"
   ]
+  allowed_oauth_flows_user_pool_client = true
   allowed_oauth_flows = ["implicit"]
   supported_identity_providers = ["COGNITO"]
   explicit_auth_flows = [
@@ -43,11 +44,9 @@ resource "aws_cognito_user_pool_client" "client" {
       "ALLOW_USER_PASSWORD_AUTH",
       "ALLOW_REFRESH_TOKEN_AUTH",
     ]
-  callback_urls = [
-      "https://${var.env}.andrewcseaman.com/auth_callback.html"
-    ]
-  default_redirect_uri = "https://${var.env}.andrewcseaman.com/auth_callback.html"
-  logout_urls = ["https://${var.env}.andrewcseaman.com/logout.html"]
+  callback_urls = var.callback_urls
+  default_redirect_uri = var.default_redirect_uri
+  logout_urls = var.logout_urls
 }
 
 resource "aws_cognito_user_group" "admin" {
