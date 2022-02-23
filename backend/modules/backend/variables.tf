@@ -14,3 +14,8 @@ variable api_url {
   type = string
   description = "API Url for custom domain and DNS record set"
 }
+
+variable cognito_user_pool_arn {
+  type = string
+  description = "arn of cognito user pool for authorization"
+}

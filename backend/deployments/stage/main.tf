@@ -38,10 +38,18 @@ locals {
   aws_account_id       = data.aws_caller_identity.current.account_id
 }
 
+module "auth" {
+    source = "../../modules/auth"
+    env = var.deploy_env
+}
+
 module "backend" {
     source = "../../modules/backend"
     api_certificate_id = var.api_certificate_id
     deploy_env = var.deploy_env
     hosted_zone_id = var.hosted_zone_id
     api_url = var.api_url
+    cognito_user_pool_arn = module.auth.cognito_user_pool_arn
+
+    depends_on = [module.auth]
 }

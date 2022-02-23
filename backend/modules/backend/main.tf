@@ -21,6 +21,11 @@ module "state_api" {
 
   rest_api_root_resource_id = aws_api_gateway_rest_api.rest_api.root_resource_id
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
+
+  get_method_authorization = "NONE"
+  get_proxy_method_authorization = "NONE"
+
+  cognito_user_pool_arn = var.cognito_user_pool_arn
 }
 
 module "state_api_iam_role_policy" {
@@ -40,6 +45,9 @@ module "salt_level_api" {
 
   rest_api_root_resource_id = aws_api_gateway_rest_api.rest_api.root_resource_id
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
+  get_method_authorization = "NONE"
+  get_proxy_method_authorization = "NONE"
+  cognito_user_pool_arn = var.cognito_user_pool_arn
 }
 
 module "salt_level_api_iam_role_policy" {
@@ -60,6 +68,9 @@ module "whisky_api" {
 
   rest_api_root_resource_id = aws_api_gateway_rest_api.rest_api.root_resource_id
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
+  get_method_authorization = "NONE"
+  get_proxy_method_authorization = "NONE"
+  cognito_user_pool_arn = var.cognito_user_pool_arn
 }
 
 module "whisky_api_iam_role_policy" {
@@ -81,6 +92,11 @@ module "draw_jasper_api" {
 
   rest_api_root_resource_id = aws_api_gateway_rest_api.rest_api.root_resource_id
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
+  get_method_authorization = "NONE"
+  post_method_authorization = "NONE"
+  get_proxy_method_authorization = "NONE"
+  post_proxy_method_authorization = "NONE"
+  cognito_user_pool_arn = var.cognito_user_pool_arn
 }
 
 module "draw_jasper_iam_role_policy" {
@@ -101,6 +117,11 @@ module "compare_acnh_api" {
 
   rest_api_root_resource_id = aws_api_gateway_rest_api.rest_api.root_resource_id
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
+  get_method_authorization = "NONE"
+  post_method_authorization = "NONE"
+  get_proxy_method_authorization = "NONE"
+  post_proxy_method_authorization = "NONE"
+  cognito_user_pool_arn = var.cognito_user_pool_arn
 }
 
 module "compare_acnh_iam_role_policy" {
@@ -121,6 +142,9 @@ module "mame_highscore_api" {
 
   rest_api_root_resource_id = aws_api_gateway_rest_api.rest_api.root_resource_id
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
+  get_method_authorization = "NONE"
+  get_proxy_method_authorization = "NONE"
+  cognito_user_pool_arn = var.cognito_user_pool_arn
 }
 
 module "mame_highscore_iam_role_policy" {
@@ -141,6 +165,11 @@ module "chess_api" {
 
   rest_api_root_resource_id = aws_api_gateway_rest_api.rest_api.root_resource_id
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
+  get_method_authorization = "NONE"
+  post_method_authorization = "NONE"
+  get_proxy_method_authorization = "NONE"
+  post_proxy_method_authorization = "NONE"
+  cognito_user_pool_arn = var.cognito_user_pool_arn
 }
 
 module "chess_iam_role_policy" {
@@ -155,49 +184,15 @@ resource "aws_api_gateway_deployment" "api_gateway_deployment" {
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
 
   triggers = {
-    redeployment = sha1(jsonencode([
-      module.state_api.api_resource_id,
-      module.state_api.api_gateway_any_method_id,
-      module.state_api.api_gateway_any_integration_id,
-      module.state_api.api_gateway_options_method_id,
-      module.state_api.api_gateway_options_integration_id,
-
-      module.salt_level_api.api_resource_id,
-      module.salt_level_api.api_gateway_any_method_id,
-      module.salt_level_api.api_gateway_any_integration_id,
-      module.salt_level_api.api_gateway_options_method_id,
-      module.salt_level_api.api_gateway_options_integration_id,
-
-      module.whisky_api.api_resource_id,
-      module.whisky_api.api_gateway_any_method_id,
-      module.whisky_api.api_gateway_any_integration_id,
-      module.whisky_api.api_gateway_options_method_id,
-      module.whisky_api.api_gateway_options_integration_id,
-
-      module.draw_jasper_api.api_resource_id,
-      module.draw_jasper_api.api_gateway_any_method_id,
-      module.draw_jasper_api.api_gateway_any_integration_id,
-      module.draw_jasper_api.api_gateway_options_method_id,
-      module.draw_jasper_api.api_gateway_options_integration_id,
-
-      module.compare_acnh_api.api_resource_id,
-      module.compare_acnh_api.api_gateway_any_method_id,
-      module.compare_acnh_api.api_gateway_any_integration_id,
-      module.compare_acnh_api.api_gateway_options_method_id,
-      module.compare_acnh_api.api_gateway_options_integration_id,
-
-      module.mame_highscore_api.api_resource_id,
-      module.mame_highscore_api.api_gateway_any_method_id,
-      module.mame_highscore_api.api_gateway_any_integration_id,
-      module.mame_highscore_api.api_gateway_options_method_id,
-      module.mame_highscore_api.api_gateway_options_integration_id,
-
-      module.chess_api.api_resource_id,
-      module.chess_api.api_gateway_any_method_id,
-      module.chess_api.api_gateway_any_integration_id,
-      module.chess_api.api_gateway_options_method_id,
-      module.chess_api.api_gateway_options_integration_id,
-    ]))
+    redeployment = sha1(jsonencode({
+      state_api = module.state_api.api_resource_module_ids
+      salt_level_api = module.salt_level_api.api_resource_module_ids
+      whisky_api = module.whisky_api.api_resource_module_ids
+      draw_jasper_api = module.draw_jasper_api.api_resource_module_ids
+      compare_acnh_api = module.compare_acnh_api.api_resource_module_ids
+      mame_highscore_api = module.mame_highscore_api.api_resource_module_ids
+      chess_api = module.chess_api.api_resource_module_ids
+    }))
   }
 
   lifecycle {
