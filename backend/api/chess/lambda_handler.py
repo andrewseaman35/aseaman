@@ -20,8 +20,6 @@ VERSION = "0.0.1"
 
 
 class ChessLambdaHandler(APILambdaHandlerBase):
-    require_auth = False
-
     primary_partition_key = "game_id"
 
     def _init(self):

@@ -18,7 +18,6 @@ class Whisky extends React.Component {
         this.onStartEditWhisky = this.onStartEditWhisky.bind(this);
 
         this.getSelectedWhisky = this.getSelectedWhisky.bind(this);
-        this.isAuthed = AUTH.getApiKey();
 
         this.state = {
             whiskiesByDistAndName: {},
@@ -126,7 +125,7 @@ class Whisky extends React.Component {
     }
 
     renderWhiskyForm() {
-        if (!this.state.whiskyFormDisplayed || !this.isAuthed) {
+        if (!this.state.whiskyFormDisplayed || !AUTH.isLoggedIn()) {
             return null;
         }
 
@@ -157,7 +156,7 @@ class Whisky extends React.Component {
     }
 
     renderActionBar() {
-        if (!this.isAuthed || this.state.failed || this.state.loadingShelf) {
+        if (!AUTH.isLoggedIn() || this.state.failed || this.state.loadingShelf) {
             return null;
         }
         return (
@@ -199,4 +198,3 @@ class Whisky extends React.Component {
 }
 
 module.exports = Whisky;
-

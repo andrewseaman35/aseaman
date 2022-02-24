@@ -19,8 +19,10 @@ function addWhisky(item) {
     return $.ajax({
         type: 'POST',
         url: getAPIUrl('whisky'),
+        headers: {
+            Authorization: AUTH.getToken(),
+        },
         data: JSON.stringify({
-            api_key: AUTH.getApiKey(),
             distillery: distillery,
             name: name,
             type: type,
@@ -37,10 +39,12 @@ function removeWhisky(distillery, name) {
     const queryString = $.param({
         distillery: distillery,
         name: name,
-        api_key: AUTH.getApiKey(),
     })
     return $.ajax({
         type: 'DELETE',
+        headers: {
+            Authorization: AUTH.getToken(),
+        },
         url: getAPIUrl('whisky') + `?${queryString}`,
         contentType: 'application/json',
     }).promise();
