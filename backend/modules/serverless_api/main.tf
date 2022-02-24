@@ -45,7 +45,7 @@ locals {
 resource "aws_s3_bucket_object" "lambda_function_package" {
   bucket = "aseaman-lambda-functions"
   key    = "${var.deploy_env}/${var.api_name}-${var.deploy_env}-${local.lambda_function_package_md5}.zip"
-  source = "${var.zip_file}"
+  source = var.zip_file
 
   etag = filemd5("${var.zip_file}")
   tags = {
@@ -88,12 +88,12 @@ resource "aws_api_gateway_authorizer" "cognito" {
 module "get_method" {
   source = "../gateway_method"
 
-  api_resource_id   = aws_api_gateway_resource.api_resource.id
-  rest_api_id   = var.rest_api_id
+  api_resource_id = aws_api_gateway_resource.api_resource.id
+  rest_api_id     = var.rest_api_id
 
-  authorization = var.get_method_authorization
-  authorizer_id = aws_api_gateway_authorizer.cognito.id
-  http_method   = "GET"
+  authorization   = var.get_method_authorization
+  authorizer_id   = aws_api_gateway_authorizer.cognito.id
+  http_method     = "GET"
   integration_uri = aws_lambda_function.api_lambda_function.invoke_arn
 
   depends_on = [
@@ -104,12 +104,12 @@ module "get_method" {
 module "post_method" {
   source = "../gateway_method"
 
-  api_resource_id   = aws_api_gateway_resource.api_resource.id
-  rest_api_id   = var.rest_api_id
+  api_resource_id = aws_api_gateway_resource.api_resource.id
+  rest_api_id     = var.rest_api_id
 
-  authorization = var.post_method_authorization
-  authorizer_id = aws_api_gateway_authorizer.cognito.id
-  http_method   = "POST"
+  authorization   = var.post_method_authorization
+  authorizer_id   = aws_api_gateway_authorizer.cognito.id
+  http_method     = "POST"
   integration_uri = aws_lambda_function.api_lambda_function.invoke_arn
 
   depends_on = [
@@ -118,9 +118,9 @@ module "post_method" {
 }
 
 module "options_method" {
-  source = "../options_method"
-  api_resource_id   = aws_api_gateway_resource.api_resource.id
-  rest_api_id   = var.rest_api_id
+  source          = "../options_method"
+  api_resource_id = aws_api_gateway_resource.api_resource.id
+  rest_api_id     = var.rest_api_id
 }
 
 
@@ -133,12 +133,12 @@ resource "aws_api_gateway_resource" "proxy_api_resource" {
 module "get_proxy_method" {
   source = "../gateway_method"
 
-  api_resource_id   = aws_api_gateway_resource.proxy_api_resource.id
-  rest_api_id   = var.rest_api_id
+  api_resource_id = aws_api_gateway_resource.proxy_api_resource.id
+  rest_api_id     = var.rest_api_id
 
-  authorization = var.get_proxy_method_authorization
-  authorizer_id = aws_api_gateway_authorizer.cognito.id
-  http_method   = "GET"
+  authorization   = var.get_proxy_method_authorization
+  authorizer_id   = aws_api_gateway_authorizer.cognito.id
+  http_method     = "GET"
   integration_uri = aws_lambda_function.api_lambda_function.invoke_arn
 
   depends_on = [
@@ -149,12 +149,12 @@ module "get_proxy_method" {
 module "post_proxy_method" {
   source = "../gateway_method"
 
-  api_resource_id   = aws_api_gateway_resource.proxy_api_resource.id
-  rest_api_id   = var.rest_api_id
+  api_resource_id = aws_api_gateway_resource.proxy_api_resource.id
+  rest_api_id     = var.rest_api_id
 
-  authorization = var.post_proxy_method_authorization
-  authorizer_id = aws_api_gateway_authorizer.cognito.id
-  http_method   = "POST"
+  authorization   = var.post_proxy_method_authorization
+  authorizer_id   = aws_api_gateway_authorizer.cognito.id
+  http_method     = "POST"
   integration_uri = aws_lambda_function.api_lambda_function.invoke_arn
 
   depends_on = [
@@ -163,9 +163,9 @@ module "post_proxy_method" {
 }
 
 module "options_proxy_method" {
-  source = "../options_method"
-  api_resource_id   = aws_api_gateway_resource.proxy_api_resource.id
-  rest_api_id   = var.rest_api_id
+  source          = "../options_method"
+  api_resource_id = aws_api_gateway_resource.proxy_api_resource.id
+  rest_api_id     = var.rest_api_id
 }
 
 resource "aws_lambda_permission" "api_invoke_function" {
