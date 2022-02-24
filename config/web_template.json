@@ -11,15 +11,15 @@
     },
     "GA_TRACKING_ID": {
         "source": "ssm",
-        "key": "ga_tracking_id"
+        "key": "ga_tracking_id-${ENV}"
     },
     "PUBLIC_BUCKET_URL": {
         "source": "ssm",
-        "key": "public_bucket_url"
+        "key": "public_bucket_url-${ENV}"
     },
     "CLIENT_ID": {
-        "source": "public",
-        "key": "client_id"
+        "source": "ssm",
+        "key": "/aseaman/${ENV}/cognito/user_pool_client_id"
     },
     "ROOT_URL": {
         "source": "public",
