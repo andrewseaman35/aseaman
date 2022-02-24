@@ -174,7 +174,7 @@ class Whisky extends React.Component {
                 <div className="header">
                     <h1>Whisky Shelf</h1>
                     <p>
-                        This is an up-to-date list of the whiskies that I currently have on my
+                        This is a (sort of) up-to-date list of the whiskies that I currently have on my
                         whisky shelf at home. I use this to track what I have so I can check
                         it when I'm out, which is useful if I'm deciding on a new bottle to get.
                     </p>

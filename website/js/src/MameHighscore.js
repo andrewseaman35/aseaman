@@ -1,5 +1,4 @@
 import React from 'react';
-import $ from 'jquery';
 import _ from 'lodash';
 
 import MameHighscoreList from './components/mame/MameHighscoreList';
@@ -7,7 +6,6 @@ import MameHighscoreTable from './components/mame/MameHighscoreTable';
 
 import {
     getMetadata,
-    getScoresByGameId,
 } from './components/mame/api';
 
 

@@ -1,11 +1,8 @@
 import React from 'react';
 import _ from 'lodash';
-import * as d3 from "d3";
 
 import { list } from './components/salt_level/api';
 import { LineChart } from './components/salt_level/visualizations';
-
-const CONFIG = require('./config');
 
 const MAX_SALT_HEIGHT = 100;  // cm
 

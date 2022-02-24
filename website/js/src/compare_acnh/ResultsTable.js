@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import _ from 'lodash';
-import $ from 'jquery';
 
 import Icon from '../components/icon/Icon';
 import { getUrlTo } from '../utils';

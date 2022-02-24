@@ -1,5 +1,9 @@
 # aseaman
 
+## Set up ##
+
+`pre-commit install`
+
 ## Running Locally ##
 ### Website ###
 
@@ -38,3 +42,7 @@ DEPLOY_ENV=stage make deploy
 ## TODO ##
 
 Add early checks for `/bin/sh: aws: command not found`
+
+brew install tflint
+
+aws cognito-idp initiate-auth --auth-flow USER_PASSWORD_AUTH --auth-parameters USERNAME=test,PASSWORD=Beauisadog2! --client-id 107r5ru564tscdc95snh8rqhkf
