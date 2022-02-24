@@ -76,11 +76,6 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
             ReturnValues="ALL_NEW",
         )["Attributes"]
 
-    def _remove_from_shelf(self, distillery, name):
-        item = self._get_item(distillery, name)
-        if item is not None and item["current"]["BOOL"]:
-            self._update_item(distillery, name, False)
-
     def handle_get(self):
         ddb_items = self.ddb_client.scan(
             TableName=self.table_name,
@@ -96,16 +91,6 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
             **self._empty_response(),
             "body": json.dumps(items),
         }
-
-    def handle_delete(self):
-        distillery = self.params.get("distillery")
-        name = self.params.get("name")
-        if not distillery or not name:
-            raise BadRequestException("distillery and name required")
-
-        self._remove_from_shelf(distillery, name)
-
-        return self._empty_response()
 
     def handle_post(self):
         distillery = self.params.get("distillery")
