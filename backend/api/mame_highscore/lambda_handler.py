@@ -19,7 +19,6 @@ BUCKET_NAME = "aseaman-public-bucket"
 
 
 class MameHighscoreLambdaHandler(APILambdaHandlerBase):
-    require_auth = False
     primary_partition_key = "user"
 
     def _init(self):

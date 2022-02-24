@@ -13,18 +13,6 @@ const unsetToken = function() {
     utils.unsetCookie('id_token');
 };
 
-const setApiKey = function(key) {
-    utils.setCookie('apiKey', key);
-};
-
-const unsetApiKey = function(key) {
-    utils.unsetCookie('apiKey');
-};
-
-const getApiKey = function(key) {
-    return utils.getCookie('apiKey');
-};
-
 const extractAuthComponents = function(authUrl) {
     const splitPath = authUrl.split('#');
     if (splitPath.length !== 2) {
@@ -56,4 +44,8 @@ const logout = function() {
     window.location.replace('/');
 };
 
-module.exports = { authenticate, setToken, getToken, logout, setApiKey, getApiKey, unsetApiKey };
+const isLoggedIn = function() {
+    return getToken() !== null;
+}
+
+module.exports = { authenticate, setToken, getToken, logout, isLoggedIn };

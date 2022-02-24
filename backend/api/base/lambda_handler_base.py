@@ -8,13 +8,10 @@ import boto3
 from .api_exceptions import (
     APIException,
     BadRequestException,
-    UnauthorizedException,
     BaseAPIException,
     MethodNotAllowedException,
 )
 
-
-SSM_API_KEY = "lambda-api-key"
 
 EMPTY_RESPONSE = {
     "isBase64Encoded": False,
@@ -26,13 +23,11 @@ EMPTY_RESPONSE = {
 
 
 class APILambdaHandlerBase(object):
-    require_auth = True
     rest_enabled = True
 
     def __init__(self, event, context):
         self.event = event
         self.context = context
-        self.api_key = None
         self.handlers_by_method = {
             "GET": self.handle_get,
             "POST": self.handle_post,
@@ -57,12 +52,6 @@ class APILambdaHandlerBase(object):
     @property
     def is_local(self):
         return os.environ.get("IN_DOCKER_API") == "true"
-
-    @property
-    def __api_key(self):
-        response = self.ssm_client.get_parameter(Name=SSM_API_KEY)
-        value = response["Parameter"]["Value"]
-        return value
 
     @classmethod
     def _ddb_item_to_json(cls, ddb_item):
@@ -103,11 +92,6 @@ class APILambdaHandlerBase(object):
         elif self.event["httpMethod"] == "POST":
             params = json.loads(self.event["body"])
         self.params = params
-
-    def _validate_auth(self):
-        api_key = self.params.get("api_key")
-        if not self.__api_key or not api_key == self.__api_key:
-            raise UnauthorizedException("invalid api key")
 
     def __before_run(self):
         self._init()

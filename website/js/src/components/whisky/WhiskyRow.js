@@ -11,7 +11,6 @@ import Icon from '../icon/Icon';
 class WhiskyRow extends React.Component {
     constructor() {
         super();
-        this.isAuthed = AUTH.getApiKey();
 
         this.handleRemove = this.handleRemove.bind(this);
         this.onEditClicked = this.onEditClicked.bind(this);
@@ -36,9 +35,6 @@ class WhiskyRow extends React.Component {
     }
 
     renderActionDataItem(item) {
-        if (!this.isAuthed) {
-            return null;
-        }
         return (
             <td key={Object.keys(TABLE_COLUMN_ORDER).length} className="actions">
                 <button
@@ -64,7 +60,7 @@ class WhiskyRow extends React.Component {
             <td key={index}>{item[key]}</td>
         ));
 
-        if (this.isAuthed) {
+        if (AUTH.isLoggedIn()) {
             dataItems.push(this.renderActionDataItem(item));
         }
         return dataItems;

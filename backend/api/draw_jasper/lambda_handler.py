@@ -50,7 +50,6 @@ def crop_to_content(img, invert=True):
 
 
 class DrawJasperLambdaHandler(APILambdaHandlerBase):
-    require_auth = False
     action = "handle_upload"
     rest_enabled = False
 
@@ -75,13 +74,6 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
         if not payload.get("img"):
             raise BadRequestException("img parameter required")
         self.img_bytes = base64.b64decode(payload["img"].split(",")[1])
-
-        if self.require_auth:
-            self.api_key = payload.get("api_key")
-            if not self.api_key:
-                raise UnauthorizedException("api_key parameter required")
-            if not self.__api_key or not self.api_key == self.__api_key:
-                raise UnauthorizedException("invalid api key")
 
     def __parse_event(self, event):
         print(" -- Received event --")

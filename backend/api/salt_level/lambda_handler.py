@@ -8,8 +8,6 @@ LOCAL_TABLE_NAME = "salt_level_local"
 
 
 class SaltLevelLambdaHandler(APILambdaHandlerBase):
-    require_auth = False
-
     primary_partition_key = "water_softener_id"
 
     def _init(self):

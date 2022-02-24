@@ -4,10 +4,16 @@ import json
 
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
+from werkzeug.exceptions import Unauthorized
 
 
 app = Flask(__name__)
 CORS(app)
+
+
+def _assert_has_authorization(request):
+    if not request.headers.get("Authorization"):
+        raise Unauthorized()
 
 
 def _build_lambda_event(request, payload):
@@ -15,6 +21,7 @@ def _build_lambda_event(request, payload):
     event = {**event, **payload}
     event["httpMethod"] = request.method
     event["path"] = request.path
+    event["headers"].update(request.headers)
 
     return event
 
@@ -66,6 +73,8 @@ def mame_highscore(resource):
 
 @app.route("/whisky/", methods=["GET", "DELETE", "POST"])
 def whisky():
+    if request.method == "POST":
+        _assert_has_authorization(request)
     payload = get_payload(request)
     result = make_lambda_request("whisky_shelf", request, payload, None)
     return convert_to_response(result)
@@ -87,7 +96,6 @@ def draw_jasper():
 
 @app.route("/salt_level/", methods=["GET", "POST"])
 def salt_level():
-    print(request)
     payload = get_payload(request)
     result = make_lambda_request("salt_level", request, payload, None)
     return convert_to_response(result)

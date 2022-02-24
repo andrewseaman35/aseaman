@@ -98,8 +98,6 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
         }
 
     def handle_delete(self):
-        self._validate_auth()
-
         distillery = self.params.get("distillery")
         name = self.params.get("name")
         if not distillery or not name:
@@ -110,8 +108,6 @@ class WhiskyShelfLambdaHandler(APILambdaHandlerBase):
         return self._empty_response()
 
     def handle_post(self):
-        self._validate_auth()
-
         distillery = self.params.get("distillery")
         name = self.params.get("name")
         if not distillery or not name:

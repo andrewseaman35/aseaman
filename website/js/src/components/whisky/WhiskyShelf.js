@@ -1,12 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import $ from 'jquery';
 
 import AUTH from '../../auth';
 
 import WhiskyRow from './WhiskyRow';
-import WhiskyForm from './WhiskyForm';
 import Icon from '../icon/Icon';
 
 import {
@@ -14,13 +12,11 @@ import {
     TABLE_COLUMN_ORDER,
     TABLE_COLUMN_HEADER_LABELS,
 } from './constants';
-import { getAPIUrl } from '../../utils';
 
 
 class WhiskyShelf extends React.Component {
     constructor() {
         super();
-        this.isAuthed = AUTH.getApiKey();
 
         this.getSortedItems = this.getSortedItems.bind(this);
         this.onHeaderItemClick = this.onHeaderItemClick.bind(this);
@@ -74,7 +70,7 @@ class WhiskyShelf extends React.Component {
     }
 
     renderActionHeaderItem() {
-        if (!this.isAuthed) {
+        if (!AUTH.isLoggedIn()) {
             return null;
         }
         return (

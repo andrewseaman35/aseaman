@@ -23,7 +23,7 @@ const navItem = function(item) {
 };
 
 const appendLoginItem = function($nav) {
-    const loggedIn = AUTH.getToken() !== null;
+    const loggedIn = AUTH.isLoggedIn();
     const redirectURI = `${CONFIG.ROOT_URL}auth_callback.html`;
     const logoutURI = `${CONFIG.ROOT_URL}logout.html`;
 

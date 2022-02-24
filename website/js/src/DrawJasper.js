@@ -1,7 +1,6 @@
 import React from 'react';
 import $ from 'jquery';
 
-import AUTH from './auth';
 import { getAPIUrl, getImageSrc, getUrlTo } from './utils';
 
 
@@ -81,7 +80,6 @@ class DrawJasper extends React.Component {
           type: "POST",
           url: getAPIUrl('draw_jasper'),
           data:JSON.stringify({
-            api_key: AUTH.getApiKey(),
             img: this.state.imgSrc
           }),
           contentType: 'application/json',
