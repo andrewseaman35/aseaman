@@ -33,7 +33,7 @@ const authenticate = function() {
     const url = window.location.href;
     const components = extractAuthComponents(url);
     if (!components) {
-        return false;
+        window.location.replace('/');
     }
     setToken(components.id_token, components.expires_in);
     window.location.replace('/');

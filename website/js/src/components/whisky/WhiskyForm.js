@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Icon from '../icon/Icon';
 
 import { addWhisky } from './api';
-import { TABLE_COLUMN_ORDER, ERROR_MESSAGE_BY_CODE } from './constants';
+import { ERROR_MESSAGE_BY_CODE } from './constants';
 
 
 class WhiskyForm extends React.Component {

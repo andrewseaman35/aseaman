@@ -2,16 +2,19 @@
 import $ from 'jquery';
 
 const AUTH = require('./auth');
-const CONSTANTS = require('./constants');
 const CONFIG = require('./config');
 
+const cognitoHostedUIUrl = function() {
+    const deployEnv = CONFIG.LOCAL ? 'stage': CONFIG.DEPLOY_ENV;
+    return `https://andrewcseaman-${deployEnv}.auth.us-east-1.amazoncognito.com/`;
+}
 
 const loginUrl = function(redirectURI) {
-    return `${CONSTANTS.LOGIN_DOMAIN}login?response_type=token&client_id=${CONFIG.CLIENT_ID}&redirect_uri=${redirectURI}`;
+    return `${cognitoHostedUIUrl()}login?response_type=token&client_id=${CONFIG.CLIENT_ID}&redirect_uri=${redirectURI}`;
 };
 
 const logoutUrl = function(logoutURI) {
-    return `${CONSTANTS.LOGIN_DOMAIN}logout?client_id=${CONFIG.CLIENT_ID}&logout_uri=${logoutURI}`;
+    return `${cognitoHostedUIUrl()}logout?client_id=${CONFIG.CLIENT_ID}&logout_uri=${logoutURI}`;
 };
 
 const navElement = function(className, item) {

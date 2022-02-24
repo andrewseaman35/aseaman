@@ -1,7 +1,6 @@
 import $ from 'jquery';
 import React from 'react';
-import CONSTANTS from '../constants';
-import { isMobile, getImageSrc, KEY_CODE } from '../utils';
+import { isMobile, KEY_CODE } from '../utils';
 
 
 class Lightbox extends React.Component {
