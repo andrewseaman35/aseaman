@@ -71,7 +71,7 @@ def mame_highscore(resource):
     return convert_to_response(result)
 
 
-@app.route("/whisky/", methods=["GET", "DELETE", "POST"])
+@app.route("/whisky/", methods=["GET", "POST"])
 def whisky():
     if request.method == "POST":
         _assert_has_authorization(request)

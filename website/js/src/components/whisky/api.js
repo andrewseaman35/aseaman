@@ -36,16 +36,17 @@ function addWhisky(item) {
 };
 
 function removeWhisky(distillery, name) {
-    const queryString = $.param({
-        distillery: distillery,
-        name: name,
-    })
     return $.ajax({
-        type: 'DELETE',
+        type: 'POST',
         headers: {
             Authorization: AUTH.getToken(),
         },
-        url: getAPIUrl('whisky') + `?${queryString}`,
+        data: JSON.stringify({
+            distillery: distillery,
+            name: name,
+            current: false,
+        }),
+        url: getAPIUrl('whisky'),
         contentType: 'application/json',
     }).promise();
 };
