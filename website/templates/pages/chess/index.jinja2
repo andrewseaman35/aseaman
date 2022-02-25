@@ -85,6 +85,7 @@
                 <div class="game-setup-container">
                     <h3>Game Setup</h3>
                     <div class="load-container">
+                        <h4>Load Game</h4>
                         <div>
                             <label for="load-game-id-input">Input existing game id:</label>
                             <input
@@ -105,9 +106,31 @@
                         <div id="load-error" class="error-message"></div>
                     </div>
                     <div class="new-container">
-                        <p>Or start a new game</p>
-                        <button data-game-mode="local" class="new-game-button">Local 2P</button>
-                        <button data-game-mode="network" class="new-game-button">Network 2P</button>
+                        <h4>New Game</h4>
+                        <div class="game-mode-container">
+                            <div>
+                                <input type="radio" id="game-mode-local" name="game-mode" value="local" checked>
+                                <label for="game-mode-local">Local 2P</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="game-mode-network" name="game-mode" value="network">
+                                <label for="game-mode-local">Network 2P</label>
+                            </div>
+                            <div id="network-game-mode-container" class="logged-out">
+                                <div class="network-config logged-in">
+                                    <label for="load-game-id-input">Challenge user:</label>
+                                    <input
+                                        id="network-opponent"
+                                        type="text"
+                                        placeholder="username"
+                                    />
+                                </div>
+                                <div class="network-config logged-out">
+                                    Log in to challenge a specific user!
+                                </div>
+                            </div>
+                        </div>
+                        <button class="new-game-button">Start Game</button>
                     </div>
                 </div>
             </div>
@@ -117,7 +140,9 @@
             </div>
             <div id="game-info-container">
                 <div id="game-info-game-id">Game id: </div>
+                <div id="game-info-opponent">Opponent: </div>
                 <div id="game-info-game-mode">Mode: </div>
+                <div id="game-info-playing-side">Playing as: </div>
                 <div id="game-info-turn"></div>
                 <div id="game-info-turn"></div>
                 <div id="game-info-checks"></div>

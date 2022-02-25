@@ -58,6 +58,19 @@ class GameInfo {
         $('#game-info-game-mode').text(`Mode: ${gameMode}`);
     }
 
+    setPlayingAs(side) {
+        $('#game-info-playing-side').text(`Playing as: ${side}`);
+    }
+
+    setOpponent(opponent) {
+        if (opponent) {
+            $('#game-info-opponent').text(`Opponent: ${opponent}`);
+            $('#game-info-opponent').show();
+        } else {
+            $('#game-info-opponent').hide();
+        }
+    }
+
     setNote(note) {
         $('#game-note').empty();
         $('#game-note').append(`<span>${note}</span>`);

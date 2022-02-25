@@ -134,7 +134,7 @@ class APILambdaHandlerBase(object):
             return
 
         self.user["username"] = decoded["cognito:username"]
-        self.user["groups"] = decoded["cognito:groups"]
+        self.user["groups"] = decoded.get("cognito:groups", [])
 
     def __before_run(self):
         self._init()
