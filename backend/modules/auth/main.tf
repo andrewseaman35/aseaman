@@ -44,7 +44,7 @@ resource "aws_cognito_user_pool_client" "client" {
     "ALLOW_USER_PASSWORD_AUTH",
     "ALLOW_REFRESH_TOKEN_AUTH",
   ]
-  supported_identity_providers         = ["COGNITO"]
+  supported_identity_providers = ["COGNITO"]
 
   callback_urls        = var.callback_urls
   default_redirect_uri = var.default_redirect_uri

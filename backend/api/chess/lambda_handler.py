@@ -8,6 +8,7 @@ from base.lambda_handler_base import APILambdaHandlerBase
 from base.api_exceptions import (
     BadRequestException,
     NotFoundException,
+    UnauthorizedException,
 )
 
 GAME_ID_LENGTH = 6
@@ -106,6 +107,15 @@ class ChessLambdaHandler(APILambdaHandlerBase):
                 }
         return item
 
+    def __validate_game_ownership(self, ddbItem):
+        players = {
+            ddbItem.get("player_one", {}).get("S", None),
+            ddbItem.get("player_two", {}).get("S", None),
+        }
+        if all(players):
+            if not self.user["username"] or not self.user["username"] in players:
+                raise UnauthorizedException("Log in to access this game")
+
     def __fetch_game(self, game_id):
         ddbItem = self.ddb_client.get_item(
             TableName=self.table_name,
@@ -116,9 +126,12 @@ class ChessLambdaHandler(APILambdaHandlerBase):
             },
         )
         if "Item" not in ddbItem:
-            raise NotFoundException("game not found")
+            raise NotFoundException("Game not found")
 
-        return self._format_ddb_item(ddbItem["Item"])
+        ddbItem = ddbItem["Item"]
+        self.__validate_game_ownership(ddbItem)
+
+        return self._format_ddb_item(ddbItem)
 
     def __fetch_by_player(self, player):
         ddbItems = self.ddb_client.scan(

@@ -107,8 +107,8 @@ class APILambdaHandlerBase(object):
 
         params = {}
         if self.event["httpMethod"] in {"GET", "DELETE"}:
-            params = self.event["queryStringParameters"] or {}
-            params.update(self.event["multiValueQueryStringParameters"] or {})
+            params = self.event["multiValueQueryStringParameters"] or {}
+            params.update(self.event["queryStringParameters"] or {})
         elif self.event["httpMethod"] == "POST":
             params = json.loads(self.event["body"])
         self.params = params

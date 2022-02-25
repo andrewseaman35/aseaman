@@ -68,5 +68,5 @@ module "exports" {
   source                      = "../../modules/exports"
   env                         = var.deploy_env
   cognito_user_pool_client_id = module.auth.cognito_user_pool_client_id
-  cognito_user_pool_id = module.auth.cognito_user_pool_id
+  cognito_user_pool_id        = module.auth.cognito_user_pool_id
 }

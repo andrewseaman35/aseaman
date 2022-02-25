@@ -22,11 +22,11 @@ variable "api_resource_id" {
 }
 
 variable "rest_api_id" {
-  type = string
+  type        = string
   description = "id of rest api to associate gateway method"
 }
 
 variable "integration_uri" {
-  type = string
+  type        = string
   description = "uri for gateway integration"
 }
