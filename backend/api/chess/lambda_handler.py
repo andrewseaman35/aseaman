@@ -118,6 +118,23 @@ class ChessLambdaHandler(APILambdaHandlerBase):
 
         return self._format_ddb_item(ddbItem["Item"])
 
+    def __fetch_by_player(self, player):
+        ddbItems = self.ddb_client.scan(
+            TableName=self.table_name,
+            ExpressionAttributeNames={
+                "#po": "player_one",
+                "#pt": "player_two",
+            },
+            ExpressionAttributeValues={
+                ":pname": {
+                    "S": player,
+                },
+            },
+            FilterExpression="(#po = :pname) OR (#pt = :pname)",
+        )["Items"]
+
+        return [self._format_ddb_item(ddbItem) for ddbItem in ddbItems]
+
     def _new_game(self, game_mode, player_one=None, player_two=None):
         print("Creating new game")
         ddbItem = self._build_new_game_ddb_item(game_mode, player_one, player_two)
@@ -162,9 +179,16 @@ class ChessLambdaHandler(APILambdaHandlerBase):
 
         if resource == "game":
             game_id = self.params.get("game_id")
-            if not game_id:
-                raise BadRequestException("game_id required")
-            result = self.__fetch_game(game_id)
+            if game_id:
+                result = self.__fetch_game(game_id)
+            current_user = self.params.get("current_user")
+            if current_user == "true":
+                if self.user["username"]:
+                    result = self.__fetch_by_player(self.user["username"])
+                else:
+                    raise PermissionError("cannot fetch by user")
+            if not (game_id or current_user):
+                raise BadRequestException("game_id or current_user required")
         else:
             raise NotFoundException("unsupported resource: {}".format(resource))
 

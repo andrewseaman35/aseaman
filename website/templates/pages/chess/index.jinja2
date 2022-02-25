@@ -85,14 +85,23 @@
                 <div class="game-setup-container">
                     <h3>Game Setup</h3>
                     <div class="load-container">
-                        <input
-                            id="load-game-id-input"
-                            type="text"
-                            placeholder="Game ID"
-                            maxlength="6"
-                        />
+                        <div>
+                            <label for="load-game-id-input">Input existing game id:</label>
+                            <input
+                                id="load-game-id-input"
+                                type="text"
+                                placeholder="Game ID"
+                                maxlength="6"
+                            />
+                        </div>
+                        <p>OR</p>
+                        <div class="load-game-id-select-container">
+                            <label for="owned-game-ids">Log in to select from your games:</label>
+                            <select name="owned-game-ids" id="owned-game-id-select" disabled>
+                                <option value="default" selected>Loading...</option>
+                            </select>
+                        </div>
                         <button disabled id="load-game-button">Load game</button>
-                        <div><b>Note:</b> remote chess not available for loaded games</div>
                         <div id="load-error" class="error-message"></div>
                     </div>
                     <div class="new-container">
