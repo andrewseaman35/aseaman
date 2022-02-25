@@ -41,9 +41,24 @@ function createNewGame(gameMode) {
     });
 }
 
+function loadUserGames() {
+    return $.ajax({
+        type: 'GET',
+        url: getAPIUrl('chess') + "game/",
+        headers: {
+            Authorization: getToken(),
+        },
+        data: {
+            'current_user': true
+        },
+        contentType: 'application/json',
+    });
+}
+
 
 module.exports = {
     createNewGame,
     fetchGame,
     saveTurn,
+    loadUserGames,
 };
