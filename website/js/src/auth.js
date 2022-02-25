@@ -13,6 +13,30 @@ const unsetToken = function() {
     utils.unsetCookie('id_token');
 };
 
+const setUser = function(user, expiry) {
+    utils.setCookie('user', user, expiry);
+}
+
+const getUser = function() {
+    return utils.getCookie('user');
+}
+
+const unsetUser = function() {
+    utils.unsetCookie('user');
+}
+
+const setGroups = function(groups, expiry) {
+    utils.setCookie('groups', groups.join(','), expiry);
+}
+
+const getGroups = function() {
+    return (utils.getCookie('groups') || '').split(',');
+}
+
+const unsetGroups = function() {
+    utils.unsetCookie('groups');
+}
+
 const extractAuthComponents = function(authUrl) {
     const splitPath = authUrl.split('#');
     if (splitPath.length !== 2) {
@@ -36,11 +60,17 @@ const authenticate = function() {
         window.location.replace('/');
     }
     setToken(components.id_token, components.expires_in);
+
+    const parsedJwt = parseJwt(components.id_token);
+    setUser(parsedJwt['cognito:username'])
+    setGroups(parsedJwt['cognito:groups'] || [])
     window.location.replace('/');
 };
 
 const logout = function() {
     unsetToken();
+    unsetUser();
+    unsetGroups();
     window.location.replace('/');
 };
 
@@ -48,4 +78,22 @@ const isLoggedIn = function() {
     return getToken() !== null;
 }
 
-module.exports = { authenticate, setToken, getToken, logout, isLoggedIn };
+function parseJwt (token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+}
+
+module.exports = {
+    authenticate,
+    isLoggedIn,
+    logout,
+    getUser,
+    setUser,
+    getToken,
+    setToken,
+ };

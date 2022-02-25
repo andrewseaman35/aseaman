@@ -87,7 +87,7 @@ $space-light: #CB9053;
 }
 
 #game-start-modal {
-    input {
+    #load-game-id-input {
         text-transform: uppercase;
     }
 
@@ -95,8 +95,40 @@ $space-light: #CB9053;
         display: none;
     }
 
-    .new-container p {
-        text-align: center;
+    .new-container {
+        .game-mode-container {
+            margin-bottom: 8px;
+        }
+
+        #network-game-mode-container {
+            display: none;
+            margin-top: 8px;
+            margin-bottom: 8px;
+            &.logged-out {
+                .network-config {
+                    &.logged-in {
+                        display: none;
+                    }
+                    &.logged-out {
+                        display: block;
+                    }
+                }
+            }
+            &.logged-in {
+                .network-config {
+                    &.logged-out {
+                        display: none;
+                    }
+                    &.logged-in {
+                        display: block;
+                    }
+                }
+            }
+        }
+    }
+
+    .new-container h4 {
+        margin-bottom: 8px;
     }
 
     .load-game-id-select-container {
@@ -142,6 +174,10 @@ $space-light: #CB9053;
         overflow: scroll;
         border: 1px solid black;
         padding: 8px;
+    }
+
+    #game-info-opponent {
+        display: none;
     }
 
     span.small-log {

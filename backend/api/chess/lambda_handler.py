@@ -70,6 +70,8 @@ class ChessLambdaHandler(APILambdaHandlerBase):
             "time_created": ddbItem["time_created"]["N"],
             "time_updated": ddbItem["time_updated"]["N"],
             "version": ddbItem["version"]["S"],
+            "player_one": ddbItem.get("player_one", {}).get("S", None),
+            "player_two": ddbItem.get("player_two", {}).get("S", None),
         }
 
     def _build_new_game_ddb_item(self, game_mode, player_one=None, player_two=None):
@@ -207,7 +209,7 @@ class ChessLambdaHandler(APILambdaHandlerBase):
                 raise BadRequestException("need game_mode")
             player_one = self.user.get("username")
             player_two = (
-                player_one if game_mode == "local" else self.params.get("recipient")
+                player_one if game_mode == "local" else self.params.get("player_two")
             )
             result = self._new_game(game_mode, player_one, player_two)
         elif resource == "turn":

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import $ from 'jquery';
 
-import { isLoggedIn } from '../auth';
+import { isLoggedIn, getUser } from '../auth';
 
 import {
     PIECE_NOTATION,
@@ -76,7 +76,9 @@ class ChessGame {
 
         this.gameId = null;
         this.gameMode = null;
-        this.localPlayerSide;
+        this.currentUser = getUser();
+        this.isPlayerOne = null;
+        this.localPlayerSide = null;
 
         this.isInCheck = false;
         this.isInCheckmate = false;
@@ -104,17 +106,20 @@ class ChessGame {
         if (isLoggedIn()) {
             loadUserGames().then((response) => {
                 response.forEach(game => {
-                    if (game.game_mode === GAME_MODE.LOCAL) {
-                        $('#owned-game-id-select').append(`<option value="${game.game_id}">${game.game_id} (${game.game_mode})</option>`)
-                    }
+                    $('#owned-game-id-select').append(`<option value="${game.game_id}">${game.game_id} (${game.game_mode})</option>`)
                 })
                 $('#owned-game-id-select')[0].children[0].innerHTML = 'Select a game'
                 $('#owned-game-id-select').on('change', this.onGameIdSelect.bind(this));
                 $('#owned-game-id-select').prop('disabled', false);
-            })
+            });
+            $("#network-game-mode-container").removeClass("logged-out");
+            $("#network-game-mode-container").addClass("logged-in");
         } else {
             $('#owned-game-id-select')[0].children[0].innerHTML = '--';
+            $("#network-game-mode-container").removeClass("logged-in");
+            $("#network-game-mode-container").addClass("logged-out");
         }
+        $('input[name="game-mode"]').on('change', this.onGameModeRadioButtonChange.bind(this));
         $('#load-game-button').on('click', this.onLoadGameButtonClick.bind(this));
         $('#load-game-id-input').on('input', this.onLoadGameButtonChange.bind(this));
         $('.new-game-button').on('click', this.onStartNewGameButtonClick.bind(this));
@@ -348,6 +353,15 @@ class ChessGame {
         this.onLoadGameButtonChange();
     }
 
+    onGameModeRadioButtonChange(e) {
+        const gameMode = e.currentTarget.value;
+        if(gameMode === GAME_MODE.NETWORK) {
+            $("#network-game-mode-container").show();
+        } else {
+            $("#network-game-mode-container").hide();
+        }
+    }
+
     onLoadGameButtonClick() {
         const gameId = $('#load-game-id-input')[0].value;
         $('#load-game-button').attr('disabled', true);
@@ -359,7 +373,15 @@ class ChessGame {
                 this.gameInfo.setGameId(this.gameId);
                 this.gameInfo.setGameMode(this.gameMode);
                 if (this.gameMode === GAME_MODE.NETWORK) {
-                    this.localPlayerSide = SIDE.BLACK;
+                    if (isLoggedIn()) {
+                        this.isPlayerOne = response.player_one === this.currentUser;
+                        this.localPlayerSide = this.isPlayerOne ? SIDE.WHITE : SIDE.BLACK;
+                        const opponent = this.isPlayerOne ? response.player_two : response.player_one;
+                        this.gameInfo.setOpponent(opponent);
+                    } else {
+                        this.localPlayerSide = SIDE.BLACK;
+                    }
+                    this.gameInfo.setPlayingAs(this.localPlayerSide);
                 }
                 this.turns = _.map(response.turns, turn => ChessTurn.deserialize(turn));
                 this.gameState = GAME_STATE.REPLAY;
@@ -369,9 +391,9 @@ class ChessGame {
                 });
                 this.initializeGame();
 
-                if (this.gameMode === GAME_MODE.NETWORK && this.turns.length % 2 === 0) {
-                    // If there are an even amount of turns (or zero), it's white's turn.
-                    // Since we loaded the game, we have to wait for the game creator to make their move.
+                const ourTurnModTwoRemainder = this.localPlayerSide === SIDE.BLACK ? 1 : 0;
+                const isOurTurn = this.turns.length % 2 === ourTurnModTwoRemainder;
+                if (this.gameMode === GAME_MODE.NETWORK && !isOurTurn) {
                     this.pollForNextTurn();
                 } else {
                     this.startGame();
@@ -420,15 +442,23 @@ class ChessGame {
     }
 
     onStartNewGameButtonClick(event) {
+        const checkedItem = $('input[name="game-mode"]:checked')[0];
         $('#new-game-error').hide();
         $('.new-game-button').attr('disabled', true);
-        this.gameMode = event.currentTarget.dataset.gameMode;
+
+        this.gameMode = checkedItem.value;
         this.gameInfo.setGameMode(this.gameMode);
+
+        const canHaveOpponent = isLoggedIn() && this.gameMode === GAME_MODE.NETWORK;
+        const player_two = canHaveOpponent ? $('#network-opponent')[0].value : null;
+        this.gameInfo.setOpponent(player_two);
+
         this.localPlayerSide = SIDE.WHITE;
+        this.gameInfo.setPlayingAs(this.localPlayerSide);
         if (this.remoteChess) {
             this.initializedRemoteChessIfReady();
         }
-        createNewGame(this.gameMode).then(
+        createNewGame(this.gameMode, player_two).then(
             (response) => {
                 this.gameId = response.game_id;
                 this.gameInfo.setGameId(this.gameId);
