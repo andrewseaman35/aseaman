@@ -59,7 +59,11 @@ class GameInfo {
     }
 
     setPlayingAs(side) {
-        $('#game-info-playing-side').text(`Playing as: ${side}`);
+        if (side) {
+            $('#game-info-playing-side').text(`Playing as: ${side}`);
+        } else {
+            $('#game-info-playing-side').hide();
+        }
     }
 
     setOpponent(opponent) {

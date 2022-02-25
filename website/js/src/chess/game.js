@@ -382,6 +382,8 @@ class ChessGame {
                         this.localPlayerSide = SIDE.BLACK;
                     }
                     this.gameInfo.setPlayingAs(this.localPlayerSide);
+                } else {
+                    this.gameInfo.setPlayingAs(null);
                 }
                 this.turns = _.map(response.turns, turn => ChessTurn.deserialize(turn));
                 this.gameState = GAME_STATE.REPLAY;
@@ -450,15 +452,15 @@ class ChessGame {
         this.gameInfo.setGameMode(this.gameMode);
 
         const canHaveOpponent = isLoggedIn() && this.gameMode === GAME_MODE.NETWORK;
-        const player_two = canHaveOpponent ? $('#network-opponent')[0].value : null;
-        this.gameInfo.setOpponent(player_two);
+        const playerTwo = canHaveOpponent ? $('#network-opponent')[0].value : null;
+        this.gameInfo.setOpponent(playerTwo);
 
         this.localPlayerSide = SIDE.WHITE;
-        this.gameInfo.setPlayingAs(this.localPlayerSide);
+        this.gameInfo.setPlayingAs(this.gameMode === GAME_MODE.NETWORK ? this.localPlayerSide : null);
         if (this.remoteChess) {
             this.initializedRemoteChessIfReady();
         }
-        createNewGame(this.gameMode, player_two).then(
+        createNewGame(this.gameMode, playerTwo).then(
             (response) => {
                 this.gameId = response.game_id;
                 this.gameInfo.setGameId(this.gameId);
