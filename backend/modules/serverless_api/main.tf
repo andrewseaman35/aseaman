@@ -63,6 +63,12 @@ resource "aws_lambda_function" "api_lambda_function" {
   runtime = "python3.6"
   timeout = var.lambda_timeout
 
+  environment {
+    variables = {
+      ENV = var.deploy_env
+    }
+  }
+
   depends_on = [
     aws_s3_bucket_object.lambda_function_package
   ]

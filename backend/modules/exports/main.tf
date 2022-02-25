@@ -12,3 +12,9 @@ resource "aws_ssm_parameter" "cognito_user_pool_client_id" {
   type  = "String"
   value = var.cognito_user_pool_client_id
 }
+
+resource "aws_ssm_parameter" "cognito_user_pool_id" {
+  name = "/aseaman/${var.env}/cognito/user_pool_id"
+  type = "String"
+  value = var.cognito_user_pool_id
+}

@@ -16,6 +16,5 @@ variable "api_url" {
 }
 
 variable "cognito_user_pool_arn" {
-  type        = string
-  description = "arn of cognito user pool for authorization"
+  type = string
 }
