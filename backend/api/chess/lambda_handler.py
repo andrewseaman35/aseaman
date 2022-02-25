@@ -10,9 +10,6 @@ from base.api_exceptions import (
     NotFoundException,
 )
 
-TABLE_NAME = "chess_game"
-LOCAL_TABLE_NAME = "chess_game"
-
 GAME_ID_LENGTH = 6
 TURN_REGEX_PATTERN = r"(?P<side>WHITE|BLACK)\|(?P<starting_space>[A-Z]\d)\|(?P<ending_space>[A-Z]\d)\|(?P<turn_type>\w+)\|(?P<options>\w*)"
 
@@ -23,8 +20,13 @@ class ChessLambdaHandler(APILambdaHandlerBase):
     primary_partition_key = "game_id"
 
     def _init(self):
-        self.table_name = LOCAL_TABLE_NAME if self.is_local else TABLE_NAME
         self.turn_regex_pattern = re.compile(TURN_REGEX_PATTERN)
+
+    @property
+    def table_name(self):
+        if self.env == "live":
+            return "chess_game"
+        return f"chess_game_{self.env}"
 
     def _init_aws(self):
         self.ddb_client = self.aws_session.client("dynamodb", region_name="us-east-1")
@@ -70,9 +72,9 @@ class ChessLambdaHandler(APILambdaHandlerBase):
             "version": ddbItem["version"]["S"],
         }
 
-    def _build_new_game_ddb_item(self, game_mode):
+    def _build_new_game_ddb_item(self, game_mode, player_one=None, player_two=None):
         timestamp = self._get_timestamp()
-        return {
+        item = {
             "game_id": {
                 "S": self._new_game_id(),
             },
@@ -92,6 +94,15 @@ class ChessLambdaHandler(APILambdaHandlerBase):
                 "S": VERSION,
             },
         }
+        if player_one:
+            item["player_one"] = {
+                "S": player_one,
+            }
+            if player_two:
+                item["player_two"] = {
+                    "S": player_two,
+                }
+        return item
 
     def __fetch_game(self, game_id):
         ddbItem = self.ddb_client.get_item(
@@ -107,9 +118,9 @@ class ChessLambdaHandler(APILambdaHandlerBase):
 
         return self._format_ddb_item(ddbItem["Item"])
 
-    def _new_game(self, game_mode):
+    def _new_game(self, game_mode, player_one=None, player_two=None):
         print("Creating new game")
-        ddbItem = self._build_new_game_ddb_item(game_mode)
+        ddbItem = self._build_new_game_ddb_item(game_mode, player_one, player_two)
         self.ddb_client.put_item(
             TableName=self.table_name,
             Item=ddbItem,
@@ -163,7 +174,6 @@ class ChessLambdaHandler(APILambdaHandlerBase):
         }
 
     def handle_post(self):
-        print("handling post")
         path_parts = self.event["path"].strip("/").split("/")
         resource = path_parts[1] if len(path_parts) > 1 else None
 
@@ -171,7 +181,11 @@ class ChessLambdaHandler(APILambdaHandlerBase):
             game_mode = self.params.get("game_mode")
             if not game_mode:
                 raise BadRequestException("need game_mode")
-            result = self._new_game(game_mode)
+            player_one = self.user.get("username")
+            player_two = (
+                player_one if game_mode == "local" else self.params.get("recipient")
+            )
+            result = self._new_game(game_mode, player_one, player_two)
         elif resource == "turn":
             game_id = self.params.get("game_id")
             turn = self.params.get("turn")
