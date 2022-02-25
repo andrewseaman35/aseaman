@@ -1,5 +1,6 @@
 import $ from 'jquery';
 
+import { getToken } from '../auth';
 import { getAPIUrl } from '../utils';
 
 
@@ -30,6 +31,9 @@ function createNewGame(gameMode) {
     return $.ajax({
         type: 'POST',
         url: getAPIUrl('chess') + "game/",
+        headers: {
+            Authorization: getToken(),
+        },
         data: JSON.stringify({
             'game_mode': gameMode,
         }),

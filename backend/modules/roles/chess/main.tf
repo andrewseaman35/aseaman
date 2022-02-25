@@ -32,7 +32,9 @@ resource "aws_iam_role_policy" "api_role" {
           "dynamodb:Query"
         ]
         Resource = [
-          "arn:aws:dynamodb:${local.aws_region}:${local.aws_account_id}:table/chess_game"
+          "arn:aws:dynamodb:${local.aws_region}:${local.aws_account_id}:table/chess_game",
+          "arn:aws:dynamodb:${local.aws_region}:${local.aws_account_id}:table/chess_game_local",
+          "arn:aws:dynamodb:${local.aws_region}:${local.aws_account_id}:table/chess_game_stage"
         ]
       },
       {

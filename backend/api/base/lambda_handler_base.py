@@ -1,4 +1,3 @@
-import datetime
 import json
 import os
 import traceback
@@ -11,6 +10,7 @@ from .api_exceptions import (
     BaseAPIException,
     MethodNotAllowedException,
 )
+from .token_decoder import decode_token
 
 
 EMPTY_RESPONSE = {
@@ -24,10 +24,16 @@ EMPTY_RESPONSE = {
 
 class APILambdaHandlerBase(object):
     rest_enabled = True
+    region = "us-east-1"
 
     def __init__(self, event, context):
         self.event = event
         self.context = context
+        self.env = os.environ.get("ENV")
+        self.user = {
+            "username": None,
+            "groups": None,
+        }
         self.handlers_by_method = {
             "GET": self.handle_get,
             "POST": self.handle_post,
@@ -40,7 +46,7 @@ class APILambdaHandlerBase(object):
             if self.is_local
             else boto3.session.Session()
         )
-        self.ssm_client = self.aws_session.client("ssm", region_name="us-east-1")
+        self.ssm_client = self.aws_session.client("ssm", region_name=self.region)
         self._init_aws()
 
     def _init(self):
@@ -80,6 +86,20 @@ class APILambdaHandlerBase(object):
         else:
             raise BadRequestException("unsupported value: {}".format(value_type))
 
+    @property
+    def user_pool_id_ssm_key(self):
+        env = "stage" if self.env == "local" else self.env
+        return f"/aseaman/{env}/cognito/user_pool_id"
+
+    @property
+    def user_pool_client_id_ssm_key(self):
+        env = "stage" if self.env == "local" else self.env
+        return f"/aseaman/{env}/cognito/user_pool_client_id"
+
+    def get_from_ssm(self, key):
+        response = self.ssm_client.get_parameter(Name=key)
+        return response["Parameter"]["Value"]
+
     def __parse_event(self, event):
         print(" -- Received event --")
         print(json.dumps(event, indent=4))
@@ -93,9 +113,33 @@ class APILambdaHandlerBase(object):
             params = json.loads(self.event["body"])
         self.params = params
 
+    def __decode_token(self):
+        authorization = self.event["headers"].get("Authorization")
+        if not authorization:
+            return
+
+        try:
+            decoded = decode_token(
+                authorization,
+                self.region,
+                self.get_from_ssm(self.user_pool_id_ssm_key),
+                self.get_from_ssm(self.user_pool_client_id_ssm_key),
+            )
+        except Exception as e:
+            print(f"Error encountered during token decoding: {e}")
+            return
+
+        if not decoded:
+            print("! Invalid token !")
+            return
+
+        self.user["username"] = decoded["cognito:username"]
+        self.user["groups"] = decoded["cognito:groups"]
+
     def __before_run(self):
         self._init()
         self.__init_aws()
+        self.__decode_token()
         self.__parse_event(self.event)
 
     def _empty_response(self):

@@ -9,8 +9,9 @@ WORKDIR /app
 
 ENV AWS_SHARED_CREDENTIALS_FILE="/.aws/credentials"
 ENV IN_DOCKER_API="true"
+ENV ENV="local"
 
-RUN pip install -r requirements.txt
+RUN pip install -r /app/requirements.txt
 
 COPY development/ /aseaman
 
