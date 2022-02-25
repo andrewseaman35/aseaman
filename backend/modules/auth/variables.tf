@@ -4,16 +4,16 @@ variable "env" {
 }
 
 variable "callback_urls" {
-  type = list(string)
+  type        = list(string)
   description = "list of valid callback urls after authentication"
 }
 
 variable "default_redirect_uri" {
-  type = string
+  type        = string
   description = "default callback url after authentication"
 }
 
 variable "logout_urls" {
-  type = list(string)
+  type        = list(string)
   description = "list of valid callback urls after log out"
 }

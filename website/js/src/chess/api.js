@@ -8,6 +8,9 @@ function fetchGame(gameId) {
     return $.ajax({
         type: 'GET',
         url: getAPIUrl('chess') + "game/",
+        headers: {
+            Authorization: getToken(),
+        },
         data: {
             'game_id': gameId,
         },
@@ -19,6 +22,9 @@ function saveTurn(gameId, turn) {
     return $.ajax({
         type: 'POST',
         url: getAPIUrl('chess') + "turn/",
+        headers: {
+            Authorization: getToken(),
+        },
         data: JSON.stringify({
             'game_id': gameId,
             'turn': turn,

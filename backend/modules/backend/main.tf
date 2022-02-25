@@ -12,16 +12,16 @@ resource "aws_api_gateway_rest_api" "rest_api" {
 }
 
 module "state_api" {
-  source   = "../serverless_api"
-  zip_file = "../../api/packages/state_api.zip"
+  source     = "../serverless_api"
+  zip_file   = "../../api/packages/state_api.zip"
   api_name   = "state-api"
   path_part  = "state_check"
   deploy_env = var.deploy_env
 
   cognito_user_pool_arn = var.cognito_user_pool_arn
 
-  rest_api_root_resource_id = aws_api_gateway_rest_api.rest_api.root_resource_id
-  rest_api_id               = aws_api_gateway_rest_api.rest_api.id
+  rest_api_root_resource_id      = aws_api_gateway_rest_api.rest_api.root_resource_id
+  rest_api_id                    = aws_api_gateway_rest_api.rest_api.id
   get_method_authorization       = "NONE"
   get_proxy_method_authorization = "NONE"
 }
@@ -34,13 +34,13 @@ module "state_api_iam_role_policy" {
 }
 
 module "salt_level_api" {
-  source   = "../serverless_api"
-  zip_file = "../../api/packages/salt_level_api.zip"
+  source     = "../serverless_api"
+  zip_file   = "../../api/packages/salt_level_api.zip"
   api_name   = "salt_level-api"
   path_part  = "salt_level"
   deploy_env = var.deploy_env
 
-  cognito_user_pool_arn          = var.cognito_user_pool_arn
+  cognito_user_pool_arn = var.cognito_user_pool_arn
 
   rest_api_root_resource_id      = aws_api_gateway_rest_api.rest_api.root_resource_id
   rest_api_id                    = aws_api_gateway_rest_api.rest_api.id
@@ -52,17 +52,17 @@ module "salt_level_api_iam_role_policy" {
   source     = "../roles/salt_level"
   role       = module.salt_level_api.api_role_id
   deploy_env = var.deploy_env
-  api_name = "salt_level-api"
+  api_name   = "salt_level-api"
 }
 
 module "whisky_api" {
-  source   = "../serverless_api"
-  zip_file = "../../api/packages/whisky_api.zip"
+  source     = "../serverless_api"
+  zip_file   = "../../api/packages/whisky_api.zip"
   api_name   = "whisky-api"
   path_part  = "whisky"
   deploy_env = var.deploy_env
 
-  cognito_user_pool_arn          = var.cognito_user_pool_arn
+  cognito_user_pool_arn = var.cognito_user_pool_arn
 
   rest_api_root_resource_id      = aws_api_gateway_rest_api.rest_api.root_resource_id
   rest_api_id                    = aws_api_gateway_rest_api.rest_api.id
@@ -74,18 +74,18 @@ module "whisky_api_iam_role_policy" {
   source     = "../roles/whisky"
   role       = module.whisky_api.api_role_id
   deploy_env = var.deploy_env
-  api_name = "whisky-api"
+  api_name   = "whisky-api"
 }
 
 module "draw_jasper_api" {
-  source   = "../serverless_api"
-  zip_file = "../../api/packages/draw_jasper_api.zip"
+  source         = "../serverless_api"
+  zip_file       = "../../api/packages/draw_jasper_api.zip"
   api_name       = "draw_jasper-api"
   path_part      = "draw_jasper"
   deploy_env     = var.deploy_env
   lambda_timeout = 30
 
-  cognito_user_pool_arn           = var.cognito_user_pool_arn
+  cognito_user_pool_arn = var.cognito_user_pool_arn
 
   rest_api_root_resource_id       = aws_api_gateway_rest_api.rest_api.root_resource_id
   rest_api_id                     = aws_api_gateway_rest_api.rest_api.id
@@ -99,17 +99,17 @@ module "draw_jasper_iam_role_policy" {
   source     = "../roles/draw_jasper"
   role       = module.draw_jasper_api.api_role_id
   deploy_env = var.deploy_env
-  api_name = "draw_jasper-api"
+  api_name   = "draw_jasper-api"
 }
 
 module "compare_acnh_api" {
-  source   = "../serverless_api"
-  zip_file = "../../api/packages/compare_acnh_api.zip"
+  source     = "../serverless_api"
+  zip_file   = "../../api/packages/compare_acnh_api.zip"
   api_name   = "compare_acnh-api"
   path_part  = "compare_acnh"
   deploy_env = var.deploy_env
 
-  cognito_user_pool_arn           = var.cognito_user_pool_arn
+  cognito_user_pool_arn = var.cognito_user_pool_arn
 
   rest_api_root_resource_id       = aws_api_gateway_rest_api.rest_api.root_resource_id
   rest_api_id                     = aws_api_gateway_rest_api.rest_api.id
@@ -123,12 +123,12 @@ module "compare_acnh_iam_role_policy" {
   source     = "../roles/compare_acnh"
   role       = module.compare_acnh_api.api_role_id
   deploy_env = var.deploy_env
-  api_name = "compare_acnh-api"
+  api_name   = "compare_acnh-api"
 }
 
 module "mame_highscore_api" {
-  source   = "../serverless_api"
-  zip_file = "../../api/packages/mame_highscore_api.zip"
+  source     = "../serverless_api"
+  zip_file   = "../../api/packages/mame_highscore_api.zip"
   api_name   = "mame_highscore-api"
   path_part  = "mame_highscore"
   deploy_env = var.deploy_env
@@ -144,17 +144,17 @@ module "mame_highscore_iam_role_policy" {
   source     = "../roles/mame_highscore"
   role       = module.mame_highscore_api.api_role_id
   deploy_env = var.deploy_env
-  api_name = "mame_highscore-api"
+  api_name   = "mame_highscore-api"
 }
 
 module "chess_api" {
-  source   = "../serverless_api"
-  zip_file = "../../api/packages/chess_api.zip"
+  source     = "../serverless_api"
+  zip_file   = "../../api/packages/chess_api.zip"
   api_name   = "chess-api"
   path_part  = "chess"
   deploy_env = var.deploy_env
 
-  cognito_user_pool_arn           = var.cognito_user_pool_arn
+  cognito_user_pool_arn = var.cognito_user_pool_arn
 
   rest_api_root_resource_id       = aws_api_gateway_rest_api.rest_api.root_resource_id
   rest_api_id                     = aws_api_gateway_rest_api.rest_api.id
@@ -168,7 +168,7 @@ module "chess_iam_role_policy" {
   source     = "../roles/chess"
   role       = module.chess_api.api_role_id
   deploy_env = var.deploy_env
-  api_name = "chess-api"
+  api_name   = "chess-api"
 }
 
 resource "aws_api_gateway_deployment" "api_gateway_deployment" {

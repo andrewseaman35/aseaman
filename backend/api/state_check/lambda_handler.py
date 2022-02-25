@@ -14,11 +14,7 @@ class StateCheckAPILambdaHandler(APILambdaHandlerBase):
         common_keys = {"id", "time_updated"}
         ddb_item = self.ddb_client.get_item(
             TableName=TABLE_NAME,
-            Key={
-                "id": {
-                    "S": state_id,
-                }
-            },
+            Key={"id": {"S": state_id}},
         )["Item"]
 
         result = {key: ddb_item.pop(key)["S"] for key in common_keys}
