@@ -4,6 +4,9 @@ python: 3.6
 
 node_js: 11.6.0
 
+services:
+  - docker
+
 install:
   - pip install -U pip
   - pip install awscli
@@ -15,8 +18,10 @@ install:
   - export PATH=$PATH:$HOME/.local/bin
   - ./scripts/travis_env.sh
 
+
 script:
   - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./scripts/deploy.sh; fi'
+  - make test_ci
 
 after_deploy:
   - ./scripts/
