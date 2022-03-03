@@ -1,7 +1,7 @@
 export
 ROOT := $(shell pwd)
 
-CONTAINER_ID := $(shell docker ps | grep 'aseaman-local' | awk '{ print $$1 }')
+CONTAINER_NAME := aseaman-backend
 
 
 tfplan: #package
@@ -11,14 +11,14 @@ tfapply: #package <-- disabled for now since I can't rebuild the draw_jasper api
 	cd deployments/$(DEPLOY_ENV) && terraform apply
 
 assert_running:
-	@if [ "$(CONTAINER_ID)" = "" ]; then\
+	@if [ ! "$(docker ps -q -f name=$(CONTAINER_NAME))" ]; then\
 		echo "Container not running; run 'make start_local'";\
 		exit 2;\
 	fi
 
 assert_not_running:
-	@if [ ! "$(CONTAINER_ID)" = "" ]; then\
-		echo "Container running: $(CONTAINER_ID)";\
+	@if [ "$(docker ps -q -f name=$(CONTAINER_NAME))" ]; then\
+		echo "Container running: $(CONTAINER_NAME)";\
 		exit 2;\
 	fi
 
@@ -34,17 +34,22 @@ start: build assert_not_running
 		-p 8099:8099 \
 		--mount type=bind,source="$(ROOT)/api",target=/app \
 		--mount type=bind,source="$(HOME)/.aws/credentials",target=/.aws/credentials,readonly \
+		--name $(CONTAINER_NAME) \
 		aseaman-local
 
 stop:
-	@if [ ! "$(CONTAINER_ID)" = "" ]; then\
-		docker kill $(CONTAINER_ID);\
+	@if [ ! "$(docker ps -q -f name=$(CONTAINER_NAME))" ]; then\
+		docker rm -f $(CONTAINER_NAME);\
 	fi
 
 restart: stop start
 
 sh: assert_running
-	docker exec -it $(CONTAINER_ID) /bin/bash
+	docker exec -it $(CONTAINER_NAME) /bin/bash
+
+test_ci: stop start
+	docker exec $(CONTAINER_NAME) make test
+	make stop
 
 clean:
 	make -C api clean

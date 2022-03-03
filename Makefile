@@ -33,9 +33,6 @@ deploy: assert_deploy_vars deploy_api deploy_website
 watch: venv
 	$(VENV_PYTHON) scripts/run_watchers.py
 
-test_ci:
-	make -C backend start
-
 clean:
 	rm -rf venv
 	make -C backend clean
