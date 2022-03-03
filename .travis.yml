@@ -20,7 +20,7 @@ install:
 
 
 script:
-  - make -C test_ci
+  - make -C backend test_ci
 
 after_deploy:
   - ./scripts/
