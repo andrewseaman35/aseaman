@@ -46,4 +46,4 @@ class TestParsers(unittest.TestCase):
             [12, 18, 33, 22, 15],
             [0, 2, 3],
         )
-        self.assertEqual(result, "CXM")
+        self.assertEqual(result, "CXMa")
