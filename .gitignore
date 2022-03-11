@@ -1,6 +1,8 @@
 *.zip
 *.pyc
 
+.DS_Store
+
 __pycache__/
 .sass-cache/
 

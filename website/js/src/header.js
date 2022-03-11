@@ -1,6 +1,6 @@
 
 import $ from 'jquery';
-import { getAPIUrl } from './utils';
+import { getUrlTo } from './utils';
 
 const AUTH = require('./auth');
 const CONFIG = require('./config');
@@ -31,7 +31,7 @@ const appendLoggedInItems = function($nav) {
     if (!loggedIn) {
         return;
     }
-    navItem({id: 'linker', href: getAPIUrl('links'), label: "Links"}).appendTo($nav);
+    navItem({id: 'linker', href: getUrlTo('links/index'), label: "Links"}).appendTo($nav);
 }
 
 const appendLoginItem = function($nav) {
@@ -46,7 +46,6 @@ const appendLoginItem = function($nav) {
 
 const header = function() {
     const $navRow = $('.nav-bar')
-    console.log("FART");
     appendLoggedInItems($navRow);
     appendLoginItem($navRow);
     $('.nav-bar').css('visibility', 'visible');
