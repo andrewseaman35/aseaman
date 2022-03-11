@@ -8,6 +8,7 @@
 @import "icon.scss";
 @import "image.scss";
 
+@import "animated_ellipsis.scss";
 @import "modal.scss";
 @import "code.scss";
 
@@ -58,5 +59,14 @@ body {
     }
     &.chess {
         @import "chess.scss";
+    }
+    &.four-oh-four,
+    &.linker {
+       .inner {
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+       }
     }
 }

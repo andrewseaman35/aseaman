@@ -46,3 +46,9 @@
 {% macro in_progress() -%}
     <h4>This page is still in progress... come back later and there might be more here!</h4>
 {%- endmacro %}
+
+{% macro animated_ellipsis(text, class=None) -%}
+    <div class="animated-ellipsis {% if class %}{{ class }}{% endif %}">
+        {{ text }}<span class="dot1">.</span><span class="dot2">.</span><span class="dot3">.</span>
+    </div>
+{%- endmacro %}
