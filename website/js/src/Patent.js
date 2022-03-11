@@ -138,7 +138,7 @@ class Patent extends React.Component {
                             target="_blank"
                         >here</a>.
                     </p>
-                    <a href="index.html">Go back home</a>
+                    <a href="index">Go back home</a>
                 </div>
             </div>
         )

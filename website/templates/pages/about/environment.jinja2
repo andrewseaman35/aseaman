@@ -10,8 +10,8 @@
         <h4>Tools</h4>
         <p>
             This page outlines the development environment and some of the tooling I've
-            built to make it easier to work on this website. I've listed some of the main tools 
-            and technologies that I'm using below. I'll try to keep this list updated as I add 
+            built to make it easier to work on this website. I've listed some of the main tools
+            and technologies that I'm using below. I'll try to keep this list updated as I add
             more things.
         </p>
         <div class="tools">
@@ -43,7 +43,7 @@
         <h4>Watchers</h4>
         <a href="https://github.com/andrewseaman35/aseaman/blob/master/scripts/run_watchers.py" target="_blank">Source</a>
         <p>
-            In order to make development as smooth as possible, I wrote a script that runs threaded watchers: 
+            In order to make development as smooth as possible, I wrote a script that runs threaded watchers:
             one for Jinja templates, one for JavaScript files, and one for SCSS files. When I
             develop, I run these in the background by executing `make watch` in the `website/` directory.
             When they detect a change to any of the associated files, it'll automatically rebuild that
@@ -73,12 +73,12 @@
         <p>
             I set up a directory for my template files (`website/templates/`) and a subdirectory
             (`website/templates/pages/`) to define all the webpages. Every navigatable HTML page will have
-            a corresponding .jinja file somewhere within the `pages/` subdirectory. The path of the .jinja2 file 
-            defines the path of the page once it's hosted (the source for this page is at 
+            a corresponding .jinja file somewhere within the `pages/` subdirectory. The path of the .jinja2 file
+            defines the path of the page once it's hosted (the source for this page is at
             `websites/templates/pages/about/environment.jinja2`, for instance).
         </p>
         <p>
-            I wrote a script (source <a href="https://github.com/andrewseaman35/aseaman/blob/master/scripts/compile_html.py" target="_blank">here</a>) 
+            I wrote a script (source <a href="https://github.com/andrewseaman35/aseaman/blob/master/scripts/compile_html.py" target="_blank">here</a>)
             that traverses all the .jinja2 files in `pages/` and renders the templates to the
             corresponding location in `public/`. Since the website is statically hosted on AWS, the URLs for
             the pages is the same as the path to the file.
@@ -87,16 +87,16 @@
         <h4>Local API</h4>
         <a href="https://github.com/andrewseaman35/aseaman/blob/master/backend/api/local_backend.py" target="_blank">Source</a>
         <p>
-            This website is backed by a serverless API running on AWS. The API is set up through API Gateway 
-            and requests are handled by a series of Lambda functions. 
+            This website is backed by a serverless API running on AWS. The API is set up through API Gateway
+            and requests are handled by a series of Lambda functions.
         </p>
-        <p>    
-            To enable local development of the backend I set up a Flask server to be the middle man between 
-            the frontend and the series of lambda functions. This server accepts requests from the frontend, 
-            uses the path to determine which lambda function should process it, dynamically imports the 
+        <p>
+            To enable local development of the backend I set up a Flask server to be the middle man between
+            the frontend and the series of lambda functions. This server accepts requests from the frontend,
+            uses the path to determine which lambda function should process it, dynamically imports the
             function, and processes and returns the repsonse.
         </p>
 
-        {{ macros.still_interested("about/index.html", "page about this website") }}
+        {{ macros.still_interested("about/index", "page about this website") }}
     </div>
 {% endblock %}

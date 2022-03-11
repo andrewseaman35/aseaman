@@ -6,10 +6,11 @@ port = int(sys.argv[2])
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):
-    extensions_map = {"": "text/plain"}
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=directory, **kwargs)
+
+
+Handler.extensions_map[""] = "text/html"
 
 
 def run(server_class=http.server.HTTPServer, handler_class=Handler):

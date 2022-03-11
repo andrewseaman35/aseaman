@@ -10,7 +10,7 @@
             Remote Chess
         </h1>
         <p>
-            When building the online chess game I have {{ macros.link_to('chess/index.html', 'here') }},
+            When building the online chess game I have {{ macros.link_to('chess/index', 'here') }},
             I realized I thought it'd be cool to be able to play physical chess with someone but
             remotely. The goal is to be able to play chess with a remote friend, but on physical
             boards. Moves I make on my board are translated to the other board and vice versa.
@@ -64,15 +64,15 @@
                     position. I'm thinking I can just ignore this for now, since it should be easily
                     resolvable once I have my own X-Y axis system [RESOLVED]
                     • Turns out, the translation issue wasn't a translation issue, but instead, due to the size of the print space and the means by which I attached the
-                    grabby hand to the printhead. This went misdiagnosed mostly because I never had a full board laid out, but only printed out a few spaces to place. The 
+                    grabby hand to the printhead. This went misdiagnosed mostly because I never had a full board laid out, but only printed out a few spaces to place. The
                     grabby hand's offset from the printhead was actually much farther than I had though.
                 </li>
                 <li>
                     <b>Play online chess with physical output:</b> [done, in theory] <br/>
                     • hook up online chess game to remote chess API to perform every move once it's been executed in browser
                     • In theory, this is done. The chess game can be hooked up through OctoPrint and the moves are all sent to the printer and run. The "in theory" part
-                    is due to the fact that I haven't printed out a full board and set of pieces to make it work. There are also some consistency issues with the grabby hand 
-                    and unless I make the board smaller, we're still going to run into the placement issue seen in the previous point. 
+                    is due to the fact that I haven't printed out a full board and set of pieces to make it work. There are also some consistency issues with the grabby hand
+                    and unless I make the board smaller, we're still going to run into the placement issue seen in the previous point.
                 </li>
             </ul>
         </div>

@@ -19,7 +19,7 @@ const VIEWS = {
 }
 
 function urlForVillager(villagerId) {
-    return getUrlTo(`acnh/villager.html?villager_id=${villagerId}`);
+    return getUrlTo(`acnh/villager?villager_id=${villagerId}`);
 }
 
 
@@ -255,7 +255,7 @@ class ACNHRankings extends React.Component {
                 <div className="acnh-header">
                     <h1>{header}</h1>
                     <button className="view-leaderboard">
-                        <a href={getUrlTo('acnh/compare.html')}>Vote now!</a>
+                        <a href={getUrlTo('acnh/compare')}>Vote now!</a>
                     </button>
                 </div>
                 <Toggle
