@@ -42,14 +42,14 @@ module "auth" {
   source = "../../modules/auth"
   env    = var.deploy_env
 
-  default_redirect_uri = "https://${var.deploy_env}.andrewcseaman.com/auth_callback.html"
+  default_redirect_uri = "https://${var.deploy_env}.andrewcseaman.com/auth_callback"
   callback_urls = [
-    "http://localhost:8123/auth_callback.html",
-    "https://${var.deploy_env}.andrewcseaman.com/auth_callback.html"
+    "http://localhost:8123/auth_callback",
+    "https://${var.deploy_env}.andrewcseaman.com/auth_callback"
   ]
   logout_urls = [
-    "http://localhost:8123/logout.html",
-    "https://${var.deploy_env}.andrewcseaman.com/logout.html"
+    "http://localhost:8123/logout",
+    "https://${var.deploy_env}.andrewcseaman.com/logout"
   ]
 }
 

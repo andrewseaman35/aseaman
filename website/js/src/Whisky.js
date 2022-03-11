@@ -190,7 +190,7 @@ class Whisky extends React.Component {
                     {this.renderWhiskyShelf()}
                     {this.renderActionBar()}
 
-                    <a href="index.html">Go back home</a>
+                    <a href="index">Go back home</a>
                 </div>
             </div>
         )

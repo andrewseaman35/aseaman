@@ -44,14 +44,17 @@
     </head>
 
     <body id="{% block page_id %}id{% endblock %}" class="{% block body_class %}{% endblock %}">
-        {% include 'header.jinja2' %}
+        {% block header %}
+            {% include 'header.jinja2' %}
+        {% endblock %}
 
         <div id="lightbox"></div>
         <div class="main-content">
             {% block content %}{% endblock %}
         </div>
-
-        {% include 'footer.jinja2' %}
+        {% block footer %}
+            {% include 'footer.jinja2' %}
+        {% endblock %}
     </body>
 
 </html>

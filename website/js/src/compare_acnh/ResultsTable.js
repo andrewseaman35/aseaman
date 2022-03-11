@@ -11,7 +11,7 @@ import { SORT_KEYS } from './constants';
 
 
 function urlForVillager(villagerId) {
-    return getUrlTo(`acnh/villager.html?villager_id=${villagerId}`)
+    return getUrlTo(`acnh/villager?villager_id=${villagerId}`)
 }
 
 

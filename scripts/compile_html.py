@@ -8,12 +8,12 @@ import jinja2
 
 from base import BaseScript
 
-TEMPLATE_DIRNAME = 'templates'
-WEBSITE_DIRNAME = 'website'
-PUBLIC_DIRNAME = 'public'
-PAGES_DIRNAME = 'pages'
+TEMPLATE_DIRNAME = "templates"
+WEBSITE_DIRNAME = "website"
+PUBLIC_DIRNAME = "public"
+PAGES_DIRNAME = "pages"
 
-CONFIG_FILENAME = 'config.json'
+CONFIG_FILENAME = "config.json"
 
 
 class CompileHTML(BaseScript):
@@ -32,7 +32,7 @@ class CompileHTML(BaseScript):
 
     def _load_config(self):
         config_file = os.path.join(self.website_dir, CONFIG_FILENAME)
-        with open(config_file, 'r') as f:
+        with open(config_file, "r") as f:
             config = json.load(f)
         return config
 
@@ -42,30 +42,40 @@ class CompileHTML(BaseScript):
         return template_env
 
     def _render_html(self, relative_path, template_filename, output_directory, context):
-        html_filename = template_filename.replace('jinja2', 'html')
+        html_filename = template_filename.replace(".jinja2", "")
 
-        template_filepath = os.path.join('./pages', os.path.join(relative_path, template_filename))
+        template_filepath = os.path.join(
+            "./pages", os.path.join(relative_path, template_filename)
+        )
         page_content = self.template_env.get_template(template_filepath).render(context)
 
-        html_filepath = os.path.join(self.public_dir, os.path.join(relative_path, html_filename))
-        with open(html_filepath, 'w') as html_file:
+        html_filepath = os.path.join(
+            self.public_dir, os.path.join(relative_path, html_filename)
+        )
+        with open(html_filepath, "w") as html_file:
             html_file.write(page_content)
 
     def _find_template_path_by_directory(self):
         template_path_by_directory = defaultdict(list)
         for dir_name, _, file_list in os.walk(self.pages_dir):
-            for fname in [fname for fname in file_list if os.path.splitext(fname)[1] == '.jinja2']:
+            for fname in [
+                fname for fname in file_list if os.path.splitext(fname)[1] == ".jinja2"
+            ]:
                 file_path = os.path.join(dir_name, fname)
 
                 # Find the directory structure the file lives in beyond the pages directory
-                relative_file_dir = os.path.split(os.path.relpath(file_path, self.pages_dir))[0]
+                relative_file_dir = os.path.split(
+                    os.path.relpath(file_path, self.pages_dir)
+                )[0]
                 template_path_by_directory[relative_file_dir].append(file_path)
 
         return template_path_by_directory
 
     def _generate_output_directory_structure(self, relative_directories):
         for relative_directory in relative_directories:
-            os.makedirs(os.path.join(self.public_dir, relative_directory), exist_ok=True)
+            os.makedirs(
+                os.path.join(self.public_dir, relative_directory), exist_ok=True
+            )
 
     def _get_context(self):
         config = self._load_config()
@@ -81,11 +91,13 @@ class CompileHTML(BaseScript):
             output_directory = os.path.join(self.public_dir, relative_directory)
             for filepath in filepaths:
                 filename = os.path.basename(filepath)
-                self._render_html(relative_directory, filename, output_directory, context)
+                self._render_html(
+                    relative_directory, filename, output_directory, context
+                )
 
     def _run(self):
         self.render_all()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     CompileHTML().run()

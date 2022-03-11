@@ -19,6 +19,8 @@ venv: requirements.txt
 
 website: venv
 	make -C website
+	# Need index.html with suffix for default page
+	# cp website/public/index website/public/index.html
 
 deploy_api:
 	make -C backend tfapply
@@ -26,7 +28,10 @@ deploy_api:
 deploy_website: website
 	echo "Updating website S3 files"
 	aws s3 rm s3://$(DEPLOY_ENV).andrewcseaman.com --recursive > /dev/null
-	aws s3 cp --recursive --exclude=website/js/src/* website/public/ s3://$(DEPLOY_ENV).andrewcseaman.com > /dev/null
+	aws s3 cp website/public/js/bundle.js s3://$(DEPLOY_ENV).andrewcseaman.com/js/bundle.js > /dev/null
+	aws s3 cp --recursive website/public/css/ s3://$(DEPLOY_ENV).andrewcseaman.com/css > /dev/null
+	# aws s3 cp --content-type text/html website/public/index.html s3://$(DEPLOY_ENV).andrewcseaman.com > /dev/null
+	aws s3 cp --recursive --exclude "local_data/*" --exclude "js/*" --exclude "css/*" --content-type text/html website/public/ s3://$(DEPLOY_ENV).andrewcseaman.com > /dev/null
 
 deploy: assert_deploy_vars deploy_api deploy_website
 
