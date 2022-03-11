@@ -232,7 +232,7 @@ class DrawJasper extends React.Component {
                     <strong>
                         Think this is kinda cool? Check out how it works on this page
                         on <a
-                            href={getUrlTo("jasper/comparing.html")}
+                            href={getUrlTo("jasper/comparing")}
                         >
                             comparing Jasper to shapes
                         </a>!

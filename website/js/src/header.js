@@ -27,8 +27,8 @@ const navItem = function(item) {
 
 const appendLoginItem = function($nav) {
     const loggedIn = AUTH.isLoggedIn();
-    const redirectURI = `${CONFIG.ROOT_URL}auth_callback.html`;
-    const logoutURI = `${CONFIG.ROOT_URL}logout.html`;
+    const redirectURI = `${CONFIG.ROOT_URL}auth_callback`;
+    const logoutURI = `${CONFIG.ROOT_URL}logout`;
 
     const linkUrl = loggedIn ? logoutUrl(logoutURI) : loginUrl(redirectURI);
     const text = loggedIn ? 'Log out' : 'Log In';

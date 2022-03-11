@@ -50,7 +50,7 @@ const addLinksToElement = function(element, paths) {
         const li = document.createElement('li');
         const item = document.createElement('a');
         const travisIcon = getTravisIconForBranch(path);
-        item.href = `./sandboxes/${path}/index.html`;
+        item.href = `./sandboxes/${path}/index`;
         item.innerHTML = path;
         li.append(item);
         li.append(travisIcon);

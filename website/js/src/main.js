@@ -7,6 +7,7 @@ const utils = require('./utils');
 const auth = require('./auth');
 const header = require('./header');
 const initMultiImageContainers = require('./multiImageContainer');
+const linker = require('./linker');
 import {
     initChip8,
 } from './chip8';
@@ -47,6 +48,7 @@ const modules = {
     auth,
     config,
     constants,
+    linker,
     header,
     utils,
 };
@@ -57,4 +59,3 @@ $(window).ready(function() {
     }
     initLightbox();
 });
-

@@ -26,7 +26,7 @@
         <p>
             The passive data output subsystem includes the segments of the system which require
             user action to trigger the system. A user accesses my
-            {{ macros.link_to("salt_level/index.html", "Salt Level") }} page. This page makes a
+            {{ macros.link_to("salt_level/index", "Salt Level") }} page. This page makes a
             request to an API set up with API Gateway which is backed by a Lambda function as
             a serverless API. The Lambda function accesses the DynamoDB table to gather persisted
             sensor data, and returns it to the browser to be rendered.
@@ -40,7 +40,7 @@
             user notification is required.
         </p>
 
-        {{ macros.still_interested("salt_level/index.html", "Water Softener Salt Tracker") }}
+        {{ macros.still_interested("salt_level/index", "Water Softener Salt Tracker") }}
 
     </div>
 </div>

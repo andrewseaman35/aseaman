@@ -67,7 +67,7 @@ class VillagerResults extends React.Component {
                 <div className="acnh-header">
                     <h1>Villager Stats: {villager.name}</h1>
                     <button className="view-leaderboard">
-                        <a href={getUrlTo('acnh/compare.html')}>Vote now!</a>
+                        <a href={getUrlTo('acnh/compare')}>Vote now!</a>
                     </button>
                 </div>
                 <div className="view-leaderboard">
