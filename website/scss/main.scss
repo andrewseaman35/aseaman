@@ -60,6 +60,9 @@ body {
     &.chess {
         @import "chess.scss";
     }
+    &.links {
+        @import "links.scss";
+    }
     &.four-oh-four,
     &.linker {
        .inner {

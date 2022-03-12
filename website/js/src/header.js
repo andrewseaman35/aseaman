@@ -1,5 +1,6 @@
 
 import $ from 'jquery';
+import { getUrlTo } from './utils';
 
 const AUTH = require('./auth');
 const CONFIG = require('./config');
@@ -25,6 +26,14 @@ const navItem = function(item) {
     return navElement('nav-item', item);
 };
 
+const appendLoggedInItems = function($nav) {
+    const loggedIn = AUTH.isLoggedIn();
+    if (!loggedIn) {
+        return;
+    }
+    navItem({id: 'linker', href: getUrlTo('links/index'), label: "Links"}).appendTo($nav);
+}
+
 const appendLoginItem = function($nav) {
     const loggedIn = AUTH.isLoggedIn();
     const redirectURI = `${CONFIG.ROOT_URL}auth_callback`;
@@ -36,8 +45,9 @@ const appendLoginItem = function($nav) {
 };
 
 const header = function() {
-    const $navRow = $('.nav-bar');
-    appendLoginItem($navRow)
+    const $navRow = $('.nav-bar')
+    appendLoggedInItems($navRow);
+    appendLoginItem($navRow);
     $('.nav-bar').css('visibility', 'visible');
 };
 

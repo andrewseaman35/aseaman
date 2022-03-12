@@ -14,11 +14,7 @@ from base.api_exceptions import (
 
 LINK_ID_LENGTH = 6
 
-
-class LinkerStatus(enum.Enum):
-    ACTIVE = "A"
-    INACTIVE = "I"
-    DELETED = "X"
+DEFAULT_NAME = "untitled"
 
 
 class LinkerLambdaHandler(APILambdaHandlerBase):
@@ -46,7 +42,8 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
         return {
             "id": ddbItem["id"]["S"],
             "url": ddbItem["url"]["S"],
-            "status": ddbItem["status"]["S"],
+            "active": ddbItem["active"]["BOOL"],
+            "name": ddbItem["name"]["S"],
             "time_created": ddbItem["time_created"]["N"],
             "time_updated": ddbItem["time_updated"]["N"],
         }
@@ -56,7 +53,7 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
         if not self.user["username"] or self.user["username"] != owner:
             raise UnauthorizedException("Log in to access this link")
 
-    def _build_link_item(self, url):
+    def _build_link_item(self, url, name):
         timestamp = self._get_timestamp()
         item = {
             "id": {
@@ -65,8 +62,11 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
             "url": {
                 "S": url,
             },
-            "status": {
-                "S": LinkerStatus.INACTIVE,
+            "name": {
+                "S": name,
+            },
+            "active": {
+                "BOOL": False,
             },
             "owner": {
                 "S": self.user["username"],
@@ -97,9 +97,25 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
 
         return self._format_ddb_item(ddbItem)
 
-    def _new_link(self, url, status=None):
+    def __fetch_links_by_owner(self, owner):
+        ddbItems = self.ddb_client.scan(
+            TableName=self.table_name,
+            ExpressionAttributeNames={
+                "#own": "owner",
+            },
+            ExpressionAttributeValues={
+                ":own": {
+                    "S": owner,
+                },
+            },
+            FilterExpression="(#own = :own)",
+        )["Items"]
+
+        return [self._format_ddb_item(ddbItem) for ddbItem in ddbItems]
+
+    def _new_link(self, url, name, active=False):
         print("Creating new link")
-        ddbItem = self._build_link_item(url, status)
+        ddbItem = self._build_link_item(url, active)
         self.ddb_client.put_item(
             TableName=self.table_name,
             Item=ddbItem,
@@ -110,6 +126,10 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
         link_id = self.params.get("id")
         if link_id:
             result = self.__fetch_link(link_id)
+        else:
+            if not self.user["username"]:
+                raise PermissionError("no logged in user")
+            result = self.__fetch_links_by_owner(self.user["username"])
 
         return {
             **self._empty_response(),
@@ -118,10 +138,11 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
 
     def handle_post(self):
         url = self.params.get("url")
+        name = self.params.get("name", DEFAULT_NAME)
         if not url:
             raise BadRequestException("url required")
 
-        result = self._new_link(url)
+        result = self._new_link(url, name)
 
         return {**self._empty_response(), "body": json.dumps(result)}
 
