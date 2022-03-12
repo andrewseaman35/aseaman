@@ -15,6 +15,9 @@ PAGES_DIRNAME = "pages"
 
 CONFIG_FILENAME = "config.json"
 
+# list of `relative_html_filepath`s that we should also render a .html for
+RENDER_HTML_EXTENSION = {"index"}
+
 
 class CompileHTML(BaseScript):
     aws_enabled = False
@@ -49,11 +52,14 @@ class CompileHTML(BaseScript):
         )
         page_content = self.template_env.get_template(template_filepath).render(context)
 
-        html_filepath = os.path.join(
-            self.public_dir, os.path.join(relative_path, html_filename)
-        )
+        relative_html_filepath = os.path.join(relative_path, html_filename)
+        html_filepath = os.path.join(self.public_dir, relative_html_filepath)
         with open(html_filepath, "w") as html_file:
             html_file.write(page_content)
+
+        if relative_html_filepath in RENDER_HTML_EXTENSION:
+            with open(f"{html_filepath}.html", "w") as html_file:
+                html_file.write(page_content)
 
     def _find_template_path_by_directory(self):
         template_path_by_directory = defaultdict(list)

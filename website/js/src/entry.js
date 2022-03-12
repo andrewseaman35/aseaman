@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 
 import { ACNHRankings, CompareACNH, VillagerResults } from './compare_acnh';
 import DrawJasper from './DrawJasper';
+import LinksTable from './linker/LinksTable';
 import MameHighscore from './MameHighscore';
 import Patent from './Patent';
 import SaltLevel from './SaltLevel';
@@ -16,6 +17,15 @@ function initLightbox() {
         document.getElementById('lightbox'),
     );
 }
+
+
+function initLinksTable(containerId) {
+    ReactDOM.render(
+        <LinksTable />,
+        document.getElementById(containerId),
+    );
+}
+
 
 function initCompareACNH(elementId) {
     ReactDOM.render(
@@ -80,6 +90,7 @@ module.exports = {
     initACNHRankings,
     initCompareACNH,
     initVillagerResults,
+    initLinksTable,
     initDrawJasper,
     initLightbox,
     initMameHighscore,

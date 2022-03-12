@@ -35,7 +35,7 @@ th {
     }
 }
 
-tr {
+tr:not(.no-hover) {
     .actions {
         visibility: hidden;
         pointer-events: none;
@@ -50,5 +50,12 @@ tr {
             pointer-events: all;
 
         }
+    }
+}
+
+.crud-table-container {
+    .crud-table-create-row button {
+        display: block;
+        margin: 8px auto;
     }
 }
