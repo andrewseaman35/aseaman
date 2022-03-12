@@ -13,12 +13,17 @@ class CRUDTable extends React.Component {
 
         this.onHeaderItemClick = this.onHeaderItemClick.bind(this);
         this.onAddButtonClick = this.onAddButtonClick.bind(this);
+        this.onRowEditClick = this.onRowEditClick.bind(this);
+        this.onRowSaveClick = this.onRowSaveClick.bind(this);
 
         this.state = {
             data: null,
             sortKey: null,
             sortReversed: false,
 
+            editableRows: {
+                test: false,
+            },
             isLoading: true,
         }
         this.initialize();
@@ -37,6 +42,16 @@ class CRUDTable extends React.Component {
                 console.log(error)
             },
         )
+    }
+
+    setRowEditable(key, editable) {
+        this.setState({
+            ...this.state,
+            editableRows: {
+                ...this.state.editableRows,
+                [key]: editable,
+            },
+        });
     }
 
     getSortedItems() {
@@ -71,6 +86,14 @@ class CRUDTable extends React.Component {
 
     }
 
+    onRowEditClick(key) {
+        this.setRowEditable(key, true);
+    }
+
+    onRowSaveClick(key) {
+        this.setRowEditable(key, false);
+    }
+
     renderLoading() {
         return (
             <AnimatedEllipsis text="Loading" />
@@ -103,8 +126,13 @@ class CRUDTable extends React.Component {
                             item={item}
                             key={`crud-row-${item[this.props.itemKey]}`}
                             itemKey={this.props.itemKey}
-                            sortedHeaderItems={this.props.sortedHeaderItems}
+                            sortedMetadata={this.props.sortedMetadata}
                             itemFormatters={this.props.itemFormatters}
+
+                            isBeingEdited={!!this.state.editableRows[item[this.props.itemKey]]}
+                            editEnabled={this.props.editEnabled}
+                            onEditClick={this.onRowEditClick}
+                            onSaveClick={this.onRowSaveClick}
                         />
                     ))
                 }
@@ -116,11 +144,17 @@ class CRUDTable extends React.Component {
     }
 
     renderTable() {
+        const includeActionsColumn = (
+            this.props.editEnabled ||
+            this.props.deleteEnabled ||
+            Object.values(this.state.editableRows).some(e => e)
+        )
         return (
             <table id="crud-table">
                 <CRUDTableHeader
-                    sortedHeaderItems={this.props.sortedHeaderItems}
+                    sortedMetadata={this.props.sortedMetadata}
                     onHeaderItemClick={this.onHeaderItemClick}
+                    includeActionsColumn={includeActionsColumn}
                 />
                 { this.renderTableBody() }
             </table>
@@ -140,7 +174,7 @@ class CRUDTable extends React.Component {
 CRUDTable.propTypes = {
     loadDataItems: PropTypes.func.isRequired,
 
-    sortedHeaderItems: PropTypes.arrayOf(
+    sortedMetadata: PropTypes.arrayOf(
         PropTypes.shape({
             key: PropTypes.string.isRequired,
             label: PropTypes.string.isRequired,
@@ -152,6 +186,10 @@ CRUDTable.propTypes = {
 
     createEnabled: PropTypes.bool.isRequired,
     createLabel: PropTypes.string.isRequired,
+
+    editEnabled: PropTypes.bool.isRequired,
+
+    deleteEnabled: PropTypes.bool.isRequired,
 }
 
 

@@ -17,12 +17,6 @@ LINK_ID_LENGTH = 6
 DEFAULT_NAME = "untitled"
 
 
-class LinkerStatus(enum.Enum):
-    ACTIVE = "A"
-    INACTIVE = "I"
-    DELETED = "X"
-
-
 class LinkerLambdaHandler(APILambdaHandlerBase):
     @property
     def table_name(self):
@@ -48,7 +42,7 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
         return {
             "id": ddbItem["id"]["S"],
             "url": ddbItem["url"]["S"],
-            "status": ddbItem["status"]["S"],
+            "active": ddbItem["active"]["BOOL"],
             "name": ddbItem["name"]["S"],
             "time_created": ddbItem["time_created"]["N"],
             "time_updated": ddbItem["time_updated"]["N"],
@@ -71,8 +65,8 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
             "name": {
                 "S": name,
             },
-            "status": {
-                "S": LinkerStatus.INACTIVE,
+            "active": {
+                "BOOL": False,
             },
             "owner": {
                 "S": self.user["username"],
@@ -119,9 +113,9 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
 
         return [self._format_ddb_item(ddbItem) for ddbItem in ddbItems]
 
-    def _new_link(self, url, name, status=None):
+    def _new_link(self, url, name, active=False):
         print("Creating new link")
-        ddbItem = self._build_link_item(url, status)
+        ddbItem = self._build_link_item(url, active)
         self.ddb_client.put_item(
             TableName=self.table_name,
             Item=ddbItem,

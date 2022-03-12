@@ -14,7 +14,7 @@ class CRUDTableHeader extends React.Component {
             <thead>
                 <tr>
                     {
-                        this.props.sortedHeaderItems.map((item, index) => {
+                        this.props.sortedMetadata.map((item, index) => {
                             const isSortedByThisKey = this.props.sortKey === item.key;
                             const icon = this.props.sortReversed ? 'caretDown' : 'caretUp';
                             return (
@@ -32,6 +32,9 @@ class CRUDTableHeader extends React.Component {
                             );
                         })
                     }
+                    {
+                        this.props.includeActionsColumn && <th className="actions-column-header"></th>
+                    }
                 </tr>
             </thead>
         )
@@ -41,7 +44,7 @@ class CRUDTableHeader extends React.Component {
 CRUDTableHeader.propTypes = {
     sortKey: PropTypes.string,
     sortReversed: PropTypes.bool,
-    sortedHeaderItems: PropTypes.arrayOf(
+    sortedMetadata: PropTypes.arrayOf(
         PropTypes.shape({
             key: PropTypes.string.isRequired,
             label: PropTypes.string.isRequired,
@@ -49,6 +52,7 @@ CRUDTableHeader.propTypes = {
     ).isRequired,
 
     onHeaderItemClick: PropTypes.func.isRequired,
+    includeActionsColumn: PropTypes.bool.isRequired,
 }
 
 
