@@ -25,6 +25,7 @@ provider "aws" {
     tags = {
       Environment = "Stage"
       Repo        = "aseaman"
+      Project     = "website"
     }
   }
 }
