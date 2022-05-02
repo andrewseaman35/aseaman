@@ -3,12 +3,14 @@ import PropTypes from 'prop-types';
 
 
 class CRUDTableRow extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.formatDataItem = this.formatDataItem.bind(this);
 
         this.state = {
-            editedValues: {}
+            itemValues: {
+                ...props.item,
+            },
         }
     }
 
@@ -22,22 +24,35 @@ class CRUDTableRow extends React.Component {
         return this.props.itemFormatters[key](value);
     }
 
+    handleChange(key, type, e) {
+        const newValue = type === 'checkbox' ? e.target.checked : e.target.value;
+        this.setState({
+            ...this.state,
+            itemValues: {
+                ...this.state.itemValues,
+                [key]: newValue,
+            }
+        })
+    }
+
     renderEditableDataItems() {
         const { item } = this.props;
+        const { itemValues } = this.state;
+
         const dataItems = this.props.sortedMetadata.map(
             (metadata, index) => {
                 const key = metadata.key;
-                const value = this.formatDataItem(metadata.key, item[metadata.key]);
+                const value = itemValues[metadata.key];
 
                 if (!metadata.editable) {
-                    return this.renderTd(item, key, index);
+                    return this.renderTd(itemValues, key, index);
                 }
-
                 return (
-                    <td key={`${item[metadata.key]}-${index}`}>
+                    <td key={`${metadata.key} - ${index}`}>
                         <input
                             type={metadata.type}
                             value={value}
+                            onChange={(e) => this.handleChange(metadata.key, metadata.type, e)}
                         >
                         </input>
                     </td>
@@ -78,7 +93,7 @@ class CRUDTableRow extends React.Component {
                 }
                 {
                     this.props.isBeingEdited && (
-                        <button onClick={() => this.props.onSaveClick(key)}>Save</button>
+                        <button onClick={() => this.props.onSaveClick(key, this.state.itemValues)}>Save</button>
                     )
                 }
 

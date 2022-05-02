@@ -90,7 +90,9 @@ class CRUDTable extends React.Component {
         this.setRowEditable(key, true);
     }
 
-    onRowSaveClick(key) {
+    onRowSaveClick(key, values) {
+        console.log(key)
+        console.log(values)
         this.setRowEditable(key, false);
     }
 
