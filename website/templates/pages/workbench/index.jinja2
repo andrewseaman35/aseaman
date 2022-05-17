@@ -1,7 +1,7 @@
 {% extends 'base.jinja2' %}
 
 {% block page_id %}workbench-index{% endblock %}
-{% block body_class %}workbench-level{% endblock %}
+{% block body_class %}workbench-index{% endblock %}
 
 {% block content %}
     <div class="inner">
@@ -24,5 +24,38 @@
             to the workbench to provide a structure for a freestanding pegbaord.
         </p>
 
+        <p>
+            This is what I came up with.
+        </p>
+        <div class="multi-image-container-outer">
+            <div class="multi-image-container">
+                <div class="arrow-icon previous"></div>
+                {{ macros.captioned_image("workbench/workbench_default.png", "Workbench rendering", lb_group="workbench") }}
+                {{ macros.captioned_image("workbench/workbench_front.png", "Workbench rendering, front", lb_group="workbench") }}
+                {{ macros.captioned_image("workbench/workbench_back.png", "Workbench rendering, back", lb_group="workbench") }}
+                <div class="arrow-icon next"></div>
+            </div>
+        </div>
+        <p>
+            The workbench surface measures 77.4" wide, 24" deep, and sits at 32.5" high. There are 23"
+            in between the drawer and cabinet, which is just about 1" more than I need to place the
+            shop vac.
+        </p>
+        <p>
+            The surface itself is relatively thin for a workbench: 23/32" thick plywood with a 1/8" thick layer
+            of hardwood. This is more than sufficient to provide a surface for the majority of my projects
+            but will likely be insufficient for things that require more impact or force. The base of the
+            workbench itself seemed like the weak structural link (the drawers and cabinet) so I did not
+            find it necessary to make the top stronger. Due to space constraints, the inclusion of the drawers,
+            cabinet, and shop vac space were one of my top priorities.
+        </p>
     </div>
+{% endblock %}
+
+{% block include_js %}
+    <script>
+        window.aseaman.ready(function(exports) {
+            exports.initMultiImageContainers();
+        });
+    </script>
 {% endblock %}

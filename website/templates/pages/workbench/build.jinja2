@@ -1,0 +1,73 @@
+{% extends 'base.jinja2' %}
+
+{% block page_id %}workbench-build{% endblock %}
+{% block body_class %}workbench-build{% endblock %}
+
+{% block content %}
+    <div class="inner">
+        <h1>Workbench Build</h1>
+        <div class="list">
+            <div class="list-header"><strong>Materials</strong></div>
+            <ul>
+                <li>
+                    {{ macros.external_link("https://www.homedepot.com/p/309580736", "Husky tool drawers") }}
+                    (I have an older model with slightly different dimensions)
+                </li>
+                <li>
+                    {{ macros.external_link("https://www.homedepot.com/p/304082053", "Husky tool cabinet") }}
+                </li>
+                <li>
+                    (8) 8ft 2x4s - I ended up getting 9 since I miscut a piece :)
+                </li>
+                <li>
+                    {{ macros.external_link("https://www.homedepot.com/p/302610611", "23/32\" plywood sheet") }}
+                </li>
+                <li>
+                    1" nominal thick common board - this was used to match heights of the tops of the drawer and
+                    cabinet. The thickness here depends on the specifics of the units.
+                </li>
+                <li>
+                    Hardboard sheet - used as a top layer over the plywood sheet. I was originally going to get
+                    tempered hardboard for its durability but ended up a standard hardboard sheet since
+                    tempered hardboard looks pretty ugly.
+                </li>
+                <li>
+                    Pegboard (24" x 42")
+                </li>
+            </ul>
+        </div>
+        <p>
+            I started by putting together the bases for the drawer and cabinet units. Due to the difference in
+            height, the base of the (shorter) drawer used the 2x4s standing up on their side to provide 3.5" of
+            height while the (taller) cabinet used the 2x4s laying on their side to provide 1.5" of height.
+        </p>
+        <div class="multi-image-container-outer">
+            <div class="multi-image-container">
+                <div class="arrow-icon previous"></div>
+                {{ macros.captioned_image("workbench/drawer_base.jpg", "Drawer base", lb_group="base") }}
+                {{ macros.captioned_image("workbench/cabinet_base.jpg", "Cabinet Base", lb_group="base") }}
+                <div class="arrow-icon next"></div>
+            </div>
+        </div>
+        <p>
+            On the underside of the drawers, there are two spines that run down the width of the unit. I had to cut
+            slits in the drawer base to fit around these spines.
+        </p>
+        <div class="multi-image-container-outer">
+            <div class="multi-image-container">
+                <div class="arrow-icon previous"></div>
+                {{ macros.captioned_image("workbench/drawer_underside.jpg", "Spine on underside of drawer", lb_group="spine") }}
+                {{ macros.captioned_image("workbench/drawer_base_slit.jpg", "Slit cut on drawer base", lb_group="spine") }}
+                <div class="arrow-icon next"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block include_js %}
+    <script>
+        window.aseaman.ready(function(exports) {
+            exports.initMultiImageContainers();
+        });
+    </script>
+{% endblock %}
