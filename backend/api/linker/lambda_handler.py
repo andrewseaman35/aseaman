@@ -81,6 +81,31 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
 
         return item
 
+    def _build_update_expression_parameters(self, url=None, name=None, active=None):
+        expression_items = ["SET #tu = :tu"]
+        attribute_names = {
+            "#tu": "time_updated",
+        }
+        attribute_values = {":tu": {"N": self._get_timestamp()}}
+        if url is not None:
+            expression_items.append("#url = :url")
+            attribute_names["#url"] = "url"
+            attribute_values[":url"] = {"S": url}
+        if name is not None:
+            expression_items.append("#na = :na")
+            attribute_names["#na"] = "name"
+            attribute_values[":na"] = {"S": name}
+        if active is not None:
+            expression_items.append("#act = :act")
+            attribute_names["#act"] = "active"
+            attribute_values[":act"] = {"BOOL": active}
+
+        return (
+            ", ".join(expression_items),
+            attribute_names,
+            attribute_values,
+        )
+
     def __fetch_link(self, link_id):
         ddbItem = self.ddb_client.get_item(
             TableName=self.table_name,
@@ -94,6 +119,8 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
             raise NotFoundException("Link not found")
 
         ddbItem = ddbItem["Item"]
+
+        self.__validate_link_ownership(ddbItem)
 
         return self._format_ddb_item(ddbItem)
 
@@ -122,6 +149,23 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
         )
         return self._format_ddb_item(ddbItem)
 
+    def _update_link(self, link_id, url=None, name=None, active=None):
+        print(f"Updating link {link_id}")
+        (
+            update_expression,
+            expression_attribute_names,
+            expression_attribute_values,
+        ) = self._build_update_expression_parameters(url, name, active)
+        ddbItem = self.ddb_client.update_item(
+            TableName=self.table_name,
+            Key={"id": {"S": link_id}},
+            UpdateExpression=update_expression,
+            ExpressionAttributeNames=expression_attribute_names,
+            ExpressionAttributeValues=expression_attribute_values,
+            ReturnValues="ALL_NEW",
+        )["Attributes"]
+        return self._format_ddb_item(ddbItem)
+
     def handle_get(self):
         link_id = self.params.get("id")
         if link_id:
@@ -143,6 +187,22 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
             raise BadRequestException("url required")
 
         result = self._new_link(url, name)
+
+        return {**self._empty_response(), "body": json.dumps(result)}
+
+    def handle_put(self):
+        link_id = self.params.get("id")
+        if not link_id:
+            raise BadRequestException("id required")
+
+        self.__fetch_link(link_id)
+
+        result = self._update_link(
+            link_id,
+            url=self.params.get("url"),
+            name=self.params.get("name"),
+            active=self.params.get("active"),
+        )
 
         return {**self._empty_response(), "body": json.dumps(result)}
 

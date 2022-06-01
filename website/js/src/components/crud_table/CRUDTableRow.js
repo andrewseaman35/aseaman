@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { AnimatedEllipsis } from '../index';
 
 class CRUDTableRow extends React.Component {
     constructor(props) {
@@ -52,6 +53,7 @@ class CRUDTableRow extends React.Component {
                         <input
                             type={metadata.type}
                             value={value}
+                            checked={value}
                             onChange={(e) => this.handleChange(metadata.key, metadata.type, e)}
                         >
                         </input>
@@ -85,14 +87,21 @@ class CRUDTableRow extends React.Component {
     renderActionItems() {
         const key = this.props.item[this.props.itemKey];
         return (
-            <td>
+            <td className="crud-table-action-items">
                 {
-                    !this.props.isBeingEdited && (
+                    this.props.isProcessingAction && (
+                        <button className="no-hover" onClick={() => {}}>
+                            <AnimatedEllipsis />
+                        </button>
+                    )
+                }
+                {
+                    !this.props.isProcessingAction && !this.props.isBeingEdited && (
                         <button onClick={() => this.props.onEditClick(key)}>Edit</button>
                     )
                 }
                 {
-                    this.props.isBeingEdited && (
+                    !this.props.isProcessingAction && this.props.isBeingEdited && (
                         <button onClick={() => this.props.onSaveClick(key, this.state.itemValues)}>Save</button>
                     )
                 }
@@ -128,6 +137,7 @@ CRUDTableRow.propTypes = {
     onSaveClick: PropTypes.func,
 
     isBeingEdited: PropTypes.bool.isRequired,
+    isProcessingAction: PropTypes.bool.isRequired,
 }
 
 module.exports = CRUDTableRow;

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { loadUserLinks } from './api';
+import { loadUserLinks, saveUserLink } from './api';
 import { toReadableDateTime } from '../utils';
 
 import CRUDTable from '../components/crud_table/CRUDTable';
@@ -65,21 +65,23 @@ class LinksTable extends React.Component {
     }
 
     loadDataSet() {
-        loadUserLinks().then(
+        return loadUserLinks().then(
             (response) => {
-                console.log(response);
+                return response
             },
             (error) => {
                 console.log(error)
             },
         )
-    }
+        }
 
     render() {
         return (
             <CRUDTable
                 loadDataItems={loadUserLinks}
                 itemKey="id"
+
+                updateItem={saveUserLink}
 
                 sortedMetadata={SORTED_METADATA}
                 itemFormatters={ITEM_FORMATTERS}

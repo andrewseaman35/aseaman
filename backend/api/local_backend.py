@@ -117,7 +117,7 @@ def chess(resource):
     return convert_to_response(result)
 
 
-@app.route("/linker/", methods=["GET", "POST"])
+@app.route("/linker/", methods=["GET", "POST", "PUT"])
 def linker():
     payload = get_payload(request)
     result = make_lambda_request("linker", request, payload, None)

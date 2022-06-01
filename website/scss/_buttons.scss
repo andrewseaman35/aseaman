@@ -13,6 +13,13 @@ button {
         color: white;
         background-color: #888888;
         fill: #888888;
+
+        &.no-hover {
+            cursor: unset;
+            background-color: unset;
+            color: unset;
+            border: 1px solid $blackish;;
+        }
     }
 
     &:disabled {

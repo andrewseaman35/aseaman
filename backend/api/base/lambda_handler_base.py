@@ -37,6 +37,7 @@ class APILambdaHandlerBase(object):
         self.handlers_by_method = {
             "GET": self.handle_get,
             "POST": self.handle_post,
+            "PUT": self.handle_put,
             "DELETE": self.handle_delete,
         }
 
@@ -102,14 +103,14 @@ class APILambdaHandlerBase(object):
 
     def __parse_event(self, event):
         print(" -- Received event --")
-        print(json.dumps(event, indent=4))
+        # print(json.dumps(event, indent=4))
         print(" --                --")
 
         params = {}
         if self.event["httpMethod"] in {"GET", "DELETE"}:
             params = self.event["multiValueQueryStringParameters"] or {}
             params.update(self.event["queryStringParameters"] or {})
-        elif self.event["httpMethod"] == "POST":
+        elif self.event["httpMethod"] in {"POST", "PUT"}:
             params = json.loads(self.event["body"])
         self.params = params
 
@@ -150,6 +151,9 @@ class APILambdaHandlerBase(object):
 
     def handle_post(self):
         raise MethodNotAllowedException("POST not supported")
+
+    def handle_put(self):
+        raise MethodNotAllowedException("PUT not supported")
 
     def handle_delete(self):
         raise MethodNotAllowedException("DELETE not supported")

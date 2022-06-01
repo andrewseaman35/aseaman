@@ -21,6 +21,9 @@ class CRUDTable extends React.Component {
             sortKey: null,
             sortReversed: false,
 
+            processingActionRows: {
+                test: false,
+            },
             editableRows: {
                 test: false,
             },
@@ -44,14 +47,21 @@ class CRUDTable extends React.Component {
         )
     }
 
-    setRowEditable(key, editable) {
-        this.setState({
-            ...this.state,
-            editableRows: {
+    setRowState(key, rowState) {
+        const newState = { ...this.state };
+        if ("editable" in rowState) {
+            newState.editableRows = {
                 ...this.state.editableRows,
-                [key]: editable,
-            },
-        });
+                [key]: rowState.editable,
+            };
+        }
+        if ("processing" in rowState) {
+            newState.processingActionRows = {
+                ...this.state.processingActionRows,
+                [key]: rowState.processing,
+            };
+        }
+        this.setState(newState)
     }
 
     getSortedItems() {
@@ -64,6 +74,26 @@ class CRUDTable extends React.Component {
         return this.props.items.concat().sort((a, b) => (
             sortKey(a) < sortKey(b) ? (-1 * reverseMultiplier) : (1 * reverseMultiplier)
         ));
+    }
+
+    updateSingleItemState(updatedItem, callback) {
+        const existingData = this.state.data;
+        const newData = [];
+        existingData.forEach((item) => {
+            if (item[this.props.itemKey] === updatedItem[this.props.itemKey]) {
+                newData.push(updatedItem);
+            } else {
+                newData.push(item);
+            }
+        });
+        this.setState({
+            ...this.state,
+            data: newData,
+        }, () => {
+            if (callback) {
+                callback();
+            }
+        })
     }
 
     onHeaderItemClick(event) {
@@ -87,13 +117,21 @@ class CRUDTable extends React.Component {
     }
 
     onRowEditClick(key) {
-        this.setRowEditable(key, true);
+        this.setRowState(key, { editable: true });
     }
 
     onRowSaveClick(key, values) {
-        console.log(key)
-        console.log(values)
-        this.setRowEditable(key, false);
+        this.setRowState(key, { processing: true });
+        this.props.updateItem(values).then(
+            (response) => {
+                this.updateSingleItemState(response, () => {
+                    this.setRowState(key, { editable: false, processing: false });
+                });
+            },
+            () => {
+                this.setRowState(key, { editable: false, processing: false });
+            }
+        )
     }
 
     renderLoading() {
@@ -131,6 +169,7 @@ class CRUDTable extends React.Component {
                             sortedMetadata={this.props.sortedMetadata}
                             itemFormatters={this.props.itemFormatters}
 
+                            isProcessingAction={!!this.state.processingActionRows[item[this.props.itemKey]]}
                             isBeingEdited={!!this.state.editableRows[item[this.props.itemKey]]}
                             editEnabled={this.props.editEnabled}
                             onEditClick={this.onRowEditClick}
@@ -173,8 +212,17 @@ class CRUDTable extends React.Component {
     }
 }
 
+
+CRUDTable.defaultProps = {
+    updateItem: () => {
+        console.warn('update handler not provided')
+    },
+}
+
+
 CRUDTable.propTypes = {
     loadDataItems: PropTypes.func.isRequired,
+    updateItem: PropTypes.func.isRequired,
 
     sortedMetadata: PropTypes.arrayOf(
         PropTypes.shape({
