@@ -18,6 +18,11 @@ CONFIG_FILENAME = "config.json"
 # list of `relative_html_filepath`s that we should also render a .html for
 RENDER_HTML_EXTENSION = {"index"}
 
+OMITTED_TEMPLATES = {
+    # (relative_file_dir, file_path)
+    ("", "whisky_shelf.jinja2")
+}
+
 
 class CompileHTML(BaseScript):
     aws_enabled = False
@@ -73,7 +78,8 @@ class CompileHTML(BaseScript):
                 relative_file_dir = os.path.split(
                     os.path.relpath(file_path, self.pages_dir)
                 )[0]
-                template_path_by_directory[relative_file_dir].append(file_path)
+                if (relative_file_dir, fname) not in OMITTED_TEMPLATES:
+                    template_path_by_directory[relative_file_dir].append(file_path)
 
         return template_path_by_directory
 
