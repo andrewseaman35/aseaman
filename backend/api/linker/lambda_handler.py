@@ -53,7 +53,7 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
         if not self.user["username"] or self.user["username"] != owner:
             raise UnauthorizedException("Log in to access this link")
 
-    def _build_link_item(self, url, name):
+    def _build_link_item(self, url, name, active=False):
         timestamp = self._get_timestamp()
         item = {
             "id": {
@@ -66,7 +66,7 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
                 "S": name,
             },
             "active": {
-                "BOOL": False,
+                "BOOL": active,
             },
             "owner": {
                 "S": self.user["username"],
@@ -142,7 +142,7 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
 
     def _new_link(self, url, name, active=False):
         print("Creating new link")
-        ddbItem = self._build_link_item(url, active)
+        ddbItem = self._build_link_item(url, name, active)
         self.ddb_client.put_item(
             TableName=self.table_name,
             Item=ddbItem,

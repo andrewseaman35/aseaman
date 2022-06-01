@@ -15,7 +15,7 @@ function loadUserLinks() {
 }
 
 
-function saveUserLink(linkData) {
+function updateUserLink(linkData) {
     return $.ajax({
         type: 'PUT',
         url: getAPIUrl('linker'),
@@ -27,8 +27,20 @@ function saveUserLink(linkData) {
     }).promise();
 }
 
+function saveNewUserLink(linkData) {
+    return $.ajax({
+        type: 'POST',
+        url: getAPIUrl('linker'),
+        headers: {
+            Authorization: getToken(),
+        },
+        contentType: 'application/json',
+        data: JSON.stringify(linkData),
+    })
+}
 
 module.exports = {
     loadUserLinks,
-    saveUserLink,
+    saveNewUserLink,
+    updateUserLink,
  };

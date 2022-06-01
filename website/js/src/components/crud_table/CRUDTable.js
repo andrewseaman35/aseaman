@@ -21,6 +21,7 @@ class CRUDTable extends React.Component {
             sortKey: null,
             sortReversed: false,
 
+            createButtonProcessing: false,
             processingActionRows: {
                 test: false,
             },
@@ -45,6 +46,10 @@ class CRUDTable extends React.Component {
                 console.log(error)
             },
         )
+    }
+
+    setCreateButtonProcessing(processing) {
+        this.setState({ createButtonProcessing: processing });
     }
 
     setRowState(key, rowState) {
@@ -74,6 +79,18 @@ class CRUDTable extends React.Component {
         return this.props.items.concat().sort((a, b) => (
             sortKey(a) < sortKey(b) ? (-1 * reverseMultiplier) : (1 * reverseMultiplier)
         ));
+    }
+
+    addSingleItemToState(newItem, callback) {
+        const newData = [...this.state.data];
+        newData.push(newItem);
+        this.setState({
+            data: newData,
+        }, () => {
+            if (callback) {
+                callback();
+            }
+        })
     }
 
     updateSingleItemState(updatedItem, callback) {
@@ -113,7 +130,17 @@ class CRUDTable extends React.Component {
     }
 
     onAddButtonClick() {
-
+        this.setCreateButtonProcessing(true);
+        this.props.createItem({name: "hi", url: "andrewcseaman.com"}).then(
+            (response) => {
+                this.addSingleItemToState(response, () => {
+                    this.setCreateButtonProcessing(false);
+                });
+            },
+            (error) => {
+                console.log(error);
+            },
+        )
     }
 
     onRowEditClick(key) {
@@ -150,7 +177,20 @@ class CRUDTable extends React.Component {
         return (
             <tr className="crud-table-create-row no-hover">
                 <td colSpan="100%">
-                    <button onClick={this.onAddButtonClick}>{this.props.createLabel}</button>
+                    {
+                        !!this.state.createButtonProcessing && (
+                            <button>
+                                <AnimatedEllipsis />
+                            </button>
+                        )
+                    }
+                    {
+                        !this.state.createButtonProcessing && (
+                            <button
+                                onClick={this.onAddButtonClick}
+                            >{this.props.createLabel}</button>
+                        )
+                    }
                 </td>
             </tr>
         )
@@ -214,6 +254,9 @@ class CRUDTable extends React.Component {
 
 
 CRUDTable.defaultProps = {
+    createItem: () => {
+        console.warn('create handler not provided')
+    },
     updateItem: () => {
         console.warn('update handler not provided')
     },
@@ -236,6 +279,7 @@ CRUDTable.propTypes = {
 
     createEnabled: PropTypes.bool.isRequired,
     createLabel: PropTypes.string.isRequired,
+    createItem: PropTypes.func.isRequired,
 
     editEnabled: PropTypes.bool.isRequired,
 
