@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { loadUserLinks, saveUserLink } from './api';
+import { loadUserLinks, saveNewUserLink, updateUserLink } from './api';
 import { toReadableDateTime } from '../utils';
 
 import CRUDTable from '../components/crud_table/CRUDTable';
@@ -81,7 +81,8 @@ class LinksTable extends React.Component {
                 loadDataItems={loadUserLinks}
                 itemKey="id"
 
-                updateItem={saveUserLink}
+                createItem={saveNewUserLink}
+                updateItem={updateUserLink}
 
                 sortedMetadata={SORTED_METADATA}
                 itemFormatters={ITEM_FORMATTERS}
