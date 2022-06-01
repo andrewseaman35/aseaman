@@ -166,6 +166,15 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
         )["Attributes"]
         return self._format_ddb_item(ddbItem)
 
+    def _delete_link(self, link_id):
+        print(f"Deleting link {link_id}")
+        self.ddb_client.delete_item(
+            TableName=self.table_name,
+            Key={
+                "id": {"S": link_id},
+            },
+        )
+
     def handle_get(self):
         link_id = self.params.get("id")
         if link_id:
@@ -205,6 +214,16 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
         )
 
         return {**self._empty_response(), "body": json.dumps(result)}
+
+    def handle_delete(self):
+        link_id = self.params.get("id")
+        if not link_id:
+            raise BadRequestException("id required")
+
+        self.__fetch_link(link_id)
+        self._delete_link(link_id)
+
+        return {**self._empty_response(), "body": json.dumps({})}
 
 
 def lambda_handler(event, context):

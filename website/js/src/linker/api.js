@@ -39,7 +39,19 @@ function saveNewUserLink(linkData) {
     })
 }
 
+function deleteUserLink(key) {
+    return $.ajax({
+        type: 'DELETE',
+        url: getAPIUrl('linker') + `?id=${key}`,
+        headers: {
+            Authorization: getToken(),
+        },
+        contentType: 'application/json',
+    })
+}
+
 module.exports = {
+    deleteUserLink,
     loadUserLinks,
     saveNewUserLink,
     updateUserLink,

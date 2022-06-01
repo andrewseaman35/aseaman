@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { loadUserLinks, saveNewUserLink, updateUserLink } from './api';
+import { deleteUserLink, loadUserLinks, saveNewUserLink, updateUserLink } from './api';
 import { toReadableDateTime } from '../utils';
 
 import CRUDTable from '../components/crud_table/CRUDTable';
@@ -83,6 +83,7 @@ class LinksTable extends React.Component {
 
                 createItem={saveNewUserLink}
                 updateItem={updateUserLink}
+                deleteItem={deleteUserLink}
 
                 sortedMetadata={SORTED_METADATA}
                 itemFormatters={ITEM_FORMATTERS}

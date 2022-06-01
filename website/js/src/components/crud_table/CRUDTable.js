@@ -15,6 +15,7 @@ class CRUDTable extends React.Component {
         this.onAddButtonClick = this.onAddButtonClick.bind(this);
         this.onRowEditClick = this.onRowEditClick.bind(this);
         this.onRowSaveClick = this.onRowSaveClick.bind(this);
+        this.onRowDeleteClick = this.onRowDeleteClick.bind(this);
 
         this.state = {
             data: null,
@@ -113,6 +114,24 @@ class CRUDTable extends React.Component {
         })
     }
 
+    deleteSingleItemFromState(key, callback) {
+        const existingData = this.state.data;
+        const newData = [];
+        existingData.forEach((item) => {
+            if (item[this.props.itemKey] !== key) {
+                newData.push(item);
+            }
+        });
+        this.setState({
+            ...this.state,
+            data: newData,
+        }, () => {
+            if (callback) {
+                callback();
+            }
+        })
+    }
+
     onHeaderItemClick(event) {
         console.log(event.currentTarget.dataset.sortKey)
         return;
@@ -148,12 +167,24 @@ class CRUDTable extends React.Component {
     }
 
     onRowSaveClick(key, values) {
-        this.setRowState(key, { processing: true });
+        this.setRowState(key, { processing: true, editable: false });
         this.props.updateItem(values).then(
             (response) => {
                 this.updateSingleItemState(response, () => {
                     this.setRowState(key, { editable: false, processing: false });
                 });
+            },
+            () => {
+                this.setRowState(key, { editable: false, processing: false });
+            }
+        )
+    }
+
+    onRowDeleteClick(key) {
+        this.setRowState(key, { processing: true, editable: false });
+        this.props.deleteItem(key).then(
+            () => {
+                this.deleteSingleItemFromState(key);
             },
             () => {
                 this.setRowState(key, { editable: false, processing: false });
@@ -214,6 +245,7 @@ class CRUDTable extends React.Component {
                             editEnabled={this.props.editEnabled}
                             onEditClick={this.onRowEditClick}
                             onSaveClick={this.onRowSaveClick}
+                            onDeleteClick={this.onRowDeleteClick}
                         />
                     ))
                 }
@@ -260,6 +292,9 @@ CRUDTable.defaultProps = {
     updateItem: () => {
         console.warn('update handler not provided')
     },
+    deleteItem: () => {
+        console.warn('delete handler not provided')
+    },
 }
 
 
@@ -284,6 +319,7 @@ CRUDTable.propTypes = {
     editEnabled: PropTypes.bool.isRequired,
 
     deleteEnabled: PropTypes.bool.isRequired,
+    deleteItem: PropTypes.func.isRequired,
 }
 
 

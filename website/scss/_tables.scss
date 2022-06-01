@@ -58,4 +58,15 @@ tr:not(.no-hover) {
         display: block;
         margin: 8px auto;
     }
+
+    .crud-table-action-items {
+        display: flex;
+        justify-content: center;
+
+        button {
+            display: flex;
+            flex-grow: 1;
+            justify-content: center;
+        }
+    }
 }

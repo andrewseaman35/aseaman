@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { AnimatedEllipsis } from '../index';
+import Icon from '../icon/Icon';
 
 class CRUDTableRow extends React.Component {
     constructor(props) {
@@ -86,23 +87,32 @@ class CRUDTableRow extends React.Component {
 
     renderActionItems() {
         const key = this.props.item[this.props.itemKey];
+        if (this.props.isProcessingAction) {
+            return (
+                <td className="crud-table-action-items">
+                    <AnimatedEllipsis />
+                </td>
+            )
+        }
         return (
             <td className="crud-table-action-items">
                 {
-                    this.props.isProcessingAction && (
-                        <button className="no-hover" onClick={() => {}}>
-                            <AnimatedEllipsis />
+                    !this.props.isBeingEdited && (
+                        <button className="full-width" onClick={() => this.props.onEditClick(key)}>Edit</button>
+                    )
+                }
+                {
+                    this.props.isBeingEdited && (
+                        <button className="button-icon" onClick={() => this.props.onSaveClick(key, this.state.itemValues)}>
+                            <Icon icon="checkmark" size={24} />
                         </button>
                     )
                 }
                 {
-                    !this.props.isProcessingAction && !this.props.isBeingEdited && (
-                        <button onClick={() => this.props.onEditClick(key)}>Edit</button>
-                    )
-                }
-                {
-                    !this.props.isProcessingAction && this.props.isBeingEdited && (
-                        <button onClick={() => this.props.onSaveClick(key, this.state.itemValues)}>Save</button>
+                    this.props.isBeingEdited && (
+                        <button className="button-icon" onClick={() => this.props.onDeleteClick(key)}>
+                            <Icon icon="trashcan" size={24} />
+                        </button>
                     )
                 }
 
@@ -135,6 +145,7 @@ CRUDTableRow.propTypes = {
     editEnabled: PropTypes.bool.isRequired,
     onEditClick: PropTypes.func,
     onSaveClick: PropTypes.func,
+    onDeleteClick: PropTypes.func,
 
     isBeingEdited: PropTypes.bool.isRequired,
     isProcessingAction: PropTypes.bool.isRequired,
