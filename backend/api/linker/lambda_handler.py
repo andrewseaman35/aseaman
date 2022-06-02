@@ -106,7 +106,7 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
             attribute_values,
         )
 
-    def __fetch_link(self, link_id):
+    def __fetch_link(self, link_id, validate_ownership=True, require_active=False):
         ddbItem = self.ddb_client.get_item(
             TableName=self.table_name,
             Key={
@@ -120,7 +120,10 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
 
         ddbItem = ddbItem["Item"]
 
-        self.__validate_link_ownership(ddbItem)
+        if validate_ownership:
+            self.__validate_link_ownership(ddbItem)
+        if require_active and not ddbItem["active"]["BOOL"]:
+            raise NotFoundException("Link not found")
 
         return self._format_ddb_item(ddbItem)
 
@@ -178,7 +181,9 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
     def handle_get(self):
         link_id = self.params.get("id")
         if link_id:
-            result = self.__fetch_link(link_id)
+            result = self.__fetch_link(
+                link_id, validate_ownership=False, require_active=True
+            )
         else:
             if not self.user["username"]:
                 raise PermissionError("no logged in user")
