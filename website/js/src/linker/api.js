@@ -3,7 +3,23 @@ import $ from 'jquery';
 import { getToken } from '../auth';
 import { getAPIUrl } from '../utils';
 
-function loadUserLinks() {
+
+function fetchLink(id) {
+    return $.ajax({
+        type: 'GET',
+        url: getAPIUrl('linker'),
+        headers: {
+            Authorization: getToken(),
+        },
+        data: {
+            'id': id,
+        },
+        contentType: 'application/json',
+    }).promise();
+}
+
+function loadUserLinks(options) {
+    options = options || {};
     return $.ajax({
         type: 'GET',
         url: getAPIUrl('linker'),
@@ -11,6 +27,7 @@ function loadUserLinks() {
             Authorization: getToken(),
         },
         contentType: 'application/json',
+        data: options,
     }).promise();
 }
 
@@ -52,6 +69,7 @@ function deleteUserLink(key) {
 
 module.exports = {
     deleteUserLink,
+    fetchLink,
     loadUserLinks,
     saveNewUserLink,
     updateUserLink,

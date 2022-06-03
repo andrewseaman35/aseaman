@@ -1,21 +1,5 @@
-import $ from 'jquery';
+import { fetchLink } from './linker/api';
 
-import { getToken } from './auth';
-import { getAPIUrl } from './utils';
-
-function fetchLink(id) {
-    return $.ajax({
-        type: 'GET',
-        url: getAPIUrl('linker'),
-        headers: {
-            Authorization: getToken(),
-        },
-        data: {
-            'id': id,
-        },
-        contentType: 'application/json',
-    }).promise();
-}
 
 const link = function() {
     const url = window.location.href;

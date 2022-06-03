@@ -14,8 +14,10 @@ from base.api_exceptions import (
 
 LINK_ID_LENGTH = 6
 
-DEFAULT_NAME = "untitled"
-DEFAULT_URL = ""
+DEFAULT_SORT = "+time_created"
+
+DEFAULT_LINK_NAME = "untitled"
+DEFAULT_LINK_URL = ""
 
 
 class LinkerLambdaHandler(APILambdaHandlerBase):
@@ -38,6 +40,14 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
 
     def _get_timestamp(self):
         return str(int(time.time()))
+
+    def _get_sort_params(self, sort_value):
+        reverse = sort_value.startswith("-")
+        sort_key = sort_value.strip("-").strip("+")
+        return {
+            "key": lambda x: x[sort_key].lower(),
+            "reverse": reverse,
+        }
 
     def _format_ddb_item(self, ddbItem):
         return {
@@ -188,7 +198,13 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
         else:
             if not self.user["username"]:
                 raise PermissionError("no logged in user")
+            sort_value = self.params.get("sort", DEFAULT_SORT)
+            print(f"sort value: {sort_value}")
             result = self.__fetch_links_by_owner(self.user["username"])
+            result = sorted(
+                result,
+                **self._get_sort_params(sort_value),
+            )
 
         return {
             **self._empty_response(),
@@ -196,8 +212,8 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
         }
 
     def handle_post(self):
-        url = self.params.get("url", DEFAULT_URL)
-        name = self.params.get("name", DEFAULT_NAME)
+        url = self.params.get("url", DEFAULT_LINK_URL)
+        name = self.params.get("name", DEFAULT_LINK_NAME)
 
         result = self._new_link(url, name)
 

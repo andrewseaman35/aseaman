@@ -6,6 +6,8 @@ import { toReadableDateTime } from '../utils';
 
 import CRUDTable from '../components/crud_table/CRUDTable';
 
+const DEFAULT_SORT = "+time_created";
+
 
 const SORTED_METADATA = [
     {
@@ -70,21 +72,10 @@ class LinksTable extends React.Component {
         }
     }
 
-    loadDataSet() {
-        return loadUserLinks().then(
-            (response) => {
-                return response
-            },
-            (error) => {
-                console.log(error)
-            },
-        )
-        }
-
     render() {
         return (
             <CRUDTable
-                loadDataItems={loadUserLinks}
+                loadDataItems={() => loadUserLinks({sort: DEFAULT_SORT})}
                 itemKey="id"
 
                 createItem={saveNewUserLink}
