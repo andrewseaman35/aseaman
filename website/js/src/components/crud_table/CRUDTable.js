@@ -23,13 +23,10 @@ class CRUDTable extends React.Component {
             sortReversed: false,
 
             createButtonProcessing: false,
-            processingActionRows: {
-                test: false,
-            },
-            editableRows: {
-                test: false,
-            },
             isLoading: true,
+
+            processingActionRows: {},
+            editableRows: {},
         }
         this.initialize();
     }
@@ -132,6 +129,16 @@ class CRUDTable extends React.Component {
         })
     }
 
+    createEmptyItem() {
+        return this.props.sortedMetadata.reduce(
+            (emptyItem, metadata) => {
+                emptyItem[metadata.key] = metadata.initialValue;
+                return emptyItem;
+            },
+            {},
+        );
+    }
+
     onHeaderItemClick(event) {
         console.log(event.currentTarget.dataset.sortKey)
         return;
@@ -150,9 +157,10 @@ class CRUDTable extends React.Component {
 
     onAddButtonClick() {
         this.setCreateButtonProcessing(true);
-        this.props.createItem({name: "hi", url: "andrewcseaman.com"}).then(
+        this.props.createItem(this.createEmptyItem()).then(
             (response) => {
                 this.addSingleItemToState(response, () => {
+                    this.setRowState(response.id, {editable: true});
                     this.setCreateButtonProcessing(false);
                 });
             },
@@ -242,6 +250,7 @@ class CRUDTable extends React.Component {
 
                             isProcessingAction={!!this.state.processingActionRows[item[this.props.itemKey]]}
                             isBeingEdited={!!this.state.editableRows[item[this.props.itemKey]]}
+
                             editEnabled={this.props.editEnabled}
                             onEditClick={this.onRowEditClick}
                             onSaveClick={this.onRowSaveClick}

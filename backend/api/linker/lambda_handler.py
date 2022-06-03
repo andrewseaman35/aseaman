@@ -15,6 +15,7 @@ from base.api_exceptions import (
 LINK_ID_LENGTH = 6
 
 DEFAULT_NAME = "untitled"
+DEFAULT_URL = ""
 
 
 class LinkerLambdaHandler(APILambdaHandlerBase):
@@ -195,10 +196,8 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
         }
 
     def handle_post(self):
-        url = self.params.get("url")
+        url = self.params.get("url", DEFAULT_URL)
         name = self.params.get("name", DEFAULT_NAME)
-        if not url:
-            raise BadRequestException("url required")
 
         result = self._new_link(url, name)
 

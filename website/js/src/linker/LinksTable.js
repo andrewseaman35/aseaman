@@ -13,36 +13,42 @@ const SORTED_METADATA = [
         label: 'Link Id',
         editable: false,
         type: null,
+        initialValue: null,
     },
     {
         key: 'name',
         label: 'Name',
         editable: true,
         type: 'text',
+        initialValue: "My link",
     },
     {
         key: 'url',
         label: 'URL',
         editable: true,
         type: 'text',
+        initialValue: "",
     },
     {
         key: 'active',
         label: 'Active',
         editable: true,
         type: 'checkbox',
+        initialValue: false,
     },
     {
         key: 'time_created',
         label: 'Time Created',
         editable: false,
         type: null,
+        initialValue: null,
     },
     {
         key: 'time_updated',
         label: 'Last Updated',
         editable: false,
         type: null,
+        initialValue: null,
     },
 ];
 
