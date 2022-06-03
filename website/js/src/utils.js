@@ -73,6 +73,16 @@ function toReadableDateTime(secondsTimestamp) {
     return `${month}/${day}/${year} ${hour}:${minute}:${second}`;
 }
 
+
+function toReadableDate(secondsTimestamp) {
+    const mod = new Date(secondsTimestamp * 1000);
+    const month = zeroPad(mod.getMonth() + 1, 2);
+    const day = zeroPad(mod.getDate(), 2);
+    const year = mod.getFullYear();
+    return `${month}/${day}/${year}`;
+}
+
+
 const KEY_CODE = {
     ESCAPE: 'Escape',
     LEFT: 'ArrowLeft',
@@ -90,5 +100,6 @@ module.exports = {
     getUrlTo,
     unsetCookie,
     setQueryStringParameter,
+    toReadableDate,
     toReadableDateTime,
 };

@@ -272,7 +272,7 @@ class CRUDTable extends React.Component {
             Object.values(this.state.editableRows).some(e => e)
         )
         return (
-            <table id="crud-table">
+            <table className="crud-table">
                 <CRUDTableHeader
                     sortedMetadata={this.props.sortedMetadata}
                     onHeaderItemClick={this.onHeaderItemClick}

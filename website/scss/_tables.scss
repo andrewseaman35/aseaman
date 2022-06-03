@@ -53,12 +53,26 @@ tr:not(.no-hover) {
 }
 
 .crud-table-container {
+    margin: auto;
+    overflow: hidden;
+    overflow-x: auto;
+    clear: both;
+    width: 100%;
+    max-width: 1100px;
+
+    .crud-table {
+        margin: auto;
+        width: 100%;
+    }
+
     .crud-table-create-row button {
         display: block;
         margin: 8px auto;
     }
 
     .crud-table-action-items {
+        height: 33px;
+        align-items: center;
         display: flex;
         justify-content: center;
 

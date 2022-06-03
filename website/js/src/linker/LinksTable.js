@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { deleteUserLink, loadUserLinks, saveNewUserLink, updateUserLink } from './api';
-import { toReadableDateTime } from '../utils';
+import { toReadableDate } from '../utils';
 
 import CRUDTable from '../components/crud_table/CRUDTable';
 
@@ -40,14 +40,14 @@ const SORTED_METADATA = [
     },
     {
         key: 'time_created',
-        label: 'Time Created',
+        label: 'Created',
         editable: false,
         type: null,
         initialValue: null,
     },
     {
         key: 'time_updated',
-        label: 'Last Updated',
+        label: 'Updated',
         editable: false,
         type: null,
         initialValue: null,
@@ -58,8 +58,8 @@ const ITEM_FORMATTERS = {
     active: (s) => (
         {true: 'Active', false: 'Inactive'}[s]
     ),
-    time_created: toReadableDateTime,
-    time_updated: toReadableDateTime,
+    time_created: toReadableDate,
+    time_updated: toReadableDate,
 }
 
 
