@@ -81,30 +81,32 @@ class SaltLevel extends React.Component {
                     },
                 },
             },
-            {
-                label: 'sensor_3',
-                points: _.map(this.data, d => ({
-                    x: Number(d.timestamp),
-                    y: MAX_SALT_HEIGHT - Number(d.sensor_3),
-                })),
-                style: {
-                    point: {
-                        color: '#C733FF',
-                    },
-                    line: {
-                        color: '#C733FF',
-                        width: 2,
-                    },
-                },
-            },
+            // This one died :()
+            // {
+            //     label: 'sensor_3',
+            //     points: _.map(this.data, d => ({
+            //         x: Number(d.timestamp),
+            //         y: MAX_SALT_HEIGHT - Number(d.sensor_3),
+            //     })),
+            //     style: {
+            //         point: {
+            //             color: '#C733FF',
+            //         },
+            //         line: {
+            //             color: '#C733FF',
+            //             width: 2,
+            //         },
+            //     },
+            // },
             {
                 label: 'average',
                 points: _.map(this.data, d => ({
                     x: Number(d.timestamp),
                     y: MAX_SALT_HEIGHT - _.reduce(
-                            _.map([d.sensor_0, d.sensor_1, d.sensor_2, d.sensor_3], Number),
+                            // _.map([d.sensor_0, d.sensor_1, d.sensor_2, d.sensor_3], Number),
+                            _.map([d.sensor_0, d.sensor_1, d.sensor_2], Number),
                             (a, b) => a + b,
-                        ) / 4,
+                        ) / 3,
                 })),
                 style: {
                     point: {
