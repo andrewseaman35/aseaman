@@ -14,7 +14,7 @@ assert_deploy_vars:
 	fi
 
 venv: requirements.txt
-	virtualenv venv --python=python3
+	virtualenv venv --python=python3.9
 	venv/bin/pip install -r requirements.txt
 
 website: venv
