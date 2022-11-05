@@ -3,6 +3,8 @@ ROOT := $(shell pwd)
 
 CONTAINER_NAME := aseaman-backend
 
+tfinit:
+	cd deployments/$(DEPLOY_ENV) && terraform init
 
 tfplan: #package
 	cd deployments/stage && terraform plan
