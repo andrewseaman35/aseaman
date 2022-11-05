@@ -66,7 +66,7 @@ class ScreenModule:
     @property
     def binary_image(self):
         grayscale = cv2.cvtColor(self.module_image, cv2.COLOR_BGR2GRAY)
-        # ret, original_thresh = cv2.threshold(grayscale, 127, 255, cv2.THRESH_BINARY)
+
         _, inverted_thresholded = cv2.threshold(grayscale, 127, 255, cv2.THRESH_BINARY)
         binary_image = cv2.bitwise_not(inverted_thresholded)
         kernel = np.ones((5, 5), np.uint8)
@@ -88,13 +88,7 @@ class ScreenModule:
 
     @cached_property
     def value(self):
-        print(f"== {self.name}")
         return parse_segments_from_image(self.binary_image)
-        try:
-            return parse_segments_from_image(self.binary_image)
-        except Exception as e:
-            print(e)
-            return ""
 
 
 class SizedScreenModule(ScreenModule):

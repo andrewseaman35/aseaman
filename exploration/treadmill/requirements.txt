@@ -1,6 +1,5 @@
-Pillow==9.0.1
+exifread
 funcy
 numpy
 opencv-python
 scipy
-pytesseract

@@ -1,9 +1,9 @@
+from datetime import datetime
 import math
 import os
-import pdb
-import sys
 
 import cv2
+import exifread
 import numpy as np
 from scipy import ndimage
 
@@ -19,6 +19,22 @@ ASPECT_RATIO_ALLOWANCE = 0.05  # +/- 5%
 
 OUTPUT_HEIGHT = 1500
 OUTPUT_WIDTH = 2325
+
+
+def read_image_timestamp(filepath):
+    with open(filepath, "rb") as fh:
+        tags = exifread.process_file(fh, stop_tag="EXIF DateTimeOriginal")
+        dateTaken = tags["EXIF DateTimeOriginal"]
+        return datetime.strptime(str(dateTaken), "%Y:%m:%d %H:%M:%S")
+
+
+def read_image_file(filepath):
+    if not os.path.exists(filepath):
+        raise Exception(f"filepath {filepath} does not exist")
+
+    img = cv2.imread(filepath)
+
+    return img
 
 
 def rectangles_overlap(bounding_rect_1, bounding_rect_2):

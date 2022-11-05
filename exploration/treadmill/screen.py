@@ -1,9 +1,7 @@
+import cv2
 from funcy import cached_property
 
-import cv2
-
 from screen_module import (
-    ScreenModule,
     TimeModule,
     CentralModule,
     DistSpeedModule,
@@ -18,7 +16,7 @@ class Screen:
         self.image = image
 
         self.modules = [
-            TimeModule("time", self.image, 35, 110),
+            TimeModule("time", self.image, 40, 110),
             # CentralModule("pace", self.image, 1150, 75),
             # CentralModule("incline", self.image, 1150, 425),
             CentralModule("calories", self.image, 1150, 780),
@@ -38,8 +36,8 @@ class Screen:
     def display(self):
         for module in self.modules:
             module.draw_bounding_box()
-            module.draw_segment_bounding_boxes()
-            # cv2.imshow(module.name, module.binary_image)
+            # module.draw_segment_bounding_boxes()
+            cv2.imshow(module.name, module.binary_image)
 
         cv2.imshow(self.name, self.image)
         cv2.waitKey()
