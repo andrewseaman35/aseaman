@@ -9,6 +9,7 @@ SALT_LEVEL_API_NAME := salt_level_api
 COMPARE_ACNH_API_NAME := compare_acnh_api
 MAME_HIGHSCORE_API_NAME := mame_highscore_api
 CHESS_API_NAME := chess_api
+LINKER_API_NAME := linker_api
 
 deploy_venv: requirements.txt
 	virtualenv deploy_venv --python=python3 --no-site-packages
@@ -32,6 +33,7 @@ package: venv # package_dir
 	venv/bin/pip install -r compare_acnh/requirements.txt -t $(PACKAGE_DIR)/$(COMPARE_ACNH_API_NAME)
 	venv/bin/pip install -r mame_highscore/requirements.txt -t $(PACKAGE_DIR)/$(MAME_HIGHSCORE_API_NAME)
 	venv/bin/pip install -r chess/requirements.txt -t $(PACKAGE_DIR)/$(CHESS_API_NAME)
+	venv/bin/pip install -r linker/requirements.txt -t $(PACKAGE_DIR)/$(LINKER_API_NAME)
 	cp -r state_check/* $(PACKAGE_DIR)/$(STATE_API_NAME)
 	cp -r whisky_shelf/* $(PACKAGE_DIR)/$(WHISKY_API_NAME)
 	# cp -r draw_jasper/* $(PACKAGE_DIR)/$(DRAW_JASPER_API_NAME)
@@ -39,6 +41,7 @@ package: venv # package_dir
 	cp -r compare_acnh/* $(PACKAGE_DIR)/$(COMPARE_ACNH_API_NAME)
 	cp -r mame_highscore/* $(PACKAGE_DIR)/$(MAME_HIGHSCORE_API_NAME)
 	cp -r chess/* $(PACKAGE_DIR)/$(CHESS_API_NAME)
+	cp -r linker/* $(PACKAGE_DIR)/$(LINKER_API_NAME)
 	cp -r base $(PACKAGE_DIR)/$(STATE_API_NAME)
 	cp -r base $(PACKAGE_DIR)/$(WHISKY_API_NAME)
 	# cp -r base $(PACKAGE_DIR)/$(DRAW_JASPER_API_NAME)
@@ -46,6 +49,7 @@ package: venv # package_dir
 	cp -r base $(PACKAGE_DIR)/$(COMPARE_ACNH_API_NAME)
 	cp -r base $(PACKAGE_DIR)/$(MAME_HIGHSCORE_API_NAME)
 	cp -r base $(PACKAGE_DIR)/$(CHESS_API_NAME)
+	cp -r base $(PACKAGE_DIR)/$(LINKER_API_NAME)
 	cd $(PACKAGE_DIR) && find . -maxdepth 6 -type f -name "*.pyc" -delete
 	cd $(PACKAGE_DIR)/$(STATE_API_NAME) && zip -r ../$(STATE_API_NAME).zip * > /dev/null
 	cd $(PACKAGE_DIR)/$(WHISKY_API_NAME) && zip -r ../$(WHISKY_API_NAME).zip * > /dev/null
@@ -54,6 +58,7 @@ package: venv # package_dir
 	cd $(PACKAGE_DIR)/$(COMPARE_ACNH_API_NAME) && zip -r ../$(COMPARE_ACNH_API_NAME).zip * > /dev/null
 	cd $(PACKAGE_DIR)/$(MAME_HIGHSCORE_API_NAME) && zip -r ../$(MAME_HIGHSCORE_API_NAME).zip * > /dev/null
 	cd $(PACKAGE_DIR)/$(CHESS_API_NAME) && zip -r ../$(CHESS_API_NAME).zip * > /dev/null
+	cd $(PACKAGE_DIR)/$(LINKER_API_NAME) && zip -r ../$(LINKER_API_NAME).zip * > /dev/null
 
 test:
 	@if [ "$(IN_DOCKER_API)" = "true" ]; then\

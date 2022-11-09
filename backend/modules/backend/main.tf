@@ -171,6 +171,30 @@ module "chess_iam_role_policy" {
   api_name   = "chess-api"
 }
 
+module "linker_api" {
+  source     = "../serverless_api"
+  zip_file   = "../../api/packages/linker.zip"
+  api_name   = "linker-api"
+  path_part  = "linker"
+  deploy_env = var.deploy_env
+
+  cognito_user_pool_arn = var.cognito_user_pool_arn
+
+  rest_api_root_resource_id       = aws_api_gateway_rest_api.rest_api.root_resource_id
+  rest_api_id                     = aws_api_gateway_rest_api.rest_api.id
+  get_method_authorization        = "NONE"
+  post_method_authorization       = "NONE"
+  get_proxy_method_authorization  = "NONE"
+  post_proxy_method_authorization = "NONE"
+}
+
+module "linker_iam_role_policy" {
+  source     = "../roles/linker"
+  role       = module.linker_api.api_role_id
+  deploy_env = var.deploy_env
+  api_name   = "linker-api"
+}
+
 resource "aws_api_gateway_deployment" "api_gateway_deployment" {
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
 
@@ -183,6 +207,7 @@ resource "aws_api_gateway_deployment" "api_gateway_deployment" {
       compare_acnh_api   = module.compare_acnh_api.api_resource_module_ids
       mame_highscore_api = module.mame_highscore_api.api_resource_module_ids
       chess_api          = module.chess_api.api_resource_module_ids
+      linker_api         = module.linker_api.api_resource_module_ids
     }))
   }
 
@@ -211,6 +236,9 @@ resource "aws_api_gateway_deployment" "api_gateway_deployment" {
 
     module.chess_api.aws_api_gateway_method,
     module.chess_api.aws_api_gateway_integration,
+
+    module.linker_api.aws_api_gateway_method,
+    module.linker_api.aws_api_gateway_integration,
   ]
 }
 
