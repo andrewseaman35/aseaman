@@ -36,7 +36,7 @@ class Screen:
     def display(self):
         for module in self.modules:
             module.draw_bounding_box()
-            # module.draw_segment_bounding_boxes()
+            module.draw_segment_bounding_boxes()
             cv2.imshow(module.name, module.binary_image)
 
         cv2.imshow(self.name, self.image)

@@ -1,4 +1,6 @@
+import base64
 from datetime import datetime
+import email.parser
 import math
 import os
 
@@ -19,6 +21,28 @@ ASPECT_RATIO_ALLOWANCE = 0.05  # +/- 5%
 
 OUTPUT_HEIGHT = 1500
 OUTPUT_WIDTH = 2325
+
+
+def read_b64(uri):
+    encoded_data = uri
+    nparr = np.frombuffer(base64.b64decode(encoded_data), np.uint8)
+    img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    return img
+
+
+def read_image_from_email(email_message):
+    image = None
+    for part in email_message.walk():
+        if part.get_content_type() == "image/jpeg":
+            image = part
+            break
+
+    if not image:
+        raise Exception("No image/jpeg part found")
+
+    image_data = read_b64(part.get_payload())
+
+    return image_data
 
 
 def read_image_timestamp(filepath):
