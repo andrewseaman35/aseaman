@@ -16,6 +16,5 @@ Werkzeug==0.15.5
 
 python-jose
 
-numpy
 opencv-contrib-python-headless
 opencv-python-headless

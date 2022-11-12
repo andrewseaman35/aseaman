@@ -9,8 +9,11 @@ tfinit:
 tfplan: #package
 	cd deployments/stage && terraform plan
 
-tfapply: #package <-- disabled for now since I can't rebuild the draw_jasper api on an M1 yet
+tfapply: package #<-- disabled for now since I can't rebuild the draw_jasper api on an M1 yet
 	cd deployments/$(DEPLOY_ENV) && terraform apply
+
+package:
+	make -C api package
 
 assert_running:
 	@if [ ! "$(docker ps -q -f name=$(CONTAINER_NAME))" ]; then\

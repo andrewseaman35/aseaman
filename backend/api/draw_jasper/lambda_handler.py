@@ -1,22 +1,14 @@
 import base64
-from concurrent import futures
-import cv2
 import datetime
 import json
 import math
-import numpy as np
-import uuid
 import os
-import sys
 import tempfile
+import uuid
+from concurrent import futures
 
+import cv2
 from base.lambda_handler_base import APILambdaHandlerBase
-from base.api_exceptions import (
-    APIException,
-    BadRequestException,
-    BaseAPIException,
-    UnauthorizedException,
-)
 
 BUCKET_NAME = "aseaman-public-bucket"
 JASPER_PREFIX = "aseaman/images/jasper"
@@ -62,33 +54,10 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
             id=self.id,
         )
         self.s3_key_format = self.s3_key_prefix + "/{}"
-        self.validation_actions = {
-            "handle_upload": self._validate_uploaded_image,
-        }
 
     def _init_aws(self):
         self.ddb_client = self.aws_session.client("dynamodb", region_name="us-east-1")
         self.s3_client = self.aws_session.client("s3", region_name="us-east-1")
-
-    def __parse_payload(self, payload):
-        if not payload.get("img"):
-            raise BadRequestException("img parameter required")
-        self.img_bytes = base64.b64decode(payload["img"].split(",")[1])
-
-    def __parse_event(self, event):
-        print(" -- Received event --")
-        print(json.dumps(event, indent=4))
-        print(" --                --")
-        payload = event if self.is_local else json.loads(event["body"])
-        self.__parse_payload(payload)
-
-    def _validate_uploaded_image(self):
-        numpy_array = np.fromstring(self.img_bytes, np.uint8)
-        img = cv2.imdecode(numpy_array, cv2.IMREAD_GRAYSCALE)
-        if not img.shape == IMG_SHAPE:
-            raise BadRequestException("bad image dimensions")
-        if not sys.getsizeof(self.img_bytes) <= IMG_MAX_SIZE:
-            raise BadRequestException("image too big")
 
     def _download(self, key):
         tmpdir = tempfile.gettempdir()
@@ -210,8 +179,9 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
             "difference_return_path": difference_return_path,
         }
 
-    def _run(self):
-        input_drawing_path = self._save_image_to_s3(self.img_bytes, "input_drawing.png")
+    def handle_post(self):
+        self.img_bytes = base64.b64decode(self.params["img"].split(",")[1])
+        self._save_image_to_s3(self.img_bytes, "input_drawing.png")
         user_drawing_filename = self._save_file_to_local_temp()
         results = []
         for (key, filepath) in self._download_all_masks():
@@ -231,21 +201,6 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
             "multiValueHeaders": {},
             "body": json.dumps(result),
         }
-
-    def handle(self):
-        result = self._empty_response()
-        try:
-            self.__before_run()
-            result = self._run()
-        except BaseAPIException as e:
-            self._handle_api_error(e)
-            result = e.to_json_response()
-        except Exception as e:
-            self._handle_error(e)
-            result = APIException().to_json_response()
-
-        print(result)
-        return result
 
 
 def lambda_handler(event, context):

@@ -1,5 +1,4 @@
 -r ../base/requirements.txt
 
-numpy==1.21.0
-opencv-contrib-python-headless==4.2.0.32
-opencv-python-headless==4.2.0.32
+opencv-contrib-python-headless
+opencv-python-headless
