@@ -173,7 +173,7 @@ module "chess_iam_role_policy" {
 
 module "linker_api" {
   source     = "../serverless_api"
-  zip_file   = "../../api/packages/linker.zip"
+  zip_file   = "../../api/packages/linker_api.zip"
   api_name   = "linker-api"
   path_part  = "linker"
   deploy_env = var.deploy_env

@@ -60,7 +60,7 @@ resource "aws_lambda_function" "api_lambda_function" {
   s3_bucket     = "aseaman-lambda-functions"
   s3_key        = "${var.deploy_env}/${var.api_name}-${var.deploy_env}-${local.lambda_function_package_md5}.zip"
 
-  runtime = "python3.6"
+  runtime = "python3.9"
   timeout = var.lambda_timeout
 
   environment {
