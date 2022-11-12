@@ -9,3 +9,6 @@ __pycache__/
 **/venv/
 
 notes/
+
+scripts/outs/
+scripts/highscore_parsers.py

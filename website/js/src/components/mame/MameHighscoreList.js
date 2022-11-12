@@ -13,7 +13,6 @@ class MameHighscoreList extends React.Component {
                         <tr>
                             <th>Game</th>
                             <th>Last updated</th>
-                            <th>Parsed</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -28,7 +27,6 @@ class MameHighscoreList extends React.Component {
                                 >
                                     <td>{game.gameName}</td>
                                     <td>{toReadableDateTime(game.lastModified)}</td>
-                                    <td>{`${game.hasParser ? 'Y' : ''}`}</td>
                                 </tr>
                             ))
                         }

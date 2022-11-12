@@ -2,38 +2,48 @@
     "games": {
         "avspirit": {
             "title": "Avenging Spirit",
-            "index_id": "avspirit",
             "user_parser_id": "default_chr",
-            "score_parser_id": "hex_to_int",
-            "post_processor_id": null
+            "score_parser_id": "hex_to_int"
         },
         "dkong3": {
             "title": "Donkey Kong 3",
-            "index_id": "dkong3",
             "user_parser_id": "default_chr",
-            "score_parser_id": "default_int",
-            "post_processor_id": null
+            "score_parser_id": "default_int"
         },
         "frogger": {
             "title": "Frogger",
-            "index_id": "frogger",
             "user_parser_id": "default_chr",
             "score_parser_id": "hex_to_int",
             "post_processor_id": "multiply_ten"
         },
         "galaga": {
             "title": "Galaga",
-            "index_id": "galaga",
             "user_parser_id": "galaga_user",
-            "score_parser_id": "galaga_score",
-            "post_processor_id": null
+            "score_parser_id": "galaga_score"
         },
         "missile1": {
             "title": "Missile Command",
-            "index_id": "missile1",
             "user_parser_id": "default_chr",
-            "score_parser_id": "hex_to_int",
-            "post_processor_id": null
+            "score_parser_id": "hex_to_int"
+        },
+        "pbobble2": {
+            "title": "Puzzle Bobble 2",
+            "user_parser_id": "default_chr"
+        },
+        "bublbob2": {
+            "title": "Bubble Bobble 2"
+        },
+        "bublbob1": {
+            "title": "Bubble Bobble"
+        },
+        "digdug": {
+            "title": "Dig Dug"
+        },
+        "digdug2": {
+            "title": "Dig Dug 2"
+        },
+        "bublbobl": {
+            "title": "Bubble Bobble"
         }
     },
     "indexes": {
@@ -76,6 +86,13 @@
             { "user": [6, 7, 8], "score": [23, 22, 21] },
             { "user": [9, 10, 11], "score": [26, 25, 24] },
             { "user": [12, 13, 14], "score": [29, 28, 27] }
+        ],
+        "pbobble2": [
+            { "user": [114, 115, 116] },
+            { "user": [136, 137, 138] },
+            { "user": [202, 203, 204] },
+            { "user": [48, 49, 50] },
+            { "user": [70, 71, 72] }
         ]
     }
 }

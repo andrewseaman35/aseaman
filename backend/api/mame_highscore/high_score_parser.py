@@ -19,11 +19,11 @@ def validate_parser_config(config):
     indexes = config["indexes"]
     for game_id, game in games.values():
         assert game["title"], f"game_id {game_id} has no title"
-        assert game["index_id"] in indexes, f"index_id {game['index_id']} not defined"
+        assert game_id in indexes, f"game id {game_id} not defined"
         assert (
             game["parser_id"] in PARSERS_BY_ID
         ), f"parser_id {game['parser_id']} not defined"
-        if game["post_processor_id"]:
+        if game.get("post_processor_id"):
             assert (
                 game["post_processor_id"] in POST_PROCESSORS_BY_ID
             ), f"post_processor_id {game['post_processor_id']} not defined"
@@ -39,23 +39,29 @@ class HighScoreParser(object):
 
     @classmethod
     def get_game_title(cls, game_id):
-        if not cls.implemented(game_id):
-            return game_id
-        return PARSER_CONFIG["games"][game_id]["title"]
+        game_name = game_id
+        game_config = PARSER_CONFIG["games"].get(game_id)
+        if game_config and game_config.get("title"):
+            game_name = game_config["title"]
+
+        return game_name
 
     @classmethod
     def implemented(cls, game_id):
-        return game_id in PARSER_CONFIG["games"]
+        parser = PARSER_CONFIG["games"].get(game_id)
+        if not parser:
+            return False
+        return bool(parser.get("score_parser_id") or parser.get("user_parser_id"))
 
     @classmethod
     def parse(cls, game_id, data):
         game = PARSER_CONFIG["games"][game_id]
-        indexes = PARSER_CONFIG["indexes"][game["index_id"]]
-        score_parser_id = game["score_parser_id"]
+        indexes = PARSER_CONFIG["indexes"][game_id]
+        score_parser_id = game.get("score_parser_id")
         user_parser_id = game.get("user_parser_id")
         post_processor_id = game.get("post_processor_id")
 
-        score_parser = PARSERS_BY_ID[score_parser_id]
+        score_parser = PARSERS_BY_ID[score_parser_id] if score_parser_id else None
         user_parser = PARSERS_BY_ID[user_parser_id] if user_parser_id else None
         post_processor = POST_PROCESSORS_BY_ID.get(post_processor_id)
 
@@ -64,11 +70,12 @@ class HighScoreParser(object):
             score_data = {}
             if "user" in place and user_parser:
                 score_data["user"] = user_parser(data, place["user"])
-            score_data["score"] = score_parser(data, place["score"])
+            if "score" in place and score_parser:
+                score_data["score"] = score_parser(data, place["score"])
             parsed_scores.append(score_data)
 
         sorted_parsed_scores = sorted(
-            parsed_scores, key=lambda score: score["score"], reverse=True
+            parsed_scores, key=lambda score: score.get("score", 0), reverse=True
         )
         final_scores = (
             post_processor(sorted_parsed_scores)
