@@ -84,6 +84,7 @@ module "draw_jasper_api" {
   path_part      = "draw_jasper"
   deploy_env     = var.deploy_env
   lambda_timeout = 30
+  layers = ["arn:aws:lambda:us-east-1:560983357304:layer:opencv_python39:1"]
 
   cognito_user_pool_arn = var.cognito_user_pool_arn
 

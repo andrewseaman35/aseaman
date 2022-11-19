@@ -50,3 +50,9 @@ variable "post_proxy_method_authorization" {
   type    = string
   default = "COGNITO_USER_POOLS"
 }
+
+variable "layers" {
+  type    = list
+  default = []
+  description = "list of arns of the layers to apply"
+}

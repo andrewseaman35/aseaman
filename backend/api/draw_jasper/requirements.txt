@@ -1,4 +1,1 @@
 -r ../base/requirements.txt
-
-opencv-contrib-python-headless
-opencv-python-headless
