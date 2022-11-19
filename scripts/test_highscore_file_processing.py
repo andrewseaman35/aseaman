@@ -40,25 +40,27 @@ class TestHighscoreFileProcessing(BaseScript):
         with open(self.filepath, "rb") as f:
             data = f.read()
 
-        print(data)
-        print(data[0])
+        print(len(data))
         users = [
-            highscore_parsers.default_chr(data, [114, 115, 116]),
-            highscore_parsers.default_chr(data, [136, 137, 138]),
-            highscore_parsers.default_chr(data, [202, 203, 204]),
-            highscore_parsers.default_chr(data, [48, 49, 50]),
-            highscore_parsers.default_chr(data, [70, 71, 72]),
+            highscore_parsers.galaga_user(data, [30, 31, 32]),
+            highscore_parsers.galaga_user(data, [33, 34, 35]),
+            highscore_parsers.galaga_user(data, [36, 37, 38]),
+            highscore_parsers.galaga_user(data, [39, 40, 41]),
+            highscore_parsers.galaga_user(data, [42, 43, 44]),
         ]
         print(users)
 
-        print(data[16])
-        print(data[17])
         scores = [
-            None,
-            None,
-            int(data[16], 16),
+            highscore_parsers.galaga_score(data, [5, 4, 3, 2, 1, 0]),
+            highscore_parsers.galaga_score(data, [11, 10, 9, 8, 7, 6]),
+            highscore_parsers.galaga_score(data, [17, 16, 15, 14, 13, 12]),
+            highscore_parsers.galaga_score(data, [23, 22, 21, 20, 19, 18]),
+            highscore_parsers.galaga_score(data, [29, 28, 27, 26, 25, 24]),
         ]
         print(scores)
+
+        for i in range(len(users)):
+            print(f"{users[i]} : {scores[i]}")
 
 
 if __name__ == "__main__":

@@ -11,7 +11,14 @@ def hex_to_int(data, indexes):
 
 
 def galaga_score(data, indexes):
-    return int("".join([f"{int(hex(data[i]).split('x')[1])}" for i in indexes]))
+    # I'm not 100% sure if this is correct. For scores less than 100k, the value
+    # stored in the first slot is 0x36 (24). Once we hit 100k, it transitions to 1.
+    # I suspect that we ignore the first value if it's less than 10, and scores over
+    # 100k will use double digit values in other indexes to track scores in the millions.
+    # It probably doesn't matter becuase I'll likely never score over 1M :(
+    int_values = [int(hex(data[i]).split("x")[1]) for i in indexes]
+    first_index = 1 if int_values[0] >= 10 else 0
+    return int("".join([f"{int_value}" for int_value in int_values[first_index:]]))
 
 
 def galaga_user(data, indexes):
