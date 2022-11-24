@@ -11,4 +11,5 @@ __pycache__/
 notes/
 
 scripts/outs/
+scripts/mame_data_tables/
 scripts/highscore_parsers.py
