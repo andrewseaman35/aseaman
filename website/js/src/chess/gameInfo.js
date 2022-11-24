@@ -20,12 +20,14 @@ class GameInfo {
     static log(note) {
         if (note && note.length) {
             $('#game-info-note').append(`<span>${note}<br></span>`);
+            $("#game-log-container").scrollTop($("#game-log-container").children()[0].offsetHeight)
         }
     }
 
     static smallLog(note) {
         if (note && note.length) {
             $('#game-info-note').append(`<span class="small-log">${note}<br></span>`);
+            $("#game-log-container").scrollTop($("#game-log-container").children()[0].offsetHeight)
         }
     }
 
