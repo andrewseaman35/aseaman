@@ -26,6 +26,12 @@
             "user_parser_id": "default_chr",
             "score_parser_id": "hex_to_int"
         },
+        "esprade": {
+            "title": "ESP Ra.De."
+        },
+        "galaxian": {
+            "title": "Galaxian"
+        },
         "pbobble2": {
             "title": "Puzzle Bobble 2",
             "user_parser_id": "default_chr"

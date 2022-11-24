@@ -8,12 +8,12 @@
         <h1>Chess</h1>
         <p>
             I've been building out a simple in-browser chess game in some of my free time.
-            Currently, it supports two player play only but is limited to basic piece movements
-            (so don't go trying an en passant).
         </p>
         <p>
-            This is still very in progress! I'm still working on some of the foundation of how
-            this thing will work. My eventual goal is to enable playing online with a friend!
+            It currently supports local and online 2 player games. The online 2 player game
+            is sort of awkward. It requires that one person starts the game, gets the game id,
+            and sends it over to the other person, who uses it to load the game on their end.
+            The player that creates the game plays as white.
         </p>
         <div id="chess-container">
             <div id="game-start-modal" class="modal">

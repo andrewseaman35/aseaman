@@ -20,12 +20,12 @@ class MameHighscoreList extends React.Component {
                             this.props.games.map(game => (
                                 <tr
                                     key={game.gameId}
-                                    className={`${game.hasParser ? 'parsed' : ''} ${game.gameId === this.props.selectedGameId ? 'selected': ''}`}
+                                    className={`parsed ${game.gameId === this.props.selectedGameId ? 'selected': ''}`}
                                     onClick={
                                         () => { this.props.onGameClick(game.gameId) }
                                     }
                                 >
-                                    <td>{game.gameName}</td>
+                                    <td>{game.gameName}{`${game.hasParser ? '' : '(x)'}`}</td>
                                     <td>{toReadableDateTime(game.lastModified)}</td>
                                 </tr>
                             ))

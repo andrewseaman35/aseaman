@@ -24,7 +24,8 @@ const MameHighscoreTable = (props) => {
                         setScores(scores);
                     }
                 }, (error) => {
-                    setErrorMessage('Score parsing failed!');
+                    console.log(error)
+                    setErrorMessage(error.responseJSON.message);
                 })
                 .then(() => {
                     setLoading(false);

@@ -12,21 +12,15 @@
         </div>
         <p>
             As a part of this project, I wanted a way to track my scores against
-            my friends' scores. I modified the existing
+            my friends' scores. I built on top of the existing
             {{ macros.external_link('https://github.com/mamedev/mame/tree/master/plugins/hiscore', 'hiscore plugin') }}
             to sync the high score files to an s3 bucket in AWS. When a game is starting,
             it'll try to download an existing high score file and it'll use that as
             the file. On close, it'll upload the updated high score file. This
             allows us to share common high score files for all of the games!
-
         </p>
         <p>
             Check out the plugin source {{ macros.external_link('https://github.com/andrewseaman35/mame_plugins/tree/master/aws_highscore', 'here') }}.
-        </p>
-        <p>
-            As of now, it only works on Linux and likely is tough to get set up. When
-            I start setting up my computer for the cabinet, I'll have to get it working
-            on Windows and I'll try to simplify the setup.
         </p>
         <p>
             The second part of this was to come up with a way to view the uploaded
@@ -34,12 +28,16 @@
             ranges of bytes that are loaded into memory before the game starts. This
             means that files have different formats and need to be parsed before they
             can be viewed. Below are the scores that have been uploaded -- some have
-            been parsed, some haven't. At some point, I'll hopefully get through all
-            the games I have scores for!
+            been parsed, some haven't.
         </p>
         <p>
             You can look at how I've set up the score file parsing
             {{ macros.external_link('https://github.com/andrewseaman35/aseaman/blob/master/backend/api/mame_highscore/high_score_parser.py', 'here') }}!
+        </p>
+        <p>
+            The table below shows the high score files that I have saved and synced to AWS.
+            The ones with an (x) next to them have not yet been parsed. The others should
+            be able to display their scores.
         </p>
     </div>
     <div id="mame-highscore-container"></div>
