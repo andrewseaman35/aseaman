@@ -39,7 +39,7 @@ class TestParsers(unittest.TestCase):
             [17, 18, 19, 20, 21],
             [0, 3, 4],
         )
-        self.assertEqual(result, 111415)
+        self.assertEqual(result, 1415)
 
     def test_galaga_user(self):
         result = parsers.galaga_user(
