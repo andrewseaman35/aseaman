@@ -20,7 +20,7 @@ class MameHighscoreList extends React.Component {
                             this.props.games.map(game => (
                                 <tr
                                     key={game.gameId}
-                                    className={`parsed ${game.gameId === this.props.selectedGameId ? 'selected': ''}`}
+                                    className={`parsed ${game.gameId}${game.gameId === this.props.selectedGameId ? ' selected': ''}`}
                                     onClick={
                                         () => { this.props.onGameClick(game.gameId) }
                                     }

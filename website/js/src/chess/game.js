@@ -546,6 +546,8 @@ class ChessGame {
             return;
         }
         if (this.currentTurn.isInState(TURN_STATE.EMPTY)) {
+            // If no piece is selected and there's a piece on the selected space,
+            // show that piece as selected.
             if (space.piece && space.piece.getPossibleMoves(this.board, space, this.previousTurn).length) {
                 if (space.piece.side === this.currentTurn.side) {
                     this.currentTurn.setStartingPieceSpace(space);
@@ -553,6 +555,7 @@ class ChessGame {
                 }
             }
         } else if (this.currentTurn.isInState(TURN_STATE.SELECTED_PIECE)) {
+            // If there is a selected piece already and we click a new space...
             const startingSpace = this.board.spaceByPosition(this.currentTurn.startingSpacePosition);
             const possibleMoves = startingSpace.piece.getPossibleMoves(this.board, startingSpace, this.previousTurn);
             const possibleSpecialMoves = _.filter(possibleMoves, move => move.type !== MOVE_TYPE.NORMAL);
@@ -561,6 +564,8 @@ class ChessGame {
             const selectedMove = _.find(possibleMoves, move => move.position === space.position);
 
             if (space.piece && space.piece.side === this.currentTurn.side) {
+                // If the selected space has a piece of the same side, deselect the current
+                // piece and select the other one
                 const setStartingSpace = space.position !== this.currentTurn.startingSpacePosition;
                 this.currentTurn.unsetStartingPieceSpace();
                 this.board.clearBoardState();
@@ -569,6 +574,7 @@ class ChessGame {
                     this.board.displayPossibleMoves(space, this.previousTurn);
                 }
             } else if (selectedMove) {
+                // If the selected space is a valid move for the selected piece, execute the move.
                 if (this.analyzer.willMoveResultInSelfCheck(this.currentTurn.startingSpacePosition, selectedMove)) {
                     this.gameInfo.setNote('Attempted move results in check - invalid');
                     return;
@@ -636,11 +642,15 @@ class ChessGame {
     }
 
     setPlayConditions() {
+        console.log("SETTING PLAY CONDITONS ********")
         if (this.analyzer.isInCheck(this.opponentSide)) {
             if (this.analyzer.isInCheckmate(this.opponentSide, this.previousTurn)) {
+                console.log("is in checkmate")
                 this.isInCheckmate = true;
             } else {
+                console.log("----------------is in check")
                 const checkSpacePositions = this.analyzer.findSpacesCausingCheckAgainst(this.opponentSide);
+                console.log(checkSpacePositions)
                 _.each(checkSpacePositions, (position) => {
                     const space = this.board.spaceByPosition(position);
                     space.setState(SPACE_STATE.CHECK_THREAT);
@@ -660,8 +670,8 @@ class ChessGame {
             saveTurn(this.gameId, this.currentTurn.serialize());
         }
         this.analyzer.setup(this.board);
-        this.logTurn();
         this.setPlayConditions();
+        this.logTurn();
         if (this.isInCheckmate) {
             this.endGame();
         } else {
