@@ -22,6 +22,11 @@
             "score_parser_id": "galaga_score"
         },
         "missile1": {
+            "title": "Missile Command (1)",
+            "user_parser_id": "default_chr",
+            "score_parser_id": "hex_to_int"
+        },
+        "missile": {
             "title": "Missile Command",
             "user_parser_id": "default_chr",
             "score_parser_id": "hex_to_int"
@@ -85,6 +90,16 @@
             { "user": [36, 37, 38], "score": [17, 16, 15, 14, 13, 12] },
             { "user": [39, 40, 41], "score": [23, 22, 21, 20, 19, 18] },
             { "user": [42, 43, 44], "score": [29, 28, 27, 26, 25, 24] }
+        ],
+        "missile": [
+            { "user": [21, 22, 23], "score": [47, 46, 45] },
+            { "user": [18, 19, 20], "score": [44, 43, 42] },
+            { "user": [15, 16, 17], "score": [41, 40, 39] },
+            { "user": [12, 13, 14], "score": [38, 37, 36] },
+            { "user": [9, 10, 11], "score": [35, 34, 33] },
+            { "user": [6, 7, 8], "score": [32, 31, 30] },
+            { "user": [3, 4, 5], "score": [29, 28, 27] },
+            { "user": [0, 1, 2], "score": [26, 25, 24] }
         ],
         "missile1": [
             { "user": [0, 1, 2], "score": [17, 16, 15] },
