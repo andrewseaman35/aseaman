@@ -25,7 +25,7 @@ class MameHighscoreList extends React.Component {
                                         () => { this.props.onGameClick(game.gameId) }
                                     }
                                 >
-                                    <td>{game.gameName}{`${game.hasParser ? '' : '(x)'}`}</td>
+                                    <td>{game.gameName}</td>
                                     <td>{toReadableDateTime(game.lastModified)}</td>
                                 </tr>
                             ))
