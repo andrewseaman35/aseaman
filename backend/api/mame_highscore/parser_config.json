@@ -1,60 +1,29 @@
 {
     "games": {
         "avspirit": {
-            "title": "Avenging Spirit",
             "user_parser_id": "default_chr",
             "score_parser_id": "hex_to_int"
         },
         "dkong3": {
-            "title": "Donkey Kong 3",
             "user_parser_id": "default_chr",
             "score_parser_id": "default_int"
         },
         "frogger": {
-            "title": "Frogger",
             "user_parser_id": "default_chr",
             "score_parser_id": "hex_to_int",
             "post_processor_id": "multiply_ten"
         },
         "galaga": {
-            "title": "Galaga",
             "user_parser_id": "galaga_user",
             "score_parser_id": "galaga_score"
         },
         "missile1": {
-            "title": "Missile Command (1)",
             "user_parser_id": "default_chr",
             "score_parser_id": "hex_to_int"
         },
         "missile": {
-            "title": "Missile Command",
             "user_parser_id": "default_chr",
             "score_parser_id": "hex_to_int"
-        },
-        "esprade": {
-            "title": "ESP Ra.De."
-        },
-        "galaxian": {
-            "title": "Galaxian"
-        },
-        "pbobble2": {
-            "title": "Puzzle Bobble 2",
-            "user_parser_id": "default_chr"
-        },
-        "bublbob2": {
-            "title": "Bubble Bobble 2"
-        },
-        "bublbob1": {
-            "title": "Bubble Bobble"
-        },
-        "digdug": {
-            "title": "Dig Dug"
-        },
-        "digdug2": {
-            "title": "Dig Dug 2"
-        },
-        "bublbobl": {
-            "title": "Bubble Bobble"
         }
     },
     "indexes": {

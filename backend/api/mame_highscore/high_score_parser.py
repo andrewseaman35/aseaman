@@ -1,6 +1,7 @@
 import json
 import os
 
+from game_metadata import GAME_METADATA
 from parsers import PARSERS_BY_ID
 from post_processors import POST_PROCESSORS_BY_ID
 
@@ -40,6 +41,10 @@ class HighScoreParser(object):
     @classmethod
     def get_game_title(cls, game_id):
         game_name = game_id
+
+        if game_id in GAME_METADATA:
+            game_name = GAME_METADATA[game_id].title
+
         game_config = PARSER_CONFIG["games"].get(game_id)
         if game_config and game_config.get("title"):
             game_name = game_config["title"]
