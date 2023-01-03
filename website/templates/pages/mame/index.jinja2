@@ -16,16 +16,19 @@
             <div class="list-header">Here's what I've done so far:</div>
             <ul>
                 <li>
+                    {{ macros.link_to('mame/high_score', 'High scores') }}
+                </li>
+                <li>
                     {{ macros.link_to('mame/build', 'Cabinet build') }}
                 </li>
                 <li>
-                    {{ macros.link_to('mame/high_score', 'High scores') }}
+                    {{ macros.link_to('mame/prints', '3D Prints') }}
                 </li>
             </ul>
         </div>
         <p>
             And this is what it looks like right now:
         </p>
-        {{ macros.captioned_image('mame/build/just_functional.jpg') }}
+        {{ macros.captioned_image('mame/build/marquee_screen.jpg') }}
     </div>
 {% endblock %}

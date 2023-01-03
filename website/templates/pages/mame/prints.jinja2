@@ -1,0 +1,104 @@
+{% extends 'base.jinja2' %}
+
+{% block page_id %}mame-prints{% endblock %}
+{% block body_class %}printing{% endblock %}
+
+{% block content %}
+    <div class="inner">
+        <div class="project-header">
+            <h1>MAME</h1>
+            <h2>3D Prints</h2>
+        </div>
+        <p>
+            While building my arcade machine, I ended up designing and printing a handful of useful
+            tools and pieces.
+        </p>
+
+        <div class="print-projects-container">
+            <div class="print-project">
+                <div class="multi-image-container">
+                    <div class="arrow-icon previous"></div>
+                    {{ macros.captioned_image('mame/prints/dremel_attachment.jpg', 'Dremel attachment for moulding', lb_group='dremel_attachment') }}
+                    {{ macros.captioned_image('mame/prints/dremel_attachment_use.jpg', 'Dremel attachment use', lb_group='dremel_attachment') }}
+                    {{ macros.captioned_image('mame/prints/dremel_attachment_model.png', 'Dremel attachment model', lb_group='dremel_attachment') }}
+                    {{ macros.captioned_image('mame/prints/dremel_attachment_installed.jpg', 'Installed t-moulding', lb_group='dremel_attachment') }}
+                    <div class="arrow-icon next"></div>
+                </div>
+                <div class="print-description">
+                    <h4>Dremel Attachment for T-Moulding</h4>
+                    <p>
+                        An attachment for a Dremel that helps guide the router along the edge of 3/4" MDF to cut out
+                        a channel for t-moulding.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="print-projects-container">
+            <div class="print-project">
+                <div class="multi-image-container">
+                    <div class="arrow-icon previous"></div>
+                    {{ macros.captioned_image('mame/prints/plug_cap_front.png', 'Plug cap', lb_group='plug_cap') }}
+                    {{ macros.captioned_image('mame/prints/plug_cap_back.png', 'Plug cap - back', lb_group='plug_cap') }}
+                    <div class="arrow-icon next"></div>
+                </div>
+                <div class="print-description">
+                    <h4>Plug cap</h4>
+                    <p>
+                        There's a hole drilled in the back of the machine to allow the plug of a power strip to pass through.
+                        This is a cap for the hole that snaps into place to clean it up. There are fins on the back that
+                        hold the cap in place.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="print-projects-container">
+            <div class="print-project">
+                <div class="multi-image-container">
+                    <div class="arrow-icon previous"></div>
+                    {{ macros.captioned_image('mame/prints/screen_bracket_front.png', 'Screen bracket model - front', lb_group='screen_bracket') }}
+                    {{ macros.captioned_image('mame/prints/screen_bracket_back.png', 'Screen bracket model - back', lb_group='screen_bracket') }}
+                    {{ macros.captioned_image('mame/prints/screen_bracket.jpg', 'Screen bracket', lb_group='screen_bracket') }}
+                    {{ macros.captioned_image('mame/prints/screen_bracket_installed.jpg', 'Installed screen brackets', lb_group='screen_bracket') }}
+                    {{ macros.captioned_image('mame/prints/screen_bracket_seam.jpeg', 'With screen and moulding', lb_group='screen_bracket') }}
+                    <div class="arrow-icon next"></div>
+                </div>
+                <div class="print-description">
+                    <h4>Screen bracket</h4>
+                    <p>
+                        The screen and the top of the control panel are both 1/8" acryllic sheets. I designed and printed a bracket
+                        to support the screen in the proper orientation as well as mount a piece of t-moulding to cover up the seam.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="print-projects-container">
+            <div class="print-project">
+                <div class="multi-image-container">
+                    <div class="arrow-icon previous"></div>
+                    {{ macros.captioned_image('mame/prints/marquee_bracket_model.png', 'Marquee bracket', lb_group='marquee_bracket') }}
+                    {{ macros.captioned_image('mame/prints/marquee_bracket.jpg', 'Marquee bracket', lb_group='marquee_bracket') }}
+                    <div class="arrow-icon next"></div>
+                </div>
+                <div class="print-description">
+                    <h4>Marquee bracket</h4>
+                    <p>
+                        The arcade machine has a lit marquee that accepts a printed sign sandwiched between two pieces of acryllic.
+                        This is a simple bracket that I made to keep the marquee in place without having to drill holes into it and
+                        while also covering a minimal amount of the marquee.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <p>Go back to the {{ macros.link_to('mame/index', 'MAME page') }}!<p>
+
+    </div>
+{% endblock %}
+
+{% block include_js %}
+    <script>
+        window.aseaman.ready(function(exports) {
+            exports.initMultiImageContainers();
+        });
+    </script>
+{% endblock %}
