@@ -7,13 +7,14 @@
     <div class="inner">
         <h1>MAME</h1>
         <p>
-            I'm in the process of building a MAME arcade cabinet and an AWS backed system
-            to sync high scores. I'll be putting more content here about the project as
-            I make progress.
+            I'm a big fan of arcade games and built a MAME arcade cabinet
+            so I could play them home. I also put together an AWS-backed system
+            that saves my high scores to the cloud and allows my friends and I
+            to sync our high score files.
         </p>
 
         <div class="list">
-            <div class="list-header">Here's what I've done so far:</div>
+            <div class="list-header">Check out the parts of the project:</div>
             <ul>
                 <li>
                     {{ macros.link_to('mame/high_score', 'High scores') }}
@@ -26,9 +27,6 @@
                 </li>
             </ul>
         </div>
-        <p>
-            And this is what it looks like right now:
-        </p>
-        {{ macros.captioned_image('mame/build/marquee_screen.jpg') }}
+        {{ macros.captioned_image('mame/build/mame_final.jpg') }}
     </div>
 {% endblock %}
