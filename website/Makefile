@@ -17,7 +17,7 @@ local_config: $(CONFIG)/web_template.json $(SCRIPTS)/generate_config.py
 config: $(CONFIG)/web_template.json $(SCRIPTS)/generate_config.py
 	$(VENV_PYTHON) $(SCRIPTS)/generate_config.py --deploy-env=${DEPLOY_ENV}
 
-start_local: local
+start: local
 	$(VENV_PYTHON) local_server.py $(ROOTDIR)/website/public/ $(LOCAL_PORT)
 
 package-lock.json: package.json
