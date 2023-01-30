@@ -51,7 +51,7 @@ restart: stop start
 sh: assert_running
 	docker exec -it $(CONTAINER_NAME) /bin/bash
 
-test_ci: stop start
+test_ci: start
 	docker exec $(CONTAINER_NAME) make test
 	make stop
 
