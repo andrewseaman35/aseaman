@@ -16,14 +16,14 @@ package:
 	make -C api package
 
 assert_running:
-	@if [ ! "$(docker ps -q -f name=$(CONTAINER_NAME))" ]; then\
+	@if [ ! "$$(docker ps -q -a name=$(CONTAINER_NAME))" ]; then\
 		echo "Container not running; run 'make start_local'";\
 		exit 2;\
 	fi
 
 assert_not_running:
-	@if [ "$(docker ps -q -f name=$(CONTAINER_NAME))" ]; then\
-		echo "Container running: $(CONTAINER_NAME)";\
+	@if [ "$$(docker ps -a | grep $(CONTAINER_NAME))" ]; then\
+		echo "Container already running: $(CONTAINER_NAME)";\
 		exit 2;\
 	fi
 
@@ -43,7 +43,7 @@ start: build assert_not_running
 		aseaman-local
 
 stop:
-	@if [ ! "$(docker ps -q -f name=$(CONTAINER_NAME))" ]; then\
+	@if [ ! "$$(docker ps -q -f name=$(CONTAINER_NAME))" ]; then\
 		docker rm -f $(CONTAINER_NAME);\
 	fi
 
