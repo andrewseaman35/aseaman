@@ -42,11 +42,9 @@ start: assert_not_running build
 		--name $(CONTAINER_NAME) \
 		aseaman-local
 
-stop:
-	@if [ "$$(docker ps | grep $(CONTAINER_NAME))" ]; then\
-		echo "Removing $(CONTAINER_NAME)";\
-		docker rm -f $(CONTAINER_NAME);\
-	fi
+stop: assert_running
+	echo "Removing $(CONTAINER_NAME)";\
+	docker rm -f $(CONTAINER_NAME);\
 
 restart: stop start
 
