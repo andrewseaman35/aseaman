@@ -29,24 +29,22 @@
     }
 }
 
-.column.left {
-    .entry-block {
-        margin-bottom: 48px;
-        h3 {
-            margin: 8px 0;
-        }
-        h4 {
-            margin: 4px 0;
-        }
+.entry-block {
+    margin-bottom: 48px;
+    h3 {
+        margin: 8px 0;
     }
+    h4 {
+        margin: 4px 0;
+    }
+}
 
-    .experience-entry {
-        margin-bottom: 48px;
-    }
+.experience-entry {
+    margin-bottom: 48px;
+}
 
-    .subentry {
-        margin-top: 12px;
-    }
+.subentry {
+    margin-top: 12px;
 }
 
 .email {
