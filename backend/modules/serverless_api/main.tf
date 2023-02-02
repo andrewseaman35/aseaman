@@ -150,6 +150,22 @@ module "put_method" {
   ]
 }
 
+module "delete_method" {
+  source = "../gateway_method"
+
+  api_resource_id = aws_api_gateway_resource.api_resource.id
+  rest_api_id     = var.rest_api_id
+
+  authorization   = var.delete_method_authorization
+  authorizer_id   = aws_api_gateway_authorizer.cognito.id
+  http_method     = "DELETE"
+  integration_uri = aws_lambda_function.api_lambda_function.invoke_arn
+
+  depends_on = [
+    aws_api_gateway_authorizer.cognito
+  ]
+}
+
 module "options_method" {
   source          = "../options_method"
   api_resource_id = aws_api_gateway_resource.api_resource.id
@@ -211,6 +227,22 @@ module "put_proxy_method" {
   ]
 }
 
+module "delete_proxy_method" {
+  source = "../gateway_method"
+
+  api_resource_id = aws_api_gateway_resource.proxy_api_resource.id
+  rest_api_id     = var.rest_api_id
+
+  authorization   = var.delete_proxy_method_authorization
+  authorizer_id   = aws_api_gateway_authorizer.cognito.id
+  http_method     = "DELETE"
+  integration_uri = aws_lambda_function.api_lambda_function.invoke_arn
+
+  depends_on = [
+    aws_api_gateway_authorizer.cognito
+  ]
+}
+
 module "options_proxy_method" {
   source          = "../options_method"
   api_resource_id = aws_api_gateway_resource.proxy_api_resource.id
@@ -239,18 +271,22 @@ output "api_resource_module_ids" {
     module.get_method.method_id,
     module.post_method.method_id,
     module.put_method.method_id,
+    module.delete_method.method_id,
     module.options_method.method_id,
     module.get_proxy_method.method_id,
     module.post_proxy_method.method_id,
     module.put_proxy_method.method_id,
+    module.delete_proxy_method.method_id,
     module.options_proxy_method.method_id,
     module.get_method.integration_id,
     module.post_method.integration_id,
     module.put_method.integration_id,
+    module.delete_method.integration_id,
     module.options_method.integration_id,
     module.get_proxy_method.integration_id,
     module.post_proxy_method.integration_id,
     module.put_proxy_method.integration_id,
+    module.delete_proxy_method.integration_id,
     module.options_proxy_method.integration_id,
   ]
 }

@@ -20,7 +20,7 @@ def requires_user_group(user_group):
                 raise UnauthorizedException()
 
             if user_group not in s.user["groups"]:
-                raise ForbiddenException()
+                raise ForbiddenException(f'{user_group} not in {s.user["groups"]}')
 
             return func(s, *args, **kwargs)
 

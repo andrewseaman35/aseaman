@@ -57,6 +57,11 @@ variable "put_method_authorization" {
   default = "COGNITO_USER_POOLS"
 }
 
+variable "delete_method_authorization" {
+  type    = string
+  default = "COGNITO_USER_POOLS"
+}
+
 variable "get_proxy_method_authorization" {
   type    = string
   default = "COGNITO_USER_POOLS"
@@ -68,6 +73,11 @@ variable "post_proxy_method_authorization" {
 }
 
 variable "put_proxy_method_authorization" {
+  type    = string
+  default = "COGNITO_USER_POOLS"
+}
+
+variable "delete_proxy_method_authorization" {
   type    = string
   default = "COGNITO_USER_POOLS"
 }

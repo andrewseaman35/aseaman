@@ -28,7 +28,8 @@ resource "aws_iam_role_policy" "api_role" {
           "dynamodb:GetItem",
           "dynamodb:PutItem",
           "dynamodb:UpdateItem",
-          "dynamodb:Scan"
+          "dynamodb:Scan",
+          "dynamodb:DeleteItem"
         ]
         Resource = "arn:aws:dynamodb:${local.aws_region}:${local.aws_account_id}:table/${local.table_name}"
       },
