@@ -41,12 +41,22 @@ variable "post_method_authorization" {
   default = "COGNITO_USER_POOLS"
 }
 
+variable "put_method_authorization" {
+  type    = string
+  default = "COGNITO_USER_POOLS"
+}
+
 variable "get_proxy_method_authorization" {
   type    = string
   default = "COGNITO_USER_POOLS"
 }
 
 variable "post_proxy_method_authorization" {
+  type    = string
+  default = "COGNITO_USER_POOLS"
+}
+
+variable "put_proxy_method_authorization" {
   type    = string
   default = "COGNITO_USER_POOLS"
 }
