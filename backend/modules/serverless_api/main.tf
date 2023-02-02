@@ -41,6 +41,7 @@ resource "aws_iam_instance_profile" "api_instance_profile" {
 
 locals {
   lambda_function_package_md5 = filemd5("${var.zip_file}")
+  cognito_user_groups         = var.cognito_user_groups
 }
 resource "aws_s3_bucket_object" "lambda_function_package" {
   bucket = "aseaman-lambda-functions"
@@ -78,6 +79,14 @@ resource "aws_lambda_function" "api_lambda_function" {
   tags = {
     Service = var.api_name
   }
+}
+
+resource "aws_cognito_user_group" "cognito_user_accounts" {
+  for_each = local.cognito_user_groups
+
+  name         = each.key
+  description  = each.value.description
+  user_pool_id = var.cognito_user_pool_id
 }
 
 resource "aws_api_gateway_resource" "api_resource" {

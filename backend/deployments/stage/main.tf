@@ -61,13 +61,15 @@ module "backend" {
   hosted_zone_id        = var.hosted_zone_id
   api_url               = var.api_url
   cognito_user_pool_arn = module.auth.cognito_user_pool_arn
+  cognito_user_pool_id  = module.auth.cognito_user_pool_id
 
   depends_on = [module.auth]
 }
 
 module "exports" {
-  source                      = "../../modules/exports"
-  env                         = var.deploy_env
-  cognito_user_pool_client_id = module.auth.cognito_user_pool_client_id
-  cognito_user_pool_id        = module.auth.cognito_user_pool_id
+  source                          = "../../modules/exports"
+  env                             = var.deploy_env
+  cognito_user_pool_client_id     = module.auth.cognito_user_pool_client_id
+  cognito_user_pool_id            = module.auth.cognito_user_pool_id
+  cognito_identity_pool_id        = module.auth.cognito_identity_pool_id
 }

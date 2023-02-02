@@ -41,7 +41,12 @@ class BadRequestException(BaseAPIException):
 
 class UnauthorizedException(BaseAPIException):
     STATUS_CODE = 401
-    DEFAULT_MESSAGE = "unauthorized"
+    DEFAULT_MESSAGE = "unauthenticated"
+
+
+class ForbiddenException(BaseAPIException):
+    STATUS_CODE = 403
+    DEFAULT_MESSAGE = "forbidden"
 
 
 class NotFoundException(BaseAPIException):

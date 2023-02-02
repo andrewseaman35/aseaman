@@ -31,6 +31,17 @@ variable "cognito_user_pool_arn" {
   description = "arn of cognito user pool for authorization"
 }
 
+variable "cognito_user_pool_id" {
+  type        = string
+  description = "id of cognito user pool for authorization"
+}
+
+variable "cognito_user_groups" {
+  type        = map
+  description = "user groups to set up for this api"
+  default     = {}
+}
+
 variable "get_method_authorization" {
   type    = string
   default = "COGNITO_USER_POOLS"

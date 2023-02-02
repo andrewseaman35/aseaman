@@ -18,3 +18,12 @@ variable "api_url" {
 variable "cognito_user_pool_arn" {
   type = string
 }
+
+variable "cognito_user_pool_id" {
+  type = string
+}
+
+variable "cognito_user_groups" {
+  type = map
+  default = {}
+}

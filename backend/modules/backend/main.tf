@@ -19,6 +19,7 @@ module "state_api" {
   deploy_env = var.deploy_env
 
   cognito_user_pool_arn = var.cognito_user_pool_arn
+  cognito_user_pool_id  = var.cognito_user_pool_id
 
   rest_api_root_resource_id      = aws_api_gateway_rest_api.rest_api.root_resource_id
   rest_api_id                    = aws_api_gateway_rest_api.rest_api.id
@@ -41,6 +42,7 @@ module "salt_level_api" {
   deploy_env = var.deploy_env
 
   cognito_user_pool_arn = var.cognito_user_pool_arn
+  cognito_user_pool_id  = var.cognito_user_pool_id
 
   rest_api_root_resource_id      = aws_api_gateway_rest_api.rest_api.root_resource_id
   rest_api_id                    = aws_api_gateway_rest_api.rest_api.id
@@ -63,6 +65,7 @@ module "whisky_api" {
   deploy_env = var.deploy_env
 
   cognito_user_pool_arn = var.cognito_user_pool_arn
+  cognito_user_pool_id  = var.cognito_user_pool_id
 
   rest_api_root_resource_id      = aws_api_gateway_rest_api.rest_api.root_resource_id
   rest_api_id                    = aws_api_gateway_rest_api.rest_api.id
@@ -87,6 +90,7 @@ module "draw_jasper_api" {
   layers = ["arn:aws:lambda:us-east-1:560983357304:layer:opencv_python39:1"]
 
   cognito_user_pool_arn = var.cognito_user_pool_arn
+  cognito_user_pool_id  = var.cognito_user_pool_id
 
   rest_api_root_resource_id       = aws_api_gateway_rest_api.rest_api.root_resource_id
   rest_api_id                     = aws_api_gateway_rest_api.rest_api.id
@@ -111,6 +115,7 @@ module "compare_acnh_api" {
   deploy_env = var.deploy_env
 
   cognito_user_pool_arn = var.cognito_user_pool_arn
+  cognito_user_pool_id  = var.cognito_user_pool_id
 
   rest_api_root_resource_id       = aws_api_gateway_rest_api.rest_api.root_resource_id
   rest_api_id                     = aws_api_gateway_rest_api.rest_api.id
@@ -134,11 +139,13 @@ module "mame_highscore_api" {
   path_part  = "mame_highscore"
   deploy_env = var.deploy_env
 
+  cognito_user_pool_arn = var.cognito_user_pool_arn
+  cognito_user_pool_id  = var.cognito_user_pool_id
+
   rest_api_root_resource_id      = aws_api_gateway_rest_api.rest_api.root_resource_id
   rest_api_id                    = aws_api_gateway_rest_api.rest_api.id
   get_method_authorization       = "NONE"
   get_proxy_method_authorization = "NONE"
-  cognito_user_pool_arn          = var.cognito_user_pool_arn
 }
 
 module "mame_highscore_iam_role_policy" {
@@ -156,6 +163,7 @@ module "chess_api" {
   deploy_env = var.deploy_env
 
   cognito_user_pool_arn = var.cognito_user_pool_arn
+  cognito_user_pool_id  = var.cognito_user_pool_id
 
   rest_api_root_resource_id       = aws_api_gateway_rest_api.rest_api.root_resource_id
   rest_api_id                     = aws_api_gateway_rest_api.rest_api.id
@@ -180,6 +188,12 @@ module "linker_api" {
   deploy_env = var.deploy_env
 
   cognito_user_pool_arn = var.cognito_user_pool_arn
+  cognito_user_pool_id  = var.cognito_user_pool_id
+  cognito_user_groups   = {
+    "link-manager": {
+      "description": "Create, update, delete links"
+    }
+  }
 
   rest_api_root_resource_id       = aws_api_gateway_rest_api.rest_api.root_resource_id
   rest_api_id                     = aws_api_gateway_rest_api.rest_api.id

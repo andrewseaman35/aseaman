@@ -1,3 +1,4 @@
+import datetime
 import json
 import os
 import traceback
@@ -132,6 +133,10 @@ class APILambdaHandlerBase(object):
 
         if not decoded:
             print("! Invalid token !")
+            return
+
+        if decoded["exp"] <= datetime.datetime.now().timestamp():
+            print("! Token expired !")
             return
 
         self.user["username"] = decoded["cognito:username"]

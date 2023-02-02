@@ -11,6 +11,10 @@ from base.api_exceptions import (
     NotFoundException,
     UnauthorizedException,
 )
+from base.helpers import (
+    requires_authentication,
+    requires_user_group,
+)
 
 LINK_ID_LENGTH = 6
 
@@ -196,21 +200,24 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
                 link_id, validate_ownership=False, require_active=True
             )
         else:
-            if not self.user["username"]:
-                raise PermissionError("no logged in user")
-            sort_value = self.params.get("sort", DEFAULT_SORT)
-            print(f"sort value: {sort_value}")
-            result = self.__fetch_links_by_owner(self.user["username"])
-            result = sorted(
-                result,
-                **self._get_sort_params(sort_value),
-            )
+            result = self.handle_get_by_link_id(link_id)
 
         return {
             **self._empty_response(),
             "body": json.dumps(result),
         }
 
+    @requires_authentication
+    def handle_get_by_link_id(self, link_id):
+        sort_value = self.params.get("sort", DEFAULT_SORT)
+        print(f"sort value: {sort_value}")
+        result = self.__fetch_links_by_owner(self.user["username"])
+        return sorted(
+            result,
+            **self._get_sort_params(sort_value),
+        )
+
+    @requires_user_group("link-manager")
     def handle_post(self):
         url = self.params.get("url", DEFAULT_LINK_URL)
         name = self.params.get("name", DEFAULT_LINK_NAME)
@@ -219,6 +226,7 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
 
         return {**self._empty_response(), "body": json.dumps(result)}
 
+    @requires_user_group("link-manager")
     def handle_put(self):
         link_id = self.params.get("id")
         if not link_id:
@@ -235,6 +243,7 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
 
         return {**self._empty_response(), "body": json.dumps(result)}
 
+    @requires_user_group("link-manager")
     def handle_delete(self):
         link_id = self.params.get("id")
         if not link_id:
