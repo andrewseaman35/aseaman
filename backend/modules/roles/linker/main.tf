@@ -5,6 +5,7 @@ data "aws_caller_identity" "current" {}
 locals {
   aws_region     = data.aws_region.current.name
   aws_account_id = data.aws_caller_identity.current.account_id
+  table_name     = "${var.deploy_env == "live" ? "linker" : "linker_stage"}"
 }
 
 resource "aws_iam_role_policy" "api_role" {
@@ -29,7 +30,7 @@ resource "aws_iam_role_policy" "api_role" {
           "dynamodb:UpdateItem",
           "dynamodb:Scan"
         ]
-        Resource = "arn:aws:dynamodb:${local.aws_region}:${local.aws_account_id}:table/linker"
+        Resource = "arn:aws:dynamodb:${local.aws_region}:${local.aws_account_id}:table/${local.table_name}"
       },
       {
         Effect = "Allow"

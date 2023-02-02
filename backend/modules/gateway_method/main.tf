@@ -8,19 +8,19 @@ locals {
 }
 
 resource "aws_api_gateway_method" "main" {
-  authorization = var.authorization
-  authorizer_id = var.authorizer_id
-  http_method   = var.http_method
-  resource_id   = var.api_resource_id
-  rest_api_id   = var.rest_api_id
+  authorization           = var.authorization
+  authorizer_id           = var.authorizer_id
+  http_method             = var.http_method
+  resource_id             = var.api_resource_id
+  rest_api_id             = var.rest_api_id
 }
 
 resource "aws_api_gateway_integration" "integration" {
   rest_api_id             = var.rest_api_id
   resource_id             = var.api_resource_id
   http_method             = aws_api_gateway_method.main.http_method
-  integration_http_method = "POST"
-  type                    = "AWS_PROXY"
+  integration_http_method = var.integration_http_method
+  type                    = var.integration_type
   uri                     = var.integration_uri
 }
 

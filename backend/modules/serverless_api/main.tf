@@ -133,7 +133,7 @@ module "put_method" {
 
   authorization   = var.put_method_authorization
   authorizer_id   = aws_api_gateway_authorizer.cognito.id
-  http_method     = "GET"
+  http_method     = "PUT"
   integration_uri = aws_lambda_function.api_lambda_function.invoke_arn
 
   depends_on = [

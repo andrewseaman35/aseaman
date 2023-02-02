@@ -16,6 +16,12 @@ variable "http_method" {
   default     = "ANY"
 }
 
+variable "integration_http_method" {
+  type        = string
+  description = "http method"
+  default     = "POST"
+}
+
 variable "api_resource_id" {
   type        = string
   description = "api gateway resource id"
@@ -29,4 +35,10 @@ variable "rest_api_id" {
 variable "integration_uri" {
   type        = string
   description = "uri for gateway integration"
+}
+
+variable "integration_type" {
+  type        = string
+  description = "integration type"
+  default     = "AWS_PROXY"
 }
