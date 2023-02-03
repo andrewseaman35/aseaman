@@ -34,7 +34,11 @@ const MameHighscoreTable = (props) => {
     }, [props.gameId])
 
     if (loading) {
-        return <div className="highscore-table no-scores">loading scores...</div>
+        return (
+            <div className="highscore-table no-scores animated-ellipsis">
+                Loading scores<span className="dot1">.</span><span className="dot2">.</span><span className="dot3">.</span>
+            </div>
+        )
     } else if (errorMessage) {
         return <div className="highscore-table no-scores">{errorMessage}</div>
     } else if (!scores) {

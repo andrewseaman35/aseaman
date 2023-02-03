@@ -198,13 +198,7 @@ module "linker_api" {
   rest_api_root_resource_id         = aws_api_gateway_rest_api.rest_api.root_resource_id
   rest_api_id                       = aws_api_gateway_rest_api.rest_api.id
   get_method_authorization          = "NONE"
-  put_method_authorization          = "NONE"
-  post_method_authorization         = "NONE"
-  delete_method_authorization       = "NONE"
   get_proxy_method_authorization    = "NONE"
-  put_proxy_method_authorization    = "NONE"
-  post_proxy_method_authorization   = "NONE"
-  delete_proxy_method_authorization = "NONE"
 }
 
 module "linker_iam_role_policy" {

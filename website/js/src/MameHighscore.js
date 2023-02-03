@@ -26,7 +26,6 @@ class MameHighscore extends React.Component {
         getMetadata()
             .then(metadata => {
                 this.gamesById = _.keyBy(metadata.games, 'gameId');
-                console.log(this)
                 this.setState({
                     loadingMetadata: false,
                 });
@@ -58,6 +57,15 @@ class MameHighscore extends React.Component {
                                     game={this.gamesById[this.state.selectedGameId]}
                                 />
                             </React.Fragment>
+                        )
+                    }
+                    {
+                        this.state.loadingMetadata && (
+                            <div className="loading-container">
+                                <div className="animated-ellipsis">
+                                    Loading<span className="dot1">.</span><span className="dot2">.</span><span className="dot3">.</span>
+                                </div>
+                            </div>
                         )
                     }
                 </div>

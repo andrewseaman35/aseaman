@@ -22,7 +22,7 @@ assert_running:
 	fi
 
 assert_not_running:
-	@if [ "$$(docker ps -a | grep $(CONTAINER_NAME))" ]; then\
+	@if [ "$$(docker ps | grep $(CONTAINER_NAME))" ]; then\
 		echo "Container already running: $(CONTAINER_NAME)";\
 		exit 2;\
 	fi
@@ -42,9 +42,11 @@ start: assert_not_running build
 		--name $(CONTAINER_NAME) \
 		aseaman-local
 
-stop: assert_running
-	echo "Removing $(CONTAINER_NAME)";\
-	docker rm -f $(CONTAINER_NAME);\
+stop:
+	@if [ "$$(docker ps -a | grep $(CONTAINER_NAME))" ]; then\
+		echo "Removing $(CONTAINER_NAME)";\
+		docker rm -f $(CONTAINER_NAME);\
+	fi
 
 restart: stop start
 

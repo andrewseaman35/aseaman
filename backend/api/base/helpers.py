@@ -13,13 +13,17 @@ def requires_authentication(func):
     return wrapper
 
 
-def requires_user_group(user_group):
+def requires_user_group(user_group, exclude_admin=False):
     def decorator(func):
         def wrapper(s, *args, **kwargs):
             if not s.user["username"]:
                 raise UnauthorizedException()
 
-            if user_group not in s.user["groups"]:
+            required_user_groups = {user_group}
+            if not exclude_admin:
+                required_user_groups.add("admin")
+
+            if user_group & set(s.user["groups"]):
                 raise ForbiddenException(f'{user_group} not in {s.user["groups"]}')
 
             return func(s, *args, **kwargs)
