@@ -44,6 +44,11 @@
     </head>
 
     <body id="{% block page_id %}id{% endblock %}" class="{% block body_class %}{% endblock %}">
+        <div id="fullscreen-loading-overlay">
+            <div class="loading-text-container">
+                {{ macros.animated_ellipsis('Loading') }}
+            </div>
+        </div>
         {% block header %}
             {% include 'header.jinja2' %}
         {% endblock %}

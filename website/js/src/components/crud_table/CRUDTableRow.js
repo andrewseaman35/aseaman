@@ -98,7 +98,7 @@ class CRUDTableRow extends React.Component {
             <td className="crud-table-action-items">
                 {
                     !this.props.isBeingEdited && this.props.editEnabled && (
-                        <button className="full-width" onClick={() => this.props.onEditClick(key)}>Edit</button>
+                        <button onClick={() => this.props.onEditClick(key)}>Edit</button>
                     )
                 }
                 {
@@ -110,8 +110,8 @@ class CRUDTableRow extends React.Component {
                 }
                 {
                     !this.props.isBeingEdited && this.props.actionEnabled && (
-                        <button className="button-icon" onClick={() => this.props.onActionClick(key)}>
-                            <Icon icon={this.props.actionIcon} size={24} />
+                        <button className="button-icon action-button" onClick={() => this.props.onActionClick(key)}>
+                            <Icon icon={this.props.actionIcon} viewbox={this.props.actionIconViewbox} size={24} />
                         </button>
                     )
                 }
@@ -157,6 +157,8 @@ CRUDTableRow.propTypes = {
     itemFormatters: PropTypes.object,
 
     actionIcon: PropTypes.string,
+    actionIconViewbox: PropTypes.string,
+
     actionEnabled: PropTypes.bool.isRequired,
     deleteEnabled: PropTypes.bool.isRequired,
     editEnabled: PropTypes.bool.isRequired,

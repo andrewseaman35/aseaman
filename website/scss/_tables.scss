@@ -81,5 +81,9 @@ tr:not(.no-hover) {
             flex-grow: 1;
             justify-content: center;
         }
+
+        .action-button {
+            margin-left: 4px;
+        }
     }
 }

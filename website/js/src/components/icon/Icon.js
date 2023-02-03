@@ -9,7 +9,7 @@ class Icon extends React.Component {
             <svg
                 height={this.props.size}
                 width={this.props.size}
-                viewBox="0 0 12 16"
+                viewBox={this.props.viewbox}
                 version="1.1"
                 aria-hidden="true">
                 {iconDefinitions[this.props.icon]}
@@ -20,11 +20,13 @@ class Icon extends React.Component {
 
 Icon.defaultProps = {
     size: 12,
+    viewbox: "0 0 12 16",
 }
 
 Icon.propTypes = {
     icon: PropTypes.string.isRequired,
     size: PropTypes.number,
+    viewbox: PropTypes.string.isRequired,
 }
 
 module.exports = Icon;

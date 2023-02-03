@@ -263,6 +263,7 @@ class CRUDTable extends React.Component {
                             deleteEnabled={this.props.deleteEnabled}
                             actionEnabled={this.props.actionEnabled}
                             actionIcon={this.props.actionIcon}
+                            actionIconViewbox={this.props.actionIconViewbox}
                             onActionClick={this.onRowActionClick}
                             onEditClick={this.onRowEditClick}
                             onSaveClick={this.onRowSaveClick}

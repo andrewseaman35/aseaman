@@ -2,3 +2,9 @@
     margin: auto;
     margin-top: 80px;
 }
+
+th,
+td {
+    overflow: scroll;
+    max-width: 300px;
+}

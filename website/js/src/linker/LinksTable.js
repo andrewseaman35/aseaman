@@ -8,6 +8,7 @@ import {
     saveNewUserLink,
     updateUserLink,
 } from './api';
+import { fullscreenLoadingOverlay } from '../loading';
 import { toReadableDate } from '../utils';
 
 import CRUDTable from '../components/crud_table/CRUDTable';
@@ -79,11 +80,11 @@ class LinksTable extends React.Component {
     }
 
     generateAndDisplayQRCode(key) {
+        fullscreenLoadingOverlay(true);
         return generateQRCode(key).then((r) => {
             const src = r.replace(/\"/g, "");
-            console.log(src)
-            console.log(`data:image/png;base64,${src}`)
             document.getElementById("qr-code-img").src = `data:image/png;base64, ${src}`
+            fullscreenLoadingOverlay(false);
             document.getElementById("qr-code-img").click();
         })
     }
@@ -109,6 +110,7 @@ class LinksTable extends React.Component {
 
                 actionEnabled={true}
                 actionIcon="share"
+                actionIconViewbox="0 0 16 16"
                 handleAction={this.generateAndDisplayQRCode.bind(this)}
             />
         )

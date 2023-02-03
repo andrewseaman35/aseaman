@@ -47,3 +47,26 @@
         }
     }
 }
+
+#fullscreen-loading-overlay {
+    display: none;
+    width: 100%;
+    height: 100vh;
+    position: absolute;
+    background-color: black;
+    z-index: 100;
+    opacity: .4;
+
+    .loading-text-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .animated-ellipsis {
+        font-size: 28px;
+        color: white;
+    }
+}
