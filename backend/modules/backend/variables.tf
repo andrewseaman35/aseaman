@@ -6,6 +6,10 @@ variable "deploy_env" {
   type        = string
   description = "environment to deploy to"
 }
+variable "hostname" {
+  type        = string
+  description = "site hostname"
+}
 variable "hosted_zone_id" {
   type        = string
   description = "Hosted zone id"
