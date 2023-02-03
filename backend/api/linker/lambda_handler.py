@@ -169,8 +169,8 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
         qr_png = qrcode.make(url)
         with io.BytesIO() as output:
             qr_png.save(output)
+            contents = base64.b64encode(output.getvalue())
 
-        contents = base64.b64encode(output.getvalue())
         return contents.decode("utf-8")
 
     def _new_link(self, url, name, active=False):
