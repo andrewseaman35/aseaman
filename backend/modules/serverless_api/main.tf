@@ -68,7 +68,8 @@ resource "aws_lambda_function" "api_lambda_function" {
 
   environment {
     variables = {
-      ENV = var.deploy_env
+      ENV      = var.deploy_env
+      HOSTNAME = var.hostname
     }
   }
 

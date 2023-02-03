@@ -1,7 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { deleteUserLink, loadUserLinks, saveNewUserLink, updateUserLink } from './api';
+import {
+    deleteUserLink,
+    generateQRCode,
+    loadUserLinks,
+    saveNewUserLink,
+    updateUserLink,
+} from './api';
 import { toReadableDate } from '../utils';
 
 import CRUDTable from '../components/crud_table/CRUDTable';
@@ -72,6 +78,16 @@ class LinksTable extends React.Component {
         }
     }
 
+    generateAndDisplayQRCode(key) {
+        return generateQRCode(key).then((r) => {
+            const src = r.replace(/\"/g, "");
+            console.log(src)
+            console.log(`data:image/png;base64,${src}`)
+            document.getElementById("qr-code-img").src = `data:image/png;base64, ${src}`
+            document.getElementById("qr-code-img").click();
+        })
+    }
+
     render() {
         return (
             <CRUDTable
@@ -89,8 +105,11 @@ class LinksTable extends React.Component {
                 createLabel="New Link"
 
                 editEnabled={true}
-
                 deleteEnabled={false}
+
+                actionEnabled={true}
+                actionIcon="share"
+                handleAction={this.generateAndDisplayQRCode.bind(this)}
             />
         )
     }

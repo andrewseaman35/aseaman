@@ -13,6 +13,7 @@ class CRUDTable extends React.Component {
 
         this.onHeaderItemClick = this.onHeaderItemClick.bind(this);
         this.onAddButtonClick = this.onAddButtonClick.bind(this);
+        this.onRowActionClick = this.onRowActionClick.bind(this);
         this.onRowEditClick = this.onRowEditClick.bind(this);
         this.onRowSaveClick = this.onRowSaveClick.bind(this);
         this.onRowDeleteClick = this.onRowDeleteClick.bind(this);
@@ -174,6 +175,13 @@ class CRUDTable extends React.Component {
         this.setRowState(key, { editable: true });
     }
 
+    onRowActionClick(key) {
+        this.setRowState(key, { processing: true, editable: false });
+        this.props.handleAction(key).then(
+            this.setRowState(key, { editable: false, processing: false })
+        );
+    }
+
     onRowSaveClick(key, values) {
         this.setRowState(key, { processing: true, editable: false });
         this.props.updateItem(values).then(
@@ -252,6 +260,10 @@ class CRUDTable extends React.Component {
                             isBeingEdited={!!this.state.editableRows[item[this.props.itemKey]]}
 
                             editEnabled={this.props.editEnabled}
+                            deleteEnabled={this.props.deleteEnabled}
+                            actionEnabled={this.props.actionEnabled}
+                            actionIcon={this.props.actionIcon}
+                            onActionClick={this.onRowActionClick}
                             onEditClick={this.onRowEditClick}
                             onSaveClick={this.onRowSaveClick}
                             onDeleteClick={this.onRowDeleteClick}
@@ -269,6 +281,7 @@ class CRUDTable extends React.Component {
         const includeActionsColumn = (
             this.props.editEnabled ||
             this.props.deleteEnabled ||
+            this.props.actionEnabled ||
             Object.values(this.state.editableRows).some(e => e)
         )
         return (
@@ -295,6 +308,10 @@ class CRUDTable extends React.Component {
 
 
 CRUDTable.defaultProps = {
+    actionEnabled: false,
+    handleAction: () => {
+        console.warn('action handler not provided')
+    },
     createItem: () => {
         console.warn('create handler not provided')
     },
@@ -324,6 +341,10 @@ CRUDTable.propTypes = {
     createEnabled: PropTypes.bool.isRequired,
     createLabel: PropTypes.string.isRequired,
     createItem: PropTypes.func.isRequired,
+
+    actionEnabled: PropTypes.bool.isRequired,
+    actionIcon: PropTypes.string,
+    handleAction: PropTypes.func.isRequired,
 
     editEnabled: PropTypes.bool.isRequired,
 

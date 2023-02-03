@@ -1,9 +1,11 @@
-import enum
+import base64
+import io
 import json
 import random
-import re
 import string
 import time
+
+import qrcode
 
 from base.lambda_handler_base import APILambdaHandlerBase
 from base.api_exceptions import (
@@ -158,6 +160,19 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
 
         return [self._format_ddb_item(ddbItem) for ddbItem in ddbItems]
 
+    # @requires_user_group('link-manager')
+    def _generate_qr_code(self, link, direct=False):
+        print(f"Generating QR code for {link['id']}")
+        redirected_url = f"{self.site_url}/l#{link['id']}"
+        url = link["url"] if direct else redirected_url
+
+        qr_png = qrcode.make(url)
+        with io.BytesIO() as output:
+            qr_png.save(output)
+
+        contents = base64.b64encode(output.getvalue())
+        return contents.decode("utf-8")
+
     def _new_link(self, url, name, active=False):
         print("Creating new link")
         ddbItem = self._build_link_item(url, name, active)
@@ -194,21 +209,36 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
         )
 
     def handle_get(self):
+        path_parts = self.event["path"].strip("/").split("/")
+        resource = path_parts[1] if len(path_parts) > 1 else None
+
+        response = self._empty_response()
+
         link_id = self.params.get("id")
-        if link_id:
-            result = self.__fetch_link(
-                link_id, validate_ownership=False, require_active=True
-            )
+        if resource == "qr":
+            result = self.handle_generate_qr(link_id)
+            response["headers"]["Content-Type"] = "image/png"
+            response["isBase64Encoded"] = True
         else:
-            result = self.handle_get_by_link_id(link_id)
+            if link_id:
+                result = self.__fetch_link(
+                    link_id, validate_ownership=False, require_active=True
+                )
+            else:
+                result = self.handle_get_all_owned_links()
 
         return {
-            **self._empty_response(),
+            **response,
             "body": json.dumps(result),
         }
 
+    @requires_user_group("link-manager")
+    def handle_generate_qr(self, link_id):
+        link = self.__fetch_link(link_id)
+        return self._generate_qr_code(link, direct=False)
+
     @requires_authentication
-    def handle_get_by_link_id(self, link_id):
+    def handle_get_all_owned_links(self):
         sort_value = self.params.get("sort", DEFAULT_SORT)
         print(f"sort value: {sort_value}")
         result = self.__fetch_links_by_owner(self.user["username"])

@@ -97,8 +97,22 @@ class CRUDTableRow extends React.Component {
         return (
             <td className="crud-table-action-items">
                 {
-                    !this.props.isBeingEdited && (
+                    !this.props.isBeingEdited && this.props.editEnabled && (
                         <button className="full-width" onClick={() => this.props.onEditClick(key)}>Edit</button>
+                    )
+                }
+                {
+                    !this.props.isBeingEdited && this.props.deleteEnabled && (
+                        <button className="button-icon" onClick={() => this.props.onDeleteClick(key)}>
+                            <Icon icon="trashcan" size={24} />
+                        </button>
+                    )
+                }
+                {
+                    !this.props.isBeingEdited && this.props.actionEnabled && (
+                        <button className="button-icon" onClick={() => this.props.onActionClick(key)}>
+                            <Icon icon={this.props.actionIcon} size={24} />
+                        </button>
                     )
                 }
                 {
@@ -115,17 +129,17 @@ class CRUDTableRow extends React.Component {
                         </button>
                     )
                 }
-
             </td>
         )
     }
 
     render() {
+        const showActions = this.props.editEnabled || this.props.deleteEnabled || this.props.actionEnabled;
         return (
             <tr>
                 {this.props.isBeingEdited && this.renderEditableDataItems()}
                 {!this.props.isBeingEdited && this.renderDataItem()}
-                {this.props.editEnabled && this.renderActionItems()}
+                {showActions && this.renderActionItems()}
             </tr>
         )
     }
@@ -142,7 +156,11 @@ CRUDTableRow.propTypes = {
     ).isRequired,
     itemFormatters: PropTypes.object,
 
+    actionIcon: PropTypes.string,
+    actionEnabled: PropTypes.bool.isRequired,
+    deleteEnabled: PropTypes.bool.isRequired,
     editEnabled: PropTypes.bool.isRequired,
+    onActionClick: PropTypes.func,
     onEditClick: PropTypes.func,
     onSaveClick: PropTypes.func,
     onDeleteClick: PropTypes.func,

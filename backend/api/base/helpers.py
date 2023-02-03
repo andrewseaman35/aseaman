@@ -23,7 +23,7 @@ def requires_user_group(user_group, exclude_admin=False):
             if not exclude_admin:
                 required_user_groups.add("admin")
 
-            if user_group & set(s.user["groups"]):
+            if not (required_user_groups & set(s.user["groups"])):
                 raise ForbiddenException(f'{user_group} not in {s.user["groups"]}')
 
             return func(s, *args, **kwargs)

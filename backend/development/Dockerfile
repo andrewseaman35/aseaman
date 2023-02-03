@@ -10,6 +10,7 @@ WORKDIR /app
 ENV AWS_SHARED_CREDENTIALS_FILE="/.aws/credentials"
 ENV IN_DOCKER_API="true"
 ENV ENV="local"
+ENV HOSTNAME="localhost:8123"
 
 RUN pip install -r /app/requirements.txt
 

@@ -1,3 +1,4 @@
+import copy
 import datetime
 import json
 import os
@@ -31,6 +32,8 @@ class APILambdaHandlerBase(object):
         self.event = event
         self.context = context
         self.env = os.environ.get("ENV")
+        self.hostname = os.environ.get("HOSTNAME")
+        self.site_url = f"http{'' if self.env == 'local' else 's'}://{self.hostname}"
         self.user = {
             "username": None,
             "groups": None,
@@ -149,7 +152,7 @@ class APILambdaHandlerBase(object):
         self.__parse_event(self.event)
 
     def _empty_response(self):
-        return {**EMPTY_RESPONSE}
+        return copy.deepcopy(EMPTY_RESPONSE)
 
     def handle_get(self):
         raise MethodNotAllowedException("GET not supported")

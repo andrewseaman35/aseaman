@@ -6,6 +6,11 @@ variable "deploy_env" {
   type        = string
   description = "environment to deploy to"
 }
+variable "hostname" {
+  type        = string
+  description = "site hostname"
+  default     = "stage.andrewcseaman.com"
+}
 variable "api_name" {
   type        = string
   description = "State API Lambda function name"

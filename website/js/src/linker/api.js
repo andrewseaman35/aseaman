@@ -56,6 +56,17 @@ function saveNewUserLink(linkData) {
     })
 }
 
+function generateQRCode(key) {
+    return $.ajax({
+        type: 'GET',
+        url: getAPIUrl('linker') + `qr/?id=${key}`,
+        headers: {
+            Authorization: getToken(),
+        },
+        contentType: 'application/json',
+    })
+}
+
 function deleteUserLink(key) {
     return $.ajax({
         type: 'DELETE',
@@ -70,6 +81,7 @@ function deleteUserLink(key) {
 module.exports = {
     deleteUserLink,
     fetchLink,
+    generateQRCode,
     loadUserLinks,
     saveNewUserLink,
     updateUserLink,

@@ -25,6 +25,7 @@ class Lightbox extends React.Component {
             isOpen: false,
             currentGroup: null,
             currentImageIndex: 0,
+            renderingAdHoc: false,
         }
     }
 
@@ -48,8 +49,9 @@ class Lightbox extends React.Component {
                     class: additionalClass
                 });
                 image.style.cursor = 'pointer';
-                image.addEventListener('click', (function() {
-                    this.open(lightboxGroup, image.src);
+                image.addEventListener('click', (function(e) {
+                    const src = e.currentTarget.src;
+                    this.open(lightboxGroup, src);
                 }).bind(this));
                 lightboxNum += 1;
             }
@@ -108,6 +110,7 @@ class Lightbox extends React.Component {
 
     close() {
         this.setState({
+            renderingAdHoc: false,
             currentGroup: null,
             currentImageIndex: -1,
             isOpen: false,
@@ -126,8 +129,13 @@ class Lightbox extends React.Component {
         }
         const imagesInGroup = this.imagesByGroupId[group];
         const imageIndex = imagesInGroup.map(function(e) { return e.src; }).indexOf(imgSrc);
-
-        if (imageIndex >= 0) {
+        if (imageIndex === -1) {
+            this.setState({
+                renderingAdHoc: true,
+                adHocSrc: imgSrc,
+                isOpen: true,
+            })
+        } else if (imageIndex >= 0) {
             this.setState({
                 currentGroup: group,
                 currentImageIndex: imageIndex,
@@ -135,6 +143,15 @@ class Lightbox extends React.Component {
             })
             this.forceUpdate();
         }
+    }
+
+    renderAdHocImage() {
+        const src = this.state.adHocSrc;
+        return (
+            <div className="img-caption displayed">
+                <img src={src} alt=""/>
+            </div>
+        )
     }
 
     renderImages() {
@@ -181,8 +198,29 @@ class Lightbox extends React.Component {
         return null;
     }
 
+    renderAdHoc() {
+        return (
+            <div className={`lightbox-container hide-sm`}>
+                <div className="lightbox-close">
+                    <img alt="Close" data-close-lightbox='true' src="/img/icons/close.svg" onClick={this.onCloseButtonClick} />
+                </div>
+                <div id='lightbox-outer' className='lightbox' data-close-lightbox='true' onClick={this.onCloseButtonClick}>
+                    <div className="lightbox-content">
+                        {this.renderAdHocImage()}
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
     render () {
-        if (!this.state.isOpen || !this.state.currentGroup) {
+        if (!this.state.isOpen) {
+
+        }
+        if (this.state.renderingAdHoc) {
+            return this.renderAdHoc();
+        }
+        if (!this.state.currentGroup) {
             return null;
         }
         const disableArrowButton = this.imagesByGroupId[this.state.currentGroup].length === 1;
