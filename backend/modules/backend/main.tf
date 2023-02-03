@@ -17,6 +17,7 @@ module "state_api" {
   api_name   = "state-api"
   path_part  = "state_check"
   deploy_env = var.deploy_env
+  hostname   = var.hostname
 
   cognito_user_pool_arn = var.cognito_user_pool_arn
   cognito_user_pool_id  = var.cognito_user_pool_id
@@ -40,6 +41,7 @@ module "salt_level_api" {
   api_name   = "salt_level-api"
   path_part  = "salt_level"
   deploy_env = var.deploy_env
+  hostname   = var.hostname
 
   cognito_user_pool_arn = var.cognito_user_pool_arn
   cognito_user_pool_id  = var.cognito_user_pool_id
@@ -63,6 +65,7 @@ module "whisky_api" {
   api_name   = "whisky-api"
   path_part  = "whisky"
   deploy_env = var.deploy_env
+  hostname   = var.hostname
 
   cognito_user_pool_arn = var.cognito_user_pool_arn
   cognito_user_pool_id  = var.cognito_user_pool_id
@@ -113,6 +116,7 @@ module "compare_acnh_api" {
   api_name   = "compare_acnh-api"
   path_part  = "compare_acnh"
   deploy_env = var.deploy_env
+  hostname   = var.hostname
 
   cognito_user_pool_arn = var.cognito_user_pool_arn
   cognito_user_pool_id  = var.cognito_user_pool_id
@@ -138,6 +142,7 @@ module "mame_highscore_api" {
   api_name   = "mame_highscore-api"
   path_part  = "mame_highscore"
   deploy_env = var.deploy_env
+  hostname   = var.hostname
 
   cognito_user_pool_arn = var.cognito_user_pool_arn
   cognito_user_pool_id  = var.cognito_user_pool_id
@@ -161,6 +166,7 @@ module "chess_api" {
   api_name   = "chess-api"
   path_part  = "chess"
   deploy_env = var.deploy_env
+  hostname   = var.hostname
 
   cognito_user_pool_arn = var.cognito_user_pool_arn
   cognito_user_pool_id  = var.cognito_user_pool_id
@@ -186,6 +192,7 @@ module "linker_api" {
   api_name   = "linker-api"
   path_part  = "linker"
   deploy_env = var.deploy_env
+  hostname   = var.hostname
 
   cognito_user_pool_arn = var.cognito_user_pool_arn
   cognito_user_pool_id  = var.cognito_user_pool_id
