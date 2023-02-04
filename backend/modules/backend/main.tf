@@ -13,7 +13,7 @@ resource "aws_api_gateway_rest_api" "rest_api" {
 
 module "state_api" {
   source     = "../serverless_api"
-  zip_file   = "../../api/packages/state_api.zip"
+  zip_file   = "../../api/packages/linker_api.zip"
   api_name   = "state-api"
   path_part  = "state_check"
   deploy_env = var.deploy_env
@@ -26,13 +26,6 @@ module "state_api" {
   rest_api_id                    = aws_api_gateway_rest_api.rest_api.id
   get_method_authorization       = "NONE"
   get_proxy_method_authorization = "NONE"
-}
-
-module "state_api_iam_role_policy" {
-  source     = "../roles/state_check"
-  role       = module.state_api.api_role_id
-  deploy_env = var.deploy_env
-  api_name   = "state-api"
 }
 
 module "salt_level_api" {
@@ -229,9 +222,6 @@ resource "aws_api_gateway_deployment" "api_gateway_deployment" {
   }
 
   depends_on = [
-    module.state_api.aws_api_gateway_method,
-    module.state_api.aws_api_gateway_integration,
-
     module.salt_level_api.aws_api_gateway_method,
     module.salt_level_api.aws_api_gateway_integration,
 

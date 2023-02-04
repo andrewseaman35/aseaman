@@ -15,7 +15,6 @@ else
     export \
         STACKNAME=stack-$DEPLOY_ENV-$BRANCH-$NONCE \
         API_URL=api-$NONCE.test.andrewcseaman.com \
-        STATE_API_NAME=state-api-$DEPLOY_ENV-$BRANCH-$NONCE \
         DRAW_JASPER_API_NAME=draw_jasper-api-$DEPLOY_ENV-$BRANCH-$NONCE \
         SALT_LEVEL_API_NAME=salt_level-api-$DEPLOY_ENV-$BRANCH-$NONCE \
         COMPARE_ACNH_API_NAME=compare_acnh-api-$DEPLOY_ENV-$BRANCH-$NONCE \

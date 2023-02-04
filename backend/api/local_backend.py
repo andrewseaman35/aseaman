@@ -71,13 +71,6 @@ def mame_highscore(resource):
     return convert_to_response(result)
 
 
-@app.route("/state_check/", methods=["GET", "POST"])
-def state_check():
-    payload = get_payload(request)
-    result = make_lambda_request("state_check", request, payload, None)
-    return convert_to_response(result)
-
-
 @app.route("/draw_jasper/", methods=["POST"])
 def draw_jasper():
     payload = get_payload(request)

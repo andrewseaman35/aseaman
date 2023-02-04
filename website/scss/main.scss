@@ -21,9 +21,6 @@ header {
 }
 
 body {
-    &.patent {
-        @import "patent.scss";
-    }
     &.about {
         @import "pipeline.scss";
     }

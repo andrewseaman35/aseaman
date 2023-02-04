@@ -5,7 +5,6 @@ import { ACNHRankings, CompareACNH, VillagerResults } from './compare_acnh';
 import DrawJasper from './DrawJasper';
 import LinksTable from './linker/LinksTable';
 import MameHighscore from './MameHighscore';
-import Patent from './Patent';
 import SaltLevel from './SaltLevel';
 
 import Lightbox from './components/Lightbox';
@@ -61,13 +60,6 @@ function initMameHighscore(elementId) {
     );
 }
 
-function initPatent(elementId) {
-    ReactDOM.render(
-        <Patent />,
-        document.getElementById(elementId),
-    );
-}
-
 
 function initSaltLevel(elementId) {
     ReactDOM.render(
@@ -85,6 +77,5 @@ module.exports = {
     initDrawJasper,
     initLightbox,
     initMameHighscore,
-    initPatent,
     initSaltLevel,
 };

@@ -23,7 +23,6 @@ import {
     initLightbox,
     initLinksTable,
     initMameHighscore,
-    initPatent,
     initSaltLevel,
 } from './entry';
 
@@ -37,7 +36,6 @@ const modules = {
     initLightbox,
     initLinksTable,
     initMameHighscore,
-    initPatent,
     initSaltLevel,
     initMultiImageContainers,
     auth,

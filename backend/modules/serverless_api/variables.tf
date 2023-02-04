@@ -13,7 +13,7 @@ variable "hostname" {
 }
 variable "api_name" {
   type        = string
-  description = "State API Lambda function name"
+  description = "API Lambda function name"
 }
 variable "path_part" {
   type = string
