@@ -11,23 +11,6 @@ resource "aws_api_gateway_rest_api" "rest_api" {
   name = "aseaman-website-api-${var.deploy_env}"
 }
 
-module "state_api" {
-  source     = "../serverless_api"
-  zip_file   = "../../api/packages/linker_api.zip"
-  api_name   = "state-api"
-  path_part  = "state_check"
-  deploy_env = var.deploy_env
-  hostname   = var.hostname
-
-  cognito_user_pool_arn = var.cognito_user_pool_arn
-  cognito_user_pool_id  = var.cognito_user_pool_id
-
-  rest_api_root_resource_id      = aws_api_gateway_rest_api.rest_api.root_resource_id
-  rest_api_id                    = aws_api_gateway_rest_api.rest_api.id
-  get_method_authorization       = "NONE"
-  get_proxy_method_authorization = "NONE"
-}
-
 module "salt_level_api" {
   source     = "../serverless_api"
   zip_file   = "../../api/packages/salt_level_api.zip"
@@ -50,23 +33,6 @@ module "salt_level_api_iam_role_policy" {
   role       = module.salt_level_api.api_role_id
   deploy_env = var.deploy_env
   api_name   = "salt_level-api"
-}
-
-module "whisky_api" {
-  source     = "../serverless_api"
-  zip_file   = "../../api/packages/linker_api.zip"
-  api_name   = "whisky-api"
-  path_part  = "whisky"
-  deploy_env = var.deploy_env
-  hostname   = var.hostname
-
-  cognito_user_pool_arn = var.cognito_user_pool_arn
-  cognito_user_pool_id  = var.cognito_user_pool_id
-
-  rest_api_root_resource_id      = aws_api_gateway_rest_api.rest_api.root_resource_id
-  rest_api_id                    = aws_api_gateway_rest_api.rest_api.id
-  get_method_authorization       = "NONE"
-  get_proxy_method_authorization = "NONE"
 }
 
 module "draw_jasper_api" {
@@ -206,9 +172,7 @@ resource "aws_api_gateway_deployment" "api_gateway_deployment" {
 
   triggers = {
     redeployment = sha1(jsonencode({
-      state_api          = module.state_api.api_resource_module_ids
       salt_level_api     = module.salt_level_api.api_resource_module_ids
-      whisky_api         = module.whisky_api.api_resource_module_ids
       draw_jasper_api    = module.draw_jasper_api.api_resource_module_ids
       compare_acnh_api   = module.compare_acnh_api.api_resource_module_ids
       mame_highscore_api = module.mame_highscore_api.api_resource_module_ids
