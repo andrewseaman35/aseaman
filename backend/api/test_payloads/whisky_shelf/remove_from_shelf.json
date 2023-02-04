@@ -1,8 +1,0 @@
-{
-    "api_key": "",
-    "action": "remove_from_shelf",
-    "payload": {
-        "distillery": "d",
-        "name": "in"
-    }
-}

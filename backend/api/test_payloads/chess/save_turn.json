@@ -1,7 +1,0 @@
-{
-    "action": "save_turn",
-    "payload": {
-        "game_id": "YMJLU2",
-        "turn": "BLACK|H2|H4|normal"
-    }
-}
