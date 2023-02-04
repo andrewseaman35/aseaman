@@ -58,6 +58,7 @@ module "backend" {
   source                = "../../modules/backend"
   api_certificate_id    = var.api_certificate_id
   deploy_env            = var.deploy_env
+  hostname              = var.hostname
   hosted_zone_id        = var.hosted_zone_id
   api_url               = var.api_url
   cognito_user_pool_arn = module.auth.cognito_user_pool_arn
