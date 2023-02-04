@@ -76,13 +76,6 @@ module "whisky_api" {
   get_proxy_method_authorization = "NONE"
 }
 
-module "whisky_api_iam_role_policy" {
-  source     = "../roles/whisky"
-  role       = module.whisky_api.api_role_id
-  deploy_env = var.deploy_env
-  api_name   = "whisky-api"
-}
-
 module "draw_jasper_api" {
   source         = "../serverless_api"
   zip_file       = "../../api/packages/draw_jasper_api.zip"
@@ -241,9 +234,6 @@ resource "aws_api_gateway_deployment" "api_gateway_deployment" {
 
     module.salt_level_api.aws_api_gateway_method,
     module.salt_level_api.aws_api_gateway_integration,
-
-    module.whisky_api.aws_api_gateway_method,
-    module.whisky_api.aws_api_gateway_integration,
 
     module.draw_jasper_api.aws_api_gateway_method,
     module.draw_jasper_api.aws_api_gateway_integration,
