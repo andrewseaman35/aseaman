@@ -61,7 +61,7 @@ module "salt_level_api_iam_role_policy" {
 
 module "whisky_api" {
   source     = "../serverless_api"
-  zip_file   = "../../api/packages/whisky_api.zip"
+  zip_file   = "../../api/packages/linker_api.zip"
   api_name   = "whisky-api"
   path_part  = "whisky"
   deploy_env = var.deploy_env

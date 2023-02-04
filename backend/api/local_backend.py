@@ -71,15 +71,6 @@ def mame_highscore(resource):
     return convert_to_response(result)
 
 
-@app.route("/whisky/", methods=["GET", "POST"])
-def whisky():
-    if request.method == "POST":
-        _assert_has_authorization(request)
-    payload = get_payload(request)
-    result = make_lambda_request("whisky_shelf", request, payload, None)
-    return convert_to_response(result)
-
-
 @app.route("/state_check/", methods=["GET", "POST"])
 def state_check():
     payload = get_payload(request)

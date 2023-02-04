@@ -12,8 +12,6 @@ from base.lambda_handler_base import APILambdaHandlerBase
 
 BUCKET_NAME = "aseaman-public-bucket"
 JASPER_PREFIX = "aseaman/images/jasper"
-TABLE_NAME = "whisky"
-LOCAL_TABLE_NAME = "whisky_local"
 
 MAX_WORKERS = 10
 RESPONSE_COUNT = 3

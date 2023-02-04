@@ -25,12 +25,7 @@ import {
     initMameHighscore,
     initPatent,
     initSaltLevel,
-    initWhisky,
 } from './entry';
-
-import {
-    initWhiskyShelf,
-} from './components';
 
 const modules = {
     initACNHRankings,
@@ -44,8 +39,6 @@ const modules = {
     initMameHighscore,
     initPatent,
     initSaltLevel,
-    initWhisky,
-    initWhiskyShelf,
     initMultiImageContainers,
     auth,
     config,

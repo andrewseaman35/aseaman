@@ -1,12 +1,8 @@
 import React from 'react';
 
-import { initWhiskyShelf } from './whisky/WhiskyShelf';
-
 import Icon from './icon/Icon';
 import Lightbox from './Lightbox';
 import Modal from './modal/Modal';
-import WhiskyShelf from './whisky/WhiskyShelf';
-import WhiskyForm from './whisky/WhiskyForm';
 
 
 class AnimatedEllipsis extends React.Component {
@@ -26,8 +22,4 @@ module.exports = {
     Icon,
     Lightbox,
     Modal,
-    WhiskyForm,
-    WhiskyShelf,
-
-    initWhiskyShelf,
 };

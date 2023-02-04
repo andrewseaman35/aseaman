@@ -7,7 +7,6 @@ import LinksTable from './linker/LinksTable';
 import MameHighscore from './MameHighscore';
 import Patent from './Patent';
 import SaltLevel from './SaltLevel';
-import Whisky from './Whisky';
 
 import Lightbox from './components/Lightbox';
 
@@ -70,14 +69,6 @@ function initPatent(elementId) {
 }
 
 
-function initWhisky(elementId) {
-    ReactDOM.render(
-        <Whisky />,
-        document.getElementById(elementId),
-    );
-}
-
-
 function initSaltLevel(elementId) {
     ReactDOM.render(
         <SaltLevel />,
@@ -96,5 +87,4 @@ module.exports = {
     initMameHighscore,
     initPatent,
     initSaltLevel,
-    initWhisky,
 };

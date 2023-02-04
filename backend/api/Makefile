@@ -3,7 +3,6 @@ export FLASK_APP := local_backend.py
 PACKAGE_DIR = packages
 
 STATE_API_NAME := state_api
-WHISKY_API_NAME := whisky_api
 DRAW_JASPER_API_NAME := draw_jasper_api
 SALT_LEVEL_API_NAME := salt_level_api
 COMPARE_ACNH_API_NAME := compare_acnh_api
@@ -22,12 +21,10 @@ package_dir:
 	rm -rf $(PACKAGE_DIR)
 	mkdir -p $(PACKAGE_DIR)
 	mkdir -p $(PACKAGE_DIR)/$(STATE_API_NAME)
-	mkdir -p $(PACKAGE_DIR)/$(WHISKY_API_NAME)
 
 package: venv package_dir
 	echo "Packaging backend lambda functions"
 	venv/bin/pip install -r state_check/requirements.txt -t $(PACKAGE_DIR)/$(STATE_API_NAME)
-	venv/bin/pip install -r whisky_shelf/requirements.txt -t $(PACKAGE_DIR)/$(WHISKY_API_NAME)
 	venv/bin/pip install -r draw_jasper/requirements.txt -t $(PACKAGE_DIR)/$(DRAW_JASPER_API_NAME)
 	venv/bin/pip install -r salt_level/requirements.txt -t $(PACKAGE_DIR)/$(SALT_LEVEL_API_NAME)
 	venv/bin/pip install -r compare_acnh/requirements.txt -t $(PACKAGE_DIR)/$(COMPARE_ACNH_API_NAME)
@@ -35,7 +32,6 @@ package: venv package_dir
 	venv/bin/pip install -r chess/requirements.txt -t $(PACKAGE_DIR)/$(CHESS_API_NAME)
 	venv/bin/pip install -r linker/requirements.txt -t $(PACKAGE_DIR)/$(LINKER_API_NAME)
 	cp -r state_check/* $(PACKAGE_DIR)/$(STATE_API_NAME)
-	cp -r whisky_shelf/* $(PACKAGE_DIR)/$(WHISKY_API_NAME)
 	cp -r draw_jasper/* $(PACKAGE_DIR)/$(DRAW_JASPER_API_NAME)
 	cp -r salt_level/* $(PACKAGE_DIR)/$(SALT_LEVEL_API_NAME)
 	cp -r compare_acnh/* $(PACKAGE_DIR)/$(COMPARE_ACNH_API_NAME)
@@ -43,7 +39,6 @@ package: venv package_dir
 	cp -r chess/* $(PACKAGE_DIR)/$(CHESS_API_NAME)
 	cp -r linker/* $(PACKAGE_DIR)/$(LINKER_API_NAME)
 	cp -r base $(PACKAGE_DIR)/$(STATE_API_NAME)
-	cp -r base $(PACKAGE_DIR)/$(WHISKY_API_NAME)
 	cp -r base $(PACKAGE_DIR)/$(DRAW_JASPER_API_NAME)
 	cp -r base $(PACKAGE_DIR)/$(SALT_LEVEL_API_NAME)
 	cp -r base $(PACKAGE_DIR)/$(COMPARE_ACNH_API_NAME)
@@ -52,7 +47,6 @@ package: venv package_dir
 	cp -r base $(PACKAGE_DIR)/$(LINKER_API_NAME)
 	cd $(PACKAGE_DIR) && find . -maxdepth 6 -type f -name "*.pyc" -delete
 	cd $(PACKAGE_DIR)/$(STATE_API_NAME) && zip -r ../$(STATE_API_NAME).zip * > /dev/null
-	cd $(PACKAGE_DIR)/$(WHISKY_API_NAME) && zip -r ../$(WHISKY_API_NAME).zip * > /dev/null
 	cd $(PACKAGE_DIR)/$(DRAW_JASPER_API_NAME) && zip -r ../$(DRAW_JASPER_API_NAME).zip * > /dev/null
 	cd $(PACKAGE_DIR)/$(SALT_LEVEL_API_NAME) && zip -r ../$(SALT_LEVEL_API_NAME).zip * > /dev/null
 	cd $(PACKAGE_DIR)/$(COMPARE_ACNH_API_NAME) && zip -r ../$(COMPARE_ACNH_API_NAME).zip * > /dev/null

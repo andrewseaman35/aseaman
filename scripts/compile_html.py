@@ -20,7 +20,6 @@ RENDER_HTML_EXTENSION = {"index"}
 
 OMITTED_TEMPLATES = {
     # (relative_file_dir, file_path)
-    ("", "whisky_shelf.jinja2")
 }
 
 

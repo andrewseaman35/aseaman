@@ -27,9 +27,6 @@ body {
     &.about {
         @import "pipeline.scss";
     }
-    #whisky-container {
-        @import "whisky_shelf.scss";
-    }
     .project-car {
         @import "project_car.scss";
     }
