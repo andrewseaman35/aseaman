@@ -6,6 +6,7 @@ import string
 import time
 
 import qrcode
+import qrcode.image.svg
 
 from base.lambda_handler_base import APILambdaHandlerBase
 from base.api_exceptions import (
@@ -173,14 +174,19 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
         return [self._format_ddb_item(ddbItem) for ddbItem in ddbItems]
 
     # @requires_user_group('link-manager')
-    def _generate_qr_code(self, link, direct=False):
+    def _generate_qr_code(self, link, direct=False, svg=False):
         print(f"Generating QR code for {link['id']}")
         redirected_url = f"{self.site_url}/l#{link['id']}"
         url = link["url"] if direct else redirected_url
 
-        qr_png = qrcode.make(url)
+        if svg:
+            factory = qrcode.image.svg.SvgImage
+            qr_img = qrcode.make(url, image_factory=factory)
+        else:
+            qr_img = qrcode.make(url)
+
         with io.BytesIO() as output:
-            qr_png.save(output)
+            qr_img.save(output)
             contents = base64.b64encode(output.getvalue())
 
         return contents.decode("utf-8")
