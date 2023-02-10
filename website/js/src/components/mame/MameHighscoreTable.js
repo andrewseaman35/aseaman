@@ -6,30 +6,40 @@ import {
 } from './api';
 
 
+const scoreDataStore = {};
+
+
 const MameHighscoreTable = (props) => {
     const [scores, setScores] = useState(null);
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
 
     useEffect(() => {
+        console.log(scoreDataStore)
         if (props.gameId) {
             setLoading(true);
-            getScoresByGameId(props.gameId)
-                .then((scores) => {
-                    if (scores.errorMessage) {
-                        setErrorMessage(scores.errorMessage);
-                        setScores(null);
-                    } else {
-                        setErrorMessage(null);
-                        setScores(scores);
-                    }
-                }, (error) => {
-                    console.log(error)
-                    setErrorMessage(error.responseJSON.message);
-                })
-                .then(() => {
-                    setLoading(false);
-                });
+            if (scoreDataStore[props.gameId]) {
+                setScores(scoreDataStore[props.gameId]);
+                setLoading(false);
+            } else {
+                getScoresByGameId(props.gameId)
+                    .then((scores) => {
+                        if (scores.errorMessage) {
+                            setErrorMessage(scores.errorMessage);
+                            setScores(null);
+                        } else {
+                            scoreDataStore[props.gameId] = scores
+                            setErrorMessage(null);
+                            setScores(scores);
+                        }
+                    }, (error) => {
+                        console.log(error)
+                        setErrorMessage(error.responseJSON.message);
+                    })
+                    .then(() => {
+                        setLoading(false);
+                    });
+            }
         }
     }, [props.gameId])
 
