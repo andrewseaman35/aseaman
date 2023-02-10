@@ -15,7 +15,6 @@ const MameHighscoreTable = (props) => {
     const [errorMessage, setErrorMessage] = useState(null);
 
     useEffect(() => {
-        console.log(scoreDataStore)
         if (props.gameId) {
             setLoading(true);
             if (scoreDataStore[props.gameId]) {
