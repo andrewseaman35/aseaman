@@ -32,5 +32,5 @@ six==1.11.0
 toml==0.10.2
 tomli==2.0.1
 typing_extensions==4.1.1
-urllib3==1.25.11
+urllib3==1.26.5
 virtualenv==20.13.1
