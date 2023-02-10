@@ -88,6 +88,32 @@ module "compare_acnh_iam_role_policy" {
   api_name   = "compare_acnh-api"
 }
 
+module "event_api" {
+  source     = "../serverless_api"
+  zip_file   = "../../api/packages/event_api.zip"
+  api_name   = "event-api"
+  path_part  = "event"
+  deploy_env = var.deploy_env
+  hostname   = var.hostname
+
+  cognito_user_pool_arn = var.cognito_user_pool_arn
+  cognito_user_pool_id  = var.cognito_user_pool_id
+
+  rest_api_root_resource_id       = aws_api_gateway_rest_api.rest_api.root_resource_id
+  rest_api_id                     = aws_api_gateway_rest_api.rest_api.id
+  get_method_authorization        = "NONE"
+  post_method_authorization       = "NONE"
+  get_proxy_method_authorization  = "NONE"
+  post_proxy_method_authorization = "NONE"
+}
+
+module "event_iam_role_policy" {
+  source     = "../roles/event"
+  role       = module.event_api.api_role_id
+  deploy_env = var.deploy_env
+  api_name   = "event-api"
+}
+
 module "mame_highscore_api" {
   source     = "../serverless_api"
   zip_file   = "../../api/packages/mame_highscore_api.zip"
@@ -175,6 +201,7 @@ resource "aws_api_gateway_deployment" "api_gateway_deployment" {
       salt_level_api     = module.salt_level_api.api_resource_module_ids
       draw_jasper_api    = module.draw_jasper_api.api_resource_module_ids
       compare_acnh_api   = module.compare_acnh_api.api_resource_module_ids
+      event_api          = module.event_api.api_resource_module_ids
       mame_highscore_api = module.mame_highscore_api.api_resource_module_ids
       chess_api          = module.chess_api.api_resource_module_ids
       linker_api         = module.linker_api.api_resource_module_ids
@@ -194,6 +221,9 @@ resource "aws_api_gateway_deployment" "api_gateway_deployment" {
 
     module.compare_acnh_api.aws_api_gateway_method,
     module.compare_acnh_api.aws_api_gateway_integration,
+
+    module.event_api.aws_api_gateway_method,
+    module.event_api.aws_api_gateway_integration,
 
     module.mame_highscore_api.aws_api_gateway_method,
     module.mame_highscore_api.aws_api_gateway_integration,

@@ -18,6 +18,7 @@ else
         DRAW_JASPER_API_NAME=draw_jasper-api-$DEPLOY_ENV-$BRANCH-$NONCE \
         SALT_LEVEL_API_NAME=salt_level-api-$DEPLOY_ENV-$BRANCH-$NONCE \
         COMPARE_ACNH_API_NAME=compare_acnh-api-$DEPLOY_ENV-$BRANCH-$NONCE \
+        EVENT_API_NAME=event-api-$DEPLOY_ENV-$BRANCH-$NONCE \
         MAME_HIGHSCORE_API_NAME=mame_highscore-api-$DEPLOY_ENV-$BRANCH-$NONCE \
         CHESS_API_NAME=chess-api-$DEPLOY_ENV-$BRANCH-$NONCE \
         HOSTED_ZONE_ID=Z1NTL75ESDHPUU \

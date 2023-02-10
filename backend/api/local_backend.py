@@ -101,6 +101,14 @@ def chess(resource):
     return convert_to_response(result)
 
 
+@app.route("/event/", methods=["GET", "POST"], defaults={"resource": None})
+@app.route("/event/<resource>/", methods=["GET", "POST"])
+def event(resource):
+    payload = get_payload(request)
+    result = make_lambda_request("event", request, payload, None)
+    return convert_to_response(result)
+
+
 @app.route(
     "/linker/", methods=["GET", "POST", "PUT", "DELETE"], defaults={"resource": None}
 )
