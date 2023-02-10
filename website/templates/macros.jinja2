@@ -6,6 +6,10 @@
     <a href="{{ ROOT_URL }}{{ path }}" title="{{ text }}">{{text}}</a>
 {%- endmacro %}
 
+{% macro path(path) -%}
+    {{ ROOT_URL }}{{ path }}
+{%- endmacro %}
+
 {% macro stl_url(path) -%}
     {{ PUBLIC_BUCKET_URL }}aseaman/models/{{ path }}
 {%- endmacro %}

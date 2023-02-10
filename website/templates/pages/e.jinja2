@@ -16,7 +16,9 @@
 {% block include_js %}
     <script>
         window.aseaman.ready(function(exports) {
-            exports.event.track();
+            exports.event.track({
+                successRedirect: "{{ macros.path("event/success") }}"
+            });
         });
     </script>
 {% endblock %}

@@ -59,6 +59,7 @@ body {
         @import "links.scss";
     }
     &.error-page,
+    &.event,
     &.linker {
        .inner {
             height: 100%;

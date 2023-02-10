@@ -46,6 +46,13 @@ const SORTED_METADATA = [
         initialValue: false,
     },
     {
+        key: 'locked',
+        label: 'Locked',
+        editable: true,
+        type: 'checkbox',
+        initialValue: false,
+    },
+    {
         key: 'time_created',
         label: 'Created',
         editable: false,
@@ -64,6 +71,9 @@ const SORTED_METADATA = [
 const ITEM_FORMATTERS = {
     active: (s) => (
         {true: 'Active', false: 'Inactive'}[s]
+    ),
+    locked: (s) => (
+        {true: 'Locked', false: '-'}[s]
     ),
     time_created: toReadableDate,
     time_updated: toReadableDate,

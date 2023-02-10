@@ -12,6 +12,7 @@ from base.api_exceptions import (
     BadRequestException,
     NotFoundException,
     UnauthorizedException,
+    ForbiddenException,
 )
 from base.helpers import (
     requires_authentication,
@@ -56,10 +57,12 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
         }
 
     def _format_ddb_item(self, ddbItem):
+        locked = False if "locked" not in ddbItem else ddbItem["locked"]["BOOL"]
         return {
             "id": ddbItem["id"]["S"],
             "url": ddbItem["url"]["S"],
             "active": ddbItem["active"]["BOOL"],
+            "locked": locked,
             "name": ddbItem["name"]["S"],
             "time_created": ddbItem["time_created"]["N"],
             "time_updated": ddbItem["time_updated"]["N"],
@@ -70,7 +73,7 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
         if not self.user["username"] or self.user["username"] != owner:
             raise UnauthorizedException("Log in to access this link")
 
-    def _build_link_item(self, url, name, active=False):
+    def _build_link_item(self, url, name, active=False, locked=False):
         timestamp = self._get_timestamp()
         item = {
             "id": {
@@ -85,6 +88,9 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
             "active": {
                 "BOOL": active,
             },
+            "locked": {
+                "BOOL": locked,
+            },
             "owner": {
                 "S": self.user["username"],
             },
@@ -98,7 +104,9 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
 
         return item
 
-    def _build_update_expression_parameters(self, url=None, name=None, active=None):
+    def _build_update_expression_parameters(
+        self, url=None, name=None, active=None, locked=None
+    ):
         expression_items = ["SET #tu = :tu"]
         attribute_names = {
             "#tu": "time_updated",
@@ -116,6 +124,10 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
             expression_items.append("#act = :act")
             attribute_names["#act"] = "active"
             attribute_values[":act"] = {"BOOL": active}
+        if locked is not None:
+            expression_items.append("#loc = :loc")
+            attribute_names["#loc"] = "locked"
+            attribute_values[":loc"] = {"BOOL": locked}
 
         return (
             ", ".join(expression_items),
@@ -182,13 +194,13 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
         )
         return self._format_ddb_item(ddbItem)
 
-    def _update_link(self, link_id, url=None, name=None, active=None):
+    def _update_link(self, link_id, url=None, name=None, active=None, locked=None):
         print(f"Updating link {link_id}")
         (
             update_expression,
             expression_attribute_names,
             expression_attribute_values,
-        ) = self._build_update_expression_parameters(url, name, active)
+        ) = self._build_update_expression_parameters(url, name, active, locked)
         ddbItem = self.ddb_client.update_item(
             TableName=self.table_name,
             Key={"id": {"S": link_id}},
@@ -262,13 +274,16 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
         if not link_id:
             raise BadRequestException("id required")
 
-        self.__fetch_link(link_id)
+        link = self.__fetch_link(link_id)
+        if link["locked"]:
+            raise ForbiddenException("cannot update locked link")
 
         result = self._update_link(
             link_id,
             url=self.params.get("url"),
             name=self.params.get("name"),
             active=self.params.get("active"),
+            locked=self.params.get("locked"),
         )
 
         return {**self._empty_response(), "body": json.dumps(result)}
@@ -279,7 +294,10 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
         if not link_id:
             raise BadRequestException("id required")
 
-        self.__fetch_link(link_id)
+        link = self.__fetch_link(link_id)
+        if link["locked"]:
+            raise ForbiddenException("cannot delete locked link")
+
         self._delete_link(link_id)
 
         return {**self._empty_response(), "body": json.dumps({})}
