@@ -5,6 +5,7 @@ const constants = require('./constants');
 const utils = require('./utils');
 
 const auth = require('./auth');
+const event = require('./event');
 const header = require('./header');
 const initMultiImageContainers = require('./multiImageContainer');
 const linker = require('./linker');
@@ -41,6 +42,7 @@ const modules = {
     auth,
     config,
     constants,
+    event,
     linker,
     header,
     utils,
