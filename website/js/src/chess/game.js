@@ -11,6 +11,7 @@ import {
     TURN_STATE,
     GAME_MODE,
     MOVE_TYPE,
+    NUM_RANKS,
 } from './constants';
 
 import Analyzer from './analyzer';
@@ -47,7 +48,7 @@ const GAME_ID_LENGTH = 6;
 const POLL_INTERVAL = 5000;
 
 const WHITE_PIECE_SETUP = [
-    { Piece: Pawn, startingPositions: ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2'] },
+    { Piece: Pawn, startingPositions: ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H16'] },
     { Piece: Rook, startingPositions: ['A1', 'H1'] },
     { Piece: Knight, startingPositions: ['B1', 'G1'] },
     { Piece: Bishop, startingPositions: ['C1', 'F1'] },
@@ -55,13 +56,14 @@ const WHITE_PIECE_SETUP = [
     { Piece: King, startingPositions: ['E1'] },
 ];
 
+const oppositeRank = (r) => NUM_RANKS - Number(r) + 1;
 const BLACK_PIECE_SETUP = [
-    { Piece: Pawn, startingPositions: ['A7', 'B7', 'C7', 'D7', 'E7', 'F7', 'G7', 'H7'] },
-    { Piece: Rook, startingPositions: ['A8', 'H8'] },
-    { Piece: Knight, startingPositions: ['B8', 'G8'] },
-    { Piece: Bishop, startingPositions: ['C8', 'F8'] },
-    { Piece: Queen, startingPositions: ['D8'] },
-    { Piece: King, startingPositions: ['E8'] },
+    { Piece: Pawn, startingPositions: WHITE_PIECE_SETUP[0].startingPositions.map(x => `${x[0]}${oppositeRank(x[1])}`) },
+    { Piece: Rook, startingPositions: WHITE_PIECE_SETUP[1].startingPositions.map(x => `${x[0]}${oppositeRank(x[1])}`) },
+    { Piece: Knight, startingPositions: WHITE_PIECE_SETUP[2].startingPositions.map(x => `${x[0]}${oppositeRank(x[1])}`) },
+    { Piece: Bishop, startingPositions: WHITE_PIECE_SETUP[3].startingPositions.map(x => `${x[0]}${oppositeRank(x[1])}`) },
+    { Piece: Queen, startingPositions: WHITE_PIECE_SETUP[4].startingPositions.map(x => `${x[0]}${oppositeRank(x[1])}`) },
+    { Piece: King, startingPositions: WHITE_PIECE_SETUP[5].startingPositions.map(x => `${x[0]}${oppositeRank(x[1])}`) },
 ];
 
 

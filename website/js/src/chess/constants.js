@@ -47,18 +47,24 @@ const GAME_MODE = {
     NETWORK: 'network',
 };
 
+const movementRanks = Array.from({length: NUM_RANKS - 1}, (_, i) => i + 1)
+const diagonalSpaces = (NUM_FILES > NUM_RANKS ?
+    Array.from({length: NUM_FILES - 1}, (_, i) => i + 1) :
+    movementRanks
+);
+
 const MOVEMENT_GROUPS = {
     DIAGONALS: [
-        [[1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 6], [7, 7]],
-        [[1, -1], [2, -2], [3, -3], [4, -4], [5, -5], [6, -6], [7, -7]],
-        [[-1, 1], [-2, 2], [-3, 3], [-4, 4], [-5, 5], [-6, 6], [-7, 7]],
-        [[-1, -1], [-2, -2], [-3, -3], [-4, -4], [-5, -5], [-6, -6], [-7, -7]],
+        diagonalSpaces.map((x) => [x, x]),
+        diagonalSpaces.map((x) => [x, -x]),
+        diagonalSpaces.map((x) => [-x, x]),
+        diagonalSpaces.map((x) => [-x, -x]),
     ],
     SQUARE: [
-        [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7]],
-        [[0, -1], [0, -2], [0, -3], [0, -4], [0, -5], [0, -6], [0, -7]],
-        [[1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0]],
-        [[-1, 0], [-2, 0], [-3, 0], [-4, 0], [-5, 0], [-6, 0], [-7, 0]],
+        movementRanks.map((x) => [0, x]),
+        movementRanks.map((x) => [0, -x]),
+        movementRanks.map((x) => [x, 0]),
+        movementRanks.map((x) => [-x, 0]),
     ],
 };
 

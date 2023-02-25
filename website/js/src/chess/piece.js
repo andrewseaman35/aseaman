@@ -153,14 +153,6 @@ class Pawn extends Piece {
         if (previousTurn === null) {
             return [];
         }
-        const currentRank = rankFromPosition(space.position);
-
-        // Moving pawn must be on fifth rank
-        const fifthRankForSide = this.side === SIDE.WHITE ? 5 : 4;
-        if (currentRank !== fifthRankForSide) {
-            return [];
-        }
-
         // Previous turn must have had the captured pawn make a double step
         if (previousTurn.piece.notation !== PIECE_NOTATION.PAWN) {
             return [];
@@ -168,6 +160,13 @@ class Pawn extends Piece {
         const startingRank = rankFromPosition(previousTurn.startingSpacePosition);
         const endingRank = rankFromPosition(previousTurn.endingSpacePosition);
         if (Math.abs(startingRank - endingRank) !== 2) {
+            return [];
+        }
+
+        // Captured pawn must be on adjacent the same rank as the moving pawn
+        const currentRank = rankFromPosition(space.position);
+        const capturedPawnRank = rankFromPosition(previousTurn.endingSpacePosition);
+        if (currentRank !== capturedPawnRank) {
             return [];
         }
 

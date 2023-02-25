@@ -123,7 +123,7 @@ class Board {
 
         let spaceIndex = 0;
         _.times(NUM_RANKS, () => {
-            const rank = Math.ceil(spaceIndex / NUM_RANKS) + 1;
+            const rank = Math.ceil(spaceIndex / NUM_FILES) + 1;
             const row = $('<tr></tr>').attr('id', `row-${rank}`);
 
             const rankLabelCell = $(`<td>${rank}</td>`)

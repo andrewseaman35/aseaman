@@ -20,6 +20,11 @@ function rankFromIndex(index) {
 }
 
 function fileFromPosition(position) {
+    if (position === null) {
+        return null;
+    }
+    console.log(`FILE FROM POSOITION`)
+    console.log(position)
     return fileFromIndex(positionToIndex(position));
 }
 
@@ -29,6 +34,8 @@ function rankFromPosition(position) {
 
 function positionToIndex(position) {
     // subtract 65 to map 'A' to 0
+    console.log("POSITIONTOINDE")
+    console.log(position)
     const file = position.toUpperCase().charCodeAt(0) - 65;
     const rank = parseInt(position.substring(1)) - 1;
     return (rank * NUM_FILES) + file;

@@ -6,6 +6,9 @@ $space-light: #CB9053;
 }
 
 #board-container {
+    max-width: 800px;
+    overflow: scroll;
+
     table {
         border-collapse: unset;
         border: 1px solid black;
@@ -28,6 +31,9 @@ $space-light: #CB9053;
         padding: 0;
 
         &.space {
+            min-width: 64px;
+            min-height: 64px;
+
             &.dark {
                 background-color: $space-dark;
             }
