@@ -48,7 +48,7 @@ const GAME_ID_LENGTH = 6;
 const POLL_INTERVAL = 5000;
 
 const WHITE_PIECE_SETUP = [
-    { Piece: Pawn, startingPositions: ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H16'] },
+    { Piece: Pawn, startingPositions: ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2'] },
     { Piece: Rook, startingPositions: ['A1', 'H1'] },
     { Piece: Knight, startingPositions: ['B1', 'G1'] },
     { Piece: Bishop, startingPositions: ['C1', 'F1'] },
