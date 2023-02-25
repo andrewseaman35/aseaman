@@ -1,5 +1,5 @@
-const BOARD_WIDTH = 8;
-const BOARD_HEIGHT = 8;
+const NUM_RANKS = 8;
+const NUM_FILES = 8;
 
 const SIDE = {
     BLACK: 'BLACK',
@@ -71,8 +71,8 @@ const MOVE_TYPE = {
 };
 
 module.exports = {
-    BOARD_HEIGHT,
-    BOARD_WIDTH,
+    NUM_FILES,
+    NUM_RANKS,
 
     GAME_MODE,
     GAME_STATE,

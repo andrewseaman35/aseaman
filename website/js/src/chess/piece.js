@@ -9,6 +9,7 @@ import {
     PIECE_NOTATION,
     MOVEMENT_GROUPS,
     MOVE_TYPE,
+    NUM_RANKS,
 } from './constants';
 
 import {
@@ -136,8 +137,8 @@ class Pawn extends Piece {
 
     getPossibleMoves(board, space, previousTurn) {
         const possibleMoves = super.getPossibleMoves(board, space, previousTurn);
-        const rankBeforePromotion = this.isWhite ? 7 : 2;
-        const rankOfPromotion = this.isWhite ? 8 : 1;
+        const rankBeforePromotion = this.isWhite ? (NUM_RANKS - 1) : 2;
+        const rankOfPromotion = this.isWhite ? NUM_RANKS : 1;
         if (rankFromPosition(space.position) === rankBeforePromotion) {
             _.each(possibleMoves, (move) => {
                 if (rankFromPosition(move.position) === rankOfPromotion) {

@@ -2,8 +2,8 @@ import $ from 'jquery';
 import _ from 'lodash';
 
 import {
-    BOARD_WIDTH,
-    BOARD_HEIGHT,
+    NUM_RANKS,
+    NUM_FILES,
     SPACE_STATE,
     MOVE_TYPE,
     SIDE,
@@ -21,7 +21,7 @@ import Space from './space';
 
 class Board {
     constructor() {
-        this.spaces = _.times(BOARD_WIDTH * BOARD_HEIGHT, i => new Space(i));
+        this.spaces = _.times(NUM_RANKS * NUM_FILES, i => new Space(i));
     }
 
     setOnSpaceSelectListener(listener) {
@@ -122,15 +122,15 @@ class Board {
         container.append(table);
 
         let spaceIndex = 0;
-        _.times(BOARD_WIDTH, () => {
-            const rank = Math.floor(spaceIndex / 8) + 1;
+        _.times(NUM_RANKS, () => {
+            const rank = Math.floor(spaceIndex / NUM_RANKS) + 1;
             const row = $('<tr></tr>').attr('id', `row-${rank}`);
 
             const rankLabelCell = $(`<td>${rank}</td>`)
                 .attr('class', 'board-label rank');
             row.append(rankLabelCell);
 
-            _.times(BOARD_HEIGHT, () => {
+            _.times(NUM_FILES, () => {
                 const position = indexToPosition(spaceIndex);
                 const cell = $('<td></td>')
                     .attr('id', position)
@@ -144,7 +144,7 @@ class Board {
         });
         const fileLabelRow = $('<tr></tr>').attr('id', 'row-file-label');
         fileLabelRow.append($('<td></td>').attr('class', 'board-label empty'));
-        _.times(BOARD_WIDTH, (i) => {
+        _.times(NUM_RANKS, (i) => {
             const fileLabelCell = $(`<td>${fileFromIndex(i)}</td>`)
                 .attr('class', 'board-label file');
             fileLabelRow.append(fileLabelCell);

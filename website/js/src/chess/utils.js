@@ -1,3 +1,7 @@
+import {
+    NUM_RANKS
+} from './constants';
+
 function determineSpaceColor(position) {
     const index = positionToIndex(position);
     const spaceColorVal = Math.floor(index / 8) + (index % 8) + 1;
@@ -45,7 +49,7 @@ function incrementFile(file, increment) {
 
 function incrementRank(rank, increment) {
     const incrementedRank = rank + increment;
-    if (incrementedRank < 1 || incrementedRank > 8) {
+    if (incrementedRank < 1 || incrementedRank > (NUM_RANKS)) {
         return null;
     }
     return incrementedRank;
