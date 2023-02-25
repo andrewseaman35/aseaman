@@ -123,7 +123,7 @@ class Board {
 
         let spaceIndex = 0;
         _.times(NUM_RANKS, () => {
-            const rank = Math.floor(spaceIndex / NUM_RANKS) + 1;
+            const rank = Math.ceil(spaceIndex / NUM_RANKS) + 1;
             const row = $('<tr></tr>').attr('id', `row-${rank}`);
 
             const rankLabelCell = $(`<td>${rank}</td>`)
@@ -144,7 +144,7 @@ class Board {
         });
         const fileLabelRow = $('<tr></tr>').attr('id', 'row-file-label');
         fileLabelRow.append($('<td></td>').attr('class', 'board-label empty'));
-        _.times(NUM_RANKS, (i) => {
+        _.times(NUM_FILES, (i) => {
             const fileLabelCell = $(`<td>${fileFromIndex(i)}</td>`)
                 .attr('class', 'board-label file');
             fileLabelRow.append(fileLabelCell);
