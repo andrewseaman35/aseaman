@@ -30,8 +30,6 @@ import {
 } from './piece';
 
 import {
-    createNewGame,
-    loadUserGames,
     fetchGame,
     saveTurn,
 } from  './api';
@@ -41,10 +39,6 @@ import {
     SCHOLARS_MATE,
 } from './replays';
 
-const REMOTE_CHESS_ENABLED = true;
-const GAME_ID_SELECT_DEFAULT = 'default'
-
-const GAME_ID_LENGTH = 6;
 const POLL_INTERVAL = 5000;
 
 const WHITE_PIECE_SETUP = [
@@ -92,39 +86,12 @@ class ChessGame {
 
         this.board.render();
 
-        this.initializeGameStartModal();
-
         this.remoteChess = null;
         this.handConnected = false;
-        if (REMOTE_CHESS_ENABLED) {
-            this.remoteChess = new RemoteChess();
-            this.initializeRemoteChess();
-        }
+        this.remoteChess = new RemoteChess();
+        // this.initializeRemoteChess();
 
         console.log(this);
-    }
-
-    initializeGameStartModal() {
-        if (isLoggedIn()) {
-            loadUserGames().then((response) => {
-                response.forEach(game => {
-                    $('#owned-game-id-select').append(`<option value="${game.game_id}">${game.game_id} (${game.game_mode})</option>`)
-                })
-                $('#owned-game-id-select')[0].children[0].innerHTML = 'Select a game'
-                $('#owned-game-id-select').on('change', this.onGameIdSelect.bind(this));
-                $('#owned-game-id-select').prop('disabled', false);
-            });
-            $("#network-game-mode-container").removeClass("logged-out");
-            $("#network-game-mode-container").addClass("logged-in");
-        } else {
-            $('#owned-game-id-select')[0].children[0].innerHTML = '--';
-            $("#network-game-mode-container").removeClass("logged-in");
-            $("#network-game-mode-container").addClass("logged-out");
-        }
-        $('input[name="game-mode"]').on('change', this.onGameModeRadioButtonChange.bind(this));
-        $('#load-game-button').on('click', this.onLoadGameButtonClick.bind(this));
-        $('#load-game-id-input').on('input', this.onLoadGameButtonChange.bind(this));
-        $('.new-game-button').on('click', this.onStartNewGameButtonClick.bind(this));
     }
 
     initializeRemoteChess() {
@@ -349,66 +316,56 @@ class ChessGame {
         );
     }
 
-    onGameIdSelect(e) {
-        const gameId = e.currentTarget.value != GAME_ID_SELECT_DEFAULT ? e.currentTarget.value : '';
-        $('#load-game-id-input')[0].value = gameId;
-        this.onLoadGameButtonChange();
+    newGame(game) {
+        this.gameId = game.id,
+        this.gameMode = game.mode;
+        const playerTwo = game.playerTwo;
+
+        this.gameInfo.setGameId(this.gameId);
+        this.gameInfo.setGameMode(this.gameMode);
+        this.gameInfo.setOpponent(playerTwo);
+        this.gameInfo.setPlayingAs(this.gameMode === GAME_MODE.NETWORK ? this.localPlayerSide : null);
+
+        this.localPlayerSide = SIDE.WHITE;
+
+        this.initializeGame();
+        this.startGame();
     }
 
-    onGameModeRadioButtonChange(e) {
-        const gameMode = e.currentTarget.value;
-        if(gameMode === GAME_MODE.NETWORK) {
-            $("#network-game-mode-container").show();
-        } else {
-            $("#network-game-mode-container").hide();
-        }
-    }
+    loadGame(game) {
+        this.gameId = game.id;
+        this.gameMode = game.mode;
+        this.gameInfo.setGameId(this.gameId)
+        this.gameInfo.setGameMode(this.gameMode)
 
-    onLoadGameButtonClick() {
-        const gameId = $('#load-game-id-input')[0].value;
-        $('#load-game-button').attr('disabled', true);
-        $('#load-error').hide();
-        fetchGame(gameId).then(
-            (response) => {
-                this.gameId = response.game_id;
-                this.gameMode = response.game_mode;
-                this.gameInfo.setGameId(this.gameId);
-                this.gameInfo.setGameMode(this.gameMode);
-                if (this.gameMode === GAME_MODE.NETWORK) {
-                    if (isLoggedIn()) {
-                        this.isPlayerOne = response.player_one === this.currentUser;
-                        this.localPlayerSide = this.isPlayerOne ? SIDE.WHITE : SIDE.BLACK;
-                        const opponent = this.isPlayerOne ? response.player_two : response.player_one;
-                        this.gameInfo.setOpponent(opponent);
-                    } else {
-                        this.localPlayerSide = SIDE.BLACK;
-                    }
-                    this.gameInfo.setPlayingAs(this.localPlayerSide);
-                } else {
-                    this.gameInfo.setPlayingAs(null);
-                }
-                this.turns = _.map(response.turns, turn => ChessTurn.deserialize(turn));
-                this.gameState = GAME_STATE.REPLAY;
-                this.replayTurnIndex = 0;
-                _.times(this.turns.length, () => {
-                    this.executeNextReplayTurn();
-                });
-                this.initializeGame();
-
-                const ourTurnModTwoRemainder = this.localPlayerSide === SIDE.BLACK ? 1 : 0;
-                const isOurTurn = this.turns.length % 2 === ourTurnModTwoRemainder;
-                if (this.gameMode === GAME_MODE.NETWORK && !isOurTurn) {
-                    this.pollForNextTurn();
-                } else {
-                    this.startGame();
-                }
-            },
-            (error) => {
-                $('#load-error').text(error.responseJSON.message);
-                $('#load-error').show();
-                $('#load-game-button').attr('disabled', false);
+        if (this.gameMode === GAME_MODE.NETWORK) {
+            if (isLoggedIn()) {
+                this.isPlayerOne = game.playerOne === this.currentUser;
+                this.localPlayerSide = this.isPlayerOne ? SIDE.WHITE : SIDE.BLACK;
+                const opponent = this.isPlayerOne ? game.playerTwo : game.playerOne;
+                this.gameInfo.setOpponent(opponent);
+            } else {
+                this.localPlayerSide = SIDE.BLACK;
             }
-        );
+            this.gameInfo.setPlayingAs(this.localPlayerSide);
+        } else {
+            this.gameInfo.setPlayingAs(null);
+        }
+        this.turns = _.map(game.turns, turn => ChessTurn.deserialize(turn));
+        this.gameState = GAME_STATE.REPLAY;
+        this.replayTurnIndex = 0;
+        _.times(this.turns.length, () => {
+            this.executeNextReplayTurn();
+        });
+        this.initializeGame();
+
+        const ourTurnModTwoRemainder = this.localPlayerSide === SIDE.BLACK ? 1 : 0;
+        const isOurTurn = this.turns.length % 2 === ourTurnModTwoRemainder;
+        if (this.gameMode === GAME_MODE.NETWORK && !isOurTurn) {
+            this.pollForNextTurn();
+        } else {
+            this.startGame();
+        }
     }
 
     toggleRemoteSetupContents() {
@@ -426,56 +383,6 @@ class ChessGame {
         const controllerInitialized = $('.controller-status .toplevel-status').textContent === 'OK';
         const serverInitialized = $('.server-status .toplevel-status').textContent === 'OK';
         this.remoteChess.initialized = octoprintInitialized && controllerInitialized && serverInitialized;
-    }
-
-    onLoadGameButtonChange() {
-        const gameId = $('#load-game-id-input')[0].value;
-        $('#load-error').hide();
-        $('#load-game-button').attr('disabled', (gameId.length < GAME_ID_LENGTH));
-        $('#owned-game-id-select')[0].children[0].selected = true;
-        for (let i = 0; i < $('#owned-game-id-select')[0].children.length; i++) {
-            const child = $('#owned-game-id-select')[0].children[i];
-            if (child.value == gameId) {
-                child.selected = true;
-                break;
-            }
-        }
-        if (this.remoteChess) {
-            this.initializedRemoteChessIfReady();
-        }
-    }
-
-    onStartNewGameButtonClick(event) {
-        const checkedItem = $('input[name="game-mode"]:checked')[0];
-        $('#new-game-error').hide();
-        $('.new-game-button').attr('disabled', true);
-
-        this.gameMode = checkedItem.value;
-        this.gameInfo.setGameMode(this.gameMode);
-
-        const canHaveOpponent = isLoggedIn() && this.gameMode === GAME_MODE.NETWORK;
-        const playerTwo = canHaveOpponent ? $('#network-opponent')[0].value : null;
-        this.gameInfo.setOpponent(playerTwo);
-
-        this.localPlayerSide = SIDE.WHITE;
-        this.gameInfo.setPlayingAs(this.gameMode === GAME_MODE.NETWORK ? this.localPlayerSide : null);
-        if (this.remoteChess) {
-            this.initializedRemoteChessIfReady();
-        }
-        createNewGame(this.gameMode, playerTwo).then(
-            (response) => {
-                this.gameId = response.game_id;
-                this.gameInfo.setGameId(this.gameId);
-                this.initializeGame();
-                this.startGame();
-            },
-            (error) => {
-                this.gameMode = null;
-                $('#new-game-error').text(error.responseJSON.message);
-                $('#new-game-error').show();
-                $('.new-game-button').attr('disabled', false);
-            }
-        );
     }
 
     pollForNextTurn() {

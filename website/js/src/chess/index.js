@@ -1,7 +1,7 @@
-import ChessGame from './game';
+import ChessCoordinator from './coordinator';
 
 function initChess(el) {
-    const game = new ChessGame();
+    new ChessCoordinator();
 }
 
 module.exports = {
