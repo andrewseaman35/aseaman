@@ -29,6 +29,6 @@ jobs:
     - run: "./scripts/travis_env.sh"
     - run: make -C backend test_ci
     - run: "./scripts/"
-    services:
+    # services:
 #       # This item has no matching transformer
 #       docker:
