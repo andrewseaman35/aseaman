@@ -1,7 +1,8 @@
 import ChessCoordinator from './coordinator';
 
 function initChess(el) {
-    new ChessCoordinator();
+    const coordinator = new ChessCoordinator();
+    coordinator.initialize();
 }
 
 module.exports = {

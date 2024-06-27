@@ -8,6 +8,7 @@ import {
 
 
 import ChessGame from './game';
+import RemoteChess from './remoteChess';
 
 import {
     createNewGame,
@@ -25,8 +26,12 @@ class ChessCoordinator {
         console.log("coordinator")
         this.handConnected = false;
 
-        this.game = new ChessGame(this);
+        this.game = new ChessGame();
+        this.remoteChess = new RemoteChess();
+    }
 
+    initialize() {
+        this.game.setOnTurnHandler((board, turn) => this.onTurn(board, turn));
         this.initializeGameStartModal();
         this.initializeRemoteChess();
     }
@@ -77,12 +82,12 @@ class ChessCoordinator {
         const octoprintInitialized = $('.octoprint-status .toplevel-status').textContent === 'OK';
         const controllerInitialized = $('.controller-status .toplevel-status').textContent === 'OK';
         const serverInitialized = $('.server-status .toplevel-status').textContent === 'OK';
-        this.game.remoteChess.initialized = octoprintInitialized && controllerInitialized && serverInitialized;
+        this.remoteChess.initialized = octoprintInitialized && controllerInitialized && serverInitialized;
     }
 
     refreshServerStatus() {
         $('.server-status .toplevel-status').text('fetching...');
-        this.game.remoteChess.getServerStatus().then(
+        this.remoteChess.getServerStatus().then(
             (response) => {
                 $('.server-status .toplevel-status').text(response.status);
                 $('.server-status .toplevel-status').toggleClass('error-message', false);
@@ -101,7 +106,7 @@ class ChessCoordinator {
         $('#remote-home-octoprint').hide();
         $('#remote-refresh-octoprint').hide();
         $('#remote-hand-connected-octoprint').hide();
-        this.game.remoteChess.getOctoPrintStatus().then(
+        this.remoteChess.getOctoPrintStatus().then(
             (response) => {
                 let shhEverythingIsOkay = response.initialized;
                 if (response.initialized) {
@@ -157,7 +162,7 @@ class ChessCoordinator {
         $('.controller-status .status-item span').text('fetching...');
         $('#remote-initialize-controller').hide();
         $('#remote-refresh-controller').hide();
-        this.game.remoteChess.getControllerSerialStatus().then(
+        this.remoteChess.getControllerSerialStatus().then(
             (response) => {
                 let shhEverythingIsOkay = true;
                 if (response.initialized) {
@@ -192,7 +197,7 @@ class ChessCoordinator {
     onInitializeController() {
         $('#remote-initialize-controller').hide();
         $('.controller-status span.initialized').text('initializing...');
-        this.game.remoteChess.initializeController().then(
+        this.remoteChess.initializeController().then(
             () => this.refreshControllerStatus(),
             () => {
                 $('.controller-status span.initialized').text('error!');
@@ -204,7 +209,7 @@ class ChessCoordinator {
     onInitializeOctoPrint() {
         $('#remote-initialize-octoprint').hide();
         $('.octoprint-status span.initialized').text('initializing...');
-        this.game.remoteChess.initializeOctoPrint().then(
+        this.remoteChess.initializeOctoPrint().then(
             () => this.refreshOctoPrintStatus(),
             () => {
                 $('.octoprint-status span.initialized').text('error!');
@@ -216,7 +221,7 @@ class ChessCoordinator {
     onHomeAxes() {
         $('#remote-home-octoprint').hide();
         $('.octoprint-status-status span.homed').text('homing...');
-        this.game.remoteChess.homeAxes().then(
+        this.remoteChess.homeAxes().then(
             () => this.refreshControllerStatus(),
             () => {
                 $('.controller-status span.homed').text('error!');
@@ -239,7 +244,7 @@ class ChessCoordinator {
         const canHaveOpponent = isLoggedIn() && gameMode === GAME_MODE.NETWORK;
         const playerTwo = canHaveOpponent ? $('#network-opponent')[0].value : null;
 
-        if (this.game.remoteChess) {
+        if (this.remoteChess) {
             this.initializedRemoteChessIfReady();
         }
         createNewGame(gameMode, playerTwo).then(
@@ -293,7 +298,7 @@ class ChessCoordinator {
                 break;
             }
         }
-        if (this.game.remoteChess) {
+        if (this.remoteChess) {
             this.game.initializedRemoteChessIfReady();
         }
     }
@@ -310,6 +315,12 @@ class ChessCoordinator {
             $("#network-game-mode-container").show();
         } else {
             $("#network-game-mode-container").hide();
+        }
+    }
+
+    onTurn(board, turn) {
+        if (this.remoteChess && this.remoteChess.initialized) {
+            this.remoteChess.processTurn(board, turn);
         }
     }
 

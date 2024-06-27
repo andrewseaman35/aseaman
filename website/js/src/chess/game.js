@@ -18,7 +18,6 @@ import Analyzer from './analyzer';
 import Board from './board';
 import ChessTurn from './chessTurn';
 import GameInfo from './gameInfo';
-import RemoteChess from './remoteChess';
 
 import {
     Pawn,
@@ -62,7 +61,7 @@ const BLACK_PIECE_SETUP = [
 
 
 class ChessGame {
-    constructor(coordinator) {
+    constructor() {
         this.board = new Board();
         this.analyzer = new Analyzer();
         this.gameInfo = new GameInfo();
@@ -82,15 +81,12 @@ class ChessGame {
         this.gameState = GAME_STATE.NOT_STARTED;
         this.turns = [];
 
+        this.onTurnHandlers = [];
+
         this.replayTurnIndex = null;
 
         this.board.render();
 
-        // temp: for transition to coordinator
-        this.coordinator = coordinator;
-
-        this.remoteChess = null;
-        this.remoteChess = new RemoteChess();
         console.log(this);
     }
 
@@ -219,9 +215,7 @@ class ChessGame {
                     this.turns.push(lastTurn);
                     this.executeNextReplayTurn();
 
-                    if (this.remoteChess && this.remoteChess.initialized) {
-                        this.remoteChess.processTurn(this.board, lastTurn);
-                    }
+                    this.fireOnTurnHandlers(this.board, lastTurn);
 
                     this.gameState = GAME_STATE.PLAYING;
                     this.replayTurnIndex = null;
@@ -256,6 +250,14 @@ class ChessGame {
         }
         this.board.refreshBoard();
         this.endTurn();
+    }
+
+    setOnTurnHandler(handler) {
+        this.onTurnHandlers.push(handler);
+    }
+
+    fireOnTurnHandlers(board, turn) {
+        this.onTurnHandlers.forEach(f => f(board, turn));
     }
 
     onPromotionSelect(event) {
@@ -315,9 +317,7 @@ class ChessGame {
                 this.board.executeTurn(this.currentTurn);
                 this.board.refreshBoard();
 
-                if (this.remoteChess && this.remoteChess.initialized) {
-                    this.remoteChess.processTurn(this.board, this.currentTurn);
-                }
+                this.fireOnTurnHandlers(this.board, this.currentTurn);
 
                 if (this.currentTurn.isPromotion && this.currentTurn.promotedToPiece === null) {
                     this.gameState = GAME_STATE.AWAITING_INPUT;
