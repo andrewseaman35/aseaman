@@ -60,7 +60,9 @@ class ChessCoordinator {
     }
 
     initializeRemoteChess() {
+        $('.board-setup-container').show();
         $('.remote-setup-container').show();
+        $('#toggle-board-setup').on('click', () => this.toggleBoardSetupContents());
         $('#toggle-remote-setup').on('click', () => this.toggleRemoteSetupContents());
         $('#remote-initialize-controller').on('click', () => this.onInitializeController());
         $('#remote-initialize-octoprint').on('click', () => this.onInitializeOctoPrint());
@@ -188,6 +190,12 @@ class ChessCoordinator {
         );
     }
 
+    toggleBoardSetupContents() {
+        const isVisible = $('.board-setup-content:visible').length > 0;
+        $('.board-setup-content').toggle();
+        $('#toggle-board-setup').text(isVisible ? 'show' : 'hide');
+    }
+
     toggleRemoteSetupContents() {
         const isVisible = $('.remote-setup-content:visible').length > 0;
         $('.remote-setup-content').toggle();
@@ -237,6 +245,9 @@ class ChessCoordinator {
 
     onStartNewGameButtonClick() {
         const checkedItem = $('input[name="game-mode"]:checked')[0];
+        const ranks = Number($('#board-ranks-input')[0].value);
+        const files = Number($('#board-files-input')[0].value);
+        console.log(ranks)
         $('#new-game-error').hide();
         $('.new-game-button').attr('disabled', true);
 
@@ -253,6 +264,8 @@ class ChessCoordinator {
                     id: response.game_id,
                     mode: gameMode,
                     playerTwo: playerTwo,
+                    ranks: ranks,
+                    files: files,
                 });
             },
             (error) => {

@@ -1,6 +1,7 @@
 import $ from 'jquery';
 
 import {
+    PIECE_NOTATION,
     REMOTE_CHESS_ACTION_TYPE,
 } from './constants';
 
@@ -46,12 +47,13 @@ class RemoteChess {
         if (turn.isCastle) {
             let rookStartingPosition;
             let rookEndingPosition;
+            const turnSide = turn.isWhite ? SIDE.WHITE : SIDE.BLACK;
             if (turn.isKingsideCastle) {
-                rookStartingPosition = turn.isWhite ? 'H1' : 'H8';
-                rookEndingPosition = turn.isWhite ? 'F1' : 'F8';
+                rookStartingPosition = board.startPositions[turnSide][PIECE_NOTATION.ROOK][1];
+                rookEndingPosition = turn.isWhite ? 'F1' : `F${this.numRanks}`;
             } else {
-                rookStartingPosition = turn.isWhite ? 'A1' : 'A8';
-                rookEndingPosition = turn.isWhite ? 'D1' : 'D8';
+                rookStartingPosition = board.startPositions[turnSide][PIECE_NOTATION.ROOK][0];
+                rookEndingPosition = turn.isWhite ? 'D1' : `D${this.numRanks}`;
             }
             moves.push(
                 this.moveToSpacePayload(turn.startingSpacePosition, turn.endingSpacePosition),

@@ -11,7 +11,8 @@ import {
     TURN_STATE,
     GAME_MODE,
     MOVE_TYPE,
-    NUM_RANKS,
+    DEFAULT_NUM_RANKS,
+    DEFAULT_NUM_FILES,
 } from './constants';
 
 import Analyzer from './analyzer';
@@ -40,7 +41,7 @@ import {
 
 const POLL_INTERVAL = 5000;
 
-const WHITE_PIECE_SETUP = [
+const DEFAULT_WHITE_PIECE_SETUP = [
     { Piece: Pawn, startingPositions: ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2'] },
     { Piece: Rook, startingPositions: ['A1', 'H1'] },
     { Piece: Knight, startingPositions: ['B1', 'G1'] },
@@ -49,25 +50,37 @@ const WHITE_PIECE_SETUP = [
     { Piece: King, startingPositions: ['E1'] },
 ];
 
-const oppositeRank = (r) => NUM_RANKS - Number(r) + 1;
-const BLACK_PIECE_SETUP = [
-    { Piece: Pawn, startingPositions: WHITE_PIECE_SETUP[0].startingPositions.map(x => `${x[0]}${oppositeRank(x[1])}`) },
-    { Piece: Rook, startingPositions: WHITE_PIECE_SETUP[1].startingPositions.map(x => `${x[0]}${oppositeRank(x[1])}`) },
-    { Piece: Knight, startingPositions: WHITE_PIECE_SETUP[2].startingPositions.map(x => `${x[0]}${oppositeRank(x[1])}`) },
-    { Piece: Bishop, startingPositions: WHITE_PIECE_SETUP[3].startingPositions.map(x => `${x[0]}${oppositeRank(x[1])}`) },
-    { Piece: Queen, startingPositions: WHITE_PIECE_SETUP[4].startingPositions.map(x => `${x[0]}${oppositeRank(x[1])}`) },
-    { Piece: King, startingPositions: WHITE_PIECE_SETUP[5].startingPositions.map(x => `${x[0]}${oppositeRank(x[1])}`) },
-];
+
+function getPiecePositions(whitePieceSetup, numRanks) {
+    const oppositeRank = (r) => numRanks - Number(r) + 1;
+    const blackPieceSetup = [
+        { Piece: Pawn, startingPositions: whitePieceSetup[0].startingPositions.map(x => `${x[0]}${oppositeRank(x[1])}`) },
+        { Piece: Rook, startingPositions: whitePieceSetup[1].startingPositions.map(x => `${x[0]}${oppositeRank(x[1])}`) },
+        { Piece: Knight, startingPositions: whitePieceSetup[2].startingPositions.map(x => `${x[0]}${oppositeRank(x[1])}`) },
+        { Piece: Bishop, startingPositions: whitePieceSetup[3].startingPositions.map(x => `${x[0]}${oppositeRank(x[1])}`) },
+        { Piece: Queen, startingPositions: whitePieceSetup[4].startingPositions.map(x => `${x[0]}${oppositeRank(x[1])}`) },
+        { Piece: King, startingPositions: whitePieceSetup[5].startingPositions.map(x => `${x[0]}${oppositeRank(x[1])}`) },
+    ];
+
+    return {
+        [SIDE.WHITE]: whitePieceSetup,
+        [SIDE.BLACK]: blackPieceSetup,
+    }
+}
 
 
 class ChessGame {
     constructor() {
-        this.board = new Board();
-        this.analyzer = new Analyzer();
+        this.numRanks = DEFAULT_NUM_RANKS;
+        this.numFiles = DEFAULT_NUM_FILES;
+        this.board = new Board(this.numRanks, this.numFiles);
         this.gameInfo = new GameInfo();
 
-        this.whitePieces = this.initializePieces(WHITE_PIECE_SETUP, SIDE.WHITE);
-        this.blackPieces = this.initializePieces(BLACK_PIECE_SETUP, SIDE.BLACK);
+
+        // Render pieces in the default spots while the board is in the background
+        const startingPieceSetup = getPiecePositions(DEFAULT_WHITE_PIECE_SETUP, this.numRanks);
+        this.whitePieces = this.initializePieces(startingPieceSetup[SIDE.WHITE], SIDE.WHITE, this.board);
+        this.blackPieces = this.initializePieces(startingPieceSetup[SIDE.BLACK], SIDE.BLACK, this.board);
 
         this.gameId = null;
         this.gameMode = null;
@@ -96,12 +109,12 @@ class ChessGame {
         this.board.setOnSpaceSelectListener(this.onBoardSpaceSelect.bind(this));
     }
 
-    initializePieces(pieceSetup, side) {
+    initializePieces(pieceSetup, side, board) {
         const pieces = [];
         _.each(pieceSetup, (pieceSetup) => {
             _.each(pieceSetup.startingPositions, (startingPosition) => {
-                const piece = new pieceSetup.Piece(side, startingPosition);
-                this.board.setPiece(piece, startingPosition);
+                const piece = new pieceSetup.Piece(side, startingPosition, board);
+                this.board.setStartingPosition(piece, startingPosition);
                 pieces.push(piece);
             });
         });
@@ -153,6 +166,8 @@ class ChessGame {
     newGame(game) {
         this.gameId = game.id,
         this.gameMode = game.mode;
+        this.numRanks = game.ranks;
+        this.numFiles = game.files;
         const playerTwo = game.playerTwo;
 
         this.gameInfo.setGameId(this.gameId);
@@ -161,6 +176,13 @@ class ChessGame {
         this.gameInfo.setPlayingAs(this.gameMode === GAME_MODE.NETWORK ? this.localPlayerSide : null);
 
         this.localPlayerSide = SIDE.WHITE;
+
+        const startingPieceSetup = getPiecePositions(DEFAULT_WHITE_PIECE_SETUP, this.numRanks);
+        this.board.reinitialize(this.numRanks, this.numFiles);
+        this.whitePieces = this.initializePieces(startingPieceSetup[SIDE.WHITE], SIDE.WHITE, this.board);
+        this.blackPieces = this.initializePieces(startingPieceSetup[SIDE.BLACK], SIDE.BLACK, this.board);
+        this.analyzer = new Analyzer(this.numRanks, this.numFiles);
+        this.board.render()
 
         this.initializeGame();
         this.startGame();

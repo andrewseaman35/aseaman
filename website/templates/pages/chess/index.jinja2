@@ -17,6 +17,34 @@
         </p>
         <div id="chess-container">
             <div id="game-start-modal" class="modal">
+                <div class="board-setup-container">
+                    <h3>Board Setup
+                        <button class="link-button" id="toggle-board-setup">show</button>
+                    </h3>
+                    <div class="board-setup-content">
+                        <div class="board-setup-number">
+                            <label for="board-ranks-input">Number of Ranks:</label>
+                            <input
+                                id="board-ranks-input"
+                                name="board-ranks-input"
+                                type="number"
+                                min="4"
+                                value="8"
+                            />
+                        </div>
+                        <div class="board-setup-number">
+                            <label for="board-ranks-input">Number of Files:</label>
+                            <input
+                                id="board-files-input"
+                                name="board-files-input"
+                                type="number"
+                                min="8"
+                                value="8"
+                                disabled
+                            />
+                        </div>
+                    </div>
+                </div>
                 <div class="remote-setup-container">
                     <h3>Remote Setup
                         <button class="link-button" id="toggle-remote-setup">show</button>

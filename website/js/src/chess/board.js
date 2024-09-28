@@ -2,11 +2,10 @@ import $ from 'jquery';
 import _ from 'lodash';
 
 import {
-    NUM_RANKS,
-    NUM_FILES,
     SPACE_STATE,
     MOVE_TYPE,
     SIDE,
+    PIECE_NOTATION,
 } from './constants';
 
 import {
@@ -20,16 +19,46 @@ import Space from './space';
 
 
 class Board {
-    constructor() {
-        this.spaces = _.times(NUM_RANKS * NUM_FILES, i => new Space(i));
+    constructor(numRanks, numFiles) {
+        this.numRanks = numRanks;
+        this.numFiles = numFiles;
+        this.spaces = null;
+
+        this.reinitialize(numRanks, numFiles);
+    }
+
+    resetStartPositions() {
+        this.startPositions = {
+            [SIDE.WHITE]: {
+                [PIECE_NOTATION.PAWN]: [],
+                [PIECE_NOTATION.KNIGHT]: [],
+                [PIECE_NOTATION.BISHOP]: [],
+                [PIECE_NOTATION.ROOK]: [],
+                [PIECE_NOTATION.QUEEN]: [],
+                [PIECE_NOTATION.KING]: [],
+            },
+            [SIDE.BLACK]: {
+                [PIECE_NOTATION.PAWN]: [],
+                [PIECE_NOTATION.KNIGHT]: [],
+                [PIECE_NOTATION.BISHOP]: [],
+                [PIECE_NOTATION.ROOK]: [],
+                [PIECE_NOTATION.QUEEN]: [],
+                [PIECE_NOTATION.KING]: [],
+            },
+        };
     }
 
     setOnSpaceSelectListener(listener) {
         this.onSpaceSelectListener = listener;
     }
 
+    setStartingPosition(piece, position) {
+        this.startPositions[piece.side][piece.notation].push(position);
+        this.setPiece(piece, position);
+    }
+
     setPiece(piece, position) {
-        const spaceIndex = positionToIndex(position);
+        const spaceIndex = positionToIndex(position, this.numFiles);
         this.spaces[spaceIndex].setPiece(piece);
     }
 
@@ -41,7 +70,7 @@ class Board {
     }
 
     spaceByPosition(position) {
-        return this.spaces[positionToIndex(position)];
+        return this.spaces[positionToIndex(position, this.numFiles)];
     }
 
     spaceByIndex(index) {
@@ -85,11 +114,11 @@ class Board {
     displayPossibleCastle(king, castleMove) {
         let endingKingPosition;
         if (castleMove.move === MOVE_TYPE.KINGSIDE_CASTLE) {
-            endingKingPosition = king.side === SIDE.WHITE ? 'G1' : 'G8';
+            endingKingPosition = king.side === SIDE.WHITE ? 'G1' : `G${this.numRanks}`;
         } else {
-            endingKingPosition = king.side === SIDE.WHITE ? 'C1' : 'C8';
+            endingKingPosition = king.side === SIDE.WHITE ? 'C1' : `C${this.numRanks}`;
         }
-        this.spaces[positionToIndex(endingKingPosition)].setState(SPACE_STATE.POSSIBLE_SPECIAL_MOVE);
+        this.spaces[positionToIndex(endingKingPosition, this.numFiles)].setState(SPACE_STATE.POSSIBLE_SPECIAL_MOVE);
     }
 
     displayPossibleMoves(space, previousTurn) {
@@ -100,9 +129,9 @@ class Board {
             const possibleMoves = space.piece.getPossibleMoves(this, space, previousTurn);
             _.each(possibleMoves, (move) => {
                 if (move.type === MOVE_TYPE.NORMAL) {
-                    this.spaces[positionToIndex(move.position)].setState(SPACE_STATE.POSSIBLE_MOVE);
+                    this.spaces[positionToIndex(move.position, this.numFiles)].setState(SPACE_STATE.POSSIBLE_MOVE);
                 } else {
-                    this.spaces[positionToIndex(move.position)].setState(SPACE_STATE.POSSIBLE_SPECIAL_MOVE);
+                    this.spaces[positionToIndex(move.position, this.numFiles)].setState(SPACE_STATE.POSSIBLE_SPECIAL_MOVE);
                 }
             });
         }
@@ -122,19 +151,19 @@ class Board {
         container.append(table);
 
         let spaceIndex = 0;
-        _.times(NUM_RANKS, () => {
-            const rank = Math.ceil(spaceIndex / NUM_FILES) + 1;
+        _.times(this.numRanks, () => {
+            const rank = Math.ceil(spaceIndex / this.numFiles) + 1;
             const row = $('<tr></tr>').attr('id', `row-${rank}`);
 
             const rankLabelCell = $(`<td>${rank}</td>`)
                 .attr('class', 'board-label rank');
             row.append(rankLabelCell);
 
-            _.times(NUM_FILES, () => {
-                const position = indexToPosition(spaceIndex);
+            _.times(this.numFiles, () => {
+                const position = indexToPosition(spaceIndex, this.numFiles);
                 const cell = $('<td></td>')
                     .attr('id', position)
-                    .attr('class', `space ${determineSpaceColor(position)}`);
+                    .attr('class', `space ${determineSpaceColor(position, this.numRanks, this.numFiles)}`);
                 this.spaces[spaceIndex].setCell(cell);
                 cell.on('click', this.onBoardSpaceClick.bind(this));
                 row.append(cell);
@@ -144,8 +173,8 @@ class Board {
         });
         const fileLabelRow = $('<tr></tr>').attr('id', 'row-file-label');
         fileLabelRow.append($('<td></td>').attr('class', 'board-label empty'));
-        _.times(NUM_FILES, (i) => {
-            const fileLabelCell = $(`<td>${fileFromIndex(i)}</td>`)
+        _.times(this.numFiles, (i) => {
+            const fileLabelCell = $(`<td>${fileFromIndex(i, this.numFiles)}</td>`)
                 .attr('class', 'board-label file');
             fileLabelRow.append(fileLabelCell);
         });
@@ -156,7 +185,7 @@ class Board {
     refreshBoard() {
         this.clearBoardState();
         _.each(this.spaces, (space, spaceIndex) => {
-            const position = indexToPosition(spaceIndex);
+            const position = indexToPosition(spaceIndex, this.numFiles);
             const boardSpace = $(`#${position}`);
             if (space.piece !== null) {
                 if (boardSpace.find('img').attr('src') !== space.piece.imagePath) {
@@ -166,6 +195,13 @@ class Board {
                 boardSpace.empty();
             }
         });
+    }
+
+    reinitialize(numRanks, numFiles) {
+        this.resetStartPositions();
+        this.numRanks = numRanks;
+        this.numFiles = numFiles;
+        this.spaces = _.times(this.numRanks * this.numFiles, i => new Space(i, numRanks, numFiles));
     }
 }
 

@@ -1,5 +1,5 @@
-const NUM_RANKS = 8;
-const NUM_FILES = 8;
+const DEFAULT_NUM_RANKS = 8;
+const DEFAULT_NUM_FILES = 8;
 
 const SIDE = {
     BLACK: 'BLACK',
@@ -47,27 +47,6 @@ const GAME_MODE = {
     NETWORK: 'network',
 };
 
-const movementRanks = Array.from({length: NUM_RANKS - 1}, (_, i) => i + 1)
-const diagonalSpaces = (NUM_FILES > NUM_RANKS ?
-    Array.from({length: NUM_FILES - 1}, (_, i) => i + 1) :
-    movementRanks
-);
-
-const MOVEMENT_GROUPS = {
-    DIAGONALS: [
-        diagonalSpaces.map((x) => [x, x]),
-        diagonalSpaces.map((x) => [x, -x]),
-        diagonalSpaces.map((x) => [-x, x]),
-        diagonalSpaces.map((x) => [-x, -x]),
-    ],
-    SQUARE: [
-        movementRanks.map((x) => [0, x]),
-        movementRanks.map((x) => [0, -x]),
-        movementRanks.map((x) => [x, 0]),
-        movementRanks.map((x) => [-x, 0]),
-    ],
-};
-
 const MOVE_TYPE = {
     NORMAL: 'normal',
     KINGSIDE_CASTLE: 'kingside_castle',
@@ -77,8 +56,8 @@ const MOVE_TYPE = {
 };
 
 module.exports = {
-    NUM_FILES,
-    NUM_RANKS,
+    DEFAULT_NUM_FILES,
+    DEFAULT_NUM_RANKS,
 
     GAME_MODE,
     GAME_STATE,
@@ -87,7 +66,6 @@ module.exports = {
 
     SIDE,
     PIECE_NOTATION,
-    MOVEMENT_GROUPS,
     MOVE_TYPE,
     REMOTE_CHESS_ACTION_TYPE,
 };

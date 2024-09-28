@@ -142,15 +142,17 @@ $space-light: #CB9053;
         margin-bottom: 12px;
     }
 
+    .board-setup-container,
     .remote-setup-container {
         display: none;
-        margin-bottom: 36px;
+        margin-bottom: 16px;
 
         .status-item span {
             font-weight: 600;
         }
 
         .remote-setup-content,
+        .board-setup-content,
         #remote-hand-connected-octoprint,
         #remote-refresh-controller,
         #remote-refresh-octoprint,
@@ -158,6 +160,10 @@ $space-light: #CB9053;
         #remote-initialize-controller,
         #remote-initialize-octoprint {
             display: none;
+        }
+
+        .board-setup-number {
+            margin-bottom: 8px;
         }
     }
 }

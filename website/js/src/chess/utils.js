@@ -1,61 +1,56 @@
-import {
-    NUM_FILES,
-    NUM_RANKS
-} from './constants';
-
-function determineSpaceColor(position) {
-    const index = positionToIndex(position);
-    const fileNum = index % NUM_FILES
-    const rankNum = Math.floor(index / NUM_FILES) % NUM_RANKS
+function determineSpaceColor(position, numRanks, numFiles) {
+    const index = positionToIndex(position, numFiles);
+    const fileNum = index % numFiles
+    const rankNum = Math.floor(index / numFiles) % numRanks
     const spaceColorVal = rankNum + fileNum + 1;
     return spaceColorVal % 2 === 1 ? 'dark' : 'light';
 }
 
-function fileFromIndex(index) {
-    return String.fromCharCode((index % NUM_FILES) + 65);
+function fileFromIndex(index, numFiles) {
+    return String.fromCharCode((index % numFiles) + 65);
 }
 
-function rankFromIndex(index) {
-    return Math.floor(index / NUM_FILES) + 1;
+function rankFromIndex(index, numFiles) {
+    return Math.floor(index / numFiles) + 1;
 }
 
-function fileFromPosition(position) {
+function fileFromPosition(position, numFiles) {
     if (position === null) {
         return null;
     }
-    return fileFromIndex(positionToIndex(position));
+    return fileFromIndex(positionToIndex(position, numFiles), numFiles);
 }
 
-function rankFromPosition(position) {
-    return rankFromIndex(positionToIndex(position));
+function rankFromPosition(position, numFiles) {
+    return rankFromIndex(positionToIndex(position, numFiles), numFiles);
 }
 
-function positionToIndex(position) {
+function positionToIndex(position, numFiles) {
     // subtract 65 to map 'A' to 0
     const file = position.toUpperCase().charCodeAt(0) - 65;
     const rank = parseInt(position.substring(1)) - 1;
-    return (rank * NUM_FILES) + file;
+    return (rank * numFiles) + file;
 }
 
-function indexToPosition(index) {
-    const file = fileFromIndex(index);
-    const rank = rankFromIndex(index);
+function indexToPosition(index, numFiles) {
+    const file = fileFromIndex(index, numFiles);
+    const rank = rankFromIndex(index, numFiles);
     return `${file}${rank}`;
 }
 
-function incrementFile(file, increment) {
+function incrementFile(file, increment, numFiles) {
     // A --> 1
     const fileNumber = file.toUpperCase().charCodeAt(0) - 64;
     const incrementedFileNumber = fileNumber + increment;
-    if (incrementedFileNumber < 1 || incrementedFileNumber > NUM_FILES) {
+    if (incrementedFileNumber < 1 || incrementedFileNumber > numFiles) {
         return null;
     }
     return String.fromCharCode(incrementedFileNumber + 64);
 }
 
-function incrementRank(rank, increment) {
+function incrementRank(rank, increment, numRanks) {
     const incrementedRank = rank + increment;
-    if (incrementedRank < 1 || incrementedRank > NUM_RANKS) {
+    if (incrementedRank < 1 || incrementedRank > numRanks) {
         return null;
     }
     return incrementedRank;

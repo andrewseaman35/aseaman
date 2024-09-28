@@ -95,12 +95,13 @@ class ChessTurn {
     executeCastle(board) {
         let rookStartingPosition;
         let rookEndingPosition;
+        const turnSide = this.isWhile ? SIDE.WHITE : SIDE.BLACK;
         if (this.isKingsideCastle) {
-            rookStartingPosition = this.isWhite ? 'H1' : 'H8';
-            rookEndingPosition = this.isWhite ? 'F1' : 'F8';
+            rookStartingPosition = board.startPositions[turnSide][PIECE_NOTATION.ROOK][0];
+            rookEndingPosition = this.isWhite ? 'F1' : `F${board.numRanks}`;
         } else {
-            rookStartingPosition = this.isWhite ? 'A1' : 'A8';
-            rookEndingPosition = this.isWhite ? 'D1' : 'D8';
+            rookStartingPosition = board.startPositions[turnSide][PIECE_NOTATION.ROOK][0];
+            rookEndingPosition = this.isWhite ? 'D1' : `D${board.numRanks}`;
         }
 
         const kingStartingSpace = board.spaceByPosition(this.startingSpacePosition);

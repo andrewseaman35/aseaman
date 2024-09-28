@@ -11,8 +11,8 @@ import GameInfo from './gameInfo';
 
 
 class AnalyzableBoard extends Board {
-    constructor() {
-        super();
+    constructor(numRanks, numFiles) {
+        super(numRanks, numFiles);
         this.reset();
     }
 
@@ -86,8 +86,8 @@ class AnalyzableBoard extends Board {
 
 
 export default class Analyzer {
-    constructor() {
-        this.analyzableBoard = new AnalyzableBoard();
+    constructor(numRanks, numFiles) {
+        this.analyzableBoard = new AnalyzableBoard(numRanks, numFiles);
         this.reset();
     }
 
@@ -100,6 +100,7 @@ export default class Analyzer {
 
     setup(board) {
         this.reset();
+        this.analyzableBoard = new AnalyzableBoard(board.numRanks, board.numFiles);
         this.analyzableBoard.setup(board);
     }
 
