@@ -1,5 +1,6 @@
 const DEFAULT_NUM_RANKS = 8;
 const DEFAULT_NUM_FILES = 8;
+const DEFAULT_FILE_TYPE = "normal";
 
 const SIDE = {
     BLACK: 'BLACK',
@@ -58,6 +59,7 @@ const MOVE_TYPE = {
 module.exports = {
     DEFAULT_NUM_FILES,
     DEFAULT_NUM_RANKS,
+    DEFAULT_FILE_TYPE,
 
     GAME_MODE,
     GAME_STATE,

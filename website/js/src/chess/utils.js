@@ -38,14 +38,25 @@ function indexToPosition(index, numFiles) {
     return `${file}${rank}`;
 }
 
-function incrementFile(file, increment, numFiles) {
-    // A --> 1
-    const fileNumber = file.toUpperCase().charCodeAt(0) - 64;
-    const incrementedFileNumber = fileNumber + increment;
-    if (incrementedFileNumber < 1 || incrementedFileNumber > numFiles) {
-        return null;
+function incrementFile(file, increment, numFiles, fileType) {
+    const fileNumber = file.toUpperCase().charCodeAt(0) - 65;
+    let incrementedFileNumber;
+    incrementedFileNumber = fileNumber + increment;
+    if (fileType == "normal") {
+        if (incrementedFileNumber < 0 || incrementedFileNumber >= numFiles) {
+            return null;
+        }
+    } else if (fileType == "wrap") {
+        if (incrementedFileNumber < 0) {
+            incrementedFileNumber = numFiles + incrementedFileNumber;
+        }
+    } else if (fileType == "reflect") {
+        incrementedFileNumber = Math.abs(fileNumber + increment);
+        throw new Error("unsupport fileType")
     }
-    return String.fromCharCode(incrementedFileNumber + 64);
+
+    const moddedFileNumber = (incrementedFileNumber % numFiles);
+    return String.fromCharCode(moddedFileNumber + 65);
 }
 
 function incrementRank(rank, increment, numRanks) {

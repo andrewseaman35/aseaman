@@ -247,7 +247,7 @@ class ChessCoordinator {
         const checkedItem = $('input[name="game-mode"]:checked')[0];
         const ranks = Number($('#board-ranks-input')[0].value);
         const files = Number($('#board-files-input')[0].value);
-        console.log(ranks)
+        const fileType = $("input[type='radio'][name='file_type']:checked").val();;
         $('#new-game-error').hide();
         $('.new-game-button').attr('disabled', true);
 
@@ -264,8 +264,11 @@ class ChessCoordinator {
                     id: response.game_id,
                     mode: gameMode,
                     playerTwo: playerTwo,
-                    ranks: ranks,
-                    files: files,
+                    options: {
+                        ranks: ranks,
+                        files: files,
+                        fileType: fileType,
+                    }
                 });
             },
             (error) => {

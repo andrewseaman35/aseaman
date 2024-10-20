@@ -13,6 +13,7 @@ import {
     MOVE_TYPE,
     DEFAULT_NUM_RANKS,
     DEFAULT_NUM_FILES,
+    DEFAULT_FILE_TYPE,
 } from './constants';
 
 import Analyzer from './analyzer';
@@ -73,14 +74,19 @@ class ChessGame {
     constructor() {
         this.numRanks = DEFAULT_NUM_RANKS;
         this.numFiles = DEFAULT_NUM_FILES;
-        this.board = new Board(this.numRanks, this.numFiles);
+        this.fileType = DEFAULT_FILE_TYPE;
+        this.board = new Board({
+            numRanks: this.numRanks,
+            numFiles: this.numFiles,
+            fileType: this.fileType,
+        });
         this.gameInfo = new GameInfo();
 
 
         // Render pieces in the default spots while the board is in the background
         const startingPieceSetup = getPiecePositions(DEFAULT_WHITE_PIECE_SETUP, this.numRanks);
-        this.whitePieces = this.initializePieces(startingPieceSetup[SIDE.WHITE], SIDE.WHITE, this.board);
-        this.blackPieces = this.initializePieces(startingPieceSetup[SIDE.BLACK], SIDE.BLACK, this.board);
+        this.whitePieces = this.initializePieces(startingPieceSetup[SIDE.WHITE], SIDE.WHITE);
+        this.blackPieces = this.initializePieces(startingPieceSetup[SIDE.BLACK], SIDE.BLACK);
 
         this.gameId = null;
         this.gameMode = null;
@@ -109,11 +115,11 @@ class ChessGame {
         this.board.setOnSpaceSelectListener(this.onBoardSpaceSelect.bind(this));
     }
 
-    initializePieces(pieceSetup, side, board) {
+    initializePieces(pieceSetup, side) {
         const pieces = [];
         _.each(pieceSetup, (pieceSetup) => {
             _.each(pieceSetup.startingPositions, (startingPosition) => {
-                const piece = new pieceSetup.Piece(side, startingPosition, board);
+                const piece = new pieceSetup.Piece(side, startingPosition, this.board);
                 this.board.setStartingPosition(piece, startingPosition);
                 pieces.push(piece);
             });
@@ -166,9 +172,11 @@ class ChessGame {
     newGame(game) {
         this.gameId = game.id,
         this.gameMode = game.mode;
-        this.numRanks = game.ranks;
-        this.numFiles = game.files;
         const playerTwo = game.playerTwo;
+
+        this.numRanks = game.options.ranks;
+        this.numFiles = game.options.files;
+        this.fileType = game.options.fileType;
 
         this.gameInfo.setGameId(this.gameId);
         this.gameInfo.setGameMode(this.gameMode);
@@ -178,10 +186,18 @@ class ChessGame {
         this.localPlayerSide = SIDE.WHITE;
 
         const startingPieceSetup = getPiecePositions(DEFAULT_WHITE_PIECE_SETUP, this.numRanks);
-        this.board.reinitialize(this.numRanks, this.numFiles);
-        this.whitePieces = this.initializePieces(startingPieceSetup[SIDE.WHITE], SIDE.WHITE, this.board);
-        this.blackPieces = this.initializePieces(startingPieceSetup[SIDE.BLACK], SIDE.BLACK, this.board);
-        this.analyzer = new Analyzer(this.numRanks, this.numFiles);
+        this.board.reinitialize({
+            numRanks: this.numRanks,
+            numFiles: this.numFiles,
+            fileType: this.fileType,
+        });
+        this.whitePieces = this.initializePieces(startingPieceSetup[SIDE.WHITE], SIDE.WHITE);
+        this.blackPieces = this.initializePieces(startingPieceSetup[SIDE.BLACK], SIDE.BLACK);
+        this.analyzer = new Analyzer({
+            numRanks: this.numRanks,
+            numFiles: this.numFiles,
+            fileType: this.fileType,
+        });
         this.board.render()
 
         this.initializeGame();

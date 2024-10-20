@@ -291,7 +291,11 @@ class King extends Piece {
             return false;
         }
 
-        const analyzer = new Analyzer(board.numRanks, board.numFiles);
+        const analyzer = new Analyzer({
+            numRanks: board.numRanks,
+            numFiles: board.numFiles,
+            fileType: board.fileType,
+        });
         analyzer.setup(board);
         for (let i = 0; i < intermediatePositions.length; i += 1) {
             const intermediatePosition = intermediatePositions[i];
@@ -337,7 +341,11 @@ class King extends Piece {
         }
 
         // King cannot be in check
-        const analyzer = new Analyzer(board.numRanks, board.numFiles);
+        const analyzer = new Analyzer({
+            numRanks: board.numRanks,
+            numFiles: board.numFiles,
+            fileType: board.fileType,
+        });
         analyzer.setup(board);
         if (analyzer.isInCheck(this.side)) {
             return { kingside: false, queenside: false };

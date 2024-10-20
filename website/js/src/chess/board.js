@@ -19,12 +19,13 @@ import Space from './space';
 
 
 class Board {
-    constructor(numRanks, numFiles) {
-        this.numRanks = numRanks;
-        this.numFiles = numFiles;
+    constructor(options) {
+        this.numRanks = options.numRanks;
+        this.numFiles = options.numFiles;
+        this.fileType = options.fileType || "normal";
         this.spaces = null;
 
-        this.reinitialize(numRanks, numFiles);
+        this.reinitialize(options);
     }
 
     resetStartPositions() {
@@ -197,11 +198,12 @@ class Board {
         });
     }
 
-    reinitialize(numRanks, numFiles) {
+    reinitialize(options) {
         this.resetStartPositions();
-        this.numRanks = numRanks;
-        this.numFiles = numFiles;
-        this.spaces = _.times(this.numRanks * this.numFiles, i => new Space(i, numRanks, numFiles));
+        this.numRanks = options.numRanks;
+        this.numFiles = options.numFiles;
+        this.fileType = options.fileType;
+        this.spaces = _.times(this.numRanks * this.numFiles, i => new Space(i, options));
     }
 }
 

@@ -15,20 +15,21 @@ import {
 
 
 class Space {
-    constructor(index, numRanks, numFiles) {
+    constructor(index, options) {
         this.index = index;
-        this.numRanks = numRanks;
-        this.numFiles = numFiles;
+        this.numRanks = options.numRanks;
+        this.numFiles = options.numFiles;
         this.position = indexToPosition(this.index, this.numFiles);
         this.rank = rankFromIndex(this.index, this.numFiles);
         this.file = fileFromIndex(this.index, this.numFiles);
+        this.fileType = options.fileType;
 
         this.cell = null;
         this.piece = null;
     }
 
     getRelativeSpacePosition(fileIncrement, rankIncrement) {
-        const newFile = incrementFile(this.file, fileIncrement, this.numFiles);
+        const newFile = incrementFile(this.file, fileIncrement, this.numFiles, this.fileType);
         const newRank = incrementRank(this.rank, rankIncrement, this.numRanks);
         if (newFile !== null && newRank !== null) {
             return `${newFile}${newRank}`;

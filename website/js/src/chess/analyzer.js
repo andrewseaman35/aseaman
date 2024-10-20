@@ -86,8 +86,12 @@ class AnalyzableBoard extends Board {
 
 
 export default class Analyzer {
-    constructor(numRanks, numFiles) {
-        this.analyzableBoard = new AnalyzableBoard(numRanks, numFiles);
+    constructor(options) {
+        this.analyzableBoard = new AnalyzableBoard({
+            numRanks: options.numRanks,
+            numFiles: options.numFiles,
+            fileType: options.fileType,
+        });
         this.reset();
     }
 
@@ -100,7 +104,11 @@ export default class Analyzer {
 
     setup(board) {
         this.reset();
-        this.analyzableBoard = new AnalyzableBoard(board.numRanks, board.numFiles);
+        this.analyzableBoard = new AnalyzableBoard({
+            numRanks: board.numRanks,
+            numFiles: board.numFiles,
+            fileType: board.fileType,
+        });
         this.analyzableBoard.setup(board);
     }
 
