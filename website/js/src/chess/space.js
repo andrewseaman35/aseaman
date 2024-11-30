@@ -53,10 +53,16 @@ class Space {
         this.cell.addClass(state);
     }
 
+    flashState(state) {
+        this.cell.addClass(state)
+        this.cell.addClass('flash')
+    }
+
     clearState() {
         _.each(SPACE_STATE, (state) => {
             this.cell.removeClass(state);
         });
+        this.cell.removeClass('flash')
     }
 }
 

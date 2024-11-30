@@ -145,12 +145,9 @@ export default class Analyzer {
         turn.setType(move.type);
         this.analyzableBoard.applyTurns([turn]);
 
-        let result = false;
-        if (this.analyzableBoard.isInCheck(piece.side)) {
-            result = true;
-        }
+        const spacesCausingCheck = this.analyzableBoard.findSpacesCausingCheckAgainst(piece.side);
         this.analyzableBoard.restore();
-        return result;
+        return spacesCausingCheck;
 
     }
 

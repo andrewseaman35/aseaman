@@ -16,13 +16,13 @@ package:
 	make -C api package
 
 assert_running:
-	@if [ ! "$$(docker ps | grep $(CONTAINER_NAME))" ]; then\
+	@if [ ! "$$(docker ps -a | grep $(CONTAINER_NAME))" ]; then\
 		echo "Container not running; run 'make start'";\
 		exit 2;\
 	fi
 
 assert_not_running:
-	@if [ "$$(docker ps | grep $(CONTAINER_NAME))" ]; then\
+	@if [ "$$(docker ps -a | grep $(CONTAINER_NAME))" ]; then\
 		echo "Container already running: $(CONTAINER_NAME)";\
 		exit 2;\
 	fi

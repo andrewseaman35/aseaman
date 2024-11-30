@@ -315,9 +315,11 @@ class ChessGame {
         if (this.gameState !== GAME_STATE.PLAYING) {
             return;
         }
+        console.log("clearing board state")
         if (this.currentTurn.isInState(TURN_STATE.EMPTY)) {
             // If no piece is selected and there's a piece on the selected space,
             // show that piece as selected.
+            this.board.clearBoardState();
             if (space.piece && space.piece.getPossibleMoves(this.board, space, this.previousTurn).length) {
                 if (space.piece.side === this.currentTurn.side) {
                     this.currentTurn.setStartingPieceSpace(space);
@@ -336,19 +338,24 @@ class ChessGame {
             if (space.piece && space.piece.side === this.currentTurn.side) {
                 // If the selected space has a piece of the same side, deselect the current
                 // piece and select the other one
+                this.board.clearBoardState();
                 const setStartingSpace = space.position !== this.currentTurn.startingSpacePosition;
                 this.currentTurn.unsetStartingPieceSpace();
-                this.board.clearBoardState();
                 if (setStartingSpace) {
                     this.currentTurn.setStartingPieceSpace(space);
                     this.board.displayPossibleMoves(space, this.previousTurn);
                 }
             } else if (selectedMove) {
                 // If the selected space is a valid move for the selected piece, execute the move.
-                if (this.analyzer.willMoveResultInSelfCheck(this.currentTurn.startingSpacePosition, selectedMove)) {
+                const selfCheckPieces = this.analyzer.willMoveResultInSelfCheck(this.currentTurn.startingSpacePosition, selectedMove);
+                if (selfCheckPieces.length > 0) {
                     this.gameInfo.setNote('Attempted move results in check - invalid');
+                    for (let i = 0; i < selfCheckPieces.length; i++) {
+                        this.board.spaceByPosition(selfCheckPieces[0]).flashState(SPACE_STATE.CHECK_THREAT)
+                    }
                     return;
                 }
+                this.board.clearBoardState();
                 this.currentTurn.setEndingPieceSpace(space);
                 const moveType = specialMove ? specialMove.type :  MOVE_TYPE.NORMAL;
                 this.currentTurn.setType(moveType);

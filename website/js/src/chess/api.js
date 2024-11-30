@@ -33,7 +33,7 @@ function saveTurn(gameId, turn) {
     }).promise();
 }
 
-function createNewGame(gameMode, player_two) {
+function createNewGame(gameMode, playerTwo) {
     return $.ajax({
         type: 'POST',
         url: getAPIUrl('chess') + "game/",
@@ -42,7 +42,7 @@ function createNewGame(gameMode, player_two) {
         },
         data: JSON.stringify({
             'game_mode': gameMode,
-            'player_two': player_two,
+            'player_two': playerTwo,
         }),
         contentType: 'application/json',
     });

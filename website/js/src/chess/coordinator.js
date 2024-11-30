@@ -20,10 +20,8 @@ const GAME_ID_LENGTH = 6;
 const GAME_ID_SELECT_DEFAULT = 'default'
 
 
-
 class ChessCoordinator {
     constructor() {
-        console.log("coordinator")
         this.handConnected = false;
 
         this.game = new ChessGame();
