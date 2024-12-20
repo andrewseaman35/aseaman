@@ -1,4 +1,9 @@
-from .helpers import generate_id, generate_alphanumeric_id
+from .helpers import (
+    generate_id,
+    generate_alphanumeric_id,
+    generate_alpha_id,
+    get_timestamp,
+)
 
 
 class DynamoDBItemValueConfig:
@@ -11,7 +16,7 @@ class DynamoDBItemValueConfig:
 
 
 class DynamoDBItem:
-    timestamp_key = "time_updated"
+    _timestamp_key = "time_updated"
     _config = {
         "id": DynamoDBItemValueConfig("S", generate_id),
         "url": DynamoDBItemValueConfig("S", ""),
@@ -68,3 +73,39 @@ class DynamoDBItem:
             ddb_item[key] = {props.data_type: self._item[key]}
 
         return ddb_item
+
+    @classmethod
+    def build_update_expression(cls, update):
+        expression_items = []
+
+        used_ids = set()
+
+        def get_expr_id():
+            for _ in range(10):
+                expr_id = generate_alpha_id(2)
+                if expr_id not in used_ids:
+                    return expr_id
+            raise Exception("Failed to find expr_id")
+
+        if cls._timestamp_key:
+            expr_id = get_expr_id()
+
+            expression_items = [f"SET #{expr_id} = :{expr_id}"]
+            attribute_names = {
+                f"#{expr_id}": cls._timestamp_key,
+            }
+            attribute_values = {f":{expr_id}": {"N": get_timestamp()}}
+
+        for key, props in cls._config.items():
+            value = update.get(key, None)
+            if value is not None:
+                expr_id = get_expr_id()
+                expression_items.append(f"#{expr_id} = :{expr_id}")
+                attribute_names[f"#{expr_id}"] = key
+                attribute_values[f":{expr_id}"] = {props.data_type: update[key]}
+
+        return (
+            ", ".join(expression_items),
+            attribute_names,
+            attribute_values,
+        )

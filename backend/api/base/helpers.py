@@ -17,6 +17,15 @@ def get_timestamp():
     return str(int(time.time()))
 
 
+def generate_alpha_id(length):
+    return "".join(
+        random.choices(
+            string.ascii_lowercase,
+            k=length,
+        )
+    )
+
+
 def generate_alphanumeric_id(length):
     return "".join(
         random.choices(

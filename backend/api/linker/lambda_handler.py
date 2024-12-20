@@ -67,37 +67,6 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
         if not self.user["username"] or self.user["username"] != owner:
             raise UnauthorizedException("Log in to access this link")
 
-    def _build_update_expression_parameters(
-        self, url=None, name=None, active=None, locked=None
-    ):
-        expression_items = ["SET #tu = :tu"]
-        attribute_names = {
-            "#tu": "time_updated",
-        }
-        attribute_values = {":tu": {"N": get_timestamp()}}
-        if url is not None:
-            expression_items.append("#url = :url")
-            attribute_names["#url"] = "url"
-            attribute_values[":url"] = {"S": url}
-        if name is not None:
-            expression_items.append("#na = :na")
-            attribute_names["#na"] = "name"
-            attribute_values[":na"] = {"S": name}
-        if active is not None:
-            expression_items.append("#act = :act")
-            attribute_names["#act"] = "active"
-            attribute_values[":act"] = {"BOOL": active}
-        if locked is not None:
-            expression_items.append("#loc = :loc")
-            attribute_names["#loc"] = "locked"
-            attribute_values[":loc"] = {"BOOL": locked}
-
-        return (
-            ", ".join(expression_items),
-            attribute_names,
-            attribute_values,
-        )
-
     def __fetch_link(self, link_id, validate_ownership=True, require_active=False):
         ddb_item = self.ddb_client.get_item(
             TableName=self.table_name,
@@ -179,7 +148,14 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
             update_expression,
             expression_attribute_names,
             expression_attribute_values,
-        ) = self._build_update_expression_parameters(url, name, active, locked)
+        ) = LinkDDBItem.build_update_expression(
+            {
+                "url": url,
+                "name": name,
+                "active": active,
+                "locked": locked,
+            }
+        )
         ddbItem = self.ddb_client.update_item(
             TableName=self.table_name,
             Key={"id": {"S": link_id}},
