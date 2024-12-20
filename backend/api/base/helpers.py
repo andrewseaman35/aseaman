@@ -1,7 +1,29 @@
+import random
+import string
+import time
+import uuid
+
 from .api_exceptions import (
     ForbiddenException,
     UnauthorizedException,
 )
+
+
+def generate_id():
+    return uuid.uuid4().hex
+
+
+def get_timestamp():
+    return str(int(time.time()))
+
+
+def generate_alphanumeric_id(length):
+    return "".join(
+        random.choices(
+            string.ascii_lowercase + string.ascii_uppercase + string.digits,
+            k=length,
+        )
+    )
 
 
 def requires_authentication(func):

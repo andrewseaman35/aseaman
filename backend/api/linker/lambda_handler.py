@@ -15,9 +15,12 @@ from base.api_exceptions import (
     UnauthorizedException,
     ForbiddenException,
 )
+from base.dynamodb import DynamoDBItem, DynamoDBItemValueConfig
 from base.helpers import (
     requires_authentication,
     requires_user_group,
+    get_timestamp,
+    generate_alphanumeric_id,
 )
 
 LINK_ID_LENGTH = 6
@@ -26,6 +29,19 @@ DEFAULT_SORT = "+time_created"
 
 DEFAULT_LINK_NAME = "untitled"
 DEFAULT_LINK_URL = ""
+
+
+class LinkDDBItem(DynamoDBItem):
+    _config = {
+        "id": DynamoDBItemValueConfig(
+            "S", lambda: generate_alphanumeric_id(LINK_ID_LENGTH)
+        ),
+        "url": DynamoDBItemValueConfig("S", ""),
+        "active": DynamoDBItemValueConfig("BOOL", False),
+        "locked": DynamoDBItemValueConfig("BOOL", False),
+        "time_created": DynamoDBItemValueConfig("N", get_timestamp),
+        "time_updated": DynamoDBItemValueConfig("N", None),
+    }
 
 
 class LinkerLambdaHandler(APILambdaHandlerBase):
@@ -38,17 +54,6 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
     def _init_aws(self):
         self.ddb_client = self.aws_session.client("dynamodb", region_name="us-east-1")
 
-    def _new_link_id(self):
-        return "".join(
-            random.choices(
-                string.ascii_lowercase + string.ascii_uppercase + string.digits,
-                k=LINK_ID_LENGTH,
-            )
-        )
-
-    def _get_timestamp(self):
-        return str(int(time.time()))
-
     def _get_sort_params(self, sort_value):
         reverse = sort_value.startswith("-")
         sort_key = sort_value.strip("-").strip("+")
@@ -57,53 +62,10 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
             "reverse": reverse,
         }
 
-    def _format_ddb_item(self, ddbItem):
-        locked = False if "locked" not in ddbItem else ddbItem["locked"]["BOOL"]
-        return {
-            "id": ddbItem["id"]["S"],
-            "url": ddbItem["url"]["S"],
-            "active": ddbItem["active"]["BOOL"],
-            "locked": locked,
-            "name": ddbItem["name"]["S"],
-            "time_created": ddbItem["time_created"]["N"],
-            "time_updated": ddbItem["time_updated"]["N"],
-        }
-
-    def __validate_link_ownership(self, ddbItem):
-        owner = ddbItem.get("owner", {}).get("S", None)
+    def __validate_link_ownership(self, link):
+        owner = link["owner"]
         if not self.user["username"] or self.user["username"] != owner:
             raise UnauthorizedException("Log in to access this link")
-
-    def _build_link_item(self, url, name, active=False, locked=False):
-        timestamp = self._get_timestamp()
-        item = {
-            "id": {
-                "S": self._new_link_id(),
-            },
-            "url": {
-                "S": url,
-            },
-            "name": {
-                "S": name,
-            },
-            "active": {
-                "BOOL": active,
-            },
-            "locked": {
-                "BOOL": locked,
-            },
-            "owner": {
-                "S": self.user["username"],
-            },
-            "time_created": {
-                "N": timestamp,
-            },
-            "time_updated": {
-                "N": timestamp,
-            },
-        }
-
-        return item
 
     def _build_update_expression_parameters(
         self, url=None, name=None, active=None, locked=None
@@ -112,7 +74,7 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
         attribute_names = {
             "#tu": "time_updated",
         }
-        attribute_values = {":tu": {"N": self._get_timestamp()}}
+        attribute_values = {":tu": {"N": get_timestamp()}}
         if url is not None:
             expression_items.append("#url = :url")
             attribute_names["#url"] = "url"
@@ -137,7 +99,7 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
         )
 
     def __fetch_link(self, link_id, validate_ownership=True, require_active=False):
-        ddbItem = self.ddb_client.get_item(
+        ddb_item = self.ddb_client.get_item(
             TableName=self.table_name,
             Key={
                 "id": {
@@ -145,20 +107,21 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
                 },
             },
         )
-        if "Item" not in ddbItem:
+        if "Item" not in ddb_item:
             raise NotFoundException("Link not found")
 
-        ddbItem = ddbItem["Item"]
+        raw_item = ddb_item["Item"]
+        link = LinkDDBItem.from_ddb_item(raw_item)
 
         if validate_ownership:
-            self.__validate_link_ownership(ddbItem)
-        if require_active and not ddbItem["active"]["BOOL"]:
+            self.__validate_link_ownership(link)
+        if require_active and not link["active"]:
             raise NotFoundException("Link not found")
 
-        return self._format_ddb_item(ddbItem)
+        return link
 
     def __fetch_links_by_owner(self, owner):
-        ddbItems = self.ddb_client.scan(
+        raw_items = self.ddb_client.scan(
             TableName=self.table_name,
             ExpressionAttributeNames={
                 "#own": "owner",
@@ -171,7 +134,7 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
             FilterExpression="(#own = :own)",
         )["Items"]
 
-        return [self._format_ddb_item(ddbItem) for ddbItem in ddbItems]
+        return [LinkDDBItem.from_ddb_item(item) for item in raw_items]
 
     # @requires_user_group('link-manager')
     def _generate_qr_code(self, link, direct=False, svg=False):
@@ -193,12 +156,22 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
 
     def _new_link(self, url, name, active=False):
         print("Creating new link")
-        ddbItem = self._build_link_item(url, name, active)
+        timestamp = get_timestamp()
+        link = LinkDDBItem.from_dict(
+            {
+                "url": "url",
+                "name": "name",
+                "active": active,
+                "time_created": timestamp,
+                "time_updated": timestamp,
+            }
+        )
+
         self.ddb_client.put_item(
             TableName=self.table_name,
-            Item=ddbItem,
+            Item=link.to_ddb_item(),
         )
-        return self._format_ddb_item(ddbItem)
+        return link.to_dict()
 
     def _update_link(self, link_id, url=None, name=None, active=None, locked=None):
         print(f"Updating link {link_id}")
@@ -215,7 +188,7 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
             ExpressionAttributeValues=expression_attribute_values,
             ReturnValues="ALL_NEW",
         )["Attributes"]
-        return self._format_ddb_item(ddbItem)
+        return LinkDDBItem.from_ddb_item(ddbItem).to_dict()
 
     def _delete_link(self, link_id):
         print(f"Deleting link {link_id}")
@@ -241,9 +214,9 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
             if link_id:
                 result = self.__fetch_link(
                     link_id, validate_ownership=False, require_active=True
-                )
+                ).to_dict()
             else:
-                result = self.handle_get_all_owned_links()
+                result = [link.to_dict() for link in self.handle_get_all_owned_links()]
 
         return {
             **response,
@@ -252,7 +225,7 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
 
     @requires_user_group("link-manager")
     def handle_generate_qr(self, link_id):
-        link = self.__fetch_link(link_id)
+        link = self.__fetch_link(link_id).to_dict()
         return self._generate_qr_code(link, direct=False)
 
     @requires_authentication
@@ -280,7 +253,7 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
         if not link_id:
             raise BadRequestException("id required")
 
-        link = self.__fetch_link(link_id)
+        link = self.__fetch_link(link_id).to_dict()
         if link["locked"]:
             raise ForbiddenException("cannot update locked link")
 
@@ -300,7 +273,7 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
         if not link_id:
             raise BadRequestException("id required")
 
-        link = self.__fetch_link(link_id)
+        link = self.__fetch_link(link_id).to_dict()
         if link["locked"]:
             raise ForbiddenException("cannot delete locked link")
 
