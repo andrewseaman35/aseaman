@@ -13,6 +13,7 @@ from .api_exceptions import (
     MethodNotAllowedException,
 )
 from .token_decoder import decode_token
+from .aws import AWSConfig, DynamoDBConfig
 
 
 EMPTY_RESPONSE = {
@@ -33,6 +34,9 @@ class APILambdaHandlerBase(object):
             "enabled": False,
         }
     }
+    aws_config = AWSConfig(
+        dynamodb=DynamoDBConfig(enabled=False),
+    )
 
     def __init__(self, event, context):
         self.event = event
@@ -60,18 +64,17 @@ class APILambdaHandlerBase(object):
         self.ssm_client = self.aws_session.client("ssm", region_name=self.region)
 
         self.aws = {}
-        if ddb_config := self.aws_config.get("dynamodb", None):
-            if ddb_config["enabled"]:
-                self.aws["dynamodb"] = {
-                    "client": self.aws_session.client(
-                        "dynamodb", region_name="us-east-1"
-                    ),
-                    "tables": {},
-                }
-                for base_table_name, TableClass in ddb_config["tables"]:
+        if ddb_config := self.aws_config.dynamodb:
+            if ddb_config.enabled:
+                self.aws.dynamodb.client = self.aws_session.client(
+                    "dynamodb", region_name="us-east-1"
+                )
+                self.aws.dynamodb.tables = {}
+
+                for base_table_name, TableClass in ddb_config.tables:
                     table_name = self.build_table_name(base_table_name)
-                    self.aws["dynamodb"]["tables"][base_table_name] = TableClass(
-                        table_name, self.aws["dynamodb"]["client"]
+                    self.aws.dynamodb.tables[base_table_name] = TableClass(
+                        table_name, self.aws.dynamodb.client
                     )
 
         self._init_aws()

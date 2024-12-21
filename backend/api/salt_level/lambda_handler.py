@@ -29,11 +29,11 @@ class SaltLevelLambdaHandler(APILambdaHandlerBase):
     }
 
     def _scan_all(self):
-        return self.aws["dynamodb"]["tables"]["salt_level"].scan()
+        return self.aws.dynamodb.tables["salt_level"].scan()
 
     def _scan_by_water_softener_id(self, water_softener_id):
         scan_dict = {"water_softener_id": water_softener_id}
-        return self.aws["dynamodb"]["tables"]["salt_level"].scan(scan_dict)
+        return self.aws.dynamodb.tables["salt_level"].scan(scan_dict)
 
     def handle_get(self):
         water_softener_id = self.params.get("water_softener_id")

@@ -92,14 +92,14 @@ class ChessLambdaHandler(APILambdaHandlerBase):
                 raise UnauthorizedException("Log in to access this game")
 
     def __fetch_game(self, game_id):
-        game = self.aws["dynamodb"]["tables"]["chess_game"].get(game_id=game_id)
+        game = self.aws.dynamodb.tables["chess_game"].get(game_id=game_id)
 
         self.__validate_game_ownership(game)
 
         return game.to_dict()
 
     def __fetch_by_player(self, player):
-        return self.aws["dynamodb"]["tables"]["chess_game"].scan(
+        return self.aws.dynamodb.tables["chess_game"].scan(
             {
                 "player_one": player,
                 "player_two": player,
@@ -123,7 +123,7 @@ class ChessLambdaHandler(APILambdaHandlerBase):
             chess_game_dict["player_two"] = player_two
 
         chess_game = ChessGameDDBItem.from_dict(chess_game_dict)
-        self.aws["dynamodb"]["tables"]["chess_game"].put(chess_game)
+        self.aws.dynamodb.tables["chess_game"].put(chess_game)
 
         return chess_game.to_dict()
 
@@ -144,7 +144,7 @@ class ChessLambdaHandler(APILambdaHandlerBase):
                 "operation": "list_append",
             },
         }
-        game = self.aws["dynamodb"]["tables"]["chess_game"].update(
+        game = self.aws.dynamodb.tables["chess_game"].update(
             ChessGameDDBItem.build_ddb_key(game_id=game_id),
             update_dict,
         )

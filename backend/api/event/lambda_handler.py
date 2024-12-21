@@ -58,7 +58,7 @@ class EventHandler(APILambdaHandlerBase):
                 "operation": "ADD",
             }
         }
-        event = self.aws["dynamodb"]["tables"]["event"].update(
+        event = self.aws.dynamodb.tables["event"].update(
             EventDDBItem.build_ddb_key(event_id=event_id),
             update_dict,
         )
@@ -66,7 +66,7 @@ class EventHandler(APILambdaHandlerBase):
         return event.to_dict()
 
     def __fetch_event(self, event_id):
-        event = self.aws["dynamodb"]["tables"]["event"].get(event_id=event_id)
+        event = self.aws.dynamodb.tables["event"].get(event_id=event_id)
         return event.to_dict()
 
     def __create_event(self, event_id):
@@ -78,7 +78,7 @@ class EventHandler(APILambdaHandlerBase):
                 "time_updated": timestamp,
             }
         )
-        self.aws["dynamodb"]["tables"]["event"].put(event)
+        self.aws.dynamodb.tables["event"].put(event)
 
         return event.to_dict()
 

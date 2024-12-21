@@ -89,7 +89,7 @@ class CompareACNHHandler(APILambdaHandlerBase):
         return item
 
     def _get_all_summary_items(self):
-        summaries = self.aws["dynamodb"]["tables"]["compare_acnh_summary"].scan()
+        summaries = self.aws.dynamodb.tables["compare_acnh_summary"].scan()
         items = [
             self._complete_summary_item(summary.to_dict()) for summary in summaries
         ]
@@ -101,7 +101,7 @@ class CompareACNHHandler(APILambdaHandlerBase):
             for villager_id in villager_ids
         ]
 
-        summaries = self.aws["dynamodb"]["tables"]["compare_acnh_summary"].batch_get(
+        summaries = self.aws.dynamodb.tables["compare_acnh_summary"].batch_get(
             request_keys
         )
 
@@ -115,9 +115,7 @@ class CompareACNHHandler(APILambdaHandlerBase):
         query_dict = {
             "v_id": villager_id,
         }
-        results = self.aws["dynamodb"]["tables"]["compare_acnh_results"].query(
-            query_dict
-        )
+        results = self.aws.dynamodb.tables["compare_acnh_results"].query(query_dict)
 
         return [result.to_dict() for result in results]
 
@@ -128,7 +126,7 @@ class CompareACNHHandler(APILambdaHandlerBase):
                 "operation": "ADD",
             },
         }
-        self.aws["dynamodb"]["tables"]["compare_acnh_summary"].update(
+        self.aws.dynamodb.tables["compare_acnh_summary"].update(
             CompareACNHSummaryItem.build_ddb_key(villager_id=villager_id),
             update_dict,
         )
@@ -140,7 +138,7 @@ class CompareACNHHandler(APILambdaHandlerBase):
                 "operation": "ADD",
             },
         }
-        self.aws["dynamodb"]["tables"]["compare_acnh_results"].update(
+        self.aws.dynamodb.tables["compare_acnh_results"].update(
             CompareACNHResultsItem.build_ddb_key(
                 villager_id=villager_id, villager_id_2=villager_id_2
             ),

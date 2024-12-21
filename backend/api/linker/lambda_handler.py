@@ -77,7 +77,7 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
             raise UnauthorizedException("Log in to access this link")
 
     def __fetch_link(self, link_id, validate_ownership=True, require_active=False):
-        link = self.aws["dynamodb"]["tables"]["linker"].get(id=link_id)
+        link = self.aws.dynamodb.tables["linker"].get(id=link_id)
 
         if validate_ownership:
             self.__validate_link_ownership(link)
@@ -87,7 +87,7 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
         return link
 
     def __fetch_links_by_owner(self, owner):
-        return self.aws["dynamodb"]["tables"]["linker"].scan({"owner": owner})
+        return self.aws.dynamodb.tables["linker"].scan({"owner": owner})
 
     # @requires_user_group('link-manager')
     def _generate_qr_code(self, link, direct=False, svg=False):
@@ -121,7 +121,7 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
             }
         )
 
-        self.aws["dynamodb"]["tables"]["linker"].put(link)
+        self.aws.dynamodb.tables["linker"].put(link)
 
         return link.to_dict()
 
@@ -134,16 +134,14 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
             "locked": {"value": locked, "operation": "SET"},
         }
 
-        link = self.aws["dynamodb"]["tables"]["linker"].update(
+        link = self.aws.dynamodb.tables["linker"].update(
             LinkDDBItem.build_ddb_key(id=link_id), update_dict
         )
         return link.to_dict()
 
     def _delete_link(self, link_id):
         print(f"Deleting link {link_id}")
-        self.aws["dynamodb"]["tables"]["linker"].delete(
-            LinkDDBItem.build_ddb_key(id=link_id)
-        )
+        self.aws.dynamodb.tables["linker"].delete(LinkDDBItem.build_ddb_key(id=link_id))
 
     def handle_get(self):
         path_parts = self.event["path"].strip("/").split("/")
