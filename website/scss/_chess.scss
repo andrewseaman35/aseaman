@@ -60,6 +60,16 @@ $space-light: #CB9053;
             &.check-threat {
                 background-color: orange;
             }
+
+            &.flash {
+                animation: blinker 1s linear infinite;
+
+                @keyframes blinker {
+                    50% {
+                        opacity: 50%;
+                    }
+                }
+            }
         }
 
         &.board-label {
