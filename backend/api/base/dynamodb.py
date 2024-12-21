@@ -80,32 +80,49 @@ class DynamoDBItem:
         return ddb_item
 
     @classmethod
-    def build_update_expression(cls, update, update_expressions):
-        expression_items = []
-
+    def build_update_expression(cls, update_dict):
         used_ids = set()
 
+        attribute_names = {}
+        attribute_values = {}
+        expression_add_items = []
+        expression_set_items = []
+        expression_items = []
         if cls._timestamp_key:
             expr_id = get_expression_id(used_ids)
 
-            expression_items = [f"SET #{expr_id} = :{expr_id}"]
+            expression_set_items.append(f"#{expr_id} = :{expr_id}")
             attribute_names = {
                 f"#{expr_id}": cls._timestamp_key,
             }
             attribute_values = {f":{expr_id}": {"N": get_timestamp()}}
 
         for key, props in cls._config.items():
-            value = update.get(key, None)
+            value = update_dict.get(key, None)
             if value is not None:
                 expr_id = get_expression_id(used_ids)
-                expression_items.append(
-                    update_expressions.get(key, f"#{expr_id} = :{expr_id}")
-                )
-                attribute_names[f"#{expr_id}"] = key
-                attribute_values[f":{expr_id}"] = {props.data_type: update[key]}
-        print(expression_items)
+                if value["operation"] == "SET":
+                    expression_set_items.append(f"#{expr_id} = :{expr_id}")
+                elif value["operation"] == "ADD":
+                    expression_add_items.append(f"{key} :{expr_id}")
+                elif value["operation"] == "list_append":
+                    expression_items.append(
+                        f"{key} = list_append(#{expr_id}, :{expr_id})"
+                    )
+                else:
+                    raise Exception(f"unknown operation {key}")
+
+                if value["operation"] != "ADD":
+                    attribute_names[f"#{expr_id}"] = key
+                attribute_values[f":{expr_id}"] = {props.data_type: value["value"]}
+
+        if expression_set_items:
+            expression_items.insert(0, f"SET {', '.join(expression_set_items)}")
+        if expression_add_items:
+            expression_items.insert(0, f"ADD {', '.join(expression_add_items)}")
+
         return (
-            f"SET {', '.join(expression_items)}",
+            ", ".join(expression_items),
             attribute_names,
             attribute_values,
         )
@@ -133,6 +150,19 @@ class DynamoDBItem:
             f" {operator} ".join(filter_expression_items),
         )
 
+    @classmethod
+    def build_query_attributes(cls, attributes):
+        attribute_keys = list(attributes.keys())
+        assert len(attribute_keys) == 1, "only one query attribute key supported"
+
+        expr_id = get_expression_id(set())
+        key = attribute_keys[0]
+        key_condition_expression = f"{key} = :{expr_id}"
+        expression_attribute_values = {
+            f":{expr_id}": {cls._config[key].data_type: attributes[key]}
+        }
+        return (key_condition_expression, expression_attribute_values)
+
 
 class DynamoDBTable:
     ItemClass = None
@@ -151,43 +181,60 @@ class DynamoDBTable:
         raw_item = ddb_item["Item"]
         return self.ItemClass.from_ddb_item(raw_item)
 
+    def batch_get(self, request_keys):
+        result = self.ddb_client.batch_get_item(
+            RequestItems={self.summary_table_name: {"Keys": request_keys}}
+        )
+
+        ddb_items = result.get("Responses", {}).get(self.summary_table_name, [])
+        return [self.ItemClass.from_ddb_item(ddb_item) for ddb_item in ddb_items]
+
     def put(self, item):
         self.ddb_client.put_item(
             TableName=self.table_name,
             Item=item.to_ddb_item(),
         )
 
-    def update(self, key, update_dict, update_expressions=None):
+    def update(self, key, update_dict):
         (
             update_expression,
             expression_attribute_names,
             expression_attribute_values,
-        ) = self.ItemClass.build_update_expression(update_dict, update_expressions)
+        ) = self.ItemClass.build_update_expression(update_dict)
 
-        ddb_item = self.ddb_client.update_item(
-            TableName=self.table_name,
-            Key=key,
-            UpdateExpression=update_expression,
-            ExpressionAttributeNames=expression_attribute_names,
-            ExpressionAttributeValues=expression_attribute_values,
-            ReturnValues="ALL_NEW",
-        )["Attributes"]
+        update_kwargs = {
+            "TableName": self.table_name,
+            "Key": key,
+            "ReturnValues": "ALL_NEW",
+        }
+        if update_expression:
+            update_kwargs["UpdateExpression"] = update_expression
+        if expression_attribute_names:
+            update_kwargs["ExpressionAttributeNames"] = expression_attribute_names
+        if expression_attribute_values:
+            update_kwargs["ExpressionAttributeValues"] = expression_attribute_values
+
+        ddb_item = self.ddb_client.update_item(**update_kwargs)["Attributes"]
 
         return self.ItemClass.from_ddb_item(ddb_item)
 
-    def scan(self, scan_dict, operator="AND"):
-        (
-            expression_attribute_names,
-            expression_attribute_values,
-            filter_expression,
-        ) = self.ItemClass.build_scan_attributes(scan_dict, operator=operator)
+    def scan(self, scan_dict=None, operator="AND"):
+        if scan_dict is None:
+            ddb_items = self.ddb_client.scan(TableName=self.table_name)["Items"]
+        else:
+            (
+                expression_attribute_names,
+                expression_attribute_values,
+                filter_expression,
+            ) = self.ItemClass.build_scan_attributes(scan_dict, operator=operator)
 
-        ddb_items = self.ddb_client.scan(
-            TableName=self.table_name,
-            ExpressionAttributeNames=expression_attribute_names,
-            ExpressionAttributeValues=expression_attribute_values,
-            FilterExpression=filter_expression,
-        )["Items"]
+            ddb_items = self.ddb_client.scan(
+                TableName=self.table_name,
+                ExpressionAttributeNames=expression_attribute_names,
+                ExpressionAttributeValues=expression_attribute_values,
+                FilterExpression=filter_expression,
+            )["Items"]
+
         return [self.ItemClass.from_ddb_item(ddb_item) for ddb_item in ddb_items]
 
     def delete(self, key):
@@ -195,3 +242,19 @@ class DynamoDBTable:
             TableName=self.table_name,
             Key=key,
         )
+
+    def query(self, query_dict=None):
+        (
+            key_condition_expression,
+            expression_attribute_values,
+        ) = self.ItemClass.build_query_attributes(query_dict)
+
+        result = self.ddb_client.query(
+            TableName=self.table_name,
+            Select="ALL_ATTRIBUTES",
+            ConsistentRead=False,
+            KeyConditionExpression=key_condition_expression,
+            ExpressionAttributeValues=expression_attribute_values,
+        )
+        ddb_items = result.get("Items", [])
+        return [self.ItemClass.from_ddb_item(ddb_item) for ddb_item in ddb_items]

@@ -30,7 +30,7 @@ class ChessGameDDBItem(DynamoDBItem):
         "player_one": DynamoDBItemValueConfig("S", default=None, optional=True),
         "player_two": DynamoDBItemValueConfig("S", default=None, optional=True),
         "time_created": DynamoDBItemValueConfig("N", default=get_timestamp),
-        "time_updated": DynamoDBItemValueConfig("N", default=None),
+        "time_updated": DynamoDBItemValueConfig("N"),
     }
 
     @classmethod
@@ -133,17 +133,20 @@ class ChessLambdaHandler(APILambdaHandlerBase):
         game = self.__fetch_game(game_id)
 
         if game["turns"]:
-            serialized_last_turn = game["turns"][-1]
+            serialized_last_turn = game["turns"][-1]["S"]
             last_turn = self._deserialize_turn(serialized_last_turn)
             if new_turn["side"] == last_turn["side"]:
                 raise BadRequestException(f"not {new_turn['side']}'s turn!")
 
-        update_dict = {"turns": [{"L": turn}]}
-        update_expressions = {"turns": "turns = list_append(#t, :t)"}
+        update_dict = {
+            "turns": {
+                "value": [{"S": turn}],
+                "operation": "list_append",
+            },
+        }
         game = self.aws["dynamodb"]["tables"]["chess_game"].update(
             ChessGameDDBItem.build_ddb_key(game_id=game_id),
             update_dict,
-            update_expressions,
         )
 
         return game.to_dict()

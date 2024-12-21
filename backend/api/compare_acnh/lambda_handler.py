@@ -1,122 +1,150 @@
 import json
 
-from boto3.dynamodb.conditions import Key
-
 from base.lambda_handler_base import APILambdaHandlerBase
 from base.api_exceptions import (
     BadRequestException,
     NotFoundException,
 )
-
-SUMMARY_TABLE_NAME = "compare_acnh_summary"
-LOCAL_SUMMARY_TABLE_NAME = "compare_acnh_summary_local"
-
-RESULTS_TABLE_NAME = "compare_acnh_results"
-LOCAL_RESULTS_TABLE_NAME = "compare_acnh_results_local"
+from base.dynamodb import DynamoDBTable, DynamoDBItem, DynamoDBItemValueConfig
 
 
 def summarySortKey(item):
     return (-item["win_percentage"], -item["total"], item["villager_id"])
 
 
-class CompareACNHHandler(APILambdaHandlerBase):
-    def _init(self):
-        self.summary_table_name = (
-            LOCAL_SUMMARY_TABLE_NAME if self.is_local else SUMMARY_TABLE_NAME
-        )
-        self.results_table_name = (
-            LOCAL_RESULTS_TABLE_NAME if self.is_local else RESULTS_TABLE_NAME
-        )
+class CompareACNHSummaryItem(DynamoDBItem):
+    _timestamp_key = None
 
-    def _init_aws(self):
-        self.ddb_client = self.aws_session.client("dynamodb", region_name="us-east-1")
+    _config = {
+        "villager_id": DynamoDBItemValueConfig("S"),
+        "losses": DynamoDBItemValueConfig("N"),
+        "wins": DynamoDBItemValueConfig("N"),
+    }
+
+    @classmethod
+    def build_ddb_key(cls, *args, villager_id=None):
+        assert villager_id is not None, "villager_id required to build ddb key"
+        return {
+            "villager_id": {
+                "S": villager_id,
+            }
+        }
+
+
+class CompareACNHResultsItem(DynamoDBItem):
+    _timestamp_key = None
+
+    _config = {
+        "v_id": DynamoDBItemValueConfig("S"),
+        "v_id2": DynamoDBItemValueConfig("S"),
+        "losses": DynamoDBItemValueConfig("N"),
+        "wins": DynamoDBItemValueConfig("N"),
+    }
+
+    @classmethod
+    def build_ddb_key(cls, *args, villager_id=None, villager_id_2=None):
+        assert villager_id is not None, "villager_id required to build ddb key"
+        assert villager_id_2 is not None, "villager_id_2 required to build ddb key"
+        return {
+            "v_id": {
+                "S": villager_id,
+            },
+            "v_id2": {
+                "S": villager_id_2,
+            },
+        }
+
+
+class CompareACNHSummaryTable(DynamoDBTable):
+    ItemClass = CompareACNHSummaryItem
+
+
+class CompareACNHResultsTable(DynamoDBTable):
+    ItemClass = CompareACNHResultsItem
+
+
+class CompareACNHHandler(APILambdaHandlerBase):
+    aws_config = {
+        "dynamodb": {
+            "enabled": True,
+            "tables": [
+                ("compare_acnh_summary", CompareACNHSummaryTable),
+                ("compare_acnh_results", CompareACNHResultsTable),
+            ],
+        }
+    }
 
     def _complete_summary_items(self, items):
         for item in items:
-            wins = int(item["wins"])
-            losses = int(item["losses"])
-            total = wins + losses
-            win_percentage = round(100 * (wins / total), 2) if total else 0
-            item["total"] = total
-            item["win_percentage"] = win_percentage
+            self._complete_summary_item(item)
         return items
 
+    def _complete_summary_item(self, item):
+        wins = int(item["wins"])
+        losses = int(item["losses"])
+        total = wins + losses
+        win_percentage = round(100 * (wins / total), 2) if total else 0
+        item["total"] = total
+        item["win_percentage"] = win_percentage
+        return item
+
     def _get_all_summary_items(self):
-        ddb_items = self.ddb_client.scan(
-            TableName=self.summary_table_name,
-        )["Items"]
-        items = self._complete_summary_items(
-            [self._ddb_item_to_json(ddb_item) for ddb_item in ddb_items]
-        )
+        summaries = self.aws["dynamodb"]["tables"]["compare_acnh_summary"].scan()
+        items = [
+            self._complete_summary_item(summary.to_dict()) for summary in summaries
+        ]
         return sorted(items, key=summarySortKey)
 
     def _get_summary_items(self, villager_ids):
         request_keys = [
-            {"villager_id": {"S": villager_id}} for villager_id in villager_ids
+            CompareACNHSummaryItem.build_ddb_key(village_id=villager_id)
+            for villager_id in villager_ids
         ]
 
-        result = self.ddb_client.batch_get_item(
-            RequestItems={self.summary_table_name: {"Keys": request_keys}}
+        summaries = self.aws["dynamodb"]["tables"]["compare_acnh_summary"].batch_get(
+            request_keys
         )
 
-        ddb_items = result.get("Responses", {}).get(self.summary_table_name, [])
         items = self._complete_summary_items(
-            [self._ddb_item_to_json(ddb_item) for ddb_item in ddb_items]
+            [self._ddb_item_to_json(summary.to_dict()) for summary in summaries]
         )
 
         return sorted(items, key=summarySortKey)
 
     def _get_results(self, villager_id):
-        result = self.ddb_client.query(
-            TableName=self.results_table_name,
-            Select="ALL_ATTRIBUTES",
-            ConsistentRead=False,
-            KeyConditionExpression="v_id = :vid",
-            ExpressionAttributeValues={
-                ":vid": {
-                    "S": villager_id,
-                },
-            },
+        query_dict = {
+            "v_id": villager_id,
+        }
+        results = self.aws["dynamodb"]["tables"]["compare_acnh_results"].query(
+            query_dict
         )
 
-        ddb_items = result.get("Items", [])
-        items = [self._ddb_item_to_json(ddb_item) for ddb_item in ddb_items]
-
-        return items
+        return [result.to_dict() for result in results]
 
     def _increment_summary_count(self, villager_id, column):
-        self.ddb_client.update_item(
-            TableName=self.summary_table_name,
-            Key={
-                "villager_id": {
-                    "S": villager_id,
-                },
+        update_dict = {
+            column: {
+                "value": "1",
+                "operation": "ADD",
             },
-            UpdateExpression="ADD {} :v".format(column),
-            ExpressionAttributeValues={
-                ":v": {
-                    "N": "1",
-                },
-            },
+        }
+        self.aws["dynamodb"]["tables"]["compare_acnh_summary"].update(
+            CompareACNHSummaryItem.build_ddb_key(villager_id=villager_id),
+            update_dict,
         )
 
     def _increment_result_count(self, villager_id, villager_id_2, column):
-        self.ddb_client.update_item(
-            TableName=self.results_table_name,
-            Key={
-                "v_id": {
-                    "S": villager_id,
-                },
-                "v_id2": {
-                    "S": villager_id_2,
-                },
+        update_dict = {
+            column: {
+                "value": "1",
+                "operation": "ADD",
             },
-            UpdateExpression="ADD {} :v".format(column),
-            ExpressionAttributeValues={
-                ":v": {
-                    "N": "1",
-                },
-            },
+        }
+        self.aws["dynamodb"]["tables"]["compare_acnh_results"].update(
+            CompareACNHResultsItem.build_ddb_key(
+                villager_id=villager_id, villager_id_2=villager_id_2
+            ),
+            update_dict,
         )
 
     def _save_result(self, winner, loser):

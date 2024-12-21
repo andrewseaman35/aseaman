@@ -128,10 +128,10 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
     def _update_link(self, link_id, url=None, name=None, active=None, locked=None):
         print(f"Updating link {link_id}")
         update_dict = {
-            "url": url,
-            "name": name,
-            "active": active,
-            "locked": locked,
+            "url": {"value": url, "operation": "SET"},
+            "name": {"value": name, "operation": "SET"},
+            "active": {"value": active, "operation": "SET"},
+            "locked": {"value": locked, "operation": "SET"},
         }
 
         link = self.aws["dynamodb"]["tables"]["linker"].update(
