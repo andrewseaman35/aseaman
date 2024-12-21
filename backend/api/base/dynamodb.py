@@ -9,12 +9,10 @@ class DynamoDBNotFoundException(Exception):
 
 
 class DynamoDBItemValueConfig:
-    data_type = None
-    default = None
-
-    def __init__(self, data_type, default):
+    def __init__(self, data_type, default=None, optional=False):
         self.data_type = data_type
         self.default = default
+        self.optional = optional
 
 
 class DynamoDBItem:
@@ -37,7 +35,7 @@ class DynamoDBItem:
 
     @property
     def ddb_key(self):
-        return NotImplemented
+        return self.build_ddb_key(id=self.id)
 
     def build_ddb_key(self, *args, **kwargs):
         return NotImplemented
@@ -47,8 +45,6 @@ class DynamoDBItem:
         _item = {}
         for key, props in cls._config.items():
             if key not in _dict:
-                if props.default is None:
-                    raise Exception(f"No default value specified for {key}")
                 if callable(props.default):
                     value = props.default()
                 else:
@@ -63,9 +59,12 @@ class DynamoDBItem:
     def from_ddb_item(cls, ddb_item):
         _item = {}
         for key, props in cls._config.items():
-            # if key not in ddb_item:
-            #     value = None
-            value = ddb_item[key][props.data_type]
+            if key not in ddb_item:
+                if not props.optional:
+                    raise ValueError(f"missing key: {key}")
+                value = None
+            else:
+                value = ddb_item[key][props.data_type]
             _item[key] = value
 
         return cls(_item)
@@ -76,12 +75,12 @@ class DynamoDBItem:
     def to_ddb_item(self):
         ddb_item = {}
         for key, props in self._config.items():
-            ddb_item[key] = {props.data_type: self._item[key]}
-
+            if self._item[key] is not None:
+                ddb_item[key] = {props.data_type: self._item[key]}
         return ddb_item
 
     @classmethod
-    def build_update_expression(cls, update):
+    def build_update_expression(cls, update, update_expressions):
         expression_items = []
 
         used_ids = set()
@@ -99,18 +98,20 @@ class DynamoDBItem:
             value = update.get(key, None)
             if value is not None:
                 expr_id = get_expression_id(used_ids)
-                expression_items.append(f"#{expr_id} = :{expr_id}")
+                expression_items.append(
+                    update_expressions.get(key, f"#{expr_id} = :{expr_id}")
+                )
                 attribute_names[f"#{expr_id}"] = key
                 attribute_values[f":{expr_id}"] = {props.data_type: update[key]}
-
+        print(expression_items)
         return (
-            ", ".join(expression_items),
+            f"SET {', '.join(expression_items)}",
             attribute_names,
             attribute_values,
         )
 
     @classmethod
-    def build_scan_attributes(cls, attributes):
+    def build_scan_attributes(cls, attributes, operator="AND"):
         attribute_names = {}
         attribute_values = {}
         filter_expression_items = []
@@ -129,7 +130,7 @@ class DynamoDBItem:
         return (
             attribute_names,
             attribute_values,
-            " AND ".join(filter_expression_items),
+            f" {operator} ".join(filter_expression_items),
         )
 
 
@@ -156,12 +157,12 @@ class DynamoDBTable:
             Item=item.to_ddb_item(),
         )
 
-    def update(self, key, update_dict):
+    def update(self, key, update_dict, update_expressions=None):
         (
             update_expression,
             expression_attribute_names,
             expression_attribute_values,
-        ) = self.ItemClass.build_update_expression(update_dict)
+        ) = self.ItemClass.build_update_expression(update_dict, update_expressions)
 
         ddb_item = self.ddb_client.update_item(
             TableName=self.table_name,
@@ -174,12 +175,12 @@ class DynamoDBTable:
 
         return self.ItemClass.from_ddb_item(ddb_item)
 
-    def scan(self, scan_dict):
+    def scan(self, scan_dict, operator="AND"):
         (
             expression_attribute_names,
             expression_attribute_values,
             filter_expression,
-        ) = self.ItemClass.build_scan_attributes(scan_dict)
+        ) = self.ItemClass.build_scan_attributes(scan_dict, operator=operator)
 
         ddb_items = self.ddb_client.scan(
             TableName=self.table_name,

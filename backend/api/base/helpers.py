@@ -43,13 +43,14 @@ def ddb_item_required(key):
     return partial(raise_key_required, key)
 
 
-def generate_alphanumeric_id(length):
-    return "".join(
-        random.choices(
-            string.ascii_lowercase + string.ascii_uppercase + string.digits,
-            k=length,
-        )
-    )
+def generate_alphanumeric_id(length=8, lower=True, upper=True):
+    choices = [*string.digits]
+    if lower:
+        choices.extend(string.ascii_lowercase)
+    if upper:
+        choices.extend(string.ascii_uppercase)
+
+    return "".join(random.choices(choices, k=length))
 
 
 def requires_authentication(func):

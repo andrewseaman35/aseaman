@@ -14,7 +14,6 @@ from base.api_exceptions import (
 )
 from base.dynamodb import DynamoDBItem, DynamoDBItemValueConfig, DynamoDBTable
 from base.helpers import (
-    ddb_item_required,
     requires_authentication,
     requires_user_group,
     get_timestamp,
@@ -32,19 +31,15 @@ DEFAULT_LINK_URL = ""
 class LinkDDBItem(DynamoDBItem):
     _config = {
         "id": DynamoDBItemValueConfig(
-            "S", lambda: generate_alphanumeric_id(LINK_ID_LENGTH)
+            "S", default=lambda: generate_alphanumeric_id(LINK_ID_LENGTH)
         ),
-        "url": DynamoDBItemValueConfig("S", ""),
-        "active": DynamoDBItemValueConfig("BOOL", False),
-        "locked": DynamoDBItemValueConfig("BOOL", False),
-        "owner": DynamoDBItemValueConfig("S", ddb_item_required("owner")),
-        "time_created": DynamoDBItemValueConfig("N", get_timestamp),
-        "time_updated": DynamoDBItemValueConfig("N", None),
+        "url": DynamoDBItemValueConfig("S", default=None),
+        "active": DynamoDBItemValueConfig("BOOL", default=False),
+        "locked": DynamoDBItemValueConfig("BOOL", default=False),
+        "owner": DynamoDBItemValueConfig("S"),
+        "time_created": DynamoDBItemValueConfig("N", default=get_timestamp),
+        "time_updated": DynamoDBItemValueConfig("N", default=None),
     }
-
-    @property
-    def ddb_key(self):
-        return self.build_ddb_key(id=self.id)
 
     @classmethod
     def build_ddb_key(cls, *args, id=None):
