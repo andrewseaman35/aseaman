@@ -11,110 +11,76 @@ from base.lambda_handler_base import APILambdaHandlerBase
 from base.api_exceptions import (
     BadRequestException,
     NotFoundException,
-    UnauthorizedException,
 )
+from base.dynamodb import DynamoDBItem, DynamoDBItemValueConfig, DynamoDBTable
+from base.helpers import get_timestamp
+
+
+class EventDDBItem(DynamoDBItem):
+    _config = {
+        "event_id": DynamoDBItemValueConfig("S"),
+        "count": DynamoDBItemValueConfig("N", "0"),
+        "time_created": DynamoDBItemValueConfig("N", default=get_timestamp),
+        "time_updated": DynamoDBItemValueConfig("N", default=None),
+    }
+
+    @classmethod
+    def build_ddb_key(cls, *args, event_id=None):
+        assert event_id is not None, "event_id required to build ddb key"
+        return {
+            "event_id": {
+                "S": event_id,
+            },
+        }
+
+
+class EventTable(DynamoDBTable):
+    ItemClass = EventDDBItem
 
 
 class EventHandler(APILambdaHandlerBase):
+    aws_config = {
+        "dynamodb": {
+            "enabled": True,
+            "tables": [("event", EventTable)],
+        }
+    }
+
     @property
     def HANDLERS_BY_TYPE(self):
         return {"track": self.handle_track_event}
 
-    @property
-    def table_name(self):
-        if self.env == "live":
-            return "event"
-        return f"event_stage"
-
-    def _init_aws(self):
-        self.ddb_client = self.aws_session.client("dynamodb", region_name="us-east-1")
-
-    def _get_timestamp(self):
-        return str(int(time.time()))
-
-    def _format_ddb_item(self, ddbItem):
-        return {
-            "event_id": ddbItem["event_id"]["S"],
-            "count": ddbItem["count"]["N"],
-            "time_created": ddbItem["time_created"]["N"],
-            "time_updated": ddbItem["time_updated"]["N"],
-        }
-
-    def _build_new_event_ddb_item(self, event_id):
-        timestamp = self._get_timestamp()
-        item = {
-            "event_id": {
-                "S": event_id,
-            },
-            "count": {
-                "N": "1",
-            },
-            "time_created": {
-                "N": timestamp,
-            },
-            "time_updated": {
-                "N": timestamp,
-            },
-        }
-        return item
-
-    def _build_update_expression_parameters(self):
-        expression_items = ["SET #tu = :tu", "#co = #co + :c"]
-        attribute_names = {
-            "#tu": "time_updated",
-            "#co": "count",
-        }
-        attribute_values = {
-            ":tu": {"N": self._get_timestamp()},
-            ":c": {"N": "1"},
-        }
-
-        return (
-            ", ".join(expression_items),
-            attribute_names,
-            attribute_values,
-        )
-
     def _update_event(self, event_id):
         print(f"Updating event {event_id}")
-        (
-            update_expression,
-            expression_attribute_names,
-            expression_attribute_values,
-        ) = self._build_update_expression_parameters()
-        ddbItem = self.ddb_client.update_item(
-            TableName=self.table_name,
-            Key={"event_id": {"S": event_id}},
-            UpdateExpression=update_expression,
-            ExpressionAttributeNames=expression_attribute_names,
-            ExpressionAttributeValues=expression_attribute_values,
-            ReturnValues="ALL_NEW",
-        )["Attributes"]
-        return self._format_ddb_item(ddbItem)
+        update_dict = {
+            "count": {
+                "value": "1",
+                "operation": "ADD",
+            }
+        }
+        event = self.aws["dynamodb"]["tables"]["event"].update(
+            EventDDBItem.build_ddb_key(event_id=event_id),
+            update_dict,
+        )
+
+        return event.to_dict()
 
     def __fetch_event(self, event_id):
-        ddbItem = self.ddb_client.get_item(
-            TableName=self.table_name,
-            Key={
-                "event_id": {
-                    "S": event_id,
-                },
-            },
-        )
-        if "Item" not in ddbItem:
-            return None
-
-        ddbItem = ddbItem["Item"]
-
-        return self._format_ddb_item(ddbItem)
+        event = self.aws["dynamodb"]["tables"]["event"].get(event_id=event_id)
+        return event.to_dict()
 
     def __create_event(self, event_id):
-        ddb_item = self._build_new_event_ddb_item(event_id)
-        self.ddb_client.put_item(
-            TableName=self.table_name,
-            Item=ddb_item,
+        timestamp = get_timestamp()
+        event = EventDDBItem.from_dict(
+            {
+                "event_id": event_id,
+                "time_created": timestamp,
+                "time_updated": timestamp,
+            }
         )
-        return self._format_ddb_item(ddb_item)
+        self.aws["dynamodb"]["tables"]["event"].put(event)
+
+        return event.to_dict()
 
     def handle_track_event(self, event_id, event):
         if event is None:

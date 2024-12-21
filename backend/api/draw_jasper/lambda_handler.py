@@ -8,7 +8,9 @@ import uuid
 from concurrent import futures
 
 import cv2
+
 from base.lambda_handler_base import APILambdaHandlerBase
+
 
 BUCKET_NAME = "aseaman-public-bucket"
 JASPER_PREFIX = "aseaman/images/jasper"
@@ -45,7 +47,6 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
 
     def _init(self):
         self.id = uuid.uuid4().hex
-        self.table_name = LOCAL_TABLE_NAME if self.is_local else TABLE_NAME
         self.date = datetime.datetime.now()
         self.s3_key_prefix = "aseaman/images/jasper/jobs/{date}/{id}".format(
             date=datetime.datetime.now().date(),
@@ -54,7 +55,6 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
         self.s3_key_format = self.s3_key_prefix + "/{}"
 
     def _init_aws(self):
-        self.ddb_client = self.aws_session.client("dynamodb", region_name="us-east-1")
         self.s3_client = self.aws_session.client("s3", region_name="us-east-1")
 
     def _download(self, key):
@@ -182,7 +182,7 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
         self._save_image_to_s3(self.img_bytes, "input_drawing.png")
         user_drawing_filename = self._save_file_to_local_temp()
         results = []
-        for (key, filepath) in self._download_all_masks():
+        for key, filepath in self._download_all_masks():
             comparison = self._run_comparison(user_drawing_filename, filepath)
             non_zero_count = comparison["non_zero_count"]
             comparison["matchId"] = key
