@@ -28,6 +28,12 @@ class APILambdaHandlerBase(object):
     rest_enabled = True
     region = "us-east-1"
 
+    aws_config = {
+        "dynamodb": {
+            "enabled": False,
+        }
+    }
+
     def __init__(self, event, context):
         self.event = event
         self.context = context
@@ -52,6 +58,22 @@ class APILambdaHandlerBase(object):
             else boto3.session.Session()
         )
         self.ssm_client = self.aws_session.client("ssm", region_name=self.region)
+
+        self.aws = {}
+        if ddb_config := self.aws_config.get("dynamodb", None):
+            if ddb_config["enabled"]:
+                self.aws["dynamodb"] = {
+                    "client": self.aws_session.client(
+                        "dynamodb", region_name="us-east-1"
+                    ),
+                    "tables": {},
+                }
+                for base_table_name, TableClass in ddb_config["tables"]:
+                    table_name = self.build_table_name(base_table_name)
+                    self.aws["dynamodb"]["tables"][base_table_name] = TableClass(
+                        table_name, self.aws["dynamodb"]["client"]
+                    )
+
         self._init_aws()
 
     def _init(self):
@@ -63,6 +85,11 @@ class APILambdaHandlerBase(object):
     @property
     def is_local(self):
         return os.environ.get("IN_DOCKER_API") == "true"
+
+    def build_table_name(self, table_name):
+        if self.env == "live":
+            return table_name
+        return f"{table_name}_{self.env}"
 
     @classmethod
     def _ddb_item_to_json(cls, ddb_item):

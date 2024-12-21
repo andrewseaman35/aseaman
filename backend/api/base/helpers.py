@@ -1,3 +1,4 @@
+from functools import partial
 import random
 import string
 import time
@@ -7,6 +8,14 @@ from .api_exceptions import (
     ForbiddenException,
     UnauthorizedException,
 )
+
+
+def get_expression_id(used_ids=set()):
+    for _ in range(10):
+        expr_id = generate_alpha_id(2)
+        if expr_id not in used_ids:
+            return expr_id
+    raise Exception("Failed to find expr_id")
 
 
 def generate_id():
@@ -24,6 +33,14 @@ def generate_alpha_id(length):
             k=length,
         )
     )
+
+
+def raise_key_required(key):
+    raise ValueError(f"{key} required")
+
+
+def ddb_item_required(key):
+    return partial(raise_key_required, key)
 
 
 def generate_alphanumeric_id(length):
