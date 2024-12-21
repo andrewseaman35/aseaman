@@ -82,7 +82,7 @@ class ChessLambdaHandler(APILambdaHandlerBase):
             "options": options,
         }
 
-    def __validate_game_ownership(self, game):
+    def _validate_game_ownership(self, game):
         players = {
             game["player_one"],
             game["player_two"],
@@ -91,14 +91,14 @@ class ChessLambdaHandler(APILambdaHandlerBase):
             if not self.user["username"] or not self.user["username"] in players:
                 raise UnauthorizedException("Log in to access this game")
 
-    def __fetch_game(self, game_id):
+    def _fetch_game(self, game_id):
         game = self.aws.dynamodb.tables["chess_game"].get(game_id=game_id)
 
-        self.__validate_game_ownership(game)
+        self._validate_game_ownership(game)
 
         return game.to_dict()
 
-    def __fetch_by_player(self, player):
+    def _fetch_by_player(self, player):
         return self.aws.dynamodb.tables["chess_game"].scan(
             {
                 "player_one": player,
@@ -130,7 +130,7 @@ class ChessLambdaHandler(APILambdaHandlerBase):
     def _save_turn(self, game_id, turn):
         print("saving new turn")
         new_turn = self._deserialize_turn(turn)
-        game = self.__fetch_game(game_id)
+        game = self._fetch_game(game_id)
 
         if game["turns"]:
             serialized_last_turn = game["turns"][-1]["S"]
@@ -158,11 +158,11 @@ class ChessLambdaHandler(APILambdaHandlerBase):
         if resource == "game":
             game_id = self.params.get("game_id")
             if game_id:
-                result = self.__fetch_game(game_id)
+                result = self._fetch_game(game_id)
             current_user = self.params.get("current_user")
             if current_user == "true":
                 if self.user["username"]:
-                    result = self.__fetch_by_player(self.user["username"])
+                    result = self._fetch_by_player(self.user["username"])
                 else:
                     raise PermissionError("cannot fetch by user")
             if not (game_id or current_user):

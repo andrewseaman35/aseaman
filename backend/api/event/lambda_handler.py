@@ -1,7 +1,6 @@
 import os
 import json
 import sys
-import time
 
 # Required to support absolute imports when running locally and on lambda
 CURR_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -65,11 +64,7 @@ class EventHandler(APILambdaHandlerBase):
 
         return event.to_dict()
 
-    def __fetch_event(self, event_id):
-        event = self.aws.dynamodb.tables["event"].get(event_id=event_id)
-        return event.to_dict()
-
-    def __create_event(self, event_id):
+    def _create_event(self, event_id):
         timestamp = get_timestamp()
         event = EventDDBItem.from_dict(
             {
@@ -84,7 +79,7 @@ class EventHandler(APILambdaHandlerBase):
 
     def handle_track_event(self, event_id, event):
         if event is None:
-            return self.__create_event(event_id)
+            return self._create_event(event_id)
 
         return self._update_event(event_id)
 
@@ -99,7 +94,7 @@ class EventHandler(APILambdaHandlerBase):
         if not event_id:
             raise BadRequestException("missing event_id")
 
-        event = self.__fetch_event(event_id)
+        event = self.aws.dynamodb.tables["event"].get(event_id=event_id)
         result = self.HANDLERS_BY_TYPE[resource](event_id, event)
 
         response = self._empty_response()

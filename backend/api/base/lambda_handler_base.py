@@ -13,7 +13,7 @@ from .api_exceptions import (
     MethodNotAllowedException,
 )
 from .token_decoder import decode_token
-from .aws import AWSConfig, DynamoDBConfig
+from .aws import AWSConfig, DynamoDBConfig, S3Config
 
 
 EMPTY_RESPONSE = {
@@ -35,7 +35,7 @@ class APILambdaHandlerBase(object):
         }
     }
     aws_config = AWSConfig(
-        dynamodb=DynamoDBConfig(enabled=False),
+        dynamodb=DynamoDBConfig(enabled=False), s3=S3Config(enabled=False)
     )
 
     def __init__(self, event, context):
