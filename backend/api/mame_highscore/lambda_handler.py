@@ -11,25 +11,27 @@ sys.path.append(CURR_DIR)
 
 from base.lambda_handler_base import APILambdaHandlerBase
 from base.api_exceptions import BadRequestException, NotFoundException
+from base.aws import AWSConfig, S3Config, S3BucketConfig
 
 from high_score_parser import HighScoreParser
 
 
-BUCKET_NAME = "aseaman-public-bucket"
+PUBLIC_BUCKET_NAME = "aseaman-public-bucket"
 
 
 class MameHighscoreLambdaHandler(APILambdaHandlerBase):
-    primary_partition_key = "user"
+    aws_config = AWSConfig(
+        s3=S3Config(
+            enabled=True, buckets={"public": S3BucketConfig(name=PUBLIC_BUCKET_NAME)}
+        )
+    )
 
     def _init(self):
         self.s3_key_format = "hi/{game_id}.hi"
 
-    def _init_aws(self):
-        self.s3_client = self.aws_session.client("s3", region_name="us-east-1")
-
     def _list_hiscore_files(self):
-        response = self.s3_client.list_objects_v2(
-            Bucket=BUCKET_NAME,
+        response = self.aws.s3.client.list_objects_v2(
+            Bucket=PUBLIC_BUCKET_NAME,
             Prefix="hi/",
         )
         return response
@@ -39,7 +41,7 @@ class MameHighscoreLambdaHandler(APILambdaHandlerBase):
         filename = key.split("/")[-1]
         local_filename = os.path.join(tmpdir, filename)
         with open(local_filename, "wb") as data:
-            self.s3_client.download_fileobj(BUCKET_NAME, key, data)
+            self.aws.s3.client.download_fileobj(PUBLIC_BUCKET_NAME, key, data)
         return local_filename
 
     def _get_metadata(self):

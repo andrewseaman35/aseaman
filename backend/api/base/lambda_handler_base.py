@@ -64,25 +64,22 @@ class APILambdaHandlerBase(object):
         self.ssm_client = self.aws_session.client("ssm", region_name=self.region)
 
         self.aws = {}
-        if ddb_config := self.aws_config.dynamodb:
-            if ddb_config.enabled:
-                self.aws.dynamodb.client = self.aws_session.client(
-                    "dynamodb", region_name="us-east-1"
+        if self.aws_config.dynamodb.enabled:
+            self.aws.dynamodb.client = self.aws_session.client(
+                "dynamodb", region_name="us-east-1"
+            )
+            self.aws.dynamodb.tables = {}
+
+            for base_table_name, TableClass in self.aws_config.dynamodb.tables:
+                table_name = self.build_table_name(base_table_name)
+                self.aws.dynamodb.tables[base_table_name] = TableClass(
+                    table_name, self.aws.dynamodb.client
                 )
-                self.aws.dynamodb.tables = {}
-
-                for base_table_name, TableClass in ddb_config.tables:
-                    table_name = self.build_table_name(base_table_name)
-                    self.aws.dynamodb.tables[base_table_name] = TableClass(
-                        table_name, self.aws.dynamodb.client
-                    )
-
-        self._init_aws()
+        if self.aws_config.s3.enabled:
+            self.aws.d3.client = self.aws_session.client("s3", region_name="us-east-1")
+            self.aws.s3.buckets = {}
 
     def _init(self):
-        pass
-
-    def _init_aws(self):
         pass
 
     @property
