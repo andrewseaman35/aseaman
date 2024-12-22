@@ -8,12 +8,11 @@ import boto3
 
 from .api_exceptions import (
     APIException,
-    BadRequestException,
     BaseAPIException,
     MethodNotAllowedException,
 )
 from .token_decoder import decode_token
-from .aws import AWSConfig, DynamoDBConfig, S3Config, AWS
+from .aws import AWSConfig, DynamoDBConfig, S3Config, SSMConfig, AWS
 
 
 EMPTY_RESPONSE = {
@@ -32,6 +31,7 @@ class APILambdaHandlerBase(object):
     aws_config = AWSConfig(
         dynamodb=DynamoDBConfig(enabled=False),
         s3=S3Config(enabled=False),
+        ssm=SSMConfig(enabled=True),
     )
 
     def __init__(self, event, context):
@@ -57,7 +57,6 @@ class APILambdaHandlerBase(object):
             if self.is_local
             else boto3.session.Session()
         )
-        self.ssm_client = self.aws_session.client("ssm", region_name=self.region)
 
         self.aws = AWS()
         if self.aws_config.dynamodb.enabled:
@@ -72,8 +71,13 @@ class APILambdaHandlerBase(object):
                     table_name, self.aws.dynamodb.client
                 )
         if self.aws_config.s3.enabled:
-            self.aws.d3.client = self.aws_session.client("s3", region_name="us-east-1")
+            self.aws.d3.client = self.aws_session.client("s3", region_name=self.region)
             self.aws.s3.buckets = {}
+
+        if self.aws_config.ssm.enabled:
+            self.aws.ssm.client = self.ssm_client = self.aws_session.client(
+                "ssm", region_name=self.region
+            )
 
     def _init(self):
         pass
@@ -87,33 +91,6 @@ class APILambdaHandlerBase(object):
             return table_name
         return f"{table_name}_{self.env}"
 
-    @classmethod
-    def _ddb_item_to_json(cls, ddb_item):
-        item_data = {}
-        for key, value_type_map in ddb_item.items():
-            value = cls._parse_ddb_value_type_map(value_type_map)
-            item_data[key] = value
-        return item_data
-
-    @classmethod
-    def _parse_ddb_value_type_map(cls, value_type_map):
-        value_type = next(iter(value_type_map.keys()))
-        value = value_type_map[value_type]
-        if value_type == "S":
-            return str(value)
-        elif value_type == "N":
-            return int(value)
-        elif value_type == "BOOL":
-            return value
-        elif value_type == "L":
-            return [cls._parse_ddb_value_type_map(val) for val in value]
-        elif value_type == "M":
-            return {
-                key: cls._parse_ddb_value_type_map(val) for (key, val) in value.items()
-            }
-        else:
-            raise BadRequestException("unsupported value: {}".format(value_type))
-
     @property
     def user_pool_id_ssm_key(self):
         env = "stage" if self.env == "local" else self.env
@@ -125,7 +102,7 @@ class APILambdaHandlerBase(object):
         return f"/aseaman/{env}/cognito/user_pool_client_id"
 
     def get_from_ssm(self, key):
-        response = self.ssm_client.get_parameter(Name=key)
+        response = self.aws.ssm.client.get_parameter(Name=key)
         return response["Parameter"]["Value"]
 
     def __parse_event(self, event):

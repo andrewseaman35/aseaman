@@ -106,9 +106,9 @@ class CompareACNHHandler(APILambdaHandlerBase):
             request_keys
         )
 
-        items = self._complete_summary_items(
-            [self._ddb_item_to_json(summary.to_dict()) for summary in summaries]
-        )
+        items = [
+            self._complete_summary_item(summary.to_dict()) for summary in summaries
+        ]
 
         return sorted(items, key=summarySortKey)
 

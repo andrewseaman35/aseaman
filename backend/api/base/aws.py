@@ -28,9 +28,15 @@ class S3Config:
 
 
 @dataclass
+class SSMConfig:
+    enabled: bool = True
+
+
+@dataclass
 class AWSConfig:
     dynamodb: DynamoDBConfig = DynamoDBConfig()
     s3: S3Config = S3Config()
+    ssm: SSMConfig = SSMConfig()
 
 
 @dataclass
@@ -46,6 +52,12 @@ class S3:
 
 
 @dataclass
+class SSM:
+    client: Any = None
+
+
+@dataclass
 class AWS:
     dynamodb: DynamoDB = DynamoDB()
     s3: Any = S3()
+    ssm: SSM = SSM()
