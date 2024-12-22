@@ -215,7 +215,7 @@ class DrawJasper extends React.Component {
                     <div className="img-caption">Your drawing!</div>
                 </div>
                 <div className="img-container">
-                    <img className="match-image" width="400px" src={getImageSrc(`images/jasper/data/original/${matchId}.jpg`)} />
+                    <img className="match-image" width="400px" src={getImageSrc(`jasper/data/original/${matchId}.jpg`)} />
                     <div className="img-caption">Your match!</div>
                 </div>
                 <button onClick={this.clearCanvas}>Try again!</button>

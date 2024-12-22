@@ -30,7 +30,7 @@ resource "aws_iam_role_policy" "api_role" {
         ]
         Resource = [
           "arn:aws:s3:::aseaman-public-bucket",
-          "arn:aws:s3:::aseaman-public-bucket/aseaman/images/jasper/*"
+          "arn:aws:s3:::aseaman-public-bucket/aseaman/jasper/*"
         ]
       },
       {

@@ -1,6 +1,5 @@
 import base64
 import datetime
-from functools import partial
 import json
 import math
 import os
@@ -12,11 +11,11 @@ import cv2
 
 from base.lambda_handler_base import APILambdaHandlerBase
 from base.aws import AWSConfig, S3Config, S3BucketConfig
-from base.s3 import S3Bucket
 
 
 PUBLIC_BUCKET_NAME = "aseaman-public-bucket"
-JASPER_PREFIX = "aseaman/images/jasper"
+JASPER_PREFIX = "aseaman/jasper"
+DATA_PREFIX = "aseaman/jasper/data"
 
 MAX_WORKERS = 10
 RESPONSE_COUNT = 3
@@ -44,8 +43,8 @@ def crop_to_content(img, invert=True):
     return img[y : y + h, x : x + w]  # return image, cropped
 
 
-def _s3_key_prefix():
-    return "aseaman/images/jasper/jobs/{date}".format(
+def _jobs_s3_key_prefix():
+    return "aseaman/jasper/jobs/{date}".format(
         date=datetime.datetime.now().date(),
     )
 
@@ -59,10 +58,15 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
             enabled=True,
             buckets=[
                 S3BucketConfig(
-                    name="public",
+                    name="jobs",
                     bucket_name=PUBLIC_BUCKET_NAME,
-                    prefix=_s3_key_prefix,
-                )
+                    prefix=_jobs_s3_key_prefix,
+                ),
+                S3BucketConfig(
+                    name="data",
+                    bucket_name=PUBLIC_BUCKET_NAME,
+                    prefix=DATA_PREFIX,
+                ),
             ],
         )
     )
@@ -70,32 +74,13 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
     def _init(self):
         self.id = uuid.uuid4().hex
         self.date = datetime.datetime.now()
-        self.s3_key_prefix = "aseaman/images/jasper/jobs/{date}/{id}".format(
-            date=datetime.datetime.now().date(),
-            id=self.id,
-        )
-        self.s3_key_format = self.s3_key_prefix + f"/{id}" + "/{}"
 
-    def s3_key_prefix(self):
-        return "aseaman/images/jasper/jobs/{date}/{id}".format(
-            date=datetime.datetime.now().date(),
-            id=self.id,
-        )
-
-    def _download(self, key):
-        tmpdir = tempfile.gettempdir()
-        filename = key.split("/")[-1]
-        local_filename = os.path.join(tmpdir, filename)
-        with open(local_filename, "wb") as data:
-            self.aws.s3.client.download_fileobj(PUBLIC_BUCKET_NAME, key, data)
-        return local_filename
+    def _download_data(self, key):
+        return self.aws.s3.buckets["data"].download(key)
 
     def _download_all_masks(self):
-        mask_response = self.aws.s3.client.list_objects_v2(
-            Bucket=PUBLIC_BUCKET_NAME,
-            MaxKeys=50,
-            Prefix="{}/data/masks/".format(JASPER_PREFIX),
-        )
+        mask_response = self.aws.s3.buckets["data"].list_objects(path="masks/")
+        print(mask_response)
 
         mask_keys = [
             file["Key"]
@@ -105,7 +90,9 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
 
         with futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
             future_to_key = {
-                executor.submit(self._download, key): key.split("/")[-1].split(".")[0]
+                executor.submit(self._download_data, key): key.split("/")[-1].split(
+                    "."
+                )[0]
                 for key in mask_keys
             }
 
@@ -115,6 +102,7 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
                 if not exception:
                     yield key, future.result()
                 else:
+                    raise exception
                     yield key, exception
 
     def _save_file_to_local_temp(self):
@@ -127,7 +115,7 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
         return local_filename
 
     def _save_image_to_s3(self, img_bytes, filename):
-        key = self.aws.s3.buckets["public"].put(
+        key = self.aws.s3.buckets["jobs"].put(
             file_bytes=img_bytes,
             filename=f"{self.id}/{filename}",
         )
