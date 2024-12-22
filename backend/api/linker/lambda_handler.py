@@ -50,6 +50,14 @@ class LinkDDBItem(DynamoDBItem):
             }
         }
 
+    def validate_ownership(self, user=None):
+        if user is None:
+            raise UnauthorizedException("not logged in")
+
+        owner_username = self.owner
+        if not user["username"] or user["username"] != owner_username:
+            raise UnauthorizedException("Link not owned")
+
 
 class LinkTable(DynamoDBTable):
     ItemClass = LinkDDBItem
@@ -71,16 +79,11 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
             "reverse": reverse,
         }
 
-    def __validate_link_ownership(self, link):
-        owner = link["owner"]
-        if not self.user["username"] or self.user["username"] != owner:
-            raise UnauthorizedException("Log in to access this link")
-
     def __fetch_link(self, link_id, validate_ownership=True, require_active=False):
         link = self.aws.dynamodb.tables["linker"].get(id=link_id)
 
         if validate_ownership:
-            self.__validate_link_ownership(link)
+            link.validate_ownership(self.user)
         if require_active and not link["active"]:
             raise NotFoundException("Link not found")
 

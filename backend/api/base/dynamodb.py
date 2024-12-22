@@ -8,6 +8,10 @@ class DynamoDBNotFoundException(Exception):
     pass
 
 
+class DynamoDBUnauthorizedException(Exception):
+    pass
+
+
 class DynamoDBItemValueConfig:
     def __init__(self, data_type, default=None, optional=False):
         self.data_type = data_type
@@ -78,6 +82,9 @@ class DynamoDBItem:
             if self._item[key] is not None:
                 ddb_item[key] = {props.data_type: self._item[key]}
         return ddb_item
+
+    def validate_ownership(self, *args, **kwargs):
+        raise NotImplementedError
 
     @classmethod
     def build_update_expression(cls, update_dict):
@@ -166,12 +173,16 @@ class DynamoDBItem:
 
 class DynamoDBTable:
     ItemClass = None
+    validate_owner = True
 
     def __init__(self, table_name, ddb_client):
         self.table_name = table_name
         self.ddb_client = ddb_client
 
     def get(self, *args, **kwargs):
+        if item.validate_owner and not kwargs["user"]:
+            raise DynamoDBUnauthorizedException
+
         ddb_item = self.ddb_client.get_item(
             TableName=self.table_name, Key=self.ItemClass.build_ddb_key(**kwargs)
         )
@@ -179,7 +190,12 @@ class DynamoDBTable:
             raise DynamoDBNotFoundException
 
         raw_item = ddb_item["Item"]
-        return self.ItemClass.from_ddb_item(raw_item)
+        item = self.ItemClass.from_ddb_item(raw_item)
+
+        if item.validate_owner:
+            item.validate_ownership(kwargs["user"])
+
+        return item
 
     def batch_get(self, request_keys):
         result = self.ddb_client.batch_get_item(

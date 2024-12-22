@@ -42,9 +42,16 @@ class ChessGameDDBItem(DynamoDBItem):
             }
         }
 
+    def validate_ownership(self, user):
+        players = {self.player_one, self.player_two}
+        if all(players):
+            if not user["username"] or not user["username"] in players:
+                raise UnauthorizedException("Log in to access this game")
+
 
 class ChessGameTable(DynamoDBTable):
     ItemClass = ChessGameDDBItem
+    validate_owner = True
 
 
 class ChessLambdaHandler(APILambdaHandlerBase):
@@ -82,31 +89,6 @@ class ChessLambdaHandler(APILambdaHandlerBase):
             "options": options,
         }
 
-    def _validate_game_ownership(self, game):
-        players = {
-            game["player_one"],
-            game["player_two"],
-        }
-        if all(players):
-            if not self.user["username"] or not self.user["username"] in players:
-                raise UnauthorizedException("Log in to access this game")
-
-    def _fetch_game(self, game_id):
-        game = self.aws.dynamodb.tables["chess_game"].get(game_id=game_id)
-
-        self._validate_game_ownership(game)
-
-        return game.to_dict()
-
-    def _fetch_by_player(self, player):
-        return self.aws.dynamodb.tables["chess_game"].scan(
-            {
-                "player_one": player,
-                "player_two": player,
-            },
-            operator="OR",
-        )
-
     def _new_game(self, game_mode, player_one=None, player_two=None):
         print("Creating new game")
         timestamp = get_timestamp()
@@ -130,7 +112,14 @@ class ChessLambdaHandler(APILambdaHandlerBase):
     def _save_turn(self, game_id, turn):
         print("saving new turn")
         new_turn = self._deserialize_turn(turn)
-        game = self._fetch_game(game_id)
+        game = (
+            self.aws.dynamodb.tables["chess_game"]
+            .get(
+                game_id=game_id,
+                user=self.user,
+            )
+            .to_dict()
+        )
 
         if game["turns"]:
             serialized_last_turn = game["turns"][-1]["S"]
@@ -158,14 +147,26 @@ class ChessLambdaHandler(APILambdaHandlerBase):
         if resource == "game":
             game_id = self.params.get("game_id")
             if game_id:
-                result = self._fetch_game(game_id)
-            current_user = self.params.get("current_user")
-            if current_user == "true":
+                result = (
+                    self.aws.dynamodb.tables["chess_game"]
+                    .get(
+                        game_id=game_id,
+                        user=self.user,
+                    )
+                    .to_dict()
+                )
+            elif self.params.get("current_user") == "true":
                 if self.user["username"]:
-                    result = self._fetch_by_player(self.user["username"])
+                    result = self.aws.dynamodb.tables["chess_game"].scan(
+                        {
+                            "player_one": self.user["username"],
+                            "player_two": self.user["username"],
+                        },
+                        operator="OR",
+                    )
                 else:
                     raise PermissionError("cannot fetch by user")
-            if not (game_id or current_user):
+            else:
                 raise BadRequestException("game_id or current_user required")
         else:
             raise NotFoundException("unsupported resource: {}".format(resource))
