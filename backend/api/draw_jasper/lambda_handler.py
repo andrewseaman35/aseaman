@@ -1,5 +1,6 @@
 import base64
 import datetime
+from functools import partial
 import json
 import math
 import os
@@ -11,6 +12,7 @@ import cv2
 
 from base.lambda_handler_base import APILambdaHandlerBase
 from base.aws import AWSConfig, S3Config, S3BucketConfig
+from base.s3 import S3Bucket
 
 
 PUBLIC_BUCKET_NAME = "aseaman-public-bucket"
@@ -42,13 +44,26 @@ def crop_to_content(img, invert=True):
     return img[y : y + h, x : x + w]  # return image, cropped
 
 
+def _s3_key_prefix():
+    return "aseaman/images/jasper/jobs/{date}".format(
+        date=datetime.datetime.now().date(),
+    )
+
+
 class DrawJasperLambdaHandler(APILambdaHandlerBase):
     action = "handle_upload"
     rest_enabled = False
 
     aws_config = AWSConfig(
         s3=S3Config(
-            enabled=True, buckets={"public": S3BucketConfig(name=PUBLIC_BUCKET_NAME)}
+            enabled=True,
+            buckets=[
+                S3BucketConfig(
+                    name="public",
+                    bucket_name=PUBLIC_BUCKET_NAME,
+                    prefix=_s3_key_prefix,
+                )
+            ],
         )
     )
 
@@ -59,7 +74,13 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
             date=datetime.datetime.now().date(),
             id=self.id,
         )
-        self.s3_key_format = self.s3_key_prefix + "/{}"
+        self.s3_key_format = self.s3_key_prefix + f"/{id}" + "/{}"
+
+    def s3_key_prefix(self):
+        return "aseaman/images/jasper/jobs/{date}/{id}".format(
+            date=datetime.datetime.now().date(),
+            id=self.id,
+        )
 
     def _download(self, key):
         tmpdir = tempfile.gettempdir()
@@ -106,13 +127,11 @@ class DrawJasperLambdaHandler(APILambdaHandlerBase):
         return local_filename
 
     def _save_image_to_s3(self, img_bytes, filename):
-        key = self.s3_key_format.format(filename)
-        self.aws.s3.client.put_object(
-            Body=img_bytes,
-            Bucket=PUBLIC_BUCKET_NAME,
-            Key=key,
+        key = self.aws.s3.buckets["public"].put(
+            file_bytes=img_bytes,
+            filename=f"{self.id}/{filename}",
         )
-        return key.split("aseaman/")[1]
+        return key
 
     def _save_cv2_image_to_s3(self, cv2_image, filename, ext=".png"):
         img_bytes = cv2.imencode(ext, cv2_image)[1].tobytes()

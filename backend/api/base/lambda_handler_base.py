@@ -12,7 +12,8 @@ from .api_exceptions import (
     MethodNotAllowedException,
 )
 from .token_decoder import decode_token
-from .aws import AWSConfig, DynamoDBConfig, S3Config, SSMConfig, AWS
+from .aws import AWSConfig, DynamoDBConfig, S3Config, SSMConfig, AWS, S3BucketConfig
+from .s3 import S3Bucket
 
 
 EMPTY_RESPONSE = {
@@ -71,8 +72,14 @@ class APILambdaHandlerBase(object):
                     table_name, self.aws.dynamodb.client
                 )
         if self.aws_config.s3.enabled:
-            self.aws.d3.client = self.aws_session.client("s3", region_name=self.region)
+            self.aws.s3.client = self.aws_session.client("s3", region_name=self.region)
             self.aws.s3.buckets = {}
+            for bucket_config in self.aws_config.s3.buckets:
+                self.aws.s3.buckets[bucket_config.name] = S3Bucket(
+                    bucket_name=bucket_config.bucket_name,
+                    prefix=bucket_config.prefix,
+                    s3_client=self.aws.s3.client,
+                )
 
         if self.aws_config.ssm.enabled:
             self.aws.ssm.client = self.ssm_client = self.aws_session.client(

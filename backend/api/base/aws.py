@@ -1,7 +1,8 @@
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Callable, Union
 
 from base.dynamodb import DynamoDBTable
+from base.s3 import S3Bucket
 
 
 @dataclass
@@ -19,12 +20,14 @@ class DynamoDBConfig:
 @dataclass
 class S3BucketConfig:
     name: str
+    bucket_name: str
+    prefix: Union[str, Callable] = ""
 
 
 @dataclass
 class S3Config:
     enabled: bool = False
-    buckets: dict[str, S3BucketConfig] = dict
+    buckets: list[S3BucketConfig] = list
 
 
 @dataclass
@@ -42,13 +45,13 @@ class AWSConfig:
 @dataclass
 class DynamoDB:
     client: Any = None
-    tables: dict = dict
+    tables: dict[str, DynamoDBTable] = dict
 
 
 @dataclass
 class S3:
     client: Any = None
-    buckets: dict = dict
+    buckets: dict[str, S3Bucket] = dict
 
 
 @dataclass
