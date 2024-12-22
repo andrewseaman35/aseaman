@@ -1,3 +1,5 @@
+import json
+
 from .helpers import (
     get_expression_id,
     get_timestamp,
@@ -33,6 +35,9 @@ class DynamoDBItem:
         if key not in self._item:
             return None
         return self._item[key]
+
+    def __getattr__(self, key):
+        return self[key]
 
     def config(self, config_key):
         return self._config[config_key]
@@ -72,6 +77,9 @@ class DynamoDBItem:
             _item[key] = value
 
         return cls(_item)
+
+    def serialize(self):
+        return json.dumps(self.to_dict())
 
     def to_dict(self):
         return self._item
@@ -180,7 +188,7 @@ class DynamoDBTable:
         self.ddb_client = ddb_client
 
     def get(self, *args, **kwargs):
-        if item.validate_owner and not kwargs["user"]:
+        if self.validate_owner and not kwargs["user"]:
             raise DynamoDBUnauthorizedException
 
         ddb_item = self.ddb_client.get_item(
@@ -192,7 +200,7 @@ class DynamoDBTable:
         raw_item = ddb_item["Item"]
         item = self.ItemClass.from_ddb_item(raw_item)
 
-        if item.validate_owner:
+        if self.validate_owner:
             item.validate_ownership(kwargs["user"])
 
         return item

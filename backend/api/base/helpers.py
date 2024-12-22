@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from functools import partial
 import random
 import string
@@ -8,6 +9,12 @@ from .api_exceptions import (
     ForbiddenException,
     UnauthorizedException,
 )
+
+
+class UserGroup:
+    ADMIN = "admin"
+    BUDGET = "budget"
+    LINK_MANAGER = "link-manager"
 
 
 def get_expression_id(used_ids=set()):
@@ -70,7 +77,7 @@ def requires_user_group(user_group, exclude_admin=False):
 
             required_user_groups = {user_group}
             if not exclude_admin:
-                required_user_groups.add("admin")
+                required_user_groups.add(UserGroup.ADMIN)
 
             if not (required_user_groups & set(s.user["groups"])):
                 raise ForbiddenException(f'{user_group} not in {s.user["groups"]}')

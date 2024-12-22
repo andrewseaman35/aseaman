@@ -8,6 +8,7 @@ from base.api_exceptions import (
     UnauthorizedException,
 )
 
+from base.aws import AWSConfig, DynamoDBConfig, DynamoDBTableConfig
 from base.helpers import generate_alphanumeric_id, get_timestamp
 from base.dynamodb import DynamoDBItem, DynamoDBItemValueConfig, DynamoDBTable
 
@@ -34,7 +35,7 @@ class ChessGameDDBItem(DynamoDBItem):
     }
 
     @classmethod
-    def build_ddb_key(cls, *args, game_id=None):
+    def build_ddb_key(cls, *args, game_id=None, **kwargs):
         assert game_id is not None, "game_id required to build ddb key"
         return {
             "game_id": {
@@ -56,12 +57,12 @@ class ChessGameTable(DynamoDBTable):
 
 class ChessLambdaHandler(APILambdaHandlerBase):
     primary_partition_key = "game_id"
-    aws_config = {
-        "dynamodb": {
-            "enabled": True,
-            "tables": [("chess_game", ChessGameTable)],
-        }
-    }
+    aws_config = AWSConfig(
+        dynamodb=DynamoDBConfig(
+            enabled=True,
+            tables=[DynamoDBTableConfig("chess_game", ChessGameTable)],
+        )
+    )
 
     def _init(self):
         self.turn_regex_pattern = re.compile(TURN_REGEX_PATTERN)

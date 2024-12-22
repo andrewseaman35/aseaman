@@ -5,6 +5,7 @@ from base.api_exceptions import (
     BadRequestException,
     NotFoundException,
 )
+from base.aws import AWSConfig, DynamoDBTableConfig, DynamoDBConfig
 from base.dynamodb import DynamoDBTable, DynamoDBItem, DynamoDBItemValueConfig
 
 
@@ -22,7 +23,7 @@ class CompareACNHSummaryItem(DynamoDBItem):
     }
 
     @classmethod
-    def build_ddb_key(cls, *args, villager_id=None):
+    def build_ddb_key(cls, *args, villager_id=None, **kwargs):
         assert villager_id is not None, "villager_id required to build ddb key"
         return {
             "villager_id": {
@@ -42,7 +43,7 @@ class CompareACNHResultsItem(DynamoDBItem):
     }
 
     @classmethod
-    def build_ddb_key(cls, *args, villager_id=None, villager_id_2=None):
+    def build_ddb_key(cls, *args, villager_id=None, villager_id_2=None, **kwargs):
         assert villager_id is not None, "villager_id required to build ddb key"
         assert villager_id_2 is not None, "villager_id_2 required to build ddb key"
         return {
@@ -64,15 +65,15 @@ class CompareACNHResultsTable(DynamoDBTable):
 
 
 class CompareACNHHandler(APILambdaHandlerBase):
-    aws_config = {
-        "dynamodb": {
-            "enabled": True,
-            "tables": [
-                ("compare_acnh_summary", CompareACNHSummaryTable),
-                ("compare_acnh_results", CompareACNHResultsTable),
+    aws_config = AWSConfig(
+        dynamodb=DynamoDBConfig(
+            enabled=True,
+            tables=[
+                DynamoDBTableConfig("compare_acnh_summary", CompareACNHSummaryTable),
+                DynamoDBTableConfig("compare_acnh_results", CompareACNHResultsTable),
             ],
-        }
-    }
+        )
+    )
 
     def _complete_summary_items(self, items):
         for item in items:

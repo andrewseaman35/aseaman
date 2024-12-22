@@ -7,6 +7,7 @@ CURR_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(CURR_DIR)
 
 from base.lambda_handler_base import APILambdaHandlerBase
+from base.aws import AWSConfig, DynamoDBConfig, DynamoDBTableConfig
 from base.api_exceptions import (
     BadRequestException,
     NotFoundException,
@@ -24,7 +25,7 @@ class EventDDBItem(DynamoDBItem):
     }
 
     @classmethod
-    def build_ddb_key(cls, *args, event_id=None):
+    def build_ddb_key(cls, *args, event_id=None, **kwargs):
         assert event_id is not None, "event_id required to build ddb key"
         return {
             "event_id": {
@@ -38,12 +39,14 @@ class EventTable(DynamoDBTable):
 
 
 class EventHandler(APILambdaHandlerBase):
-    aws_config = {
-        "dynamodb": {
-            "enabled": True,
-            "tables": [("event", EventTable)],
-        }
-    }
+    aws_config = AWSConfig(
+        dynamodb=DynamoDBConfig(
+            enabled=True,
+            tables=[
+                DynamoDBTableConfig("event", EventTable),
+            ],
+        )
+    )
 
     @property
     def HANDLERS_BY_TYPE(self):

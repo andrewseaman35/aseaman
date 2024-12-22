@@ -1,6 +1,7 @@
 import json
 
 from base.lambda_handler_base import APILambdaHandlerBase
+from base.aws import AWSConfig, DynamoDBConfig, DynamoDBTableConfig
 from base.dynamodb import DynamoDBItem, DynamoDBItemValueConfig, DynamoDBTable
 
 
@@ -24,9 +25,14 @@ class SaltLevelTable(DynamoDBTable):
 class SaltLevelLambdaHandler(APILambdaHandlerBase):
     primary_partition_key = "water_softener_id"
 
-    aws_config = {
-        "dynamodb": {"enabled": True, "tables": [("salt_level", SaltLevelTable)]}
-    }
+    aws_config = AWSConfig(
+        dynamodb=DynamoDBConfig(
+            enabled=True,
+            tables=[
+                DynamoDBTableConfig("salt_level", SaltLevelTable),
+            ],
+        )
+    )
 
     def _scan_all(self):
         return self.aws.dynamodb.tables["salt_level"].scan()

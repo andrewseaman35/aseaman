@@ -6,6 +6,7 @@ import qrcode
 import qrcode.image.svg
 
 from base.lambda_handler_base import APILambdaHandlerBase
+from base.aws import AWSConfig, DynamoDBConfig, DynamoDBTableConfig
 from base.api_exceptions import (
     BadRequestException,
     NotFoundException,
@@ -18,6 +19,7 @@ from base.helpers import (
     requires_user_group,
     get_timestamp,
     generate_alphanumeric_id,
+    UserGroup,
 )
 
 LINK_ID_LENGTH = 6
@@ -42,7 +44,7 @@ class LinkDDBItem(DynamoDBItem):
     }
 
     @classmethod
-    def build_ddb_key(cls, *args, id=None):
+    def build_ddb_key(cls, *args, id=None, **kwargs):
         assert id is not None, "id required to build ddb key"
         return {
             "id": {
@@ -64,12 +66,14 @@ class LinkTable(DynamoDBTable):
 
 
 class LinkerLambdaHandler(APILambdaHandlerBase):
-    aws_config = {
-        "dynamodb": {
-            "enabled": True,
-            "tables": [("linker", LinkTable)],
-        }
-    }
+    aws_config = AWSConfig(
+        dynamodb=DynamoDBConfig(
+            enabled=True,
+            tables=[
+                DynamoDBTableConfig("linker", LinkTable),
+            ],
+        )
+    )
 
     def _get_sort_params(self, sort_value):
         reverse = sort_value.startswith("-")
@@ -92,7 +96,7 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
     def __fetch_links_by_owner(self, owner):
         return self.aws.dynamodb.tables["linker"].scan({"owner": owner})
 
-    # @requires_user_group('link-manager')
+    @requires_user_group(UserGroup.LINK_MANAGER)
     def _generate_qr_code(self, link, direct=False, svg=False):
         print(f"Generating QR code for {link['id']}")
         redirected_url = f"{self.site_url}/l#{link['id']}"
@@ -170,7 +174,7 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
             "body": json.dumps(result),
         }
 
-    @requires_user_group("link-manager")
+    @requires_user_group(UserGroup.LINK_MANAGER)
     def handle_generate_qr(self, link_id):
         link = self.__fetch_link(link_id).to_dict()
         return self._generate_qr_code(link, direct=False)
@@ -185,7 +189,7 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
             **self._get_sort_params(sort_value),
         )
 
-    @requires_user_group("link-manager")
+    @requires_user_group(UserGroup.LINK_MANAGER)
     def handle_post(self):
         url = self.params.get("url", DEFAULT_LINK_URL)
         name = self.params.get("name", DEFAULT_LINK_NAME)
@@ -194,7 +198,7 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
 
         return {**self._empty_response(), "body": json.dumps(result)}
 
-    @requires_user_group("link-manager")
+    @requires_user_group(UserGroup.LINK_MANAGER)
     def handle_put(self):
         link_id = self.params.get("id")
         if not link_id:
@@ -214,7 +218,7 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
 
         return {**self._empty_response(), "body": json.dumps(result)}
 
-    @requires_user_group("link-manager")
+    @requires_user_group(UserGroup.LINK_MANAGER)
     def handle_delete(self):
         link_id = self.params.get("id")
         if not link_id:
