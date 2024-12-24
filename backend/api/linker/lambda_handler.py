@@ -35,9 +35,9 @@ class LinkDDBItem(DynamoDBItem):
         "id": DynamoDBItemValueConfig(
             "S", default=lambda: generate_alphanumeric_id(LINK_ID_LENGTH)
         ),
-        "url": DynamoDBItemValueConfig("S", default=None),
-        "active": DynamoDBItemValueConfig("BOOL", default=False),
-        "locked": DynamoDBItemValueConfig("BOOL", default=False),
+        "url": DynamoDBItemValueConfig("S", default=None, optional=True),
+        "active": DynamoDBItemValueConfig("BOOL", default=False, optional=True),
+        "locked": DynamoDBItemValueConfig("BOOL", default=False, optional=True),
         "owner": DynamoDBItemValueConfig("S"),
         "time_created": DynamoDBItemValueConfig("N", default=get_timestamp),
         "time_updated": DynamoDBItemValueConfig("N", default=None),

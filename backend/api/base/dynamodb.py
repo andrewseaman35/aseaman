@@ -94,7 +94,10 @@ class DynamoDBItem:
         ddb_item = {}
         for key, props in self._config.items():
             if self._item[key] not in {None, ""}:
-                ddb_item[key] = {props.data_type: str(self._item[key])}
+                if props.data_type == "BOOL":
+                    ddb_item[key] = {props.data_type: bool(self._item[key])}
+                else:
+                    ddb_item[key] = {props.data_type: str(self._item[key])}
         return ddb_item
 
     def validate_ownership(self, *args, **kwargs):
@@ -189,12 +192,13 @@ class DynamoDBTable:
     ItemClass = None
     validate_owner = True
 
-    def __init__(self, table_name, ddb_client):
+    def __init__(self, table_name, ddb_client, user=None):
         self.table_name = table_name
         self.ddb_client = ddb_client
+        self.user = user
 
     def get(self, *args, **kwargs):
-        if self.validate_owner and not kwargs["user"]:
+        if self.validate_owner and not self.user:
             raise DynamoDBUnauthorizedException
 
         ddb_item = self.ddb_client.get_item(
@@ -207,7 +211,7 @@ class DynamoDBTable:
         item = self.ItemClass.from_ddb_item(raw_item)
 
         if self.validate_owner:
-            item.validate_ownership(kwargs["user"])
+            item.validate_ownership(self.user)
 
         return item
 

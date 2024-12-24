@@ -53,7 +53,8 @@ class APILambdaHandlerBase(object):
         }
         self._init()
 
-    def __init_aws(self):
+    def __preinit_aws(self):
+        # Initialize SSM first to get parameters to decode token
         self.aws_session = (
             boto3.session.Session(profile_name="aseaman")
             if self.is_local
@@ -61,6 +62,11 @@ class APILambdaHandlerBase(object):
         )
 
         self.aws = AWS()
+        self.aws.ssm.client = self.ssm_client = self.aws_session.client(
+            "ssm", region_name=self.region
+        )
+
+    def __init_aws(self):
         if self.aws_config.dynamodb.enabled:
             self.aws.dynamodb.client = self.aws_session.client(
                 "dynamodb", region_name="us-east-1"
@@ -70,7 +76,9 @@ class APILambdaHandlerBase(object):
             for table in self.aws_config.dynamodb.tables:
                 table_name = self.build_table_name(table.name)
                 self.aws.dynamodb.tables[table.name] = table.TableClass(
-                    table_name, self.aws.dynamodb.client
+                    table_name=table_name,
+                    ddb_client=self.aws.dynamodb.client,
+                    user=self.user["username"],
                 )
         if self.aws_config.s3.enabled:
             self.aws.s3.client = self.aws_session.client("s3", region_name=self.region)
@@ -81,11 +89,6 @@ class APILambdaHandlerBase(object):
                     prefix=bucket_config.prefix,
                     s3_client=self.aws.s3.client,
                 )
-
-        if self.aws_config.ssm.enabled:
-            self.aws.ssm.client = self.ssm_client = self.aws_session.client(
-                "ssm", region_name=self.region
-            )
 
     def _init(self):
         pass
@@ -158,8 +161,9 @@ class APILambdaHandlerBase(object):
 
     def __before_run(self):
         self._init()
-        self.__init_aws()
+        self.__preinit_aws()
         self.__decode_token()
+        self.__init_aws()
         self.__parse_event(self.event)
 
     def _empty_response(self):
