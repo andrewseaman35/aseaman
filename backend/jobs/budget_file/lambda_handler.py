@@ -21,6 +21,7 @@ UPLOADS_PREFIX = "budget/uploads"
 @dataclass
 class FileState:
     UPLOADED = "uploaded"
+    IMPORTED = "imported"
     PROCESSED = "processed"
 
 
@@ -124,7 +125,6 @@ class BudgetFileLambdaHandler(JobLambdaHandlerBase):
     )
 
     def _init(self):
-        self.env = "local"
         self.prefix = UPLOADS_PREFIX
 
     def override_category(self, original_category):
@@ -169,7 +169,7 @@ class BudgetFileLambdaHandler(JobLambdaHandlerBase):
         record = records[0]
         update_dict = {
             "state": {
-                "value": FileState.PROCESSED,
+                "value": FileState.IMPORTED,
                 "operation": "SET",
             },
         }

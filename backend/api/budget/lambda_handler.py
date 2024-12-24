@@ -40,6 +40,7 @@ DEFAULT_LINK_URL = ""
 @dataclass
 class FileState:
     UPLOADED = "uploaded"
+    IMPORTED = "imported"
     PROCESSED = "processed"
 
 
