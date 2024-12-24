@@ -78,7 +78,7 @@ class APILambdaHandlerBase(object):
                 self.aws.dynamodb.tables[table.name] = table.TableClass(
                     table_name=table_name,
                     ddb_client=self.aws.dynamodb.client,
-                    user=self.user["username"],
+                    user=self.user,
                 )
         if self.aws_config.s3.enabled:
             self.aws.s3.client = self.aws_session.client("s3", region_name=self.region)
