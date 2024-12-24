@@ -24,3 +24,15 @@ resource "aws_ssm_parameter" "cognito_identity_pool_id" {
   type  = "String"
   value = var.cognito_identity_pool_id
 }
+
+resource "aws_ssm_parameter" "budget_file_job_lambda_arn" {
+  name = "/aseaman/${var.env}/lambda/budget_file_job_lambda_arn"
+  type = "String"
+  value = var.budget_file_job_lambda_arn
+}
+
+resource "aws_ssm_parameter" "budget_file_job_prefix" {
+  name = "/aseaman/${var.env}/lambda/budget_file_job_prefix"
+  type = "String"
+  value = var.budget_file_job_lambda_arn
+}

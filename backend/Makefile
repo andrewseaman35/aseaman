@@ -7,13 +7,21 @@ tfinit:
 	cd deployments/$(DEPLOY_ENV) && terraform init
 
 tfplan: #package
-	cd deployments/stage && terraform plan
+	cd deployments/$(DEPLOY_ENV) && terraform plan
 
-tfapply: package #<-- disabled for now since I can't rebuild the draw_jasper api on an M1 yet
+tfapply: package
 	cd deployments/$(DEPLOY_ENV) && terraform apply
+
+tfapply_local:
+	make -C jobs package
+	cd deployments/local && terraform apply
+
+tfapply_shared:
+	cd deployments/shared && terraform apply
 
 package:
 	make -C api package
+	make -C jobs package
 
 assert_running:
 	@if [ ! "$$(docker ps -a | grep $(CONTAINER_NAME))" ]; then\

@@ -7,6 +7,9 @@ locals {
   aws_account_id = data.aws_caller_identity.current.account_id
 }
 
+/*********/
+/*  API  */
+/*********/
 resource "aws_api_gateway_rest_api" "rest_api" {
   name = "aseaman-website-api-${var.deploy_env}"
 }
@@ -280,4 +283,33 @@ resource "aws_route53_record" "api_dns_record" {
     name                   = aws_api_gateway_domain_name.api_domain_name.regional_domain_name
     zone_id                = aws_api_gateway_domain_name.api_domain_name.regional_zone_id
   }
+}
+
+/**********/
+/*  JOBS  */
+/**********/
+
+module "budget_file_job" {
+  source      = "../s3_lambda_function"
+  zip_file    = "../../jobs/packages/budget_file.zip"
+  job_name    = "budget_file"
+  deploy_env  = var.deploy_env
+  bucket_name = "aseaman-protected"
+  bucket_arn  = "arn:aws:s3:::aseaman-protected"
+  prefix      = "budget/uploads/${var.deploy_env}/"
+}
+
+module "budget_file_job_iam_role_policy" {
+  source     = "../roles/budget_file_job"
+  role       = module.budget_file_job.job_role_id
+  deploy_env = var.deploy_env
+  job_name   = "budget_file"
+}
+
+output "budget_file_job_lambda_arn" {
+  value = module.budget_file_job.lambda_function_arn
+}
+
+output "budget_file_job_prefix" {
+  value = module.budget_file_job.prefix
 }

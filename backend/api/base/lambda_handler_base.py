@@ -51,6 +51,7 @@ class APILambdaHandlerBase(object):
             "PUT": self.handle_put,
             "DELETE": self.handle_delete,
         }
+        self._init()
 
     def __init_aws(self):
         self.aws_session = (
@@ -122,7 +123,10 @@ class APILambdaHandlerBase(object):
             params = self.event["multiValueQueryStringParameters"] or {}
             params.update(self.event["queryStringParameters"] or {})
         elif self.event["httpMethod"] in {"POST", "PUT"}:
-            params = json.loads(self.event["body"])
+            if isinstance(self.event["body"], dict):
+                params = self.event["body"]
+            else:
+                params = json.loads(self.event["body"])
         self.params = params
 
     def __decode_token(self):
