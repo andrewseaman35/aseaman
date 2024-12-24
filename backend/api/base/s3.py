@@ -25,13 +25,16 @@ class S3Bucket:
             return key.split(f"{self.prefix}/")[1]
         return key
 
-    def put(self, file_bytes, filename):
+    def put(self, file_bytes, filename, content_type=None):
         key = self._generate_s3_key(filename)
-        self.s3_client.put_object(
-            Body=file_bytes,
-            Bucket=self._bucket_name,
-            Key=self._generate_s3_key(filename),
-        )
+        kwargs = {
+            "Body": file_bytes,
+            "Bucket": self._bucket_name,
+            "Key": self._generate_s3_key(filename),
+        }
+        if content_type is not None:
+            kwargs["ContentType"] = content_type
+        self.s3_client.put_object(**kwargs)
         return self._remove_prefix(key)
 
     def download(self, key):
