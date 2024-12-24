@@ -53,13 +53,19 @@ class BudgetFileDDBItem(DynamoDBItem):
         "time_updated": DynamoDBItemValueConfig("N", default=None),
     }
 
+    @property
+    def ddb_key(self):
+        return self.build_ddb_key(owner=self.owner, s3_key=self.s3_key)
+
     @classmethod
-    def build_ddb_key(cls, *args, id=None, **kwargs):
-        assert id is not None, "id required to build ddb key"
+    def build_ddb_key(cls, *args, owner=None, s3_key=None, **kwargs):
+        assert owner is not None, "owner required to build ddb key"
+        assert s3_key is not None, "s3_key required to build ddb key"
         return {
-            "id": {
-                "S": id,
-            }
+            "owner": {
+                "S": owner,
+            },
+            "s3_key": {"S": s3_key},
         }
 
     def validate_ownership(self, user=None):

@@ -1,3 +1,4 @@
+from collections import defaultdict
 import json
 import os
 import traceback
@@ -18,13 +19,15 @@ class JobLambdaHandlerBase(object):
     aws_config = AWSConfig(
         dynamodb=DynamoDBConfig(enabled=False),
         s3=S3Config(enabled=False),
-        ssm=SSMConfig(enabled=True),
+        ssm=SSMConfig(enabled=False),
     )
 
     def __init__(self, event, context):
         self.event = event
         self.context = context
         self.env = os.environ.get("ENV")
+        self.prefix = ""
+        self._init()
 
     def __init_aws(self):
         self.aws_session = boto3.session.Session()
@@ -70,27 +73,27 @@ class JobLambdaHandlerBase(object):
         print(" --                --")
 
         records = event["Records"]
-        changes = []
+        changes = defaultdict(list)
         for record in records:
             if record["eventName"] != CREATION_EVENT_NAME:
                 continue
 
             name = record["s3"]["object"]["key"]
-            changes.append(name.split("budget/")[1])
+            print(name)
+            changes[CREATION_EVENT_NAME].append(name.split(self.prefix)[1].lstrip("/"))
 
-        self.changes = changes
+        return changes
 
     def __before_run(self):
-        self._init()
         self.__init_aws()
-        self.__parse_event(self.event)
+        return self.__parse_event(self.event)
 
     def handle(self):
         print(self.event)
 
         try:
-            self.__before_run()
-            self._run()
+            changes = self.__before_run()
+            self._run(changes)
         except Exception as e:
             self._handle_error(e)
 
