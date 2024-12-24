@@ -14,7 +14,8 @@ tfapply: package
 
 tfapply_local:
 	make -C jobs package
-	cd deployments/local && terraform apply
+	cd deployments/local && terraform apply -auto-approve
+	cd deployments/shared && terraform apply -auto-approve
 
 tfapply_shared:
 	cd deployments/shared && terraform apply

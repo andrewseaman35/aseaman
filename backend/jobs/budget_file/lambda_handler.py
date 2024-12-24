@@ -16,6 +16,7 @@ from base.helpers import generate_id, get_timestamp
 
 
 UPLOADS_PREFIX = "budget/uploads"
+CONFIG_PREFIX = "budget/config"
 
 
 @dataclass
@@ -26,16 +27,20 @@ class FileState:
 
 
 class BudgetFileEntryDDBItem(DynamoDBItem):
+    _timestamp_key = "time_processed"
     _config = {
         "owner": DynamoDBItemValueConfig("S"),
         "id": DynamoDBItemValueConfig("S"),
         "transaction_date": DynamoDBItemValueConfig("S"),
+        "transaction_month": DynamoDBItemValueConfig("N"),
+        "transaction_year": DynamoDBItemValueConfig("N"),
         "post_date": DynamoDBItemValueConfig("S"),
         "description": DynamoDBItemValueConfig("S", default=None),
         "original_category": DynamoDBItemValueConfig("S", default=None),
         "category": DynamoDBItemValueConfig("S"),
         "transaction_type": DynamoDBItemValueConfig("S"),
         "amount": DynamoDBItemValueConfig("N"),
+        "time_processed": DynamoDBItemValueConfig("N", default=None),
     }
 
     @classmethod
@@ -45,20 +50,24 @@ class BudgetFileEntryDDBItem(DynamoDBItem):
         return hash_object.hexdigest()
 
     @classmethod
-    def from_row(cls, row, owner, override_category):
+    def from_row(cls, row, owner, override_category, timestamp):
         hash_ = cls.generate_id_from_row(row)
 
+        transaction_date = datetime.datetime.strptime(row[0], "%m/%d/%Y")
         return cls(
             {
                 "owner": owner,
                 "id": hash_,
                 "transaction_date": row[0],
+                "transaction_month": str(transaction_date.month),
+                "transaction_year": str(transaction_date.year),
                 "post_date": row[1],
                 "description": row[2],
                 "original_category": row[3],
                 "category": override_category(row[3]),
                 "transaction_type": row[4],
                 "amount": float(row[5]),
+                "time_processed": timestamp,
             }
         )
 
@@ -119,12 +128,18 @@ class BudgetFileLambdaHandler(JobLambdaHandlerBase):
                     name="uploads",
                     bucket_name="aseaman-protected",
                     prefix=UPLOADS_PREFIX,
-                )
+                ),
+                S3BucketConfig(
+                    name="configs",
+                    bucket_name="aseaman-protected",
+                    prefix=CONFIG_PREFIX,
+                ),
             ],
         ),
     )
 
     def _init(self):
+        self.uploads_prefix = UPLOADS_PREFIX
         self.prefix = UPLOADS_PREFIX
 
     def override_category(self, original_category):
@@ -132,20 +147,25 @@ class BudgetFileLambdaHandler(JobLambdaHandlerBase):
 
     def _get_entries(self, owner, filepath):
         entries = []
+        timestamp = get_timestamp()
         with open(filepath, newline="") as csvfile:
             reader = csv.reader(csvfile, delimiter=",", quotechar="|")
             next(reader, None)
             for row in reader:
                 entries.append(
                     BudgetFileEntryDDBItem.from_row(
-                        row, owner=owner, override_category=self.override_category
+                        row,
+                        owner=owner,
+                        override_category=self.override_category,
+                        timestamp=timestamp,
                     )
                 )
         return entries
 
     def _handle_created(self, created):
         print(f"Handling: {created}")
-        key = f"{self.prefix}/{created}"
+        key = f"{UPLOADS_PREFIX}/{created}"
+        environment = created.split("/")[0]
         owner = created.split("/")[1]
 
         filepath = self.aws.s3.buckets["uploads"].download(key)
@@ -153,7 +173,15 @@ class BudgetFileLambdaHandler(JobLambdaHandlerBase):
 
         file_entries = self._get_entries(owner, filepath)
         print(f"{len(file_entries)} retrieved")
-        self.aws.dynamodb.tables["budget_file_entry"].bulk_put(file_entries)
+        ids = set()
+        deduped_entries = []
+        for entry in file_entries:
+            if entry.id in ids:
+                continue
+            ids.add(entry.id)
+            deduped_entries.append(entry)
+
+        self.aws.dynamodb.tables["budget_file_entry"].bulk_put(deduped_entries)
 
         scan_dict = {
             "owner": owner,
@@ -188,5 +216,5 @@ def lambda_handler(event, context):
     return BudgetFileLambdaHandler(event, context).handle()
 
 
-# event = {'Records': [{'eventVersion': '2.1', 'eventSource': 'aws:s3', 'awsRegion': 'us-east-1', 'eventTime': '2024-12-24T03:50:16.780Z', 'eventName': 'ObjectCreated:Put', 'userIdentity': {'principalId': 'AWS:AIDAJDNB5MJJIJIUWHFYC'}, 'requestParameters': {'sourceIPAddress': '75.11.10.172'}, 'responseElements': {'x-amz-request-id': 'XZ9FYXXPQA300ZHF', 'x-amz-id-2': 'G6oY+FgKzEyaEo0DqkFxgkXNGPBFFbH/S76VeuZc91tsRkfzlaBiIXJir3dfwqSKYduwjXzNV2FvHE9zsj2+P5MNkvPj3e97'}, 's3': {'s3SchemaVersion': '1.0', 'configurationId': 'tf-s3-lambda-20241224032918392100000001', 'bucket': {'name': 'aseaman-protected', 'ownerIdentity': {'principalId': 'A3QM71HR4ZP65N'}, 'arn': 'arn:aws:s3:::aseaman-protected'}, 'object': {'key': 'budget/uploads/local/andrew/6dfae7fd1e8444e7aaaf2a56a236f357', 'size': 460631, 'eTag': 'b4c75235a49b37f9d39254cc33c39d8c', 'sequencer': '00676A2F77261D51E6'}}}]}
+# event = {'Records': [{'eventVersion': '2.1', 'eventSource': 'aws:s3', 'awsRegion': 'us-east-1', 'eventTime': '2024-12-24T21:24:29.234Z', 'eventName': 'ObjectCreated:Put', 'userIdentity': {'principalId': 'AWS:AIDAJDNB5MJJIJIUWHFYC'}, 'requestParameters': {'sourceIPAddress': '75.11.10.172'}, 'responseElements': {'x-amz-request-id': 'WH161H7AEN93KHRB', 'x-amz-id-2': 'pQXj5hE39T5SgdnG5mXt8cFnT9GVAorSPAg0ikfSBSNobJSCflKgm2bYZsSFNI0v8wiNrwanSPW9Zqujq4q8UdWDmrDNpPaa'}, 's3': {'s3SchemaVersion': '1.0', 'configurationId': 'tf-s3-lambda-20241224212403804500000002', 'bucket': {'name': 'aseaman-protected', 'ownerIdentity': {'principalId': 'A3QM71HR4ZP65N'}, 'arn': 'arn:aws:s3:::aseaman-protected'}, 'object': {'key': 'budget/uploads/local/andrew/9134e44d3ad248d796b4604244ea3dce', 'size': 3307, 'eTag': '6f9743a310f39d815641a3392982e9cf', 'sequencer': '00676B268D0D3693BE'}}}]}
 # lambda_handler(event, {})

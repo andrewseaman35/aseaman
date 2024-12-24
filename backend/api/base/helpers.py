@@ -13,7 +13,7 @@ from .api_exceptions import (
 
 class UserGroup:
     ADMIN = "admin"
-    BUDGET = "budget"
+    BUDGET = "budget-manager"
     LINK_MANAGER = "link-manager"
 
 

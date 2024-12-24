@@ -57,6 +57,8 @@ def get_payload(request):
             body = request.form.to_dict()
         elif request.files:
             body = request.files.to_dict()
+        elif request.data:
+            body = request.data
         else:
             raise NotImplementedError("payload type not found")
 

@@ -105,7 +105,7 @@ class BudgetLambdaHandler(APILambdaHandlerBase):
             filename = generate_id()
 
             key = self.aws.s3.buckets["uploads"].put(
-                file_bytes=self.params["budget-file"],
+                file_bytes=self.params["body"],
                 filename=f"{self.env}/{self.user['username']}/{filename}",
                 content_type="text/csv",
             )
