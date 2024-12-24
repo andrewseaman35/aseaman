@@ -1,6 +1,7 @@
 import json
 
 from .helpers import (
+    chunk,
     get_expression_id,
     get_timestamp,
 )
@@ -92,8 +93,8 @@ class DynamoDBItem:
     def to_ddb_item(self):
         ddb_item = {}
         for key, props in self._config.items():
-            if self._item[key] is not None:
-                ddb_item[key] = {props.data_type: self._item[key]}
+            if self._item[key] not in {None, ""}:
+                ddb_item[key] = {props.data_type: str(self._item[key])}
         return ddb_item
 
     def validate_ownership(self, *args, **kwargs):
@@ -223,6 +224,18 @@ class DynamoDBTable:
             TableName=self.table_name,
             Item=item.to_ddb_item(),
         )
+
+    def bulk_put(self, items):
+        put_requests = [{"PutRequest": {"Item": item.to_ddb_item()}} for item in items]
+        print(f"put_requests: {self.table_name}")
+        print(put_requests)
+        for batch in chunk(put_requests, 25):
+            self.ddb_client.batch_write_item(
+                RequestItems={
+                    self.table_name: batch,
+                }
+            )
+        return items
 
     def update(self, key, update_dict):
         (

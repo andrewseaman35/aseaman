@@ -52,3 +52,8 @@ def generate_alphanumeric_id(length=8, lower=True, upper=True):
         choices.extend(string.ascii_uppercase)
 
     return "".join(random.choices(choices, k=length))
+
+
+def chunk(lst, n):
+    for i in range(0, len(lst), n):
+        yield lst[i : i + n]
