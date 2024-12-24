@@ -15,10 +15,11 @@ class DynamoDBUnauthorizedException(Exception):
 
 
 class DynamoDBItemValueConfig:
-    def __init__(self, data_type, default=None, optional=False):
+    def __init__(self, data_type, default=None, optional=False, internal=False):
         self.data_type = data_type
         self.default = default
         self.optional = optional
+        self.internal = internal
 
 
 class DynamoDBItem:
@@ -79,6 +80,10 @@ class DynamoDBItem:
         return cls(_item)
 
     def serialize(self):
+        _dict = self.to_dict()
+        for key, props in self._config.items():
+            if props.internal:
+                del _dict[key]
         return json.dumps(self.to_dict())
 
     def to_dict(self):
