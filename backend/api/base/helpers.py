@@ -60,6 +60,11 @@ def generate_alphanumeric_id(length=8, lower=True, upper=True):
     return "".join(random.choices(choices, k=length))
 
 
+def chunk(lst, n):
+    for i in range(0, len(lst), n):
+        yield lst[i : i + n]
+
+
 def requires_authentication(func):
     def wrapper(s, *args, **kwargs):
         if not s.user["username"]:

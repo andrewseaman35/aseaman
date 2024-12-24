@@ -56,20 +56,6 @@ module "budget_file_job_iam_role_policy" {
   job_name   = "budget_file"
 }
 
-resource "aws_s3_bucket_notification" "aseaman_protected_notification" {
-  bucket = "aseaman-protected"
-
-  lambda_function {
-    lambda_function_arn = module.budget_file_job.lambda_function_arn
-    filter_prefix       = module.budget_file_job.prefix
-    events              = ["s3:ObjectCreated:*"]
-  }
-
-  depends_on = [
-    module.budget_file_job,
-  ]
-}
-
 resource "aws_ssm_parameter" "budget_file_job_lambda_arn" {
   name = "/aseaman/${var.deploy_env}/lambda/budget_file_job_lambda_arn"
   type = "String"

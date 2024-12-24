@@ -32,7 +32,10 @@ deploy_website: website
 	aws s3 cp --recursive website/public/css/ s3://$(DEPLOY_ENV).andrewcseaman.com/css > /dev/null
 	aws s3 cp --recursive --exclude "local_data/*" --exclude "js/*" --exclude "css/*" --content-type text/html website/public/ s3://$(DEPLOY_ENV).andrewcseaman.com > /dev/null
 
-deploy: assert_deploy_vars deploy_api deploy_website
+deploy: assert_deploy_vars deploy_api deploy_website deploy_shared
+
+deploy_shared:
+	make -C backend tfapply_shared
 
 watch: venv
 	$(VENV_PYTHON) scripts/run_watchers.py
