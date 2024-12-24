@@ -196,6 +196,35 @@ module "linker_iam_role_policy" {
   api_name   = "linker-api"
 }
 
+module "budget_api" {
+  source     = "../serverless_api"
+  zip_file   = "../../api/packages/budget_api.zip"
+  api_name   = "budget-api"
+  path_part  = "budget"
+  deploy_env = var.deploy_env
+  hostname   = var.hostname
+
+  cognito_user_pool_arn = var.cognito_user_pool_arn
+  cognito_user_pool_id  = var.cognito_user_pool_id
+  cognito_user_groups   = {
+    "budget-manager": {
+      "description": "Access to managing budget files"
+    }
+  }
+
+  rest_api_root_resource_id         = aws_api_gateway_rest_api.rest_api.root_resource_id
+  rest_api_id                       = aws_api_gateway_rest_api.rest_api.id
+  get_method_authorization          = "NONE"
+  get_proxy_method_authorization    = "NONE"
+}
+
+module "budget_iam_role_policy" {
+  source     = "../roles/budget"
+  role       = module.budget_api.api_role_id
+  deploy_env = var.deploy_env
+  api_name   = "budget-api"
+}
+
 resource "aws_api_gateway_deployment" "api_gateway_deployment" {
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
 
@@ -208,6 +237,7 @@ resource "aws_api_gateway_deployment" "api_gateway_deployment" {
       mame_highscore_api = module.mame_highscore_api.api_resource_module_ids
       chess_api          = module.chess_api.api_resource_module_ids
       linker_api         = module.linker_api.api_resource_module_ids
+      budget_api         = module.budget_api.api_resource_module_ids
     }))
   }
 
@@ -236,6 +266,9 @@ resource "aws_api_gateway_deployment" "api_gateway_deployment" {
 
     module.linker_api.aws_api_gateway_method,
     module.linker_api.aws_api_gateway_integration,
+
+    module.budget_api.aws_api_gateway_method,
+    module.budget_api.aws_api_gateway_integration,
   ]
 }
 
