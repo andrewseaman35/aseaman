@@ -51,15 +51,16 @@ def get_payload(request):
             }
         )
     else:
-        payload.update(
-            {
-                "body": json.dumps(
-                    {
-                        **request.json,
-                    }
-                )
-            }
-        )
+        if request.json:
+            body = json.dumps({**request.json})
+        elif request.form:
+            body = request.form.to_dict()
+        elif request.files:
+            body = request.files.to_dict()
+        else:
+            raise NotImplementedError("payload type not found")
+
+        payload.update({"body": body})
     return payload
 
 
@@ -116,6 +117,16 @@ def event(resource):
 def linker(resource):
     payload = get_payload(request)
     result = make_lambda_request("linker", request, payload, None)
+    return convert_to_response(result)
+
+
+@app.route(
+    "/budget/", methods=["GET", "POST", "PUT", "DELETE"], defaults={"resource": None}
+)
+@app.route("/budget/<resource>/", methods=["GET", "POST"])
+def budget(resource):
+    payload = get_payload(request)
+    result = make_lambda_request("budget", request, payload, None)
     return convert_to_response(result)
 
 
