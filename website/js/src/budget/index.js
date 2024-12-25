@@ -1,20 +1,19 @@
-import React from 'react';
+import React, {useState} from 'react';
 import $ from 'jquery';
 
 import FileUploader from '../components/FileUploader';
-import BudgetSummary from './summary';
+import SummaryView from './views/SummaryView';
 
 
-export default class BudgetPage extends React.Component {
+const BudgetPage = (props) => {
+    console.log("Rendering")
 
+    return (
+        <>
+            <SummaryView/>
+            <FileUploader />
+        </>
+    )
+};
 
-    render() {
-        console.log("Rendering")
-        return (
-            <>
-                <BudgetSummary />
-                <FileUploader />
-            </>
-        )
-    }
-}
+export default BudgetPage;
