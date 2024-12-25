@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 import { ACNHRankings, CompareACNH, VillagerResults } from './compare_acnh';
 import DrawJasper from './DrawJasper';
-import FileUploader from './budget/index';
+import BudgetPage from './budget/index';
 import LinksTable from './linker/LinksTable';
 import MameHighscore from './MameHighscore';
 import SaltLevel from './SaltLevel';
@@ -70,9 +70,9 @@ function initSaltLevel(elementId) {
 }
 
 
-function initFileUploader(elementId) {
+function initBudgetPage(elementId) {
     ReactDOM.render(
-        <FileUploader />,
+        <BudgetPage />,
         document.getElementById(elementId),
     );
 }
@@ -83,7 +83,7 @@ module.exports = {
     initCompareACNH,
     initVillagerResults,
     initLinksTable,
-    initFileUploader,
+    initBudgetPage,
     initDrawJasper,
     initLightbox,
     initMameHighscore,
