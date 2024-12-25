@@ -8,6 +8,8 @@ const SummaryView = (props) => {
     return (
         <div className="view-summary">
             <SummarySelector
+                showYears={true}
+                showMonths={false}
                 onYearChanged={props.onYearChanged}
                 onMonthChanged={props.onMonthChanged}
                 selectedYear={props.year}

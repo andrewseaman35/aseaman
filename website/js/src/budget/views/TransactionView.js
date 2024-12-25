@@ -8,6 +8,8 @@ const TransactionView = (props) => {
     return (
         <div className="view-summary">
             <SummarySelector
+                showYears={true}
+                showMonths={true}
                 onYearChanged={props.onYearChanged}
                 onMonthChanged={props.onMonthChanged}
                 selectedYear={props.year}

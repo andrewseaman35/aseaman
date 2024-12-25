@@ -9,7 +9,7 @@ const SummarySelector = (props) => {
         <div>
             {YEARS.map((year) => (
                 <button
-                    class={`${props.selectedYear === year ? 'selected' : ''}`}
+                    className={`${props.selectedYear === year ? 'selected' : ''}`}
                     onClick={() => props.onYearChanged(props.selectedYear === year ? null : year)}
                 >{year}</button>
             ))}
@@ -19,24 +19,31 @@ const SummarySelector = (props) => {
         <div>
             {MONTHS.map((month) => (
                 <button
-                    class={`${props.selectedMonth === month ? 'selected' : ''}`}
+                    className={`${props.selectedMonth === month ? 'selected' : ''}`}
                     onClick={() => props.onMonthChanged(props.selectedMonth === month ? null : month)}
                 >{month}</button>
             ))}
         </div>
     );
-    return <div>
-        {yearSelectors}
-        {monthSelectors}
-    </div>
+    console.log(props);
+    return (
+        <div>
+            {props.showYears && yearSelectors}
+            {props.showMonths && monthSelectors}
+        </div>
+    )
 }
 
 SummarySelector.defaultProps = {
+    showYears: true,
+    showMonths: true,
     selectedYear: null,
     selectedMonth: null,
 };
 
 SummarySelector.propTypes = {
+    showYears: PropTypes.bool.isRequired,
+    showMonths: PropTypes.bool.isRequired,
     selectedYear: PropTypes.number,
     selectedMonth: PropTypes.number,
     onYearChanged: PropTypes.func.isRequired,

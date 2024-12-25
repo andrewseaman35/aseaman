@@ -14,14 +14,14 @@ const BudgetPage = (props) => {
 
     const renderView = (view) => {
         if (view === "summary") {
-            return <SummaryView />
-        } else if (view === "upload") {
-            return <FileUploader
+            return <SummaryView
                 year={year}
                 month={month}
                 onYearChanged={setYear}
                 onMonthChanged={setMonth}
             />
+        } else if (view === "upload") {
+            return <FileUploader />
         } else if (view === "transactions") {
             return <TransactionView
                 year={year}
