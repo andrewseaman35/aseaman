@@ -25,7 +25,8 @@ class JobLambdaHandlerBase(object):
     def __init__(self, event, context):
         self.event = event
         self.context = context
-        self.env = os.environ.get("ENV")
+        # self.env = os.environ.get("ENV")
+        self.env = "local"
         self.prefix = ""
         self._init()
 
