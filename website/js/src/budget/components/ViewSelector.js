@@ -1,7 +1,7 @@
 import React, { useEffect, useState, } from 'react';
 import PropTypes from 'prop-types';
 
-const VIEWS = ['summary', 'upload']
+const VIEWS = ['summary', 'transactions', 'upload'];
 
 const ViewSelector = (props) => {
 

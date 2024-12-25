@@ -1,10 +1,10 @@
 import React, { useEffect, useState, } from 'react';
 import PropTypes from 'prop-types';
 
-import BudgetSummary from '../components/Summary';
+import BudgetTransactions from '../components/Transactions';
 import SummarySelector from '../components/SummarySelector'
 
-const SummaryView = (props) => {
+const TransactionView = (props) => {
     return (
         <div className="view-summary">
             <SummarySelector
@@ -13,7 +13,7 @@ const SummaryView = (props) => {
                 selectedYear={props.year}
                 selectedMonth={props.month}
             />
-            <BudgetSummary
+            <BudgetTransactions
                 year={props.year}
                 month={props.month}
             />
@@ -21,15 +21,15 @@ const SummaryView = (props) => {
     );
 }
 
-SummaryView.defaultProps = {
+TransactionView.defaultProps = {
     year: null,
     month: null,
 };
-SummaryView.propTypes = {
+TransactionView.propTypes = {
     year: PropTypes.number,
     month: PropTypes.number,
     onYearChanged: PropTypes.func.isRequired,
     onMonthChanged: PropTypes.func.isRequired,
 };
 
-export default SummaryView;
+export default TransactionView;
