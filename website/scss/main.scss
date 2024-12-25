@@ -68,4 +68,7 @@ body {
             align-items: center;
        }
     }
+    &.budget {
+        @import "budget.scss";
+    }
 }

@@ -11,6 +11,8 @@ const SummaryView = () => {
         <SummarySelector
             onYearChanged={setYear}
             onMonthChanged={setMonth}
+            selectedYear={year}
+            selectedMonth={month}
         />
         <BudgetSummary
             year={year}

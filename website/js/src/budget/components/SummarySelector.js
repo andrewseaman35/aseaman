@@ -5,15 +5,24 @@ const YEARS = [2021, 2022, 2022, 2023, 2024];
 const MONTHS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 const SummarySelector = (props) => {
-
     const yearSelectors = (
         <div>
-            {YEARS.map((year) => <button onClick={() => props.onYearChanged(year)}>{year}</button>)}
+            {YEARS.map((year) => (
+                <button
+                    class={`${props.selectedYear === year ? 'selected' : ''}`}
+                    onClick={() => props.onYearChanged(props.selectedYear === year ? null : year)}
+                >{year}</button>
+            ))}
         </div>
     );
     const monthSelectors = (
         <div>
-            {MONTHS.map((month) => <button onClick={() => props.onMonthChanged(month)}>{month}</button>)}
+            {MONTHS.map((month) => (
+                <button
+                    class={`${props.selectedMonth === month ? 'selected' : ''}`}
+                    onClick={() => props.onMonthChanged(props.selectedMonth === month ? null : month)}
+                >{month}</button>
+            ))}
         </div>
     );
     return <div>
@@ -23,9 +32,13 @@ const SummarySelector = (props) => {
 }
 
 SummarySelector.defaultProps = {
+    selectedYear: null,
+    selectedMonth: null,
 };
 
 SummarySelector.propTypes = {
+    selectedYear: PropTypes.number,
+    selectedMonth: PropTypes.number,
     onYearChanged: PropTypes.func.isRequired,
     onMonthChanged: PropTypes.func.isRequired,
 };
