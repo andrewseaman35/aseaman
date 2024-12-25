@@ -21,6 +21,11 @@
     }
 }
 
+.view-summary {
+    display: flex;
+    flex-direction: column;;
+}
+
 button {
     &.selected {
         background-color: $gray;

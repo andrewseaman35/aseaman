@@ -7,7 +7,7 @@ import SummarySelector from '../components/SummarySelector'
 const SummaryView = () => {
     const [year, setYear] = useState(null);
     const [month, setMonth] = useState(null);
-    return <>
+    return <div className="view-summary">
         <SummarySelector
             onYearChanged={setYear}
             onMonthChanged={setMonth}
@@ -18,7 +18,7 @@ const SummaryView = () => {
             year={year}
             month={month}
         />
-    </>
+    <div/>
 }
 
 SummaryView.defaultProps = {};
