@@ -384,7 +384,7 @@ class BudgetFileEntryDDBItem(DynamoDBItem):
         "description": DynamoDBItemValueConfig("S", default=None),
         "original_category": DynamoDBItemValueConfig("S", default=None, optional=True),
         "category": DynamoDBItemValueConfig("S", default=None, optional=True),
-        "transaction_type": DynamoDBItemValueConfig("S"),
+        "transaction_type": DynamoDBItemValueConfig("S", default=None, optional=True),
         "amount": DynamoDBItemValueConfig("N"),
         "time_processed": DynamoDBItemValueConfig("N", default=None, optional=True),
     }

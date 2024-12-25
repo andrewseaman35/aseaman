@@ -83,6 +83,16 @@ function toReadableDate(secondsTimestamp) {
 }
 
 
+function parseDateString(dateString) {
+    const parts = dateString.split('/');
+    const month = parseInt(parts[0]) - 1; // Months are zero-based
+    const day = parseInt(parts[1]);
+    const year = parseInt(parts[2]);
+
+    return new Date(year, month, day);
+  }
+
+
 const KEY_CODE = {
     ESCAPE: 'Escape',
     LEFT: 'ArrowLeft',
@@ -100,6 +110,7 @@ module.exports = {
     getUrlTo,
     unsetCookie,
     setQueryStringParameter,
+    parseDateString,
     toReadableDate,
     toReadableDateTime,
 };

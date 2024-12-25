@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import $ from 'jquery';
 
 import { fetchEntries } from '../api';
+import { parseDateString } from '../../utils';
 
 
 const BudgetSummary = (props) => {
@@ -27,7 +28,9 @@ const BudgetSummary = (props) => {
         )
     }, [props.year, props.month])
 
-    console.log(summaries)
+    if (summaries !== null) {
+        summaries.sort((a, b) => parseDateString(a.transaction_date) - parseDateString(b.transaction_date))
+    }
     return (
         <div>
             <div>summaries</div>
