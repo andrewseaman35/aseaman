@@ -1,3 +1,26 @@
+.budget-content {
+    display: flex;
+    flex-direction: row;;
+    padding-top: 12px;
+}
+
+.view-selector {
+    display: flex;
+    flex-direction: column;
+    padding: 0 12px;
+    ;
+    .view-option {
+        border-radius: 6px;
+        border: 1px black solid;
+        padding: 8px 24px;
+        margin-bottom: 12px;
+
+        &.selected {
+            background-color: $gray;
+        }
+    }
+}
+
 button {
     &.selected {
         background-color: $gray;
