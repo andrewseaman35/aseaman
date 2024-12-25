@@ -95,11 +95,11 @@ class DynamoDBItem:
         return json.dumps(self.to_dict(include_internal=False))
 
     def to_dict(self, include_internal=True):
-        _dict = self._item
+        _dict = {**self._item}
         if include_internal:
             return _dict
         for key, props in self._config.items():
-            if props.internal:
+            if props.internal and key in _dict:
                 del _dict[key]
         return _dict
 
@@ -188,21 +188,29 @@ class DynamoDBItem:
         )
 
     @classmethod
-    def build_query_attributes(cls, attributes):
-        attribute_keys = list(attributes.keys())
-        assert len(attribute_keys) == 1, "only one query attribute key supported"
-
+    def build_query_attributes(cls, key_dict, attributes):
+        k = list(key_dict.keys())[0]
         expr_id = get_expression_id(set())
-        key = attribute_keys[0]
         key_condition_expression = f"#{expr_id} = :{expr_id}"
         expression_attribute_values = {
-            f":{expr_id}": {cls._config[key].data_type: attributes[key]}
+            f":{expr_id}": {cls._config[k].data_type: key_dict[k]}
         }
-        expression_attribute_names = {f"#{expr_id}": key}
+        expression_attribute_names = {f"#{expr_id}": k}
+        filter_expression = []
+
+        for key, value in attributes.items():
+            expr_id = get_expression_id(set())
+            expression_attribute_names[f"#{expr_id}"] = key
+            expression_attribute_values[f":{expr_id}"] = {
+                cls._config[key].data_type: value
+            }
+            filter_expression.append(f"#{expr_id} = :{expr_id}")
+
         return (
             key_condition_expression,
             expression_attribute_names,
             expression_attribute_values,
+            " and ".join(filter_expression),
         )
 
 
@@ -305,12 +313,13 @@ class DynamoDBTable:
             Key=key,
         )
 
-    def query(self, query_dict=None):
+    def query(self, key, query_dict=None):
         (
             key_condition_expression,
             expression_attribute_names,
             expression_attribute_values,
-        ) = self.ItemClass.build_query_attributes(query_dict)
+            filter_expression,
+        ) = self.ItemClass.build_query_attributes(key, query_dict)
 
         result = self.ddb_client.query(
             TableName=self.table_name,
@@ -319,6 +328,7 @@ class DynamoDBTable:
             KeyConditionExpression=key_condition_expression,
             ExpressionAttributeValues=expression_attribute_values,
             ExpressionAttributeNames=expression_attribute_names,
+            FilterExpression=filter_expression,
         )
         ddb_items = result.get("Items", [])
         return [self.ItemClass.from_ddb_item(ddb_item) for ddb_item in ddb_items]
