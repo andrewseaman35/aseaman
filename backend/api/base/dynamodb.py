@@ -95,11 +95,11 @@ class DynamoDBItem:
         return json.dumps(self.to_dict(include_internal=False))
 
     def to_dict(self, include_internal=True):
-        _dict = self._item
+        _dict = {**self._item}
         if include_internal:
             return _dict
         for key, props in self._config.items():
-            if props.internal:
+            if props.internal and key in _dict:
                 del _dict[key]
         return _dict
 
