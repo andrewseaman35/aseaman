@@ -5,54 +5,13 @@ from base.lambda_handler_base import APILambdaHandlerBase
 from base.api_exceptions import (
     BadRequestException,
     NotFoundException,
-    UnauthorizedException,
 )
 
 from base.aws import AWSConfig, DynamoDBConfig, DynamoDBTableConfig
-from base.helpers import generate_alphanumeric_id, get_timestamp
-from base.dynamodb import DynamoDBItem, DynamoDBItemValueConfig, DynamoDBTable
+from base.helpers import generate_chess_game_id, get_timestamp
+from base.dynamodb import ChessGameDDBItem, ChessGameTable
 
-GAME_ID_LENGTH = 6
 TURN_REGEX_PATTERN = r"(?P<side>WHITE|BLACK)\|(?P<starting_space>[A-Z]\d)\|(?P<ending_space>[A-Z]\d)\|(?P<turn_type>\w+)\|(?P<options>\w*)"
-
-VERSION = "0.0.1"
-
-
-def generate_game_id():
-    return generate_alphanumeric_id(GAME_ID_LENGTH, lower=False)
-
-
-class ChessGameDDBItem(DynamoDBItem):
-    _config = {
-        "game_id": DynamoDBItemValueConfig("S", default=generate_game_id),
-        "game_mode": DynamoDBItemValueConfig("S", default="local"),
-        "turns": DynamoDBItemValueConfig("L", default=[], optional=True),
-        "version": DynamoDBItemValueConfig("S", default=VERSION),
-        "player_one": DynamoDBItemValueConfig("S", default=None, optional=True),
-        "player_two": DynamoDBItemValueConfig("S", default=None, optional=True),
-        "time_created": DynamoDBItemValueConfig("N", default=get_timestamp),
-        "time_updated": DynamoDBItemValueConfig("N"),
-    }
-
-    @classmethod
-    def build_ddb_key(cls, *args, game_id=None, **kwargs):
-        assert game_id is not None, "game_id required to build ddb key"
-        return {
-            "game_id": {
-                "S": game_id,
-            }
-        }
-
-    def validate_ownership(self, user):
-        players = {self.player_one, self.player_two}
-        if all(players):
-            if not user["username"] or not user["username"] in players:
-                raise UnauthorizedException("Log in to access this game")
-
-
-class ChessGameTable(DynamoDBTable):
-    ItemClass = ChessGameDDBItem
-    validate_owner = True
 
 
 class ChessLambdaHandler(APILambdaHandlerBase):
@@ -94,7 +53,7 @@ class ChessLambdaHandler(APILambdaHandlerBase):
         print("Creating new game")
         timestamp = get_timestamp()
         chess_game_dict = {
-            "game_id": generate_game_id(),
+            "game_id": generate_chess_game_id(),
             "game_mode": game_mode,
             "time_created": timestamp,
             "time_updated": timestamp,

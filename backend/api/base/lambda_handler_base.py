@@ -128,12 +128,11 @@ class APILambdaHandlerBase(object):
         elif self.event["httpMethod"] in {"POST", "PUT"}:
             if isinstance(self.event["body"], dict):
                 params = self.event["body"]
-            if isinstance(self.event["body"], bytes):
-                params = {"body": self.event["body"]}
-            if isinstance(self.event["body"], str):
-                params = {"body": self.event["body"]}
             else:
-                params = json.loads(self.event["body"])
+                try:
+                    params = json.loads(self.event["body"])
+                except:
+                    params = {"body": self.event["body"]}
         self.params = params
 
     def __decode_token(self):

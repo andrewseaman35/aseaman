@@ -1,7 +1,5 @@
 import csv
 from dataclasses import dataclass
-import datetime
-import hashlib
 
 from base.lambda_handler_base import JobLambdaHandlerBase, CREATION_EVENT_NAME
 from base.aws import (
@@ -11,8 +9,8 @@ from base.aws import (
     DynamoDBConfig,
     DynamoDBTableConfig,
 )
-from base.dynamodb import DynamoDBItem, DynamoDBItemValueConfig, DynamoDBTable
-from base.helpers import generate_id, get_timestamp
+from base.dynamodb import BudgetFileTable, BudgetFileEntryTable
+from base.helpers import get_timestamp
 
 
 UPLOADS_PREFIX = "budget/uploads"
@@ -24,86 +22,6 @@ class FileState:
     UPLOADED = "uploaded"
     IMPORTED = "imported"
     PROCESSED = "processed"
-
-
-class BudgetFileEntryDDBItem(DynamoDBItem):
-    _timestamp_key = "time_processed"
-    _config = {
-        "owner": DynamoDBItemValueConfig("S"),
-        "id": DynamoDBItemValueConfig("S"),
-        "transaction_date": DynamoDBItemValueConfig("S"),
-        "transaction_month": DynamoDBItemValueConfig("N"),
-        "transaction_year": DynamoDBItemValueConfig("N"),
-        "post_date": DynamoDBItemValueConfig("S"),
-        "description": DynamoDBItemValueConfig("S", default=None),
-        "original_category": DynamoDBItemValueConfig("S", default=None),
-        "category": DynamoDBItemValueConfig("S"),
-        "transaction_type": DynamoDBItemValueConfig("S"),
-        "amount": DynamoDBItemValueConfig("N"),
-        "time_processed": DynamoDBItemValueConfig("N", default=None),
-    }
-
-    @classmethod
-    def generate_id_from_row(cls, row):
-        row_bytes = "|".join(row).encode("utf-8")
-        hash_object = hashlib.sha256(row_bytes)
-        return hash_object.hexdigest()
-
-    @classmethod
-    def from_row(cls, row, owner, override_category, timestamp):
-        hash_ = cls.generate_id_from_row(row)
-
-        transaction_date = datetime.datetime.strptime(row[0], "%m/%d/%Y")
-        return cls(
-            {
-                "owner": owner,
-                "id": hash_,
-                "transaction_date": row[0],
-                "transaction_month": str(transaction_date.month),
-                "transaction_year": str(transaction_date.year),
-                "post_date": row[1],
-                "description": row[2],
-                "original_category": row[3],
-                "category": override_category(row[3]),
-                "transaction_type": row[4],
-                "amount": float(row[5]),
-                "time_processed": timestamp,
-            }
-        )
-
-
-class BudgetFileEntryTable(DynamoDBTable):
-    ItemClass = BudgetFileEntryDDBItem
-
-
-class BudgetFileDDBItem(DynamoDBItem):
-    _config = {
-        "owner": DynamoDBItemValueConfig("S"),
-        "id": DynamoDBItemValueConfig("S", default=generate_id),
-        "state": DynamoDBItemValueConfig("S"),
-        "s3_key": DynamoDBItemValueConfig("S", internal=True),
-        "time_created": DynamoDBItemValueConfig("N", default=get_timestamp),
-        "time_updated": DynamoDBItemValueConfig("N", default=None),
-    }
-
-    @property
-    def ddb_key(self):
-        return self.build_ddb_key(owner=self.owner, s3_key=self.s3_key)
-
-    @classmethod
-    def build_ddb_key(cls, *args, owner=None, s3_key=None, **kwargs):
-        assert owner is not None, "owner required to build ddb key"
-        assert s3_key is not None, "s3_key required to build ddb key"
-        return {
-            "owner": {
-                "S": owner,
-            },
-            "s3_key": {"S": s3_key},
-        }
-
-
-class BudgetFileTable(DynamoDBTable):
-    ItemClass = BudgetFileDDBItem
 
 
 class BudgetFileLambdaHandler(JobLambdaHandlerBase):

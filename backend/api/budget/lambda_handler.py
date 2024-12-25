@@ -15,14 +15,13 @@ from base.aws import (
     S3BucketConfig,
 )
 from base.api_exceptions import (
-    BadRequestException,
-    UnauthorizedException,
-    ForbiddenException,
     NotFoundException,
 )
-from base.dynamodb import DynamoDBItem, DynamoDBItemValueConfig, DynamoDBTable
+from base.dynamodb import (
+    BudgetFileDDBItem,
+    BudgetFileTable,
+)
 from base.helpers import (
-    requires_authentication,
     requires_user_group,
     get_timestamp,
     generate_id,
@@ -42,44 +41,6 @@ class FileState:
     UPLOADED = "uploaded"
     IMPORTED = "imported"
     PROCESSED = "processed"
-
-
-class BudgetFileDDBItem(DynamoDBItem):
-    _config = {
-        "owner": DynamoDBItemValueConfig("S"),
-        "id": DynamoDBItemValueConfig("S", default=generate_id),
-        "state": DynamoDBItemValueConfig("S"),
-        "s3_key": DynamoDBItemValueConfig("S", internal=True),
-        "time_created": DynamoDBItemValueConfig("N", default=get_timestamp),
-        "time_updated": DynamoDBItemValueConfig("N", default=None),
-    }
-
-    @property
-    def ddb_key(self):
-        return self.build_ddb_key(owner=self.owner, s3_key=self.s3_key)
-
-    @classmethod
-    def build_ddb_key(cls, *args, owner=None, s3_key=None, **kwargs):
-        assert owner is not None, "owner required to build ddb key"
-        assert s3_key is not None, "s3_key required to build ddb key"
-        return {
-            "owner": {
-                "S": owner,
-            },
-            "s3_key": {"S": s3_key},
-        }
-
-    def validate_ownership(self, user=None):
-        if user is None:
-            raise UnauthorizedException("not logged in")
-
-        owner_username = self.owner
-        if not user["username"] or user["username"] != owner_username:
-            raise UnauthorizedException("Budget file not owned")
-
-
-class BudgetFileTable(DynamoDBTable):
-    ItemClass = BudgetFileDDBItem
 
 
 class BudgetLambdaHandler(APILambdaHandlerBase):

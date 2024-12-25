@@ -10,6 +10,11 @@ from .api_exceptions import (
     UnauthorizedException,
 )
 
+CHESS_VERSION = "0.0.1"
+CHESS_GAME_ID_LENGTH = 6
+
+LINK_ID_LENGTH = 6
+
 
 class UserGroup:
     ADMIN = "admin"
@@ -40,6 +45,10 @@ def generate_alpha_id(length):
             k=length,
         )
     )
+
+
+def generate_chess_game_id():
+    return generate_alphanumeric_id(CHESS_GAME_ID_LENGTH, lower=False)
 
 
 def raise_key_required(key):

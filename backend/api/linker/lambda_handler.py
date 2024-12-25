@@ -10,59 +10,20 @@ from base.aws import AWSConfig, DynamoDBConfig, DynamoDBTableConfig
 from base.api_exceptions import (
     BadRequestException,
     NotFoundException,
-    UnauthorizedException,
     ForbiddenException,
 )
-from base.dynamodb import DynamoDBItem, DynamoDBItemValueConfig, DynamoDBTable
+from base.dynamodb import LinkDDBItem, LinkTable
 from base.helpers import (
     requires_authentication,
     requires_user_group,
     get_timestamp,
-    generate_alphanumeric_id,
     UserGroup,
 )
-
-LINK_ID_LENGTH = 6
 
 DEFAULT_SORT = "+time_created"
 
 DEFAULT_LINK_NAME = "untitled"
 DEFAULT_LINK_URL = ""
-
-
-class LinkDDBItem(DynamoDBItem):
-    _config = {
-        "id": DynamoDBItemValueConfig(
-            "S", default=lambda: generate_alphanumeric_id(LINK_ID_LENGTH)
-        ),
-        "url": DynamoDBItemValueConfig("S", default=None, optional=True),
-        "active": DynamoDBItemValueConfig("BOOL", default=False, optional=True),
-        "locked": DynamoDBItemValueConfig("BOOL", default=False, optional=True),
-        "owner": DynamoDBItemValueConfig("S"),
-        "time_created": DynamoDBItemValueConfig("N", default=get_timestamp),
-        "time_updated": DynamoDBItemValueConfig("N", default=None),
-    }
-
-    @classmethod
-    def build_ddb_key(cls, *args, id=None, **kwargs):
-        assert id is not None, "id required to build ddb key"
-        return {
-            "id": {
-                "S": id,
-            }
-        }
-
-    def validate_ownership(self, user=None):
-        if user is None:
-            raise UnauthorizedException("not logged in")
-
-        owner_username = self.owner
-        if not user["username"] or user["username"] != owner_username:
-            raise UnauthorizedException("Link not owned")
-
-
-class LinkTable(DynamoDBTable):
-    ItemClass = LinkDDBItem
 
 
 class LinkerLambdaHandler(APILambdaHandlerBase):

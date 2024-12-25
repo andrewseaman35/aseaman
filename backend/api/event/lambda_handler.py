@@ -12,30 +12,8 @@ from base.api_exceptions import (
     BadRequestException,
     NotFoundException,
 )
-from base.dynamodb import DynamoDBItem, DynamoDBItemValueConfig, DynamoDBTable
+from base.dynamodb import EventDDBItem, EventTable
 from base.helpers import get_timestamp
-
-
-class EventDDBItem(DynamoDBItem):
-    _config = {
-        "event_id": DynamoDBItemValueConfig("S"),
-        "count": DynamoDBItemValueConfig("N", "0"),
-        "time_created": DynamoDBItemValueConfig("N", default=get_timestamp),
-        "time_updated": DynamoDBItemValueConfig("N", default=None),
-    }
-
-    @classmethod
-    def build_ddb_key(cls, *args, event_id=None, **kwargs):
-        assert event_id is not None, "event_id required to build ddb key"
-        return {
-            "event_id": {
-                "S": event_id,
-            },
-        }
-
-
-class EventTable(DynamoDBTable):
-    ItemClass = EventDDBItem
 
 
 class EventHandler(APILambdaHandlerBase):

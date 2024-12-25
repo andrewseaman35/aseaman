@@ -1,7 +1,15 @@
+import datetime
+import hashlib
 import json
 
+from base.api_exceptions import UnauthorizedException
 from .helpers import (
+    CHESS_VERSION,
+    LINK_ID_LENGTH,
+    generate_chess_game_id,
+    generate_alphanumeric_id,
     chunk,
+    generate_id,
     get_expression_id,
     get_timestamp,
 )
@@ -302,3 +310,249 @@ class DynamoDBTable:
         )
         ddb_items = result.get("Items", [])
         return [self.ItemClass.from_ddb_item(ddb_item) for ddb_item in ddb_items]
+
+
+class BudgetFileDDBItem(DynamoDBItem):
+    _config = {
+        "owner": DynamoDBItemValueConfig("S"),
+        "id": DynamoDBItemValueConfig("S", default=generate_id),
+        "state": DynamoDBItemValueConfig("S"),
+        "s3_key": DynamoDBItemValueConfig("S", internal=True),
+        "time_created": DynamoDBItemValueConfig("N", default=get_timestamp),
+        "time_updated": DynamoDBItemValueConfig("N", default=None),
+    }
+
+    @property
+    def ddb_key(self):
+        return self.build_ddb_key(owner=self.owner, s3_key=self.s3_key)
+
+    @classmethod
+    def build_ddb_key(cls, *args, owner=None, s3_key=None, **kwargs):
+        assert owner is not None, "owner required to build ddb key"
+        assert s3_key is not None, "s3_key required to build ddb key"
+        return {
+            "owner": {
+                "S": owner,
+            },
+            "s3_key": {"S": s3_key},
+        }
+
+    def validate_ownership(self, user=None):
+        if user is None:
+            raise UnauthorizedException("not logged in")
+
+        owner_username = self.owner
+        if not user["username"] or user["username"] != owner_username:
+            raise UnauthorizedException("Budget file not owned")
+
+
+class BudgetFileTable(DynamoDBTable):
+    ItemClass = BudgetFileDDBItem
+
+
+class BudgetFileEntryDDBItem(DynamoDBItem):
+    _timestamp_key = "time_processed"
+    _config = {
+        "owner": DynamoDBItemValueConfig("S"),
+        "id": DynamoDBItemValueConfig("S"),
+        "transaction_date": DynamoDBItemValueConfig("S"),
+        "transaction_month": DynamoDBItemValueConfig("N"),
+        "transaction_year": DynamoDBItemValueConfig("N"),
+        "post_date": DynamoDBItemValueConfig("S"),
+        "description": DynamoDBItemValueConfig("S", default=None),
+        "original_category": DynamoDBItemValueConfig("S", default=None),
+        "category": DynamoDBItemValueConfig("S"),
+        "transaction_type": DynamoDBItemValueConfig("S"),
+        "amount": DynamoDBItemValueConfig("N"),
+        "time_processed": DynamoDBItemValueConfig("N", default=None),
+    }
+
+    @classmethod
+    def generate_id_from_row(cls, row):
+        row_bytes = "|".join(row).encode("utf-8")
+        hash_object = hashlib.sha256(row_bytes)
+        return hash_object.hexdigest()
+
+    @classmethod
+    def from_row(cls, row, owner, override_category, timestamp):
+        hash_ = cls.generate_id_from_row(row)
+
+        transaction_date = datetime.datetime.strptime(row[0], "%m/%d/%Y")
+        return cls(
+            {
+                "owner": owner,
+                "id": hash_,
+                "transaction_date": row[0],
+                "transaction_month": str(transaction_date.month),
+                "transaction_year": str(transaction_date.year),
+                "post_date": row[1],
+                "description": row[2],
+                "original_category": row[3],
+                "category": override_category(row[3]),
+                "transaction_type": row[4],
+                "amount": float(row[5]),
+                "time_processed": timestamp,
+            }
+        )
+
+
+class BudgetFileEntryTable(DynamoDBTable):
+    ItemClass = BudgetFileEntryDDBItem
+
+
+class ChessGameDDBItem(DynamoDBItem):
+    _config = {
+        "game_id": DynamoDBItemValueConfig("S", default=generate_chess_game_id),
+        "game_mode": DynamoDBItemValueConfig("S", default="local"),
+        "turns": DynamoDBItemValueConfig("L", default=[], optional=True),
+        "version": DynamoDBItemValueConfig("S", default=CHESS_VERSION),
+        "player_one": DynamoDBItemValueConfig("S", default=None, optional=True),
+        "player_two": DynamoDBItemValueConfig("S", default=None, optional=True),
+        "time_created": DynamoDBItemValueConfig("N", default=get_timestamp),
+        "time_updated": DynamoDBItemValueConfig("N"),
+    }
+
+    @classmethod
+    def build_ddb_key(cls, *args, game_id=None, **kwargs):
+        assert game_id is not None, "game_id required to build ddb key"
+        return {
+            "game_id": {
+                "S": game_id,
+            }
+        }
+
+    def validate_ownership(self, user):
+        players = {self.player_one, self.player_two}
+        if all(players):
+            if not user["username"] or not user["username"] in players:
+                raise UnauthorizedException("Log in to access this game")
+
+
+class ChessGameTable(DynamoDBTable):
+    ItemClass = ChessGameDDBItem
+    validate_owner = True
+
+
+class CompareACNHSummaryItem(DynamoDBItem):
+    _timestamp_key = None
+
+    _config = {
+        "villager_id": DynamoDBItemValueConfig("S"),
+        "losses": DynamoDBItemValueConfig("N"),
+        "wins": DynamoDBItemValueConfig("N"),
+    }
+
+    @classmethod
+    def build_ddb_key(cls, *args, villager_id=None, **kwargs):
+        assert villager_id is not None, "villager_id required to build ddb key"
+        return {
+            "villager_id": {
+                "S": villager_id,
+            }
+        }
+
+
+class CompareACNHResultsItem(DynamoDBItem):
+    _timestamp_key = None
+
+    _config = {
+        "v_id": DynamoDBItemValueConfig("S"),
+        "v_id2": DynamoDBItemValueConfig("S"),
+        "losses": DynamoDBItemValueConfig("N"),
+        "wins": DynamoDBItemValueConfig("N"),
+    }
+
+    @classmethod
+    def build_ddb_key(cls, *args, villager_id=None, villager_id_2=None, **kwargs):
+        assert villager_id is not None, "villager_id required to build ddb key"
+        assert villager_id_2 is not None, "villager_id_2 required to build ddb key"
+        return {
+            "v_id": {
+                "S": villager_id,
+            },
+            "v_id2": {
+                "S": villager_id_2,
+            },
+        }
+
+
+class CompareACNHSummaryTable(DynamoDBTable):
+    ItemClass = CompareACNHSummaryItem
+
+
+class CompareACNHResultsTable(DynamoDBTable):
+    ItemClass = CompareACNHResultsItem
+
+
+class EventDDBItem(DynamoDBItem):
+    _config = {
+        "event_id": DynamoDBItemValueConfig("S"),
+        "count": DynamoDBItemValueConfig("N", "0"),
+        "time_created": DynamoDBItemValueConfig("N", default=get_timestamp),
+        "time_updated": DynamoDBItemValueConfig("N", default=None),
+    }
+
+    @classmethod
+    def build_ddb_key(cls, *args, event_id=None, **kwargs):
+        assert event_id is not None, "event_id required to build ddb key"
+        return {
+            "event_id": {
+                "S": event_id,
+            },
+        }
+
+
+class EventTable(DynamoDBTable):
+    ItemClass = EventDDBItem
+
+
+class LinkDDBItem(DynamoDBItem):
+    _config = {
+        "id": DynamoDBItemValueConfig(
+            "S", default=lambda: generate_alphanumeric_id(LINK_ID_LENGTH)
+        ),
+        "url": DynamoDBItemValueConfig("S", default=None, optional=True),
+        "active": DynamoDBItemValueConfig("BOOL", default=False, optional=True),
+        "locked": DynamoDBItemValueConfig("BOOL", default=False, optional=True),
+        "owner": DynamoDBItemValueConfig("S"),
+        "time_created": DynamoDBItemValueConfig("N", default=get_timestamp),
+        "time_updated": DynamoDBItemValueConfig("N", default=None),
+    }
+
+    @classmethod
+    def build_ddb_key(cls, *args, id=None, **kwargs):
+        assert id is not None, "id required to build ddb key"
+        return {
+            "id": {
+                "S": id,
+            }
+        }
+
+    def validate_ownership(self, user=None):
+        if user is None:
+            raise UnauthorizedException("not logged in")
+
+        owner_username = self.owner
+        if not user["username"] or user["username"] != owner_username:
+            raise UnauthorizedException("Link not owned")
+
+
+class LinkTable(DynamoDBTable):
+    ItemClass = LinkDDBItem
+
+
+class SaltLevelDDBItem(DynamoDBItem):
+    _config = {
+        "water_softener_id": DynamoDBItemValueConfig(
+            "S",
+        ),
+        "timestamp": DynamoDBItemValueConfig("N"),
+        "sensor_0": DynamoDBItemValueConfig("N"),
+        "sensor_1": DynamoDBItemValueConfig("N"),
+        "sensor_2": DynamoDBItemValueConfig("N"),
+        "sensor_3": DynamoDBItemValueConfig("N"),
+    }
+
+
+class SaltLevelTable(DynamoDBTable):
+    ItemClass = SaltLevelDDBItem

@@ -6,62 +6,16 @@ from base.api_exceptions import (
     NotFoundException,
 )
 from base.aws import AWSConfig, DynamoDBTableConfig, DynamoDBConfig
-from base.dynamodb import DynamoDBTable, DynamoDBItem, DynamoDBItemValueConfig
+from base.dynamodb import (
+    CompareACNHSummaryTable,
+    CompareACNHResultsTable,
+    CompareACNHSummaryItem,
+    CompareACNHResultsItem,
+)
 
 
 def summarySortKey(item):
     return (-item["win_percentage"], -item["total"], item["villager_id"])
-
-
-class CompareACNHSummaryItem(DynamoDBItem):
-    _timestamp_key = None
-
-    _config = {
-        "villager_id": DynamoDBItemValueConfig("S"),
-        "losses": DynamoDBItemValueConfig("N"),
-        "wins": DynamoDBItemValueConfig("N"),
-    }
-
-    @classmethod
-    def build_ddb_key(cls, *args, villager_id=None, **kwargs):
-        assert villager_id is not None, "villager_id required to build ddb key"
-        return {
-            "villager_id": {
-                "S": villager_id,
-            }
-        }
-
-
-class CompareACNHResultsItem(DynamoDBItem):
-    _timestamp_key = None
-
-    _config = {
-        "v_id": DynamoDBItemValueConfig("S"),
-        "v_id2": DynamoDBItemValueConfig("S"),
-        "losses": DynamoDBItemValueConfig("N"),
-        "wins": DynamoDBItemValueConfig("N"),
-    }
-
-    @classmethod
-    def build_ddb_key(cls, *args, villager_id=None, villager_id_2=None, **kwargs):
-        assert villager_id is not None, "villager_id required to build ddb key"
-        assert villager_id_2 is not None, "villager_id_2 required to build ddb key"
-        return {
-            "v_id": {
-                "S": villager_id,
-            },
-            "v_id2": {
-                "S": villager_id_2,
-            },
-        }
-
-
-class CompareACNHSummaryTable(DynamoDBTable):
-    ItemClass = CompareACNHSummaryItem
-
-
-class CompareACNHResultsTable(DynamoDBTable):
-    ItemClass = CompareACNHResultsItem
 
 
 class CompareACNHHandler(APILambdaHandlerBase):

@@ -2,24 +2,7 @@ import json
 
 from base.lambda_handler_base import APILambdaHandlerBase
 from base.aws import AWSConfig, DynamoDBConfig, DynamoDBTableConfig
-from base.dynamodb import DynamoDBItem, DynamoDBItemValueConfig, DynamoDBTable
-
-
-class SaltLevelDDBItem(DynamoDBItem):
-    _config = {
-        "water_softener_id": DynamoDBItemValueConfig(
-            "S",
-        ),
-        "timestamp": DynamoDBItemValueConfig("N"),
-        "sensor_0": DynamoDBItemValueConfig("N"),
-        "sensor_1": DynamoDBItemValueConfig("N"),
-        "sensor_2": DynamoDBItemValueConfig("N"),
-        "sensor_3": DynamoDBItemValueConfig("N"),
-    }
-
-
-class SaltLevelTable(DynamoDBTable):
-    ItemClass = SaltLevelDDBItem
+from base.dynamodb import SaltLevelTable
 
 
 class SaltLevelLambdaHandler(APILambdaHandlerBase):
