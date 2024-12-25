@@ -86,8 +86,7 @@ class MameHighscoreLambdaHandler(APILambdaHandlerBase):
         return HighScoreParser.parse(game_id, highscore_data)
 
     def handle_get(self):
-        path_parts = self.event["path"].strip("/").split("/")
-        resource = path_parts[1] if len(path_parts) > 1 else None
+        resource = self.get_resource()
 
         if resource == "metadata":
             result = self._get_metadata()

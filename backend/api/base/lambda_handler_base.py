@@ -172,6 +172,10 @@ class APILambdaHandlerBase(object):
     def _empty_response(self):
         return copy.deepcopy(EMPTY_RESPONSE)
 
+    def get_resource(self):
+        path_parts = self.event["path"].strip("/").split("/")
+        return path_parts[1] if len(path_parts) > 1 else None
+
     def handle_get(self):
         raise MethodNotAllowedException("GET not supported")
 

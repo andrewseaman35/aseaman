@@ -1,13 +1,24 @@
+from dataclasses import dataclass
 from functools import partial
 import random
 import string
 import time
 import uuid
 
+from .api_exceptions import (
+    ForbiddenException,
+    UnauthorizedException,
+)
+
+CHESS_VERSION = "0.0.1"
+CHESS_GAME_ID_LENGTH = 6
+
+LINK_ID_LENGTH = 6
+
 
 class UserGroup:
     ADMIN = "admin"
-    BUDGET = "budget"
+    BUDGET = "budget-manager"
     LINK_MANAGER = "link-manager"
 
 
@@ -36,6 +47,10 @@ def generate_alpha_id(length):
     )
 
 
+def generate_chess_game_id():
+    return generate_alphanumeric_id(CHESS_GAME_ID_LENGTH, lower=False)
+
+
 def raise_key_required(key):
     raise ValueError(f"{key} required")
 
@@ -57,3 +72,32 @@ def generate_alphanumeric_id(length=8, lower=True, upper=True):
 def chunk(lst, n):
     for i in range(0, len(lst), n):
         yield lst[i : i + n]
+
+
+def requires_authentication(func):
+    def wrapper(s, *args, **kwargs):
+        if not s.user["username"]:
+            raise UnauthorizedException()
+        return func(s, *args, **kwargs)
+
+    return wrapper
+
+
+def requires_user_group(user_group, exclude_admin=False):
+    def decorator(func):
+        def wrapper(s, *args, **kwargs):
+            if not s.user["username"]:
+                raise UnauthorizedException()
+
+            required_user_groups = {user_group}
+            if not exclude_admin:
+                required_user_groups.add(UserGroup.ADMIN)
+
+            if not (required_user_groups & set(s.user["groups"])):
+                raise ForbiddenException(f'{user_group} not in {s.user["groups"]}')
+
+            return func(s, *args, **kwargs)
+
+        return wrapper
+
+    return decorator

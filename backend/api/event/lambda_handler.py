@@ -65,8 +65,7 @@ class EventHandler(APILambdaHandlerBase):
         return self._update_event(event_id)
 
     def handle_get(self):
-        path_parts = self.event["path"].strip("/").split("/")
-        resource = path_parts[1] if len(path_parts) > 1 else None
+        resource = self.get_resource()
 
         if resource not in self.HANDLERS_BY_TYPE:
             raise NotFoundException("event type not supported")

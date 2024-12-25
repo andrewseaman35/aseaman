@@ -2,7 +2,6 @@ import datetime
 import hashlib
 import json
 
-from base.api_exceptions import UnauthorizedException
 from .helpers import (
     CHESS_VERSION,
     LINK_ID_LENGTH,
@@ -93,10 +92,16 @@ class DynamoDBItem:
         for key, props in self._config.items():
             if props.internal:
                 del _dict[key]
-        return json.dumps(self.to_dict())
+        return json.dumps(self.to_dict(include_internal=False))
 
-    def to_dict(self):
-        return self._item
+    def to_dict(self, include_internal=True):
+        _dict = self._item
+        if include_internal:
+            return _dict
+        for key, props in self._config.items():
+            if props.internal:
+                del _dict[key]
+        return _dict
 
     def to_ddb_item(self):
         ddb_item = {}
@@ -189,11 +194,16 @@ class DynamoDBItem:
 
         expr_id = get_expression_id(set())
         key = attribute_keys[0]
-        key_condition_expression = f"{key} = :{expr_id}"
+        key_condition_expression = f"#{expr_id} = :{expr_id}"
         expression_attribute_values = {
             f":{expr_id}": {cls._config[key].data_type: attributes[key]}
         }
-        return (key_condition_expression, expression_attribute_values)
+        expression_attribute_names = {f"#{expr_id}": key}
+        return (
+            key_condition_expression,
+            expression_attribute_names,
+            expression_attribute_values,
+        )
 
 
 class DynamoDBTable:
@@ -298,6 +308,7 @@ class DynamoDBTable:
     def query(self, query_dict=None):
         (
             key_condition_expression,
+            expression_attribute_names,
             expression_attribute_values,
         ) = self.ItemClass.build_query_attributes(query_dict)
 
@@ -307,6 +318,7 @@ class DynamoDBTable:
             ConsistentRead=False,
             KeyConditionExpression=key_condition_expression,
             ExpressionAttributeValues=expression_attribute_values,
+            ExpressionAttributeNames=expression_attribute_names,
         )
         ddb_items = result.get("Items", [])
         return [self.ItemClass.from_ddb_item(ddb_item) for ddb_item in ddb_items]
@@ -339,11 +351,11 @@ class BudgetFileDDBItem(DynamoDBItem):
 
     def validate_ownership(self, user=None):
         if user is None:
-            raise UnauthorizedException("not logged in")
+            raise DynamoDBUnauthorizedException("not logged in")
 
         owner_username = self.owner
         if not user["username"] or user["username"] != owner_username:
-            raise UnauthorizedException("Budget file not owned")
+            raise DynamoDBUnauthorizedException("Budget file not owned")
 
 
 class BudgetFileTable(DynamoDBTable):
@@ -355,16 +367,16 @@ class BudgetFileEntryDDBItem(DynamoDBItem):
     _config = {
         "owner": DynamoDBItemValueConfig("S"),
         "id": DynamoDBItemValueConfig("S"),
-        "transaction_date": DynamoDBItemValueConfig("S"),
-        "transaction_month": DynamoDBItemValueConfig("N"),
-        "transaction_year": DynamoDBItemValueConfig("N"),
+        "transaction_date": DynamoDBItemValueConfig("S", default=None, optional=True),
+        "transaction_month": DynamoDBItemValueConfig("N", default=None, optional=True),
+        "transaction_year": DynamoDBItemValueConfig("N", default=None, optional=True),
         "post_date": DynamoDBItemValueConfig("S"),
         "description": DynamoDBItemValueConfig("S", default=None),
-        "original_category": DynamoDBItemValueConfig("S", default=None),
-        "category": DynamoDBItemValueConfig("S"),
+        "original_category": DynamoDBItemValueConfig("S", default=None, optional=True),
+        "category": DynamoDBItemValueConfig("S", default=None, optional=True),
         "transaction_type": DynamoDBItemValueConfig("S"),
         "amount": DynamoDBItemValueConfig("N"),
-        "time_processed": DynamoDBItemValueConfig("N", default=None),
+        "time_processed": DynamoDBItemValueConfig("N", default=None, optional=True),
     }
 
     @classmethod

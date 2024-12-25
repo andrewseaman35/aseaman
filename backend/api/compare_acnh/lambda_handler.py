@@ -108,8 +108,7 @@ class CompareACNHHandler(APILambdaHandlerBase):
         self._increment_result_count(loser, winner, "losses")
 
     def handle_get(self):
-        path_parts = self.event["path"].strip("/").split("/")
-        resource = path_parts[1] if len(path_parts) > 1 else None
+        resource = self.get_resource()
 
         if resource == "summary":
             villager_ids = self.params.get("villager_id")
@@ -127,8 +126,7 @@ class CompareACNHHandler(APILambdaHandlerBase):
         return {**self._empty_response(), "body": json.dumps(results)}
 
     def handle_post(self):
-        path_parts = self.event["path"].strip("/").split("/")
-        resource = path_parts[1] if len(path_parts) > 1 else None
+        resource = self.get_resource()
 
         if resource == "result":
             winner_id = self.params.get("winnerId")

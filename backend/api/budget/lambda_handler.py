@@ -1,10 +1,5 @@
-import base64
 from dataclasses import dataclass
-import io
 import json
-
-import qrcode
-import qrcode.image.svg
 
 from base.lambda_handler_base import APILambdaHandlerBase
 from base.aws import (
@@ -20,6 +15,7 @@ from base.api_exceptions import (
 from base.dynamodb import (
     BudgetFileDDBItem,
     BudgetFileTable,
+    BudgetFileEntryTable,
 )
 from base.helpers import (
     requires_user_group,
@@ -27,13 +23,6 @@ from base.helpers import (
     generate_id,
     UserGroup,
 )
-
-LINK_ID_LENGTH = 6
-
-DEFAULT_SORT = "+time_created"
-
-DEFAULT_LINK_NAME = "untitled"
-DEFAULT_LINK_URL = ""
 
 
 @dataclass
@@ -46,7 +35,11 @@ class FileState:
 class BudgetLambdaHandler(APILambdaHandlerBase):
     aws_config = AWSConfig(
         dynamodb=DynamoDBConfig(
-            enabled=True, tables=[DynamoDBTableConfig("budget_file", BudgetFileTable)]
+            enabled=True,
+            tables=[
+                DynamoDBTableConfig("budget_file", BudgetFileTable),
+                DynamoDBTableConfig("budget_file_entry", BudgetFileEntryTable),
+            ],
         ),
         s3=S3Config(
             enabled=True,
@@ -57,9 +50,25 @@ class BudgetLambdaHandler(APILambdaHandlerBase):
     )
 
     @requires_user_group(UserGroup.BUDGET)
+    def handle_get(self):
+        resource = self.get_resource()
+
+        if resource == "entry":
+            query_dict = {
+                "owner": self.user["username"],
+            }
+            entries = self.aws.dynamodb.tables["budget_file_entry"].query(query_dict)
+        else:
+            raise NotFoundException("unsupported resource: {}".format(resource))
+
+        return {
+            **self._empty_response(),
+            "body": json.dumps({"entries": [entry.to_dict() for entry in entries]}),
+        }
+
+    @requires_user_group(UserGroup.BUDGET)
     def handle_post(self):
-        path_parts = self.event["path"].strip("/").split("/")
-        resource = path_parts[1] if len(path_parts) > 1 else None
+        resource = self.get_resource()
 
         if resource == "file":
             timestamp = get_timestamp()

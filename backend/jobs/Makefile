@@ -13,6 +13,8 @@ copy_aws_files:
 	cp ../api/base/aws.py base/
 	cp ../api/base/dynamodb.py base/
 	cp ../api/base/s3.py base/
+	cp ../api/base/helpers.py base/
+	cp ../api/base/api_exceptions.py base/
 
 package_dir:
 	rm -rf $(PACKAGE_DIR)

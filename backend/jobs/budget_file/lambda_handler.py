@@ -9,7 +9,7 @@ from base.aws import (
     DynamoDBConfig,
     DynamoDBTableConfig,
 )
-from base.dynamodb import BudgetFileTable, BudgetFileEntryTable
+from base.dynamodb import BudgetFileTable, BudgetFileEntryTable, BudgetFileEntryDDBItem
 from base.helpers import get_timestamp
 
 
@@ -134,5 +134,5 @@ def lambda_handler(event, context):
     return BudgetFileLambdaHandler(event, context).handle()
 
 
-# event = {'Records': [{'eventVersion': '2.1', 'eventSource': 'aws:s3', 'awsRegion': 'us-east-1', 'eventTime': '2024-12-24T21:24:29.234Z', 'eventName': 'ObjectCreated:Put', 'userIdentity': {'principalId': 'AWS:AIDAJDNB5MJJIJIUWHFYC'}, 'requestParameters': {'sourceIPAddress': '75.11.10.172'}, 'responseElements': {'x-amz-request-id': 'WH161H7AEN93KHRB', 'x-amz-id-2': 'pQXj5hE39T5SgdnG5mXt8cFnT9GVAorSPAg0ikfSBSNobJSCflKgm2bYZsSFNI0v8wiNrwanSPW9Zqujq4q8UdWDmrDNpPaa'}, 's3': {'s3SchemaVersion': '1.0', 'configurationId': 'tf-s3-lambda-20241224212403804500000002', 'bucket': {'name': 'aseaman-protected', 'ownerIdentity': {'principalId': 'A3QM71HR4ZP65N'}, 'arn': 'arn:aws:s3:::aseaman-protected'}, 'object': {'key': 'budget/uploads/local/andrew/9134e44d3ad248d796b4604244ea3dce', 'size': 3307, 'eTag': '6f9743a310f39d815641a3392982e9cf', 'sequencer': '00676B268D0D3693BE'}}}]}
+# event = {'Records': [{'eventVersion': '2.1', 'eventSource': 'aws:s3', 'awsRegion': 'us-east-1', 'eventTime': '2024-12-24T21:24:29.234Z', 'eventName': 'ObjectCreated:Put', 'userIdentity': {'principalId': 'AWS:AIDAJDNB5MJJIJIUWHFYC'}, 'requestParameters': {'sourceIPAddress': '75.11.10.172'}, 'responseElements': {'x-amz-request-id': 'WH161H7AEN93KHRB', 'x-amz-id-2': 'pQXj5hE39T5SgdnG5mXt8cFnT9GVAorSPAg0ikfSBSNobJSCflKgm2bYZsSFNI0v8wiNrwanSPW9Zqujq4q8UdWDmrDNpPaa'}, 's3': {'s3SchemaVersion': '1.0', 'configurationId': 'tf-s3-lambda-20241224212403804500000002', 'bucket': {'name': 'aseaman-protected', 'ownerIdentity': {'principalId': 'A3QM71HR4ZP65N'}, 'arn': 'arn:aws:s3:::aseaman-protected'}, 'object': {'key': 'budget/uploads/local/andrew/ed519310e1004c648c23efb132b82002', 'size': 3307, 'eTag': '6f9743a310f39d815641a3392982e9cf', 'sequencer': '00676B268D0D3693BE'}}}]}
 # lambda_handler(event, {})

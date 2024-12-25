@@ -11,8 +11,9 @@ from base.api_exceptions import (
     BadRequestException,
     NotFoundException,
     ForbiddenException,
+    UnauthorizedException,
 )
-from base.dynamodb import LinkDDBItem, LinkTable
+from base.dynamodb import LinkDDBItem, LinkTable, DynamoDBUnauthorizedException
 from base.helpers import (
     requires_authentication,
     requires_user_group,
@@ -48,7 +49,10 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
         link = self.aws.dynamodb.tables["linker"].get(id=link_id)
 
         if validate_ownership:
-            link.validate_ownership(self.user)
+            try:
+                link.validate_ownership(self.user)
+            except DynamoDBUnauthorizedException:
+                raise UnauthorizedException
         if require_active and not link["active"]:
             raise NotFoundException("Link not found")
 
@@ -112,8 +116,7 @@ class LinkerLambdaHandler(APILambdaHandlerBase):
         self.aws.dynamodb.tables["linker"].delete(LinkDDBItem.build_ddb_key(id=link_id))
 
     def handle_get(self):
-        path_parts = self.event["path"].strip("/").split("/")
-        resource = path_parts[1] if len(path_parts) > 1 else None
+        resource = self.get_resource()
 
         response = self._empty_response()
 

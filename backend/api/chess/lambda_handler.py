@@ -101,8 +101,7 @@ class ChessLambdaHandler(APILambdaHandlerBase):
         return game.to_dict()
 
     def handle_get(self):
-        path_parts = self.event["path"].strip("/").split("/")
-        resource = path_parts[1] if len(path_parts) > 1 else None
+        resource = self.get_resource()
 
         if resource == "game":
             game_id = self.params.get("game_id")
@@ -137,8 +136,7 @@ class ChessLambdaHandler(APILambdaHandlerBase):
         }
 
     def handle_post(self):
-        path_parts = self.event["path"].strip("/").split("/")
-        resource = path_parts[1] if len(path_parts) > 1 else None
+        resource = self.get_resource()
 
         if resource == "game":
             game_mode = self.params.get("game_mode")
