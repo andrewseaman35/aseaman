@@ -67,10 +67,10 @@ class CompareACNHHandler(APILambdaHandlerBase):
         return sorted(items, key=summarySortKey)
 
     def _get_results(self, villager_id):
-        query_dict = {
+        key = {
             "v_id": villager_id,
         }
-        results = self.aws.dynamodb.tables["compare_acnh_results"].query(query_dict)
+        results = self.aws.dynamodb.tables["compare_acnh_results"].query(key)
 
         return [result.to_dict() for result in results]
 

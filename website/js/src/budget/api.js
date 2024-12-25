@@ -6,10 +6,12 @@ import { getAPIUrl } from '../utils';
 
 function fetchEntries(options) {
     const queryParams = {};
-    if (options.year != null) {
-        queryParams.year = options.year;
+    if (options.transaction_year != null) {
+        queryParams.transaction_year = options.transaction_year;
     }
-    queryParams.year = 2024
+    if (options.transaction_month != null) {
+        queryParams.transaction_month = options.transaction_month;
+    }
     const params  =new URLSearchParams(queryParams).toString()
 
     return $.ajax({

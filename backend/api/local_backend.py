@@ -22,6 +22,7 @@ def _build_lambda_event(request, payload):
     event["httpMethod"] = request.method
     event["path"] = request.path
     event["headers"].update(request.headers)
+    event["queryStringParameters"] = request.args.to_dict()
 
     return event
 

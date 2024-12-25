@@ -10,7 +10,7 @@ const BudgetSummary = (props) => {
 
     useEffect(() => {
         fetchEntries({
-            year: 2024
+            transaction_month: 9
         }).then(
             (response) => {
                 setSummaries(response.entries);

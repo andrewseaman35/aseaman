@@ -54,10 +54,17 @@ class BudgetLambdaHandler(APILambdaHandlerBase):
         resource = self.get_resource()
 
         if resource == "entry":
-            query_dict = {
+            query_params = {
+                k: v
+                for k, v in self.params.items()
+                if k in {"transaction_month", "transaction_year"}
+            }
+            key_dict = {
                 "owner": self.user["username"],
             }
-            entries = self.aws.dynamodb.tables["budget_file_entry"].query(query_dict)
+            entries = self.aws.dynamodb.tables["budget_file_entry"].query(
+                key_dict, query_params
+            )
         else:
             raise NotFoundException("unsupported resource: {}".format(resource))
 
