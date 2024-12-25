@@ -7,7 +7,8 @@
 .view-selector {
     display: flex;
     flex-direction: column;
-    padding: 0 12px;
+    padding: 12px 12px 0;
+    border: 1px solid black;
     ;
     .view-option {
         border-radius: 6px;
@@ -24,6 +25,19 @@
 .view-summary {
     display: flex;
     flex-direction: column;;
+    padding-left: 24px;
+    padding-top: 12px;
+}
+
+.budget-date-selector {
+    display: flex;
+    flex-direction: column;
+    ;
+    .selector-group {
+        button {
+            margin: 0px 2px 12px;
+        }
+    }
 }
 
 button {

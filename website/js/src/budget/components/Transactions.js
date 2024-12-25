@@ -8,7 +8,7 @@ import { parseDateString } from '../../utils';
 
 const BudgetTransactions = (props) => {
     console.log("Rendering")
-    const [summaries, setSummaries] = useState(null);
+    const [transactions, setTransactions] = useState(null);
 
     useEffect(() => {
         if (props.year === null && props.month === null) {
@@ -23,18 +23,17 @@ const BudgetTransactions = (props) => {
         }
         fetchEntries(args).then(
             (response) => {
-                setSummaries(response.entries);
+                setTransactions(response.entries);
             }
         )
     }, [props.year, props.month])
 
-    if (summaries !== null) {
-        summaries.sort((a, b) => parseDateString(a.transaction_date) - parseDateString(b.transaction_date))
+    if (transactions !== null) {
+        transactions.sort((a, b) => parseDateString(a.transaction_date) - parseDateString(b.transaction_date))
     }
     return (
         <div>
-            <div>Transactions</div>
-            {summaries && summaries.map((s) => (
+            {transactions && transactions.map((s) => (
                 <div>{`${s.transaction_date} | ${s.description} | ${s.amount}`}</div>
             ))}
         </div>

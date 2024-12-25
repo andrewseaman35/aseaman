@@ -33,7 +33,6 @@ const BudgetSummary = (props) => {
     }
     return (
         <div>
-            <div>summaries</div>
             {summaries && summaries.map((s) => (
                 <div>{`${s.transaction_date} | ${s.description} | ${s.amount}`}</div>
             ))}

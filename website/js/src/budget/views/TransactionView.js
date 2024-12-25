@@ -2,12 +2,12 @@ import React, { useEffect, useState, } from 'react';
 import PropTypes from 'prop-types';
 
 import BudgetTransactions from '../components/Transactions';
-import SummarySelector from '../components/SummarySelector'
+import BudgetDateSelector from '../components/BudgetDateSelector'
 
 const TransactionView = (props) => {
     return (
         <div className="view-summary">
-            <SummarySelector
+            <BudgetDateSelector
                 showYears={true}
                 showMonths={true}
                 onYearChanged={props.onYearChanged}
@@ -15,10 +15,13 @@ const TransactionView = (props) => {
                 selectedYear={props.year}
                 selectedMonth={props.month}
             />
-            <BudgetTransactions
-                year={props.year}
-                month={props.month}
-            />
+            <div className="view-content">
+                <h3>Transactions</h3>
+                <BudgetTransactions
+                    year={props.year}
+                    month={props.month}
+                />
+            </div>
         </div>
     );
 }
