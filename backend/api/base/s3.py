@@ -37,10 +37,12 @@ class S3Bucket:
         self.s3_client.put_object(**kwargs)
         return self._remove_prefix(key)
 
-    def download(self, key):
+    def download(self, key, include_prefix=False):
         tmpdir = tempfile.gettempdir()
         filename = key.split("/")[-1]
         local_filename = os.path.join(tmpdir, filename)
+        if include_prefix:
+            key = self._generate_s3_key(key)
         with open(local_filename, "wb") as data:
             self.s3_client.download_fileobj(
                 self._bucket_name,

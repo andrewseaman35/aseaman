@@ -1,5 +1,7 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import $ from 'jquery';
+
+import { fetchConfig } from './api';
 
 import FileUploader from '../components/FileUploader';
 import ViewSelector from './components/ViewSelector';
@@ -8,9 +10,16 @@ import TransactionView from './views/TransactionView';
 
 const BudgetPage = (props) => {
     console.log("Rendering")
+    const [config, setConfig] = useState(null);
     const [view, setView] = useState(null);
     const [year, setYear] = useState(null);
     const [month, setMonth] = useState(null);
+
+    useEffect(() => {
+        fetchConfig().then(
+            (response) => { setConfig(response) }
+        )
+    }, []);
 
     const renderView = (view) => {
         if (view === "summary") {

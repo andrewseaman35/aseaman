@@ -4,6 +4,18 @@ import { getToken } from '../auth';
 import { getAPIUrl } from '../utils';
 
 
+function fetchConfig() {
+    return $.ajax({
+        type: 'GET',
+        url: getAPIUrl('budget/config'),
+        headers: {
+            Authorization: getToken(),
+        },
+        contentType: 'application/json',
+    }).promise();
+}
+
+
 function fetchEntries(options) {
     const queryParams = {};
     if (options.transaction_year != null) {
@@ -25,5 +37,6 @@ function fetchEntries(options) {
 }
 
 export {
-    fetchEntries
+    fetchConfig,
+    fetchEntries,
 }

@@ -45,6 +45,7 @@ class BudgetLambdaHandler(APILambdaHandlerBase):
             enabled=True,
             buckets=[
                 S3BucketConfig("uploads", "aseaman-protected", "budget/uploads"),
+                S3BucketConfig("config", "aseaman-protected", "budget/config"),
             ],
         ),
     )
@@ -65,13 +66,23 @@ class BudgetLambdaHandler(APILambdaHandlerBase):
             entries = self.aws.dynamodb.tables["budget_file_entry"].query(
                 key_dict, query_params
             )
+            return {
+                **self._empty_response(),
+                "body": json.dumps({"entries": [entry.to_dict() for entry in entries]}),
+            }
+        elif resource == "config":
+            config_key = f"{self.env}/{self.user['username']}"
+            config_file_name = self.aws.s3.buckets["config"].download(
+                key=config_key,
+                include_prefix=True,
+            )
+            config = json.load(open(config_file_name, "r"))
+            return {
+                **self._empty_response(),
+                "body": json.dumps(config),
+            }
         else:
             raise NotFoundException("unsupported resource: {}".format(resource))
-
-        return {
-            **self._empty_response(),
-            "body": json.dumps({"entries": [entry.to_dict() for entry in entries]}),
-        }
 
     @requires_user_group(UserGroup.BUDGET)
     def handle_post(self):
