@@ -223,7 +223,7 @@ class DynamoDBTable:
         self.ddb_client = ddb_client
         self.user = user
 
-    def get(self, *args, **kwargs):
+    def get(self, *args, quiet=False, **kwargs):
         if self.validate_owner and not self.user:
             raise DynamoDBUnauthorizedException
 
@@ -231,6 +231,8 @@ class DynamoDBTable:
             TableName=self.table_name, Key=self.ItemClass.build_ddb_key(**kwargs)
         )
         if "Item" not in ddb_item:
+            if quiet:
+                return None
             raise DynamoDBNotFoundException
 
         raw_item = ddb_item["Item"]
@@ -420,6 +422,41 @@ class BudgetFileEntryDDBItem(DynamoDBItem):
 
 class BudgetFileEntryTable(DynamoDBTable):
     ItemClass = BudgetFileEntryDDBItem
+
+
+class BudgetFileConfigDDBItem(DynamoDBItem):
+    _config = {
+        "owner": DynamoDBItemValueConfig("S"),
+        "s3_key": DynamoDBItemValueConfig("S", internal=True),
+        "time_created": DynamoDBItemValueConfig("N", default=get_timestamp),
+        "time_updated": DynamoDBItemValueConfig("N", default=None, optional=True),
+    }
+
+    @property
+    def ddb_key(self):
+        return self.build_ddb_key(owner=self.owner)
+
+    @classmethod
+    def build_ddb_key(cls, *args, owner=None, **kwargs):
+        assert owner is not None, "owner required to build ddb key"
+        return {
+            "owner": {
+                "S": owner,
+            },
+        }
+
+    def validate_ownership(self, user=None):
+        if user is None:
+            raise DynamoDBUnauthorizedException("not logged in")
+
+        owner_username = self.owner
+        if not user["username"] or user["username"] != owner_username:
+            raise DynamoDBUnauthorizedException("Budget file not owned")
+
+
+class BudgetFileConfigTable(DynamoDBTable):
+    ItemClass = BudgetFileConfigDDBItem
+    validate_owner = True
 
 
 class ChessGameDDBItem(DynamoDBItem):

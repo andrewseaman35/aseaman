@@ -10,12 +10,15 @@ from base.aws import (
     S3BucketConfig,
 )
 from base.api_exceptions import (
+    BadRequestException,
     NotFoundException,
 )
 from base.dynamodb import (
     BudgetFileDDBItem,
     BudgetFileTable,
     BudgetFileEntryTable,
+    BudgetFileConfigDDBItem,
+    BudgetFileConfigTable,
 )
 from base.helpers import (
     requires_user_group,
@@ -23,6 +26,7 @@ from base.helpers import (
     generate_id,
     UserGroup,
 )
+from .budget_summary import BudgetConfig, BudgetSummary
 
 
 @dataclass
@@ -39,6 +43,7 @@ class BudgetLambdaHandler(APILambdaHandlerBase):
             tables=[
                 DynamoDBTableConfig("budget_file", BudgetFileTable),
                 DynamoDBTableConfig("budget_file_entry", BudgetFileEntryTable),
+                DynamoDBTableConfig("budget_file_config", BudgetFileConfigTable),
             ],
         ),
         s3=S3Config(
@@ -50,16 +55,31 @@ class BudgetLambdaHandler(APILambdaHandlerBase):
         ),
     )
 
+    def load_config(self):
+        config_record = self.aws.dynamodb.tables["budget_file_config"].get(
+            owner=self.user["username"],
+            quiet=True,
+        )
+        if config_record is None:
+            return config_record
+
+        config_file = self.aws.s3.buckets["config"].download(
+            config_record.s3_key,
+            include_prefix=True,
+        )
+        with open(config_file, "r") as f:
+            config_data = json.loads(f.read())
+
+        return BudgetConfig(config_data)
+
     @requires_user_group(UserGroup.BUDGET)
     def handle_get(self):
         resource = self.get_resource()
 
         if resource == "entry":
-            query_params = {
-                k: v
-                for k, v in self.params.items()
-                if k in {"transaction_month", "transaction_year"}
-            }
+            query_params = self.get_query_params(
+                {"transaction_month", "transaction_year"}
+            )
             key_dict = {
                 "owner": self.user["username"],
             }
@@ -71,15 +91,38 @@ class BudgetLambdaHandler(APILambdaHandlerBase):
                 "body": json.dumps({"entries": [entry.to_dict() for entry in entries]}),
             }
         elif resource == "config":
-            config_key = f"{self.env}/{self.user['username']}"
-            config_file_name = self.aws.s3.buckets["config"].download(
-                key=config_key,
-                include_prefix=True,
-            )
-            config = json.load(open(config_file_name, "r"))
+            config = self.load_config()
+            if config is None:
+                raise NotFoundException("config file not found")
+
             return {
                 **self._empty_response(),
-                "body": json.dumps(config),
+                "body": config.serialize(),
+            }
+        elif resource == "summary":
+            query_params = self.get_query_params(
+                {"transaction_month", "transaction_year"}
+            )
+            if not (
+                query_params.get("transaction_month")
+                or query_params.get("transaction_year")
+            ):
+                raise BadRequestException(
+                    "transaction_month or transaction_year required"
+                )
+
+            config = self.load_config()
+            if config is None:
+                config = BudgetConfig({})
+
+            transactions = self.aws.dynamodb.tables["budget_file_entry"].query(
+                {"owner": self.user["username"]}, query_params
+            )
+            summary = BudgetSummary(transactions, config)
+            # summary.summarize()
+            return {
+                **self._empty_response(),
+                "body": summary.serialize(),
             }
         else:
             raise NotFoundException("unsupported resource: {}".format(resource))
@@ -107,6 +150,24 @@ class BudgetLambdaHandler(APILambdaHandlerBase):
                 }
             )
             self.aws.dynamodb.tables["budget_file"].put(budget_file)
+        elif resource == "config":
+            timestamp = get_timestamp()
+            filename = generate_id()
+            s3_key = f"{self.env}/{filename}"
+            key = self.aws.s3.buckets["config"].put(
+                # file_bytes=self.params["body"],
+                file_bytes=json.dumps(self.params),
+                filename=s3_key,
+                content_type="text/json",
+            )
+            config = BudgetFileConfigDDBItem.from_dict(
+                {
+                    "owner": self.user["username"],
+                    "s3_key": s3_key,
+                }
+            )
+            self.aws.dynamodb.tables["budget_file_config"].put(config)
+            return {**self._empty_response()}
         else:
             raise NotFoundException("unsupported resource: {}".format(resource))
 

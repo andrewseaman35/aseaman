@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import $ from 'jquery';
 
-import { fetchConfig } from './api';
+import { fetchConfig, uploadBudgetFile } from './api';
 
 import FileUploader from '../components/FileUploader';
 import ViewSelector from './components/ViewSelector';
 import SummaryView from './views/SummaryView';
 import TransactionView from './views/TransactionView';
+import SettingsView from './views/SettingsView';
 
 const BudgetPage = (props) => {
     console.log("Rendering")
@@ -30,7 +30,10 @@ const BudgetPage = (props) => {
                 onMonthChanged={setMonth}
             />
         } else if (view === "upload") {
-            return <FileUploader />
+            return <FileUploader
+                inputId="budget-file"
+                upload={uploadBudgetFile}
+            />
         } else if (view === "transactions") {
             return <TransactionView
                 year={year}
@@ -38,7 +41,8 @@ const BudgetPage = (props) => {
                 onYearChanged={setYear}
                 onMonthChanged={setMonth}
             />
-        }
+        } else if (view === "settings")
+            return <SettingsView />
         return null;
     }
 

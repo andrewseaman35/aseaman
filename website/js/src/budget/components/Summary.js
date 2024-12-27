@@ -1,9 +1,9 @@
 import React, { useEffect, useState, } from 'react';
 import PropTypes from 'prop-types';
-import $ from 'jquery';
 
-import { fetchEntries } from '../api';
-import { parseDateString } from '../../utils';
+import SummaryTable from '../components/SummaryTable';
+
+import { fetchSummary } from '../api';
 
 
 const BudgetSummary = (props) => {
@@ -21,21 +21,19 @@ const BudgetSummary = (props) => {
         if (props.month !== null) {
             args.transaction_month = props.month;
         }
-        fetchEntries(args).then(
+        fetchSummary(args).then(
             (response) => {
-                setSummaries(response.entries);
+                setSummaries(response);
             }
         )
     }, [props.year, props.month])
 
-    if (summaries !== null) {
-        summaries.sort((a, b) => parseDateString(a.transaction_date) - parseDateString(b.transaction_date))
+    if (summaries == null) {
+        return <div>Nothing to render</div>
     }
     return (
         <div>
-            {summaries && summaries.map((s) => (
-                <div>{`${s.transaction_date} | ${s.description} | ${s.amount}`}</div>
-            ))}
+            <SummaryTable categories={summaries.categories} monthly={summaries.monthly}/>
         </div>
     )
 }

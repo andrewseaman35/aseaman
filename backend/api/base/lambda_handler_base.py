@@ -135,6 +135,9 @@ class APILambdaHandlerBase(object):
                     params = {"body": self.event["body"]}
         self.params = params
 
+    def get_query_params(self, keys):
+        return {k: v for k, v in self.params.items() if k in keys}
+
     def __decode_token(self):
         authorization = self.event["headers"].get("Authorization")
         if not authorization:
