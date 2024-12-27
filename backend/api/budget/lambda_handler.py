@@ -1,6 +1,10 @@
 from dataclasses import dataclass
 import json
 
+# Required to support absolute imports when running locally and on lambda
+CURR_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(CURR_DIR)
+
 from base.lambda_handler_base import APILambdaHandlerBase
 from base.aws import (
     AWSConfig,
@@ -26,7 +30,7 @@ from base.helpers import (
     generate_id,
     UserGroup,
 )
-from .budget_summary import BudgetConfig, BudgetSummary
+from budget_summary import BudgetConfig, BudgetSummary
 
 
 @dataclass
