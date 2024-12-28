@@ -24,7 +24,7 @@ function fetchEntries(options) {
     if (options.transaction_month != null) {
         queryParams.transaction_month = options.transaction_month;
     }
-    const params  =new URLSearchParams(queryParams).toString()
+    const params = new URLSearchParams(queryParams).toString()
 
     return $.ajax({
         type: 'GET',
