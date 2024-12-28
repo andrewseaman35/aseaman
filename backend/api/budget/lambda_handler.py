@@ -19,6 +19,7 @@ from base.api_exceptions import (
     BadRequestException,
     NotFoundException,
 )
+from base.cached_data_store import CachedDataStore
 from base.dynamodb import (
     BudgetFileDDBItem,
     BudgetFileTable,
@@ -42,6 +43,9 @@ class FileState:
     PROCESSED = "processed"
 
 
+cached_data_store = CachedDataStore()
+
+
 class BudgetLambdaHandler(APILambdaHandlerBase):
     aws_config = AWSConfig(
         dynamodb=DynamoDBConfig(
@@ -61,7 +65,14 @@ class BudgetLambdaHandler(APILambdaHandlerBase):
         ),
     )
 
-    def load_config(self):
+    def get_cache_key(self, key):
+        return f"{self.user['username']}/{key}"
+
+    def load_config(self, refresh=False):
+        cache_key = self.get_cache_key("budget_file_config")
+        if not refresh and cache_key in cached_data_store:
+            return cached_data_store.get(cache_key)
+
         config_record = self.aws.dynamodb.tables["budget_file_config"].get(
             owner=self.user["username"],
             quiet=True,
@@ -76,7 +87,34 @@ class BudgetLambdaHandler(APILambdaHandlerBase):
         with open(config_file, "r") as f:
             config_data = json.loads(f.read())
 
-        return BudgetConfig(config_data)
+        budget_config = BudgetConfig(config_data)
+        cached_data_store.put(cache_key, budget_config)
+
+        return budget_config
+
+    def load_summary(self, year=None, month=None, config=None):
+        if config is None:
+            raise ValueError("config required")
+        cache_key = f"summary/{month or 'none'}/{year or 'none'}"
+        if cache_key in cached_data_store:
+            return {
+                **self._empty_response(),
+                "body": cached_data_store.get(cache_key).serialize(),
+            }
+
+        query_params = {}
+        if year is not None:
+            query_params["transaction_year"] = year
+        if month is not None:
+            query_params["transaction_month"] = month
+        transactions = self.aws.dynamodb.tables["budget_file_entry"].query(
+            {"owner": self.user["username"]}, query_params
+        )
+        summary = BudgetSummary(transactions, config)
+
+        cached_data_store.put(cache_key, summary)
+
+        return summary
 
     @requires_user_group(UserGroup.BUDGET)
     def handle_get(self):
@@ -109,23 +147,19 @@ class BudgetLambdaHandler(APILambdaHandlerBase):
             query_params = self.get_query_params(
                 {"transaction_month", "transaction_year"}
             )
-            if not (
-                query_params.get("transaction_month")
-                or query_params.get("transaction_year")
-            ):
+            month = query_params.get("transaction_month")
+            year = query_params.get("transaction_year")
+            if not (month or year):
                 raise BadRequestException(
                     "transaction_month or transaction_year required"
                 )
 
             config = self.load_config()
             if config is None:
-                config = BudgetConfig({})
+                raise BadRequestException("Config does not exist for user")
 
-            transactions = self.aws.dynamodb.tables["budget_file_entry"].query(
-                {"owner": self.user["username"]}, query_params
-            )
-            summary = BudgetSummary(transactions, config)
-            # summary.summarize()
+            summary = self.load_summary(year=year, month=month, config=config)
+
             return {
                 **self._empty_response(),
                 "body": summary.serialize(),
