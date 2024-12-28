@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 import json
+import os
+import sys
 
 # Required to support absolute imports when running locally and on lambda
 CURR_DIR = os.path.dirname(os.path.abspath(__file__))

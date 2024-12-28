@@ -203,6 +203,7 @@ module "budget_api" {
   path_part  = "budget"
   deploy_env = var.deploy_env
   hostname   = var.hostname
+  lambda_timeout = 30
 
   cognito_user_pool_arn = var.cognito_user_pool_arn
   cognito_user_pool_id  = var.cognito_user_pool_id

@@ -5,17 +5,8 @@ from base.dynamodb import BudgetFileEntryDDBItem
 
 
 class BudgetConfig(object):
-    INBOUND_CATEGORY = "payment"
-
     def __init__(self, config):
         self._config = config
-        self.categories = None
-        self.categorization = None
-
-        # categories that aren't added to the total, but still tracked
-        self.reload()
-
-    def reload(self):
         self.categories = sorted(self._config["categorization"].keys())
         self.categorization = self._config["categorization"]
         self.search_terms = self.get_search_term_dict()
@@ -77,7 +68,7 @@ class BudgetSummary:
         self._requires_resolution = []
 
     def _find_category(self, transaction):
-        if float(transaction.amount) > 0:
+        if transaction.transaction_type != "Sale":
             return self.PAYMENT_CATEGORY
 
         found_terms = set()

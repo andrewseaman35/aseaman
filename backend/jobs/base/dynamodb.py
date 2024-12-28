@@ -412,7 +412,7 @@ class BudgetFileEntryDDBItem(DynamoDBItem):
                 "original_category": row[3],
                 "category": override_category(row[3]),
                 "transaction_type": row[4],
-                "amount": float(row[5]),
+                "amount": abs(float(row[5])),
                 "time_processed": timestamp,
             }
         )
