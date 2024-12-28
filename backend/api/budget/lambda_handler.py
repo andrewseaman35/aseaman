@@ -97,10 +97,7 @@ class BudgetLambdaHandler(APILambdaHandlerBase):
             raise ValueError("config required")
         cache_key = f"summary/{month or 'none'}/{year or 'none'}"
         if cache_key in cached_data_store:
-            return {
-                **self._empty_response(),
-                "body": cached_data_store.get(cache_key).serialize(),
-            }
+            return cached_data_store.get(cache_key)
 
         query_params = {}
         if year is not None:
