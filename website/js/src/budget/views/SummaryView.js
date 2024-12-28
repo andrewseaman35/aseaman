@@ -1,10 +1,32 @@
 import React, { useEffect, useState, } from 'react';
 import PropTypes from 'prop-types';
 
-import BudgetSummary from '../components/Summary';
+import { fetchSummary } from '../api';
+
+import SummaryTable from '../components/SummaryTable';
 import BudgetDateSelector from '../components/BudgetDateSelector'
 
 const SummaryView = (props) => {
+    const [summaries, setSummaries] = useState(null);
+
+    useEffect(() => {
+        if (props.year === null && props.month === null) {
+            return;
+        }
+        const args = {};
+        if (props.year !== null) {
+            args.transaction_year = props.year;
+        }
+        if (props.month !== null) {
+            args.transaction_month = props.month;
+        }
+        fetchSummary(args).then(
+            (response) => {
+                setSummaries(response);
+            }
+        )
+    }, [props.year, props.month])
+
     return (
         <div className="view-summary">
             <BudgetDateSelector
@@ -17,10 +39,13 @@ const SummaryView = (props) => {
             />
             <div className="view-content">
                 <h3>Summaries</h3>
-                <BudgetSummary
-                    year={props.year}
-                    month={props.month}
-                />
+                {
+                    summaries ? (
+                        <div>
+                            <SummaryTable categories={summaries.categories} monthly={summaries.monthly}/>
+                        </div>
+                    ) : <div>Nothing to render</div>
+                }
             </div>
         </div>
     );

@@ -1,14 +1,11 @@
 import React, { useEffect, useState, } from 'react';
 import PropTypes from 'prop-types';
 
-const VIEWS = ['summary', 'transactions', 'upload', 'settings'];
-
 const ViewSelector = (props) => {
-
     return (
         <div className="view-selector">
             {
-                VIEWS.map((view) => (
+                props.views.map((view) => (
                     <div
                         className={`view-option ${view === props.selectedView ? 'selected' : ''}`}
                         onClick={() => props.onViewChanged(view)}

@@ -7,7 +7,6 @@ import { parseDateString } from '../../utils';
 
 
 const BudgetTransactions = (props) => {
-    console.log("Rendering")
     const [transactions, setTransactions] = useState(null);
 
     useEffect(() => {

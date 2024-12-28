@@ -1,29 +1,31 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 
-import { fetchConfig, uploadBudgetFile } from './api';
+import { uploadBudgetFile } from './api';
 
 import FileUploader from '../components/FileUploader';
 import ViewSelector from './components/ViewSelector';
 import SummaryView from './views/SummaryView';
 import TransactionView from './views/TransactionView';
 import SettingsView from './views/SettingsView';
+import VisualizationView from './views/VisualizationView';
+
+const VIEWS = ['summary', 'visualizations', 'transactions', 'upload', 'settings'];
 
 const BudgetPage = (props) => {
-    console.log("Rendering")
-    const [config, setConfig] = useState(null);
     const [view, setView] = useState(null);
     const [year, setYear] = useState(null);
     const [month, setMonth] = useState(null);
 
-    useEffect(() => {
-        fetchConfig().then(
-            (response) => { setConfig(response) }
-        )
-    }, []);
-
     const renderView = (view) => {
         if (view === "summary") {
             return <SummaryView
+                year={year}
+                month={month}
+                onYearChanged={setYear}
+                onMonthChanged={setMonth}
+            />
+        } else if (view === "visualizations") {
+            return <VisualizationView
                 year={year}
                 month={month}
                 onYearChanged={setYear}
@@ -50,6 +52,7 @@ const BudgetPage = (props) => {
         <div className="budget-content">
             <ViewSelector
                 onViewChanged={setView}
+                views={VIEWS}
             />
             {renderView(view)}
         </div>
