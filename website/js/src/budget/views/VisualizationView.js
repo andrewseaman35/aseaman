@@ -5,10 +5,13 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import { fetchSummary } from '../api';
 import { organizeByMonth, indexToMonthLabel } from '../util';
 
-import BudgetDateSelector from '../components/BudgetDateSelector'
+import ItemSelector, {YEAR_SELECTOR_ITEMS, MONTH_SELECTOR_ITEMS, selectorItem} from '../components/ItemSelector';
+
+
 
 const VisualizationView = (props) => {
     const [summaries, setSummaries] = useState(null);
+    const [selectedView, setSelectedView] = useState("all");
 
     useEffect(() => {
         if (props.year === null && props.month === null) {
@@ -28,17 +31,26 @@ const VisualizationView = (props) => {
         )
     }, [props.year, props.month])
 
+    const renderSelectors = () => (
+        <ItemSelector
+            items={[
+                YEAR_SELECTOR_ITEMS,
+                MONTH_SELECTOR_ITEMS,
+                [selectorItem('All', 'all'), selectorItem('Food', 'food')],
+            ]}
+            selectedValues={[props.year, props.month, selectedView]}
+            handlers={[
+                props.onYearChanged,
+                props.onMonthChanged,
+                setSelectedView
+            ]}
+        />
+    );
+
     if (!!!summaries) {
         return (
             <div className="view-summary">
-                <BudgetDateSelector
-                    showYears={true}
-                    showMonths={false}
-                    onYearChanged={props.onYearChanged}
-                    onMonthChanged={props.onMonthChanged}
-                    selectedYear={props.year}
-                    selectedMonth={props.month}
-                />
+                {renderSelectors()}
             </div>
         )
     }
@@ -49,26 +61,33 @@ const VisualizationView = (props) => {
         totalByMonth,
     } = organizeByMonth(summaries.monthly);
 
-    console.log(totalByMonth);
-    const data = [];
-    for (let i = 1; i <= 12; i += 1) {
-        data.push({
-            name: indexToMonthLabel(i),
-            total: Number(totalByMonth[i].toFixed(2)),
-        })
+    let data = [];
+    if (selectedView === "all") {
+        for (let i = 1; i <= 12; i += 1) {
+            data.push({
+                name: indexToMonthLabel(i),
+                total: Number(totalByMonth[i].toFixed(2)),
+            })
+        }
+    } else if (selectedView === "food") {
+        for (let i = 1; i <= 12; i += 1) {
+            let total = 0;
+            Object.entries(categoryTotalByMonth[i]).forEach(([k, v]) => {
+                if (["eating out", "groceries", "deivery food", "costco"].includes(k)) {
+                    total += v;
+                }
+            })
+            data.push({
+                name: indexToMonthLabel(i),
+                total: total.toFixed(2),
+            })
+        }
     }
-    console.log(data);
+
 
     return (
         <div className="view-summary">
-            <BudgetDateSelector
-                showYears={true}
-                showMonths={false}
-                onYearChanged={props.onYearChanged}
-                onMonthChanged={props.onMonthChanged}
-                selectedYear={props.year}
-                selectedMonth={props.month}
-            />
+            {renderSelectors()}
             <div className="view-content">
                 <h3>Summaries</h3>
                 {
