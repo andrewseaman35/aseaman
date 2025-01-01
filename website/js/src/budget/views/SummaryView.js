@@ -8,11 +8,13 @@ import BudgetDateSelector from '../components/BudgetDateSelector'
 
 const SummaryView = (props) => {
     const [summaries, setSummaries] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (props.year === null && props.month === null) {
             return;
         }
+        setLoading(true);
         const args = {};
         if (props.year !== null) {
             args.transaction_year = props.year;
@@ -22,6 +24,7 @@ const SummaryView = (props) => {
         }
         fetchSummary(args).then(
             (response) => {
+                setLoading(false);
                 setSummaries(response);
             }
         )
@@ -44,7 +47,18 @@ const SummaryView = (props) => {
                         <div>
                             <SummaryTable categories={summaries.categories} monthly={summaries.monthly}/>
                         </div>
-                    ) : <div>Nothing to render</div>
+                    ) : null
+                }
+                {
+                    loading ? (
+                        <div className='view-summary'>
+                            <div className="loading-container">
+                                <div className="animated-ellipsis">
+                                    Loading<span className="dot1">.</span><span className="dot2">.</span><span className="dot3">.</span>
+                                </div>
+                            </div>
+                        </div>
+                    ) : null
                 }
             </div>
         </div>

@@ -53,4 +53,5 @@ const indexToMonthLabel = index => MONTHS[index - 1];
 module.exports = {
     indexToMonthLabel,
     organizeByMonth,
+    MONTHS,
 }
