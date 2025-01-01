@@ -31,6 +31,7 @@ const appendLoggedInItems = function($nav) {
     if (!loggedIn) {
         return;
     }
+    navItem({id: 'budget', href: getUrlTo('budget/index'), label: "Budget"}).appendTo($nav);
     navItem({id: 'linker', href: getUrlTo('links/index'), label: "Links"}).appendTo($nav);
 }
 
