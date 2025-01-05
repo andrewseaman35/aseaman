@@ -13,13 +13,15 @@ const organizeByMonth = (monthly) => {
         categorizedByMonth[month] = {};
         totalByMonth[month] = 0;
         entries.forEach((entry) => {
-            if (!(entry.category in categorizedByMonth[month])) {
-                categorizedByMonth[month][entry.category] = [];
-                categoryTotalByMonth[month][entry.category] = 0;
+            if (entry.transaction_type === "Sale") {
+                if (!(entry.category in categorizedByMonth[month])) {
+                    categorizedByMonth[month][entry.category] = [];
+                    categoryTotalByMonth[month][entry.category] = 0;
+                }
+                totalByMonth[month] = totalByMonth[month] + Number(entry.amount);
+                categoryTotalByMonth[month][entry.category] += Number(entry.amount);
+                categorizedByMonth[month][entry.category].push(entry);
             }
-            totalByMonth[month] = totalByMonth[month] + Number(entry.amount);
-            categoryTotalByMonth[month][entry.category] += Number(entry.amount);
-            categorizedByMonth[month][entry.category].push(entry);
         });
     }
     for (let [month, byCategory] of Object.entries(categoryTotalByMonth)) {

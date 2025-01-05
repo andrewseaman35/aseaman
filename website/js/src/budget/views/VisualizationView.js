@@ -2,10 +2,10 @@ import React, { useEffect, useState, } from 'react';
 import PropTypes from 'prop-types';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-import { fetchSummary } from '../api';
 import { organizeByMonth, indexToMonthLabel } from '../util';
+import BudgetData from '../BudgetData';
 
-import ItemSelector, {YEAR_SELECTOR_ITEMS, MONTH_SELECTOR_ITEMS, selectorItem} from '../components/ItemSelector';
+import ItemSelector, {YEAR_SELECTOR_ITEMS, selectorItem} from '../components/ItemSelector';
 
 
 
@@ -14,17 +14,10 @@ const VisualizationView = (props) => {
     const [selectedView, setSelectedView] = useState("all");
 
     useEffect(() => {
-        if (props.year === null && props.month === null) {
+        if (props.year === null) {
             return;
         }
-        const args = {};
-        if (props.year !== null) {
-            args.transaction_year = props.year;
-        }
-        if (props.month !== null) {
-            args.transaction_month = props.month;
-        }
-        fetchSummary(args).then(
+        BudgetData.summaries(props.year).then(
             (response) => {
                 setSummaries(response);
             }
@@ -35,13 +28,11 @@ const VisualizationView = (props) => {
         <ItemSelector
             items={[
                 YEAR_SELECTOR_ITEMS,
-                MONTH_SELECTOR_ITEMS,
                 [selectorItem('All', 'all'), selectorItem('Food', 'food')],
             ]}
-            selectedValues={[props.year, props.month, selectedView]}
+            selectedValues={[props.year, selectedView]}
             handlers={[
                 props.onYearChanged,
-                props.onMonthChanged,
                 setSelectedView
             ]}
         />

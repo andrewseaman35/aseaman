@@ -1,8 +1,7 @@
 import React, { useEffect, useState, } from 'react';
 import PropTypes from 'prop-types';
 
-import { fetchSummary } from '../api';
-
+import BudgetData from '../BudgetData';
 import SummaryTable from '../components/SummaryTable';
 import BudgetDateSelector from '../components/BudgetDateSelector'
 
@@ -22,7 +21,7 @@ const SummaryView = (props) => {
         if (props.month !== null) {
             args.transaction_month = props.month;
         }
-        fetchSummary(args).then(
+        BudgetData.summaries(props.year, props.month).then(
             (response) => {
                 setLoading(false);
                 setSummaries(response);

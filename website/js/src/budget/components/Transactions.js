@@ -1,8 +1,7 @@
 import React, { useEffect, useState, } from 'react';
 import PropTypes from 'prop-types';
-import $ from 'jquery';
 
-import { fetchEntries } from '../api';
+import BudgetData from '../BudgetData';
 import { parseDateString } from '../../utils';
 
 
@@ -10,19 +9,12 @@ const BudgetTransactions = (props) => {
     const [transactions, setTransactions] = useState(null);
 
     useEffect(() => {
-        if (props.year === null && props.month === null) {
+        if (props.year === null || props.month === null) {
             return;
         }
-        const args = {};
-        if (props.year !== null) {
-            args.transaction_year = props.year;
-        }
-        if (props.month !== null) {
-            args.transaction_month = props.month;
-        }
-        fetchEntries(args).then(
-            (response) => {
-                setTransactions(response.entries);
+        BudgetData.entries(props.year, props.month).then(
+            (entries) => {
+                setTransactions(entries);
             }
         )
     }, [props.year, props.month])
