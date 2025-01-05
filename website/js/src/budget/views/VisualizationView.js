@@ -12,14 +12,17 @@ import ItemSelector, {YEAR_SELECTOR_ITEMS, selectorItem} from '../components/Ite
 const VisualizationView = (props) => {
     const [summaries, setSummaries] = useState(null);
     const [selectedView, setSelectedView] = useState("all");
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (props.year === null) {
             return;
         }
+        setLoading(true);
         BudgetData.summaries(props.year).then(
             (response) => {
                 setSummaries(response);
+                setLoading(false);
             }
         )
     }, [props.year, props.month])
@@ -82,7 +85,7 @@ const VisualizationView = (props) => {
             <div className="view-content">
                 <h3>Summaries</h3>
                 {
-                    summaries ? (
+                    summaries && !loading ? (
                         <div>
                             <LineChart width={800} height={400} data={data} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
                                 <XAxis dataKey="name" />
@@ -92,7 +95,16 @@ const VisualizationView = (props) => {
                                 <Line type="monotone" dataKey="total" stroke="#ff7300" yAxisId={0} />
                             </LineChart>
                         </div>
-                    ) : <div>Nothing to render</div>
+                    ) : null
+                }
+                {
+                    loading ? (
+                        <div className="loading-container">
+                            <div className="animated-ellipsis">
+                                Loading<span className="dot1">.</span><span className="dot2">.</span><span className="dot3">.</span>
+                            </div>
+                        </div>
+                    ) : null
                 }
             </div>
         </div>

@@ -23,23 +23,24 @@ export const MONTH_SELECTOR_ITEMS = [
 ];
 
 const ItemSelector = (props) => {
-    if (props.items === null) {
+    if (props.items.length === 0) {
         return;
     }
     if (props.items.length !== props.selectedValues.length || props.items.length !== props.handlers.length) {
         throw new Error("ItemSelector props not all the same length");
     }
 
-    const renderSelector = (i) => {
+    const renderSelector = (groupKey, i) => {
         const selectorItems = props.items[i];
         const selected = props.selectedValues[i];
         const handler = props.handlers[i]
         return (
-        <div class="selector-group">
+        <div className="selector-group" key={groupKey}>
             {selectorItems.map((item) => (
                 <button
                     className={`${selected === item.value ? 'selected' : ''}`}
                     onClick={() => handler(selected === item.value ? null : item.value)}
+                    key={item.value}
                 >{item.label}</button>
             ))}
         </div>
@@ -48,23 +49,29 @@ const ItemSelector = (props) => {
 
     return (
         <div className="item-selector">
-            { props.items.map((v, i) => renderSelector(i)) }
+            { props.items.map((v, i) => renderSelector(v, i)) }
         </div>
     )
 }
 
 ItemSelector.defaultProps = {
-    items: null,
-    selectedValues: null,
-    handlers: null,
+    items: [],
+    selectedValues: [],
+    handlers: [],
 };
 
 ItemSelector.propTypes = {
-    items: PropTypes.arrayOf(PropTypes.shape({
-        label: PropTypes.str,
-        value: PropTypes.str,
-    })),
-    selectedValues: PropTypes.arrayOf(PropTypes.str),
+    items: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.shape({
+        label: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.number,
+        ]),
+        value: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.number,
+        ]),
+    }))),
+    selectedValues: PropTypes.array,
     handlers: PropTypes.arrayOf(PropTypes.func),
 };
 

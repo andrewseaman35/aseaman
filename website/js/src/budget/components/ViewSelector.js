@@ -1,4 +1,4 @@
-import React, { useEffect, useState, } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 const ViewSelector = (props) => {
@@ -9,6 +9,7 @@ const ViewSelector = (props) => {
                     <div
                         className={`view-option ${view === props.selectedView ? 'selected' : ''}`}
                         onClick={() => props.onViewChanged(view)}
+                        key={view}
                     >{view}</div>
                     )
                 )

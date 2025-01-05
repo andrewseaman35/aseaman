@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import BudgetData from '../BudgetData';
 import SummaryTable from '../components/SummaryTable';
-import BudgetDateSelector from '../components/BudgetDateSelector'
+import ItemSelector, { YEAR_SELECTOR_ITEMS } from '../components/ItemSelector';
 
 const SummaryView = (props) => {
     const [summaries, setSummaries] = useState(null);
@@ -31,18 +31,15 @@ const SummaryView = (props) => {
 
     return (
         <div className="view-summary">
-            <BudgetDateSelector
-                showYears={true}
-                showMonths={false}
-                onYearChanged={props.onYearChanged}
-                onMonthChanged={props.onMonthChanged}
-                selectedYear={props.year}
-                selectedMonth={props.month}
+            <ItemSelector
+                items={[YEAR_SELECTOR_ITEMS]}
+                selectedValues={[props.year]}
+                handlers={[props.onYearChanged]}
             />
             <div className="view-content">
                 <h3>Summaries</h3>
                 {
-                    summaries ? (
+                    summaries && !loading ? (
                         <div>
                             <SummaryTable categories={summaries.categories} monthly={summaries.monthly}/>
                         </div>

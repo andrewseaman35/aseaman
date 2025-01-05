@@ -12,7 +12,7 @@ const SummaryTable = (props) => {
                     <th><span>{firstColumn}</span></th>
                     {
                         categories.map((cat) => (
-                            <th><span>{cat}</span></th>
+                            <th key={cat}><span>{cat}</span></th>
                         ))
                     }
                 </tr>
@@ -26,12 +26,11 @@ const SummaryTable = (props) => {
             categorizedByMonth,
             rangeByCategory,
         } = organizeByMonth(monthly);
-        console.log("organized")
         return (
             <tbody className="monthly">
                 {
                     MONTHS.map((label, index) => (
-                        <tr>
+                        <tr key={label}>
                             <td>{label}</td>
                             {
                                 categories.map((category) => {
@@ -45,7 +44,7 @@ const SummaryTable = (props) => {
                                             value
                                         ) : color;
                                     }
-                                    return <td style={{backgroundColor: color.toString()}}>{data}</td>;
+                                    return <td style={{backgroundColor: color.toString()}} key={category}>{data}</td>;
                                 })
                             }
                         </tr>
