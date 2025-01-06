@@ -70,5 +70,7 @@ module "exports" {
   env                         = var.deploy_env
   cognito_user_pool_client_id = module.auth.cognito_user_pool_client_id
   cognito_user_pool_id        = module.auth.cognito_user_pool_id
-  cognito_identity_pool_id        = module.auth.cognito_user_pool_id
+  cognito_identity_pool_id    = module.auth.cognito_user_pool_id
+  budget_file_job_lambda_arn  = module.backend.budget_file_job_lambda_arn
+  budget_file_job_prefix      = module.backend.budget_file_job_prefix
 }

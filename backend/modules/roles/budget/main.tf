@@ -7,7 +7,7 @@ locals {
   aws_account_id = data.aws_caller_identity.current.account_id
   file_table_name     = "${var.deploy_env == "live" ? "budget_file" : "budget_file_${var.deploy_env}"}"
   entry_table_name     = "${var.deploy_env == "live" ? "budget_file_entry" : "budget_file_entry_${var.deploy_env}"}"
-  config_table_name     = "${var.deploy_env == "live" ? "budget_file_entry" : "budget_file_config_${var.deploy_env}"}"
+  config_table_name     = "${var.deploy_env == "live" ? "budget_file_config" : "budget_file_config_${var.deploy_env}"}"
 }
 
 resource "aws_iam_role_policy" "api_role" {
