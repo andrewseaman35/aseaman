@@ -19,7 +19,6 @@ from base.api_exceptions import (
     BadRequestException,
     NotFoundException,
 )
-from base.cached_data_store import CachedDataStore
 from base.dynamodb import (
     BudgetFileDDBItem,
     BudgetFileTable,
@@ -43,9 +42,6 @@ class FileState:
     PROCESSED = "processed"
 
 
-cached_data_store = CachedDataStore()
-
-
 class BudgetLambdaHandler(APILambdaHandlerBase):
     aws_config = AWSConfig(
         dynamodb=DynamoDBConfig(
@@ -65,14 +61,7 @@ class BudgetLambdaHandler(APILambdaHandlerBase):
         ),
     )
 
-    def get_cache_key(self, key):
-        return f"{self.user['username']}/{key}"
-
     def load_config(self, refresh=False):
-        cache_key = self.get_cache_key("budget_file_config")
-        if not refresh and cache_key in cached_data_store:
-            return cached_data_store.get(cache_key)
-
         config_record = self.aws.dynamodb.tables["budget_file_config"].get(
             owner=self.user["username"],
             quiet=True,
@@ -87,17 +76,11 @@ class BudgetLambdaHandler(APILambdaHandlerBase):
         with open(config_file, "r") as f:
             config_data = json.loads(f.read())
 
-        budget_config = BudgetConfig(config_data)
-        cached_data_store.put(cache_key, budget_config)
-
-        return budget_config
+        return BudgetConfig(config_data)
 
     def load_summary(self, year=None, month=None, config=None):
         if config is None:
             raise ValueError("config required")
-        cache_key = f"summary/{month or 'none'}/{year or 'none'}"
-        if cache_key in cached_data_store:
-            return cached_data_store.get(cache_key)
 
         query_params = {}
         if year is not None:
@@ -107,11 +90,7 @@ class BudgetLambdaHandler(APILambdaHandlerBase):
         transactions = self.aws.dynamodb.tables["budget_file_entry"].query(
             {"owner": self.user["username"]}, query_params
         )
-        summary = BudgetSummary(transactions, config)
-
-        cached_data_store.put(cache_key, summary)
-
-        return summary
+        return BudgetSummary(transactions, config)
 
     @requires_user_group(UserGroup.BUDGET)
     def handle_get(self):
