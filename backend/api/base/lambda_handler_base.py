@@ -179,6 +179,9 @@ class APILambdaHandlerBase(object):
         path_parts = self.event["path"].strip("/").split("/")
         return path_parts[1] if len(path_parts) > 1 else None
 
+    def get_headers(self):
+        return self.event["headers"]
+
     def handle_get(self):
         raise MethodNotAllowedException("GET not supported")
 

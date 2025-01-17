@@ -56,14 +56,14 @@ function fetchSummary(options) {
     }).promise();
 }
 
-function uploadBudgetFile(content) {
+function uploadBudgetFile(content, filetype) {
     $.ajax({
         url: getAPIUrl('budget/file'),
         type: "POST",
         headers: {
             Authorization: getToken(),
         },
-        contentType: "text/plain",
+        contentType: filetype,
         data: content,
         processData: false,
         success: function (data) {

@@ -7,7 +7,7 @@ const FileUploader = (props) => {
         var fr = new FileReader();
         fr.onload = function () {
             var binaryString = this.result;
-            props.upload(binaryString);
+            props.upload(binaryString, file.type);
         };
 
         fr.readAsArrayBuffer(file);
@@ -15,7 +15,12 @@ const FileUploader = (props) => {
 
     return (
         <>
-            <input type="file" name="file" id={props.inputId}></input>
+            <input
+                id={props.inputId}
+                type="file"
+                name="file"
+                accept="text/csv, application/pdf"
+            ></input>
             <button onClick={upload}>Upload</button>
         </>
     )

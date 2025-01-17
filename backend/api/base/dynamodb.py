@@ -397,6 +397,9 @@ class BudgetFileEntryDDBItem(DynamoDBItem):
         "time_processed": DynamoDBItemValueConfig("N", default=None, optional=True),
     }
 
+    TRANSACTION_TYPE_SALE = "Sale"
+    TRANSACTION_TYPE_PAYMENT = "Payment"
+
     @classmethod
     def generate_id_from_row(cls, row):
         row_bytes = "|".join(row).encode("utf-8")
@@ -404,7 +407,7 @@ class BudgetFileEntryDDBItem(DynamoDBItem):
         return hash_object.hexdigest()
 
     @classmethod
-    def from_row(cls, row, owner, override_category, timestamp):
+    def from_row(cls, row, owner, timestamp):
         hash_ = cls.generate_id_from_row(row)
 
         transaction_date = datetime.datetime.strptime(row[0], "%m/%d/%Y")
@@ -418,11 +421,32 @@ class BudgetFileEntryDDBItem(DynamoDBItem):
                 "post_date": row[1],
                 "description": row[2],
                 "original_category": row[3],
-                "category": override_category(row[3]),
+                "category": row[3],
                 "transaction_type": row[4],
                 "amount": float(row[5]),
                 "time_processed": timestamp,
             }
+        )
+
+    @classmethod
+    def from_pdf_row(cls, row, owner, year, timestamp):
+        amount = float(row[2])
+
+        return cls.from_row(
+            [
+                f"{row[0]}/{year}",
+                f"{row[0]}/{year}",
+                row[1],
+                None,
+                (
+                    cls.TRANSACTION_TYPE_PAYMENT
+                    if amount < 0
+                    else cls.TRANSACTION_TYPE_SALE
+                ),
+                amount,
+            ],
+            owner,
+            timestamp,
         )
 
 

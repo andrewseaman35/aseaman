@@ -18,6 +18,7 @@ from base.aws import (
 from base.api_exceptions import (
     BadRequestException,
     NotFoundException,
+    UnsupportedMediaTypeException,
 )
 from base.dynamodb import (
     BudgetFileDDBItem,
@@ -33,6 +34,12 @@ from base.helpers import (
     UserGroup,
 )
 from budget_summary import BudgetConfig, BudgetSummary
+
+
+ACCEPTED_CONTENT_TYPES = {
+    "application/json",
+    "text/csv",
+}
 
 
 @dataclass
@@ -148,13 +155,18 @@ class BudgetLambdaHandler(APILambdaHandlerBase):
         resource = self.get_resource()
 
         if resource == "file":
+            headers = self.get_headers()
             timestamp = get_timestamp()
             filename = generate_id()
+
+            content_type = headers["content-type"]
+            if content_type not in ACCEPTED_CONTENT_TYPES:
+                raise UnsupportedMediaTypeException(f"unsupported {content_type}")
 
             key = self.aws.s3.buckets["uploads"].put(
                 file_bytes=self.params["body"],
                 filename=f"{self.env}/{self.user['username']}/{filename}",
-                content_type="text/csv",
+                content_type=content_type,
             )
             budget_file = BudgetFileDDBItem.from_dict(
                 {

@@ -37,6 +37,9 @@ class S3Bucket:
         self.s3_client.put_object(**kwargs)
         return self._remove_prefix(key)
 
+    def head(self, key):
+        return self.s3_client.head_object(self._bucket_name, key)
+
     def download(self, key, include_prefix=False):
         tmpdir = tempfile.gettempdir()
         filename = key.split("/")[-1]

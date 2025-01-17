@@ -1,5 +1,8 @@
 import csv
 from dataclasses import dataclass
+import re
+
+from pypdf import PdfReader
 
 from base.lambda_handler_base import JobLambdaHandlerBase, CREATION_EVENT_NAME
 from base.aws import (
@@ -15,6 +18,9 @@ from base.helpers import get_timestamp
 
 UPLOADS_PREFIX = "budget/uploads"
 CONFIG_PREFIX = "budget/config"
+
+PDF_LINE_REGEX = r"^(\d+\/\d+)     (.* )(-?\d+.\d\d)$"
+YEAR_REGEX = r"^Payment Due Date: 11\/11\/(\d\d)$"
 
 
 @dataclass
@@ -60,10 +66,7 @@ class BudgetFileLambdaHandler(JobLambdaHandlerBase):
         self.uploads_prefix = UPLOADS_PREFIX
         self.prefix = UPLOADS_PREFIX
 
-    def override_category(self, original_category):
-        return original_category
-
-    def _get_entries(self, owner, filepath):
+    def _get_csv_entries(self, owner, filepath):
         entries = []
         timestamp = get_timestamp()
         with open(filepath, newline="") as csvfile:
@@ -74,10 +77,45 @@ class BudgetFileLambdaHandler(JobLambdaHandlerBase):
                     BudgetFileEntryDDBItem.from_row(
                         row,
                         owner=owner,
-                        override_category=self.override_category,
                         timestamp=timestamp,
                     )
                 )
+        return entries
+
+    def _extract_pdf_year(self, text):
+        for line in text.split("\n"):
+            match = re.match(YEAR_REGEX, line)
+            if not match:
+                continue
+            return f"20{match.group(1)}"
+        raise Exception("Year could not be extracted")
+
+    def _get_pdf_entries(self, owner, filepath):
+        entries = []
+        timestamp = get_timestamp()
+
+        entries = []
+        reader = PdfReader(filepath)
+        for page_number in range(len(reader.pages)):
+            page = reader.pages[page_number]
+            text = page.extract_text()
+            if page_number == 0:
+                year = self._extract_pdf_year(text)
+
+            if "ACCOUNT ACTIVITY" not in text:
+                continue
+
+            for line in text.split("\n"):
+                match = re.match(PDF_LINE_REGEX, line)
+                if not match:
+                    continue
+
+                entries.append(
+                    BudgetFileEntryDDBItem.from_pdf_row(
+                        match.groups(), owner, year, timestamp
+                    )
+                )
+
         return entries
 
     def _handle_created(self, created):
@@ -86,10 +124,18 @@ class BudgetFileLambdaHandler(JobLambdaHandlerBase):
         environment = created.split("/")[0]
         owner = created.split("/")[1]
 
+        file_type = self.aws.s3.buckets["uploads"].head(key)["ContentType"]
+
         filepath = self.aws.s3.buckets["uploads"].download(key)
         print("Downloaded")
 
-        file_entries = self._get_entries(owner, filepath)
+        if file_type == "text/csv":
+            file_entries = self._get_csv_entries(owner, filepath)
+        elif file_type == "application/pdf":
+            file_entries = self._get_pdf_entries(owner, filepath)
+        else:
+            raise Exception(f"Unsupported filetype: {file_type}")
+
         print(f"{len(file_entries)} retrieved")
         ids = set()
         deduped_entries = []
