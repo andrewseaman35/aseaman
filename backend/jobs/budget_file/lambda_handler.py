@@ -121,18 +121,27 @@ class BudgetFileLambdaHandler(JobLambdaHandlerBase):
     def _handle_created(self, created):
         print(f"Handling: {created}")
         key = f"{UPLOADS_PREFIX}/{created}"
-        environment = created.split("/")[0]
         owner = created.split("/")[1]
 
-        file_type = self.aws.s3.buckets["uploads"].head(key)["ContentType"]
+        scan_dict = {"owner": owner, "s3_key": created}
+        records = self.aws.dynamodb.tables["budget_file"].scan(scan_dict=scan_dict)
+        if len(records) == 0:
+            raise Exception(f"No records found for {scan_dict}")
+        elif len(records) > 1:
+            raise Exception(f"Multiple records found for {scan_dict}")
 
+        record = records[0]
+        if record.state != FileState.UPLOADED:
+            raise Exception(f"Cannot handle file in state: {record.state}")
+
+        file_type = self.aws.s3.buckets["uploads"].head(key)["ContentType"]
         filepath = self.aws.s3.buckets["uploads"].download(key)
         print("Downloaded")
 
         if file_type == "text/csv":
-            file_entries = self._get_csv_entries(owner, filepath)
+            file_entries = self._get_csv_entries(owner, filepath, record.id)
         elif file_type == "application/pdf":
-            file_entries = self._get_pdf_entries(owner, filepath)
+            file_entries = self._get_pdf_entries(owner, filepath, record.id)
         else:
             raise Exception(f"Unsupported filetype: {file_type}")
 
@@ -147,18 +156,6 @@ class BudgetFileLambdaHandler(JobLambdaHandlerBase):
 
         self.aws.dynamodb.tables["budget_file_entry"].bulk_put(deduped_entries)
 
-        scan_dict = {
-            "owner": owner,
-            "s3_key": created,
-        }
-        print(scan_dict)
-        records = self.aws.dynamodb.tables["budget_file"].scan(scan_dict=scan_dict)
-        if len(records) == 0:
-            raise Exception(f"No records found for {scan_dict}")
-        elif len(records) > 1:
-            raise Exception(f"Multiple records found for {scan_dict}")
-
-        record = records[0]
         update_dict = {
             "state": {
                 "value": FileState.IMPORTED,

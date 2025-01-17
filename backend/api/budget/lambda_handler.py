@@ -37,7 +37,7 @@ from budget_summary import BudgetConfig, BudgetSummary
 
 
 ACCEPTED_CONTENT_TYPES = {
-    "application/json",
+    "application/pdf",
     "text/csv",
 }
 

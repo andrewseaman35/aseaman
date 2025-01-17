@@ -395,6 +395,7 @@ class BudgetFileEntryDDBItem(DynamoDBItem):
         "transaction_type": DynamoDBItemValueConfig("S", default=None, optional=True),
         "amount": DynamoDBItemValueConfig("N"),
         "time_processed": DynamoDBItemValueConfig("N", default=None, optional=True),
+        "source": DynamoDBItemValueConfig("S", default=None),
     }
 
     TRANSACTION_TYPE_SALE = "Sale"
@@ -407,7 +408,7 @@ class BudgetFileEntryDDBItem(DynamoDBItem):
         return hash_object.hexdigest()
 
     @classmethod
-    def from_row(cls, row, owner, timestamp):
+    def from_row(cls, row, owner, timestamp, source):
         hash_ = cls.generate_id_from_row(row)
 
         transaction_date = datetime.datetime.strptime(row[0], "%m/%d/%Y")
@@ -425,11 +426,12 @@ class BudgetFileEntryDDBItem(DynamoDBItem):
                 "transaction_type": row[4],
                 "amount": float(row[5]),
                 "time_processed": timestamp,
+                "source": source,
             }
         )
 
     @classmethod
-    def from_pdf_row(cls, row, owner, year, timestamp):
+    def from_pdf_row(cls, row, owner, year, timestamp, source):
         amount = float(row[2])
 
         return cls.from_row(
@@ -447,6 +449,7 @@ class BudgetFileEntryDDBItem(DynamoDBItem):
             ],
             owner,
             timestamp,
+            source,
         )
 
 
