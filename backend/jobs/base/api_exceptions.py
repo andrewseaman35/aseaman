@@ -57,3 +57,8 @@ class NotFoundException(BaseAPIException):
 class MethodNotAllowedException(BaseAPIException):
     STATUS_CODE = 405
     DEFAULT_MESSAGE = "method not allowed"
+
+
+class UnsupportedMediaTypeException(BaseAPIException):
+    STATUS_CODE = 415
+    DEFAULT_MESSAGE = "unsupported media type"

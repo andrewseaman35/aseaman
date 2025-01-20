@@ -17,11 +17,13 @@ tfapply_local:
 	cd deployments/local && terraform apply -auto-approve
 	cd deployments/shared && terraform apply -auto-approve
 
-tfapply_shared:
+tfapply_shared: package_shared
 	cd deployments/shared && terraform apply
 
-package:
+package: package_shared
 	make -C api package
+
+package_shared:
 	make -C jobs package
 
 assert_running:

@@ -38,7 +38,10 @@ class S3Bucket:
         return self._remove_prefix(key)
 
     def head(self, key):
-        return self.s3_client.head_object(self._bucket_name, key)
+        return self.s3_client.head_object(
+            Bucket=self._bucket_name,
+            Key=key,
+        )
 
     def download(self, key, include_prefix=False):
         tmpdir = tempfile.gettempdir()

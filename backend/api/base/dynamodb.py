@@ -398,58 +398,24 @@ class BudgetFileEntryDDBItem(DynamoDBItem):
         "source": DynamoDBItemValueConfig("S", default=None),
     }
 
-    TRANSACTION_TYPE_SALE = "Sale"
-    TRANSACTION_TYPE_PAYMENT = "Payment"
-
-    @classmethod
-    def generate_id_from_row(cls, row):
-        row_bytes = "|".join(row).encode("utf-8")
-        hash_object = hashlib.sha256(row_bytes)
-        return hash_object.hexdigest()
-
     @classmethod
     def from_row(cls, row, owner, timestamp, source):
-        hash_ = cls.generate_id_from_row(row)
-
-        transaction_date = datetime.datetime.strptime(row[0], "%m/%d/%Y")
         return cls(
             {
                 "owner": owner,
-                "id": hash_,
-                "transaction_date": row[0],
-                "transaction_month": str(transaction_date.month),
-                "transaction_year": str(transaction_date.year),
-                "post_date": row[1],
-                "description": row[2],
-                "original_category": row[3],
-                "category": row[3],
-                "transaction_type": row[4],
-                "amount": float(row[5]),
+                "id": row.hash_,
+                "transaction_date": row.transaction_date.strftime("%m/%d/%Y"),
+                "transaction_month": str(row.transaction_date.month),
+                "transaction_year": str(row.transaction_date.year),
+                "post_date": row.post_date.strftime("%m/%d/%Y"),
+                "description": row.description,
+                "original_category": row.category,
+                "category": row.category,
+                "transaction_type": row.transaction_type,
+                "amount": row.amount,
                 "time_processed": timestamp,
                 "source": source,
             }
-        )
-
-    @classmethod
-    def from_pdf_row(cls, row, owner, year, timestamp, source):
-        amount = float(row[2])
-
-        return cls.from_row(
-            [
-                f"{row[0]}/{year}",
-                f"{row[0]}/{year}",
-                row[1],
-                None,
-                (
-                    cls.TRANSACTION_TYPE_PAYMENT
-                    if amount < 0
-                    else cls.TRANSACTION_TYPE_SALE
-                ),
-                amount,
-            ],
-            owner,
-            timestamp,
-            source,
         )
 
 

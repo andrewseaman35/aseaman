@@ -48,6 +48,12 @@ class DynamoDBItem:
     def __getattr__(self, key):
         return self[key]
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, d):
+        self.__dict__.update(d)
+
     def config(self, config_key):
         return self._config[config_key]
 
@@ -223,7 +229,7 @@ class DynamoDBTable:
         self.ddb_client = ddb_client
         self.user = user
 
-    def get(self, *args, **kwargs):
+    def get(self, *args, quiet=False, **kwargs):
         if self.validate_owner and not self.user:
             raise DynamoDBUnauthorizedException
 
@@ -231,6 +237,8 @@ class DynamoDBTable:
             TableName=self.table_name, Key=self.ItemClass.build_ddb_key(**kwargs)
         )
         if "Item" not in ddb_item:
+            if quiet:
+                return None
             raise DynamoDBNotFoundException
 
         raw_item = ddb_item["Item"]
@@ -384,42 +392,70 @@ class BudgetFileEntryDDBItem(DynamoDBItem):
         "description": DynamoDBItemValueConfig("S", default=None),
         "original_category": DynamoDBItemValueConfig("S", default=None, optional=True),
         "category": DynamoDBItemValueConfig("S", default=None, optional=True),
-        "transaction_type": DynamoDBItemValueConfig("S"),
+        "transaction_type": DynamoDBItemValueConfig("S", default=None, optional=True),
         "amount": DynamoDBItemValueConfig("N"),
         "time_processed": DynamoDBItemValueConfig("N", default=None, optional=True),
+        "source": DynamoDBItemValueConfig("S", default=None),
     }
 
     @classmethod
-    def generate_id_from_row(cls, row):
-        row_bytes = "|".join(row).encode("utf-8")
-        hash_object = hashlib.sha256(row_bytes)
-        return hash_object.hexdigest()
-
-    @classmethod
-    def from_row(cls, row, owner, override_category, timestamp):
-        hash_ = cls.generate_id_from_row(row)
-
-        transaction_date = datetime.datetime.strptime(row[0], "%m/%d/%Y")
+    def from_row(cls, row, owner, timestamp, source):
         return cls(
             {
                 "owner": owner,
-                "id": hash_,
-                "transaction_date": row[0],
-                "transaction_month": str(transaction_date.month),
-                "transaction_year": str(transaction_date.year),
-                "post_date": row[1],
-                "description": row[2],
-                "original_category": row[3],
-                "category": override_category(row[3]),
-                "transaction_type": row[4],
-                "amount": abs(float(row[5])),
+                "id": row.hash_,
+                "transaction_date": row.transaction_date.strftime("%m/%d/%Y"),
+                "transaction_month": str(row.transaction_date.month),
+                "transaction_year": str(row.transaction_date.year),
+                "post_date": row.post_date.strftime("%m/%d/%Y"),
+                "description": row.description,
+                "original_category": row.category,
+                "category": row.category,
+                "transaction_type": row.transaction_type,
+                "amount": row.amount,
                 "time_processed": timestamp,
+                "source": source,
             }
         )
 
 
 class BudgetFileEntryTable(DynamoDBTable):
     ItemClass = BudgetFileEntryDDBItem
+
+
+class BudgetFileConfigDDBItem(DynamoDBItem):
+    _config = {
+        "owner": DynamoDBItemValueConfig("S"),
+        "s3_key": DynamoDBItemValueConfig("S", internal=True),
+        "time_created": DynamoDBItemValueConfig("N", default=get_timestamp),
+        "time_updated": DynamoDBItemValueConfig("N", default=None, optional=True),
+    }
+
+    @property
+    def ddb_key(self):
+        return self.build_ddb_key(owner=self.owner)
+
+    @classmethod
+    def build_ddb_key(cls, *args, owner=None, **kwargs):
+        assert owner is not None, "owner required to build ddb key"
+        return {
+            "owner": {
+                "S": owner,
+            },
+        }
+
+    def validate_ownership(self, user=None):
+        if user is None:
+            raise DynamoDBUnauthorizedException("not logged in")
+
+        owner_username = self.owner
+        if not user["username"] or user["username"] != owner_username:
+            raise DynamoDBUnauthorizedException("Budget file not owned")
+
+
+class BudgetFileConfigTable(DynamoDBTable):
+    ItemClass = BudgetFileConfigDDBItem
+    validate_owner = True
 
 
 class ChessGameDDBItem(DynamoDBItem):

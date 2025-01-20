@@ -158,7 +158,6 @@ class BudgetLambdaHandler(APILambdaHandlerBase):
             headers = self.get_headers()
             timestamp = get_timestamp()
             filename = generate_id()
-
             content_type = headers["content-type"]
             if content_type not in ACCEPTED_CONTENT_TYPES:
                 raise UnsupportedMediaTypeException(f"unsupported {content_type}")

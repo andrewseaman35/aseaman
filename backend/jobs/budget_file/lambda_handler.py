@@ -1,5 +1,7 @@
 import csv
 from dataclasses import dataclass
+import datetime
+import hashlib
 import re
 
 from pypdf import PdfReader
@@ -28,6 +30,59 @@ class FileState:
     UPLOADED = "uploaded"
     IMPORTED = "imported"
     PROCESSED = "processed"
+
+
+@dataclass
+class BudgetFileRow:
+    TRANSACTION_TYPE_SALE = "Sale"
+    TRANSACTION_TYPE_PAYMENT = "Payment"
+
+    transaction_date: datetime.datetime
+    post_date: str
+    description: str
+    category: str
+    transaction_type: str
+    amount: float
+
+    @property
+    def hash_(self):
+        # Only include items that are actually present from both CSV and PDF extraction
+        hash_items = [
+            str(self.transaction_date.date()),
+            self.description or "",
+            str(self.amount),
+        ]
+        row_bytes = "|".join(hash_items).encode("utf-8")
+        hash_object = hashlib.sha256(row_bytes)
+        return hash_object.hexdigest()
+
+    @classmethod
+    def from_csv_row(cls, row):
+        return cls(
+            transaction_date=datetime.datetime.strptime(row[0], "%m/%d/%Y"),
+            post_date=datetime.datetime.strptime(row[1], "%m/%d/%Y"),
+            description=row[2],
+            category=row[3],
+            transaction_type=row[4],
+            amount=float(row[5]),
+        )
+
+    @classmethod
+    def from_pdf_row(cls, row, year):
+        amount = float(row[2])
+        transaction_date = datetime.datetime.strptime(f"{row[0]}/{year}", "%m/%d/%Y")
+        transaction_type = (
+            cls.TRANSACTION_TYPE_PAYMENT if amount < 0 else cls.TRANSACTION_TYPE_SALE
+        )
+
+        return cls(
+            transaction_date=transaction_date,
+            post_date=transaction_date,
+            description=row[1],
+            category=None,
+            transaction_type=transaction_type,
+            amount=amount,
+        )
 
 
 class BudgetFileLambdaHandler(JobLambdaHandlerBase):
@@ -66,20 +121,18 @@ class BudgetFileLambdaHandler(JobLambdaHandlerBase):
         self.uploads_prefix = UPLOADS_PREFIX
         self.prefix = UPLOADS_PREFIX
 
-    def _get_csv_entries(self, owner, filepath):
+    def _get_csv_entries(self, owner, filepath, source):
         entries = []
         timestamp = get_timestamp()
         with open(filepath, newline="") as csvfile:
             reader = csv.reader(csvfile, delimiter=",", quotechar="|")
             next(reader, None)
-            for row in reader:
-                entries.append(
-                    BudgetFileEntryDDBItem.from_row(
-                        row,
-                        owner=owner,
-                        timestamp=timestamp,
-                    )
-                )
+            budget_file_rows = [BudgetFileRow.from_csv_row(row) for row in reader]
+
+        entries = [
+            BudgetFileEntryDDBItem.from_row(row, owner, timestamp, source)
+            for row in budget_file_rows
+        ]
         return entries
 
     def _extract_pdf_year(self, text):
@@ -90,10 +143,10 @@ class BudgetFileLambdaHandler(JobLambdaHandlerBase):
             return f"20{match.group(1)}"
         raise Exception("Year could not be extracted")
 
-    def _get_pdf_entries(self, owner, filepath):
-        entries = []
+    def _get_pdf_entries(self, owner, filepath, source):
         timestamp = get_timestamp()
 
+        budget_file_rows = []
         entries = []
         reader = PdfReader(filepath)
         for page_number in range(len(reader.pages)):
@@ -109,12 +162,13 @@ class BudgetFileLambdaHandler(JobLambdaHandlerBase):
                 match = re.match(PDF_LINE_REGEX, line)
                 if not match:
                     continue
-
-                entries.append(
-                    BudgetFileEntryDDBItem.from_pdf_row(
-                        match.groups(), owner, year, timestamp
-                    )
+                budget_file_rows.append(
+                    BudgetFileRow.from_pdf_row(match.groups(), year)
                 )
+        entries = [
+            BudgetFileEntryDDBItem.from_row(row, owner, timestamp, source)
+            for row in budget_file_rows
+        ]
 
         return entries
 
@@ -147,14 +201,19 @@ class BudgetFileLambdaHandler(JobLambdaHandlerBase):
 
         print(f"{len(file_entries)} retrieved")
         ids = set()
+        duplicated_entry_count = 0
         deduped_entries = []
         for entry in file_entries:
             if entry.id in ids:
+                duplicated_entry_count += 1
                 continue
             ids.add(entry.id)
             deduped_entries.append(entry)
 
+        print(f"Found {duplicated_entry_count} duplicates")
+
         self.aws.dynamodb.tables["budget_file_entry"].bulk_put(deduped_entries)
+        print(f"{len(file_entries)} stored")
 
         update_dict = {
             "state": {
@@ -162,11 +221,11 @@ class BudgetFileLambdaHandler(JobLambdaHandlerBase):
                 "operation": "SET",
             },
         }
-        print(f"Key: {record.ddb_key}")
         self.aws.dynamodb.tables["budget_file"].update(
             key=record.ddb_key,
             update_dict=update_dict,
         )
+        print(f"Budget file updated: {record.ddb_key}")
 
     def _run(self, changes):
         for created in changes[CREATION_EVENT_NAME]:
