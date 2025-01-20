@@ -47,6 +47,7 @@ class FileState:
     UPLOADED = "uploaded"
     IMPORTED = "imported"
     PROCESSED = "processed"
+    FAILED = "failed"
 
 
 class BudgetLambdaHandler(APILambdaHandlerBase):

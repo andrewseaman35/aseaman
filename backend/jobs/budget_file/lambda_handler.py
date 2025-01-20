@@ -21,8 +21,11 @@ from base.helpers import get_timestamp
 UPLOADS_PREFIX = "budget/uploads"
 CONFIG_PREFIX = "budget/config"
 
-PDF_LINE_REGEX = r"^(\d+\/\d+)     (.* )(-?\d+.\d\d)$"
-YEAR_REGEX = r"^Payment Due Date: 11\/11\/(\d\d)$"
+YEAR_REGEX = r"^Payment Due Date: \d\d\/\d\d\/(\d\d)$"
+LINE_REGEXEN = [
+    r"^(\d+\/\d+)     (.* )(-?\d+.\d\d)$",  # current format
+    r"^(\d+\/\d+)  (.* )(-?\d+.\d\d)$",  # ~2020 format
+]
 
 
 @dataclass
@@ -159,12 +162,14 @@ class BudgetFileLambdaHandler(JobLambdaHandlerBase):
                 continue
 
             for line in text.split("\n"):
-                match = re.match(PDF_LINE_REGEX, line)
-                if not match:
-                    continue
-                budget_file_rows.append(
-                    BudgetFileRow.from_pdf_row(match.groups(), year)
-                )
+                for line_regex in LINE_REGEXEN:
+                    match = re.match(line_regex, line)
+                    if not match:
+                        continue
+                    budget_file_rows.append(
+                        BudgetFileRow.from_pdf_row(match.groups(), year)
+                    )
+                    break
         entries = [
             BudgetFileEntryDDBItem.from_row(row, owner, timestamp, source)
             for row in budget_file_rows
@@ -172,19 +177,21 @@ class BudgetFileLambdaHandler(JobLambdaHandlerBase):
 
         return entries
 
-    def _handle_created(self, created):
-        print(f"Handling: {created}")
+    def _get_record(self, created):
+        print(f"Retrieving record: {created}")
         key = f"{UPLOADS_PREFIX}/{created}"
         owner = created.split("/")[1]
-
         scan_dict = {"owner": owner, "s3_key": created}
         records = self.aws.dynamodb.tables["budget_file"].scan(scan_dict=scan_dict)
         if len(records) == 0:
             raise Exception(f"No records found for {scan_dict}")
         elif len(records) > 1:
             raise Exception(f"Multiple records found for {scan_dict}")
+        return records[0]
 
-        record = records[0]
+    def _handle_created(self, record):
+        print(f"Handling: {record.ddb_key}")
+        key = f"{UPLOADS_PREFIX}/{record.s3_key}"
         if record.state != FileState.UPLOADED:
             raise Exception(f"Cannot handle file in state: {record.state}")
 
@@ -193,9 +200,9 @@ class BudgetFileLambdaHandler(JobLambdaHandlerBase):
         print("Downloaded")
 
         if file_type == "text/csv":
-            file_entries = self._get_csv_entries(owner, filepath, record.id)
+            file_entries = self._get_csv_entries(record.owner, filepath, record.id)
         elif file_type == "application/pdf":
-            file_entries = self._get_pdf_entries(owner, filepath, record.id)
+            file_entries = self._get_pdf_entries(record.owner, filepath, record.id)
         else:
             raise Exception(f"Unsupported filetype: {file_type}")
 
@@ -228,8 +235,22 @@ class BudgetFileLambdaHandler(JobLambdaHandlerBase):
         print(f"Budget file updated: {record.ddb_key}")
 
     def _run(self, changes):
+        print(f"Processing {len(changes[CREATION_EVENT_NAME])} creation events")
         for created in changes[CREATION_EVENT_NAME]:
-            self._handle_created(created)
+            try:
+                record = self._get_record(created)
+                self._handle_created(record)
+            except Exception:
+                update_dict = {
+                    "state": {
+                        "value": FileState.FAILED,
+                        "operation": "SET",
+                    },
+                }
+                self.aws.dynamodb.tables["budget_file"].update(
+                    key=record.ddb_key,
+                    update_dict=update_dict,
+                )
 
 
 def lambda_handler(event, context):
