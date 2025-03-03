@@ -40,13 +40,15 @@ locals {
 }
 
 module "budget_file_job" {
-  source      = "../../modules/s3_lambda_function"
-  zip_file    = "../../jobs/packages/budget_file.zip"
-  job_name    = "budget_file"
-  deploy_env  = var.deploy_env
-  bucket_name = "aseaman-protected"
-  bucket_arn  = "arn:aws:s3:::aseaman-protected"
-  prefix      = "budget/uploads/${var.deploy_env}/"
+  source         = "../../modules/s3_lambda_function"
+  zip_file       = "../../jobs/packages/budget_file.zip"
+  job_name       = "budget_file"
+  deploy_env     = var.deploy_env
+  bucket_name    = "aseaman-protected"
+  bucket_arn     = "arn:aws:s3:::aseaman-protected"
+  prefix         = "budget/uploads/${var.deploy_env}/"
+
+  lambda_timeout = 30
 }
 
 module "budget_file_job_iam_role_policy" {

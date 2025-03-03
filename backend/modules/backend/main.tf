@@ -329,6 +329,8 @@ module "budget_file_job" {
   bucket_name = "aseaman-protected"
   bucket_arn  = "arn:aws:s3:::aseaman-protected"
   prefix      = "budget/uploads/${var.deploy_env}/"
+
+  lambda_timeout = 30
 }
 
 module "budget_file_job_iam_role_policy" {
