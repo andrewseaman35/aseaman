@@ -7,9 +7,9 @@ locals {
   aws_account_id = data.aws_caller_identity.current.account_id
 }
 
-/*********/
-/*  API  */
-/*********/
+/**************/
+/*  REST API  */
+/**************/
 resource "aws_api_gateway_rest_api" "rest_api" {
   name = "aseaman-website-api-${var.deploy_env}"
 }
@@ -315,6 +315,38 @@ resource "aws_route53_record" "api_dns_record" {
     name                   = aws_api_gateway_domain_name.api_domain_name.regional_domain_name
     zone_id                = aws_api_gateway_domain_name.api_domain_name.regional_zone_id
   }
+}
+
+
+/*******************/
+/*  WEBSOCKET API  */
+/*******************/
+resource "aws_apigatewayv2_api" "websocket_api" {
+  name                       = "aseaman-website-ws-api-${var.deploy_env}"
+  protocol_type              = "WEBSOCKET"
+  route_selection_expression = "$request.body.action"
+}
+
+module "chess_api_ws_iam_role_policy" {
+  source     = "../roles/chess"
+  role       = module.chess_api.api_role_id
+  deploy_env = var.deploy_env
+  api_name   = "chess-ws-api"
+}
+
+module "chess_api_ws" {
+  source = "../websocket_api"
+  zip_file = "../../ws/packages/base.zip"
+  api_name = "chess-api-ws"
+  path_part = "chess_ws"
+  deploy_env = var.deploy_env
+  hostname = var.hostname
+
+  api_id = aws_apigatewayv2_api.websocket_api.id
+  execution_arn = aws_apigatewayv2_api.websocket_api.execution_arn
+
+  cognito_user_pool_arn = var.cognito_user_pool_arn
+  cognito_user_pool_id  = var.cognito_user_pool_id
 }
 
 /**********/
