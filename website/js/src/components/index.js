@@ -3,6 +3,7 @@ import React from 'react';
 import Icon from './icon/Icon';
 import Lightbox from './Lightbox';
 import Modal from './modal/Modal';
+import Navigation from './navigation/Navigation';
 
 
 class AnimatedEllipsis extends React.Component {
@@ -22,4 +23,5 @@ module.exports = {
     Icon,
     Lightbox,
     Modal,
+    Navigation,
 };

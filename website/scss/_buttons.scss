@@ -65,6 +65,22 @@ button.link-button {
         background-color: unset;
         color: $link-color-hover;
     }
+
+    &.small-link {
+        font-size: 12px;
+    }
+
+    &.unlinkify {
+        color: $blackish;
+        font-weight: 500;
+        text-decoration: none;
+    }
+}
+
+a.unlinkify {
+    color: $blackish;
+    font-weight: 500;
+    text-decoration: none;;
 }
 
 .toggle {

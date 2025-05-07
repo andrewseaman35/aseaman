@@ -11,6 +11,10 @@ const closeX = (
     <path fillRule="evenodd" d="M7.48 8l3.75 3.75-1.48 1.48L6 9.48l-3.75 3.75-1.48-1.48L4.52 8 .77 4.25l1.48-1.48L6 6.52l3.75-3.75 1.48 1.48L7.48 8z"></path>
 );
 
+const close = (
+    <><path fill="#000" d="M2.8076 19.3557 19.7782 2.3852l1.4142 1.4142L4.2218 20.7699z"/><path fill="#000" d="m4.2218 2.385 16.9706 16.9707-1.4142 1.4142L2.8076 3.7993z"/></>
+)
+
 const pencil = (
     <path fillRule="evenodd" d="M0 12v3h3l8-8-3-3-8 8zm3 2H1v-2h1v1h1v1zm10.3-9.3L12 6 9 3l1.3-1.3a.996.996 0 011.41 0l1.59 1.59c.39.39.39 1.02 0 1.41z"></path>
 );
@@ -40,11 +44,17 @@ const share = (
     <path d="M15 3a3 3 0 0 1-5.175 2.066l-3.92 2.179a2.994 2.994 0 0 1 0 1.51l3.92 2.179a3 3 0 1 1-.73 1.31l-3.92-2.178a3 3 0 1 1 0-4.133l3.92-2.178A3 3 0 1 1 15 3Zm-1.5 10a1.5 1.5 0 1 0-3.001.001A1.5 1.5 0 0 0 13.5 13Zm-9-5a1.5 1.5 0 1 0-3.001.001A1.5 1.5 0 0 0 4.5 8Zm9-5a1.5 1.5 0 1 0-3.001.001A1.5 1.5 0 0 0 13.5 3Z"></path>
 )
 
+const hamburger = (
+    <><clipPath id="a"><path d="m.878021 0h24v24h-24z"/></clipPath><g clipPath="url(#a)" fill="#000"><path d="m.878021 3.55737h24v2h-24z"/><path d="m.878021 10.7588h24v2h-24z"/><path d="m.878021 17.9603h24v2h-24z"/></g></>
+)
+
 module.exports = {
     caretUp,
     caretDown,
     checkmark,
+    close,
     closeX,
+    hamburger,
     pencil,
     plus,
     share,

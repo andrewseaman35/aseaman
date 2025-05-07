@@ -9,16 +9,12 @@
 @import "icon.scss";
 @import "image.scss";
 
+@import "navigation.scss";
+
 @import "loading.scss";
 @import "modal.scss";
 @import "code.scss";
 
-
-header {
-    padding: 10px 20px;
-
-    @import "header.scss";
-}
 
 body {
     &.about {

@@ -6,7 +6,6 @@ const utils = require('./utils');
 
 const auth = require('./auth');
 const event = require('./event');
-const header = require('./header');
 const initMultiImageContainers = require('./multiImageContainer');
 const linker = require('./linker');
 import {
@@ -25,6 +24,7 @@ import {
     initLightbox,
     initLinksTable,
     initMameHighscore,
+    initNavigation,
     initSaltLevel,
 } from './entry';
 
@@ -46,7 +46,6 @@ const modules = {
     constants,
     event,
     linker,
-    header,
     utils,
 };
 
@@ -54,5 +53,6 @@ $(window).ready(function() {
     for (const i in window.aseaman._js) {
         window.aseaman._js[i](modules);
     }
+    initNavigation();
     initLightbox();
 });

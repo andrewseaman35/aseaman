@@ -1,5 +1,21 @@
 const utils = require('./utils');
 const CONST = require('./constants');
+const CONFIG = require('./config');
+
+const cognitoHostedUIUrl = function() {
+    const deployEnv = CONFIG.LOCAL ? 'stage': CONFIG.DEPLOY_ENV;
+    return `https://andrewcseaman-${deployEnv}.auth.us-east-1.amazoncognito.com/`;
+}
+
+const loginUrl = function() {
+    const redirectURI = `${CONFIG.ROOT_URL}auth_callback`;
+    return `${cognitoHostedUIUrl()}login?response_type=token&client_id=${CONFIG.CLIENT_ID}&redirect_uri=${redirectURI}`;
+};
+
+const logoutUrl = function() {
+    const logoutURI = `${CONFIG.ROOT_URL}logout`;
+    return `${cognitoHostedUIUrl()}logout?client_id=${CONFIG.CLIENT_ID}&logout_uri=${logoutURI}`;
+};
 
 const setToken = function(token, expiry) {
     utils.setCookie('id_token', token, expiry);
@@ -71,7 +87,7 @@ const logout = function() {
     unsetToken();
     unsetUser();
     unsetGroups();
-    window.location.replace('/');
+    window.location.reload();
 };
 
 const isLoggedIn = function() {
@@ -96,4 +112,6 @@ module.exports = {
     setUser,
     getToken,
     setToken,
+    loginUrl,
+    logoutUrl,
  };

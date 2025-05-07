@@ -9,12 +9,21 @@ import MameHighscore from './MameHighscore';
 import SaltLevel from './SaltLevel';
 
 import Lightbox from './components/Lightbox';
+import Navigation from './components/navigation/Navigation';
 
 function initLightbox() {
     ReactDOM.render(
         <Lightbox />,
         document.getElementById('lightbox'),
     );
+}
+
+
+function initNavigation() {
+    ReactDOM.render(
+        <Navigation />,
+        document.getElementById('site-navigation'),
+    )
 }
 
 
@@ -87,5 +96,6 @@ module.exports = {
     initDrawJasper,
     initLightbox,
     initMameHighscore,
+    initNavigation,
     initSaltLevel,
 };
