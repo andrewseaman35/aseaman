@@ -12,7 +12,10 @@ const closeX = (
 );
 
 const close = (
-    <><path fill="#000" d="M2.8076 19.3557 19.7782 2.3852l1.4142 1.4142L4.2218 20.7699z"/><path fill="#000" d="m4.2218 2.385 16.9706 16.9707-1.4142 1.4142L2.8076 3.7993z"/></>
+    <>
+        <path class="path-close-left" fill="#000" d="M2.8076 19.3557 19.7782 2.3852l1.4142 1.4142L4.2218 20.7699z"/>
+        <path class="path-close-right" fill="#000" d="m4.2218 2.385 16.9706 16.9707-1.4142 1.4142L2.8076 3.7993z"/>
+    </>
 )
 
 const pencil = (
@@ -45,7 +48,13 @@ const share = (
 )
 
 const hamburger = (
-    <><clipPath id="a"><path d="m.878021 0h24v24h-24z"/></clipPath><g clipPath="url(#a)" fill="#000"><path d="m.878021 3.55737h24v2h-24z"/><path d="m.878021 10.7588h24v2h-24z"/><path d="m.878021 17.9603h24v2h-24z"/></g></>
+    <>
+        <g clipPath="url(#a)" fill="#000">
+            <path class="path-hamburger-top" d="m.878021 3.55737h24v2h-24z"/>
+            <path class="path-hamburger-middle" d="m.878021 10.7588h24v2h-24z"/>
+            <path class="path-hamburger-bottom" d="m.878021 17.9603h24v2h-24z"/>
+        </g>
+    </>
 )
 
 module.exports = {

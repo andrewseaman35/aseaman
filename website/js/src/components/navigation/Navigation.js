@@ -10,6 +10,7 @@ import {
 } from '../../auth';
 
 import Icon from '../icon/Icon';
+import TransformingIcon from '../icon/TransformingIcon';
 
 import NAVIGATION_DEFINITION from './definition';
 import NavItem from './NavItem';
@@ -69,7 +70,7 @@ const Navigation = () => {
         <>
             <div className="navbar mobile">
                 <button className="hamburger-container button-icon" onClick={toggleNavDrawer}>
-                    <Icon icon={`${navDrawerShown ? 'close' : 'hamburger'}`} size={24} viewbox="0 0 24 24" />
+                    <TransformingIcon startIcon="hamburger" endIcon="close" transform={navDrawerShown} size={24} viewbox="0 0 24 24" />
                 </button>
                 <a className="link-button small-link unlinkify" href={`${currentlyLoggedIn ? logoutUrl() : loginUrl()}`}>
                     {`${currentlyLoggedIn ? "Log out" : "Log in"}`}
