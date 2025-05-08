@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-// import NestedNavDrawerItem from './NestedNavDrawerItem';
+import NestedNavItem from './NestedNavItem';
 
 const NavDrawerItem = (props) => {
     const pathname = window.location.pathname;
@@ -24,17 +24,12 @@ const NavDrawerItem = (props) => {
                 <div className="navdrawer-nested-list">
                     {
                         props.nestedItems.map((item) => (
-                            <a className="unlinkify" href={item.destination}>
-                                <div className="nested-navdrawer-item" id={item.id}>
-                                    {item.label}
-                                </div>
-                            </a>
-                            // <NestedNavDrawerItem
-                            //     key={`${props.id}-${item.id}`}
-                            //     id={`${props.id}-${item.id}`}
-                            //     label={item.label}
-                            //     destination={item.destination}
-                            // />
+                            <NestedNavItem
+                                key={`${props.id}-${item.id}`}
+                                id={`${props.id}-${item.id}`}
+                                label={item.label}
+                                destination={item.destination}
+                            />
                         ))
                     }
                 </div>

@@ -6,6 +6,24 @@
     $navbar-hover-border: 1px black solid;
     $navbar-num-entries: 4;
 
+    @keyframes fadeIn {
+        0% {
+            opacity: 0;;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+
+    @keyframes fadeOut {
+        0% {
+            opacity: 0;;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+
     .navbar {
         display: flex;
         flex-direction: row;;
@@ -53,8 +71,65 @@
         }
     }
 
+    @keyframes fadeIn {
+        0% {
+            opacity: 0;;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+
+    @keyframes swoop {
+        0% {
+            transform: translateX(0px);
+            opacity: 1;
+        }
+        100% {
+            transform: translateX(40px);
+            opacity: 0;
+        }
+    }
+
+    @keyframes bigSwoop {
+        0% {
+            transform: translateX(0px);
+            opacity: 1;
+        }
+        100% {
+            transform: translateX(80px);
+            opacity: 0;
+        }
+    }
+
+    @keyframes itemHover {
+        0% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.5;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+
     .nested-nav-item {
         padding-bottom: 6px;
+
+        &:hover {
+            animation: itemHover .8s ease-in-out infinite;
+        }
+
+        &.swoop {
+            animation: swoop .3s ease-in-out;
+        }
+    }
+
+    .navbar.mobile .nested-nav-item {
+        &.swoop {
+            animation: bigSwoop .1s ease-in-out;
+        }
     }
 
     .navbar-nav-item {
@@ -99,6 +174,15 @@
         background-color: white;
         width: 100%;
         z-index: $navbar-z-index-desktop;
+
+        &.closed {
+            animation: fadeOut 0.2s ease-in-out forwards;
+            display: none;
+        }
+        &.open {
+            animation: fadeIn 0.2s ease-in-out forwards;
+            display: flex;
+        }
     }
 
     .navdrawer-button-bar {

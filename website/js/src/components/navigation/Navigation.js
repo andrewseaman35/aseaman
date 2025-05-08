@@ -76,13 +76,9 @@ const Navigation = () => {
                     {`${currentlyLoggedIn ? "Log out" : "Log in"}`}
                 </a>
             </div>
-            {
-                navDrawerShown && (
-                    <div className="navdrawer">
-                        {renderNavItems(NAVIGATION_DEFINITION)}
-                    </div>
-                )
-            }
+            <div className={`navdrawer ${navDrawerShown ? 'open' : 'closed'}`}>
+                {renderNavItems(NAVIGATION_DEFINITION)}
+            </div>
         </>
     )
 }
