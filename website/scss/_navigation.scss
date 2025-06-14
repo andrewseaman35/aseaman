@@ -167,12 +167,12 @@
         justify-content: left;
         align-items: start;
         position: absolute;
-        height: 100%;
+        height: calc(100% - 50px);
+        width: calc(100% - 20px);
         padding: 0 12px;
         top: 50px;
         left: 0;
         background-color: white;
-        width: 100%;
         z-index: $navbar-z-index-desktop;
 
         &.closed {
