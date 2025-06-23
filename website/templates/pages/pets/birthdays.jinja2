@@ -1,0 +1,77 @@
+{% extends 'base.jinja2' %}
+
+{% block page_id %}pets-birthdays{% endblock %}
+{% block body_class %}pets{% endblock %}
+
+{% block content %}
+    <div class="inner">
+        <h1>Pets</h1>
+        <table id="pets-table" border="1" cellpadding="6" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Pet</th>
+                    <th>Birthday</th>
+                    <th>Age</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be populated by JS -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const pets = [
+            { name: "Oliver", birthday: "2024-09-22" },
+            { name: "Cooper", birthday: "2022-04-27" },
+            { name: "Jasper", birthday: "2016-04-04" },
+            { name: "Esti", birthday: "2022-04-21" },
+            { name: "Odis", birthday: "2018-05-01" },
+        ];
+
+        function formatAge(birthday) {
+            const birthDate = new Date(birthday);
+            const today = new Date();
+
+            let years = today.getFullYear() - birthDate.getFullYear();
+            let months = today.getMonth() - birthDate.getMonth();
+
+            if (today.getDate() < birthDate.getDate()) {
+                months--;
+            }
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            let parts = [];
+            if (years > 0) {
+                parts.push(`${years} year${years > 1 ? 's' : ''}`);
+            }
+            if (months > 0) {
+                parts.push(`${months} month${months > 1 ? 's' : ''}`);
+            }
+            return parts.length > 0 ? parts.join(', ') : '0 months';
+        }
+
+        // Sort pets by age ascending (youngest first)
+        pets.sort((a, b) => {
+            // Compare by years, then months
+            const birthA = new Date(a.birthday);
+            const birthB = new Date(b.birthday);
+            return birthB - birthA;
+        });
+
+        const tbody = document.querySelector("#pets-table tbody");
+        pets.forEach(pet => {
+            const tr = document.createElement("tr");
+            const ageStr = formatAge(pet.birthday);
+            tr.innerHTML = `
+                <td>${pet.name}</td>
+                <td>${pet.birthday}</td>
+                <td>${ageStr}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    </script>
+{% endblock %}
