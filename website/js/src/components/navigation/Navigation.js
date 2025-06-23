@@ -9,7 +9,6 @@ import {
     isLoggedIn,
 } from '../../auth';
 
-import Icon from '../icon/Icon';
 import TransformingIcon from '../icon/TransformingIcon';
 
 import NAVIGATION_DEFINITION from './definition';

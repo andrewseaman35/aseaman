@@ -23,7 +23,8 @@ const NAVIGATION_DEFINITION = [
         label: "Big Things",
         nestedItems: [
             {id: 'project-car', label: 'Project Car', destination: '/project_car/index'},
-            {id: 'workbench', label: 'Workbench', destination: '/workbench/index'},
+            {id: 'workbench', label: 'Workbench', destination: '/workbench_v2/index'},
+            {id: 'old-workbench', label: 'Old Workbench', destination: '/workbench/index'},
             {id: 'mame', label: 'MAME', destination: '/mame/index'},
         ],
     },
