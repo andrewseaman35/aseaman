@@ -39,16 +39,23 @@ class UploadImagesToPublicBucket(BaseScript):
         if not prefix.endswith("/"):
             prefix += "/"
 
+        num_files = sum(
+            1
+            for _, _, files in os.walk(self.args.image_dir)
+            for _ in files
+            if not _.startswith(".")
+        )
         if not self.confirm(
-            f"Are you sure you want to upload images to {BUCKET_NAME} with prefix {prefix}?"
+            f"Are you sure you want to upload {num_files} images to {BUCKET_NAME} with prefix {prefix}?"
         ):
             print("Upload cancelled.")
             return
 
         print(f"Uploading images to {BUCKET_NAME} with prefix {prefix}")
-
         for root, dirs, files in os.walk(self.args.image_dir):
             for file in files:
+                if file.startswith("."):
+                    continue
                 local_path: str = os.path.join(root, file)
                 s3_path: str = os.path.join(WEBSITE_PREFIX, prefix, file)
 
