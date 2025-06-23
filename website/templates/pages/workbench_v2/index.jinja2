@@ -1,0 +1,126 @@
+{% extends 'base.jinja2' %}
+
+{% block page_id %}workbench-v2-index{% endblock %}
+{% block body_class %}workbench-v2-index{% endblock %}
+
+{% block content %}
+    <div class="inner">
+        <h1>Workbench v2</h1>
+        <p>
+            I upgraded my garage and was able to upgrade my workbench as a result!
+        </p>
+        <p>
+            I designed the workbench to be built in a corner of the garage that has cement walls. While
+            the walls added some additional design requirements, I determined that this corner was the
+            best suited for the workbench given the other uses of the garage.
+        </p>
+        <h2>Goals</h2>
+        <p>
+            I had a handful of goals for this project due to the limitations of the space as well as my
+            needs for the workbench. I work on a variery of types of projects, including software, electronics,
+            woodworking, and automotive. I wanted to ensure that the workbench would be able to accommodate
+            all of these types of projects, while also being able to be used for other purposes such as
+            storage and general organization.
+        </p>
+        <ul>
+            <li>
+                <strong>Storage:</strong> The workbench needed to have storage for tools and materials,
+                as well as a way to organize them. One challenge was that the cornder of the garage where
+                the workbench will live has cement walls, so I needed to design a solution to accommodate that
+                while not wasting valuable wall space.
+            </li>
+            <li>
+                <strong>Versatility:</strong> The workbench needed to be able to accommodate a variety of
+                projects, including woodworking, electronics, and automotive. To me, this meant that I needed
+                to be sturdy enough to handle heavy projects, while also working well for smaller work like
+                soldering.
+            </li>
+            <li>
+                <strong>Organization:</strong> I wanted to be able to organize my tools and materials in a way
+                that made them easy to access and use. This meant that I needed to have a way to store tools
+                and materials in a way that was easy to see while being able to access the most used items quickly.
+            </li>
+        </ul>
+
+        <h2>Design</h2>
+        <p>
+            My design for the workbench featured the following in order to meet the goals I had set out:
+        </p>
+        <ul>
+            <li>
+                <strong>Under Storage:</strong> A large shelf under the workbench that is designed to hold
+                larger items such as power tools and other materials.
+            </li>
+            <li>
+                <strong>Framed Pegboards:</strong> A framed pegboard that stands freely between the wall and the workbench,
+                which makes space for storage with quick access despite the cement walls.
+            </li>
+            <li>
+                <strong>Computer Corner:</strong> A corner of the workbench that is designed to hold a computer monitor in
+                order to be able to work on software projects while at the workbench.
+            </li>
+            <li>
+                <strong>Shelves:</strong> The Skadis pegboard frames were built such that they could be used
+                to hold shelves, allowing for additional storage space for items of various shapes and sizes.
+            </li>
+        </ul>
+        <div class="img-container">
+            {{ macros.captioned_image("workbench_v2/mock_1.png", "Design", lb_group="design") }}
+        </div>
+
+        <h2>Build</h2>
+        <p>
+            The build of the workbench was a fun project that took a few weekends to complete.  The build process was
+            fairly straightforward. I don't have many photos of the build process, but I've added a couple here.
+        </p>
+        <div class="multi-image-container-outer">
+            <div class="multi-image-container">
+                <div class="arrow-icon previous"></div>
+                {{ macros.captioned_image("workbench_v2/build_1.jpg", "Workbench Frame", lb_group="build") }}
+                {{ macros.captioned_image("workbench_v2/build_2.jpg", "Workbench Top", lb_group="build") }}
+                {{ macros.captioned_image("workbench_v2/build_3.jpg", "Workbench Pegboard", lb_group="build") }}
+                <div class="arrow-icon next"></div>
+            </div>
+        </div>
+        <p>
+            The workbench was build with a combination of plywood, 2x4s, 2x6s, and 4x4s, while supporting the Ikea Skadis pegboard.
+            The top of the workbench sits 33" off the ground, which is a comfortable height for me to work at for both
+            standing and sitting projects. The benchtop has two sheets of 3/4" plywood, topped with a sheet of 1/4" hardboard.
+        </p>
+        <p>
+            The pegboard is framed with 2x4s and is designed to be freestanding, allowing it to be placed against the cement wall
+            without needing to drill into the wall. The framing was also designed to allow for shelves to be added later, which
+            I have done to allow for additional storage space.
+        </p>
+        <p>
+            Below the workbench is a large shelf that is designed to hold larger items such as power tools and other materials.
+            I used some leftover wook I had laying around to act as the top of the shelf.
+        </p>
+        <h2>Results</h2>
+        <p>
+            The workbench has been a great addition to my garage and has allowed me to work on a variety of different types of
+            projects. I am most happy with the pegboard frames, because in addition to the pegboards themselves, they've allowed
+            for a lot of additional storage space with the shelves that I can add as needed.
+        </p>
+        <p>
+            The space under the left side of the workbench was designed to fit my shop vac, which has been convenient for helping
+            to keep the area clean. I've also integrated a network of vacuum hoses under the workbench that allows me to use the
+            shop vac to clean up dust and debris from my projects without needing to move the shop vac around. See more about this
+            project {{ macros.link_to("workbench_v2/vacuum", "here") }}.
+        </p>
+        <div class="img-container">
+            {{ macros.captioned_image("workbench_v2/pretty_done.png", "Design", lb_group="design") }}
+        </div>
+        <p>
+            Anyways, that's it! I hope you enjoyed and found this project interesting. Thank you for reading!
+        </p>
+    </div>
+{% endblock %}
+
+{% block include_js %}
+    <script>
+        window.aseaman.ready(function(exports) {
+            exports.initMultiImageContainers();
+        });
+    </script>
+{% endblock %}
