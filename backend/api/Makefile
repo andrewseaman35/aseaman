@@ -24,14 +24,14 @@ package_dir:
 
 package: venv package_dir
 	echo "Packaging backend lambda functions"
-	venv/bin/pip install -r draw_jasper/requirements.txt -t $(PACKAGE_DIR)/$(DRAW_JASPER_API_NAME)
-	venv/bin/pip install -r salt_level/requirements.txt -t $(PACKAGE_DIR)/$(SALT_LEVEL_API_NAME)
-	venv/bin/pip install -r compare_acnh/requirements.txt -t $(PACKAGE_DIR)/$(COMPARE_ACNH_API_NAME)
-	venv/bin/pip install -r event/requirements.txt -t $(PACKAGE_DIR)/$(EVENT_API_NAME)
-	venv/bin/pip install -r mame_highscore/requirements.txt -t $(PACKAGE_DIR)/$(MAME_HIGHSCORE_API_NAME)
-	venv/bin/pip install -r chess/requirements.txt -t $(PACKAGE_DIR)/$(CHESS_API_NAME)
-	venv/bin/pip install -r linker/requirements.txt -t $(PACKAGE_DIR)/$(LINKER_API_NAME)
-	venv/bin/pip install -r budget/requirements.txt -t $(PACKAGE_DIR)/$(BUDGET_API_NAME)
+	pip install -r draw_jasper/requirements.txt -t $(PACKAGE_DIR)/$(DRAW_JASPER_API_NAME)
+	pip install -r salt_level/requirements.txt -t $(PACKAGE_DIR)/$(SALT_LEVEL_API_NAME)
+	pip install -r compare_acnh/requirements.txt -t $(PACKAGE_DIR)/$(COMPARE_ACNH_API_NAME)
+	pip install -r event/requirements.txt -t $(PACKAGE_DIR)/$(EVENT_API_NAME)
+	pip install -r mame_highscore/requirements.txt -t $(PACKAGE_DIR)/$(MAME_HIGHSCORE_API_NAME)
+	pip install -r chess/requirements.txt -t $(PACKAGE_DIR)/$(CHESS_API_NAME)
+	pip install -r linker/requirements.txt -t $(PACKAGE_DIR)/$(LINKER_API_NAME)
+	pip install -r budget/requirements.txt -t $(PACKAGE_DIR)/$(BUDGET_API_NAME)
 	cp -r draw_jasper/* $(PACKAGE_DIR)/$(DRAW_JASPER_API_NAME)
 	cp -r salt_level/* $(PACKAGE_DIR)/$(SALT_LEVEL_API_NAME)
 	cp -r compare_acnh/* $(PACKAGE_DIR)/$(COMPARE_ACNH_API_NAME)

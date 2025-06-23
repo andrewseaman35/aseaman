@@ -1,5 +1,5 @@
 export
-VENV_PYTHON := venv/bin/python
+VENV_PYTHON := python
 
 ifeq ($(DEPLOY_ENV), stage)
 	API_URL := api.stage.andrewcseaman.com
@@ -14,10 +14,11 @@ assert_deploy_vars:
 	fi
 
 venv: requirements.txt
-	virtualenv venv --python=python3.9
-	venv/bin/pip install -r requirements.txt
+	pyenv virtualenv aseaman-venv --python=python3.13
+	pyenv activate aseaman-venv
+	pip install -r requirements.txt
 
-website: venv
+website:
 	make -C website
 	# Need index.html with suffix for default page
 	# cp website/public/index website/public/index.html
@@ -38,7 +39,7 @@ deploy: assert_deploy_vars deploy_api deploy_website deploy_shared
 deploy_shared:
 	make -C backend tfapply_shared
 
-watch: venv
+watch: #venv
 	$(VENV_PYTHON) scripts/run_watchers.py
 
 clean:

@@ -20,9 +20,9 @@ package_dir:
 	rm -rf $(PACKAGE_DIR)
 	mkdir -p $(PACKAGE_DIR)
 
-package: venv package_dir
+package: copy_aws_files package_dir
 	echo "Packaging backend lambda functions jobs"
-	venv/bin/pip install -r budget_file/requirements.txt -t $(PACKAGE_DIR)/$(BUDGET_FILE_JOB_NAME)
+	pip install -r budget_file/requirements.txt -t $(PACKAGE_DIR)/$(BUDGET_FILE_JOB_NAME)
 	cp -r budget_file/* $(PACKAGE_DIR)/$(BUDGET_FILE_JOB_NAME)
 	cp -r base $(PACKAGE_DIR)/$(BUDGET_FILE_JOB_NAME)
 	cd $(PACKAGE_DIR)/$(BUDGET_FILE_JOB_NAME) && zip -r ../$(BUDGET_FILE_JOB_NAME).zip * > /dev/null

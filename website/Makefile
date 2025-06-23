@@ -1,6 +1,6 @@
 export
 ROOTDIR := $(shell git rev-parse --show-toplevel)
-VENV_PYTHON := $(ROOTDIR)/venv/bin/python
+VENV_PYTHON := python
 SCRIPTS := $(ROOTDIR)/scripts
 CONFIG := $(ROOTDIR)/config
 LOCAL_PORT := 8123
