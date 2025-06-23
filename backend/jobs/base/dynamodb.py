@@ -112,9 +112,11 @@ class DynamoDBItem:
     def to_ddb_item(self):
         ddb_item = {}
         for key, props in self._config.items():
-            if self._item[key] not in {None, ""}:
+            if self._item[key] not in [None, ""]:
                 if props.data_type == "BOOL":
                     ddb_item[key] = {props.data_type: bool(self._item[key])}
+                elif props.data_type == "L":
+                    ddb_item[key] = {props.data_type: list(self._item[key])}
                 else:
                     ddb_item[key] = {props.data_type: str(self._item[key])}
         return ddb_item
