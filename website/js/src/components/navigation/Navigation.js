@@ -26,7 +26,6 @@ const Navigation = () => {
 
     useEffect(() => {
         const onWindowResize = () => {
-            console.log(isMobile());
             setMobile(isMobile());
         };
         window.addEventListener('resize', onWindowResize);

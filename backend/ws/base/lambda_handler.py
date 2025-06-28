@@ -36,7 +36,6 @@ def handle_connect(user_name, table, connection_id):
              to the DynamoDB table.
     """
     status_code = 200
-    return status_code
     try:
         table.put_item(Item={"connection_id": connection_id, "user_name": user_name})
         logger.info("Added connection %s for user %s.", connection_id, user_name)
@@ -150,8 +149,7 @@ def lambda_handler(event, context):
     :return: A response dict that contains an HTTP status code that indicates the
              result of handling the event.
     """
-
-    return {"statusCode": 200}
+    logger.info("Received event: %s", json.dumps(event))
     table_name = os.environ["table_name"]
     route_key = event.get("requestContext", {}).get("routeKey")
     connection_id = event.get("requestContext", {}).get("connectionId")
@@ -161,8 +159,6 @@ def lambda_handler(event, context):
     table = boto3.resource("dynamodb").Table(table_name)
     logger.info("Request: %s, use table %s.", route_key, table.name)
 
-    response = {"statusCode": 200}
-    return response
     if route_key == "$connect":
         user_name = event.get("queryStringParameters", {"name": "guest"}).get("name")
         response["statusCode"] = handle_connect(user_name, table, connection_id)

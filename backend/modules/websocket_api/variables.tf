@@ -55,3 +55,9 @@ variable "layers" {
   default = []
   description = "list of arns of the layers to apply"
 }
+
+variable "table_name" {
+  type        = string
+  description = "DynamoDB table name"
+  default     = "ws-api-demo-ConnectionsTable8000B8A1-4SFME98PPNDF"
+}

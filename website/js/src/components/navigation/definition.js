@@ -3,7 +3,7 @@ const NAVIGATION_DEFINITION = [
         id: 'nav-web-things',
         label: 'Web Things',
         nestedItems: [
-            { id: 'chess', label: 'Chess', destination: '/chess/index'},
+            {id: 'chess', label: 'Chess', destination: '/chess/index'},
             {id: 'villager-showdown', label: 'ACNH Showdown', destination: '/acnh/compare'},
             {id: 'jasper', label: 'My Cat', destination: '/jasper/index'},
             {id: 'chip8', label: 'CHIP-8', destination: '/chip8'},
@@ -23,9 +23,9 @@ const NAVIGATION_DEFINITION = [
         label: "Big Things",
         nestedItems: [
             {id: 'project-car', label: 'Project Car', destination: '/project_car/index'},
+            {id: 'mame', label: 'MAME', destination: '/mame/index'},
             {id: 'workbench', label: 'Workbench', destination: '/workbench_v2/index'},
             {id: 'old-workbench', label: 'Old Workbench', destination: '/workbench/index'},
-            {id: 'mame', label: 'MAME', destination: '/mame/index'},
         ],
     },
     {

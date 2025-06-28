@@ -70,6 +70,7 @@ resource "aws_lambda_function" "api_lambda_function" {
     variables = {
       ENV      = var.deploy_env
       HOSTNAME = var.hostname
+      table_name = var.table_name
     }
   }
 
@@ -102,7 +103,6 @@ resource "aws_apigatewayv2_integration" "ws_api_integration" {
   api_id                    = var.api_id
   integration_type          = "AWS_PROXY"
   integration_uri           = aws_lambda_function.api_lambda_function.invoke_arn
-  credentials_arn           = aws_iam_role.api_role.arn
   content_handling_strategy = "CONVERT_TO_TEXT"
   passthrough_behavior      = "WHEN_NO_MATCH"
 }
