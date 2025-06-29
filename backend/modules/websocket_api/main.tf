@@ -30,6 +30,55 @@ resource "aws_iam_role" "api_role" {
   }
 }
 
+resource "aws_iam_role_policy" "api_role_policy" {
+  name = "${var.api_name}_role"
+  role = aws_iam_role.api_role.name
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:*",
+        ]
+        Resource = "arn:aws:logs:*:*:*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:UpdateItem",
+          "dynamodb:Scan",
+          "dynamodb:BatchGetItem",
+          "dynamodb:Query",
+          "dynamodb:DeleteItem"
+        ]
+        Resource = [
+          "arn:aws:dynamodb:${local.aws_region}:${local.aws_account_id}:table/${var.table_name}",
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ssm:GetParameter"
+        ]
+        Resource = "arn:aws:ssm:${local.aws_region}:${local.aws_account_id}:parameter/*"
+      },
+      {
+          Effect = "Allow"
+          Action = [
+              "execute-api:ManageConnections"
+          ],
+          Resource = [
+              "arn:aws:execute-api:${local.aws_region}:${local.aws_account_id}:buhsox5cb5/develop/*"
+          ]
+      }
+    ]
+  })
+}
+
 resource "aws_iam_instance_profile" "api_instance_profile" {
   name = "${var.api_name}_instance_profile-${var.deploy_env}"
   role = aws_iam_role.api_role.name
@@ -63,7 +112,7 @@ resource "aws_lambda_function" "api_lambda_function" {
 
   layers = var.layers
 
-  runtime = "python3.9"
+  runtime = "python3.13"
   timeout = var.lambda_timeout
 
   environment {
@@ -165,6 +214,11 @@ resource "aws_apigatewayv2_stage" "ws_messenger_api_stage" {
   api_id      = var.api_id
   name        = "develop"
   auto_deploy = true
+
+  default_route_settings {
+    throttling_rate_limit  = 5
+    throttling_burst_limit = 10
+  }
 }
 
 # resource "aws_lambda_permission" "ws_lambda_permissions" {
