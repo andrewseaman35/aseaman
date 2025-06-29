@@ -10,7 +10,7 @@ tfplan: #package
 	cd deployments/$(DEPLOY_ENV) && terraform plan
 
 tfapply: package
-	cd deployments/$(DEPLOY_ENV) && terraform apply
+	cd deployments/$(DEPLOY_ENV) && terraform apply -auto-approve
 
 tfapply_local:
 	make -C jobs package
