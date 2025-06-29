@@ -336,7 +336,7 @@ module "chess_api_ws_iam_role_policy" {
 
 module "chess_api_ws" {
   source = "../websocket_api"
-  zip_file = "../../ws/packages/base.zip"
+  zip_file = "../../api/packages/ws_api.zip"
   api_name = "chess-api-ws"
   path_part = "chess_ws"
   deploy_env = var.deploy_env

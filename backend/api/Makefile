@@ -10,6 +10,7 @@ MAME_HIGHSCORE_API_NAME := mame_highscore_api
 CHESS_API_NAME := chess_api
 LINKER_API_NAME := linker_api
 BUDGET_API_NAME := budget_api
+WS_API_NAME := ws_api
 
 deploy_venv: requirements.txt
 	virtualenv deploy_venv --python=python3 --no-site-packages
@@ -32,6 +33,7 @@ package: venv package_dir
 	pip install -r chess/requirements.txt -t $(PACKAGE_DIR)/$(CHESS_API_NAME)
 	pip install -r linker/requirements.txt -t $(PACKAGE_DIR)/$(LINKER_API_NAME)
 	pip install -r budget/requirements.txt -t $(PACKAGE_DIR)/$(BUDGET_API_NAME)
+	pip install -r ws/requirements.txt -t $(PACKAGE_DIR)/$(WS_API_NAME)
 	cp -r draw_jasper/* $(PACKAGE_DIR)/$(DRAW_JASPER_API_NAME)
 	cp -r salt_level/* $(PACKAGE_DIR)/$(SALT_LEVEL_API_NAME)
 	cp -r compare_acnh/* $(PACKAGE_DIR)/$(COMPARE_ACNH_API_NAME)
@@ -40,6 +42,7 @@ package: venv package_dir
 	cp -r chess/* $(PACKAGE_DIR)/$(CHESS_API_NAME)
 	cp -r linker/* $(PACKAGE_DIR)/$(LINKER_API_NAME)
 	cp -r budget/* $(PACKAGE_DIR)/$(BUDGET_API_NAME)
+	cp -r ws/* $(PACKAGE_DIR)/$(WS_API_NAME)
 	cp -r base $(PACKAGE_DIR)/$(DRAW_JASPER_API_NAME)
 	cp -r base $(PACKAGE_DIR)/$(SALT_LEVEL_API_NAME)
 	cp -r base $(PACKAGE_DIR)/$(COMPARE_ACNH_API_NAME)
@@ -48,6 +51,7 @@ package: venv package_dir
 	cp -r base $(PACKAGE_DIR)/$(CHESS_API_NAME)
 	cp -r base $(PACKAGE_DIR)/$(LINKER_API_NAME)
 	cp -r base $(PACKAGE_DIR)/$(BUDGET_API_NAME)
+	cp -r base $(PACKAGE_DIR)/$(WS_API_NAME)
 	cd $(PACKAGE_DIR) && find . -maxdepth 6 -type f -name "*.pyc" -delete
 	cd $(PACKAGE_DIR)/$(DRAW_JASPER_API_NAME) && zip -r ../$(DRAW_JASPER_API_NAME).zip * > /dev/null
 	cd $(PACKAGE_DIR)/$(SALT_LEVEL_API_NAME) && zip -r ../$(SALT_LEVEL_API_NAME).zip * > /dev/null
@@ -57,6 +61,7 @@ package: venv package_dir
 	cd $(PACKAGE_DIR)/$(CHESS_API_NAME) && zip -r ../$(CHESS_API_NAME).zip * > /dev/null
 	cd $(PACKAGE_DIR)/$(LINKER_API_NAME) && zip -r ../$(LINKER_API_NAME).zip * > /dev/null
 	cd $(PACKAGE_DIR)/$(BUDGET_API_NAME) && zip -r ../$(BUDGET_API_NAME).zip * > /dev/null
+	cd $(PACKAGE_DIR)/$(WS_API_NAME) && zip -r ../$(WS_API_NAME).zip * > /dev/null
 
 test:
 	@if [ "$(IN_DOCKER_API)" = "true" ]; then\

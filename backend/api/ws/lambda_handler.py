@@ -24,7 +24,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 
-def handle_connect(user_name, table, connection_id):
+def handle_connect(room, user_name, table, connection_id):
     """
     Handles new connections by adding the connection ID and user name to the
     DynamoDB table.
@@ -37,7 +37,10 @@ def handle_connect(user_name, table, connection_id):
     """
     status_code = 200
     try:
-        table.put_item(Item={"connection_id": connection_id, "user_name": user_name})
+        print(f"Adding connection {connection_id} for user {user_name}.")
+        table.put_item(
+            Item={"connectionId": connection_id, "user_name": user_name, "room": room}
+        )
         logger.info("Added connection %s for user %s.", connection_id, user_name)
     except ClientError:
         logger.exception(
@@ -58,7 +61,7 @@ def handle_disconnect(table, connection_id):
     """
     status_code = 200
     try:
-        table.delete_item(Key={"connection_id": connection_id})
+        table.delete_item(Key={"connectionId": connection_id})
         logger.info("Disconnected connection %s.", connection_id)
     except ClientError:
         logger.exception("Couldn't disconnect connection %s.", connection_id)
@@ -66,7 +69,7 @@ def handle_disconnect(table, connection_id):
     return status_code
 
 
-def handle_message(table, connection_id, event_body, apig_management_client):
+def handle_message(room, table, connection_id, event_body, apig_management_client):
     """
     Handles messages sent by a participant in the chat. Looks up all connections
     currently tracked in the DynamoDB table, and uses the API Gateway Management API
@@ -84,10 +87,12 @@ def handle_message(table, connection_id, event_body, apig_management_client):
     :return: An HTTP status code that indicates the result of posting the message
              to all active connections.
     """
+    logger.info("Handling message from connection %s.", connection_id)
     status_code = 200
     user_name = "guest"
     try:
-        item_response = table.get_item(Key={"connection_id": connection_id})
+        logger.info("Getting user name for connection %s.", connection_id)
+        item_response = table.get_item(Key={"connectionId": connection_id})
         user_name = item_response["Item"]["user_name"]
         logger.info("Got user name %s.", user_name)
     except ClientError:
@@ -95,14 +100,16 @@ def handle_message(table, connection_id, event_body, apig_management_client):
 
     connection_ids = []
     try:
-        scan_response = table.scan(ProjectionExpression="connection_id")
-        connection_ids = [item["connection_id"] for item in scan_response["Items"]]
+        scan_response = table.scan(
+            FilterExpression=f"room = {room}", ProjectionExpression="connectionId"
+        )
+        connection_ids = [item["connectionId"] for item in scan_response["Items"]]
         logger.info("Found %s active connections.", len(connection_ids))
     except ClientError:
         logger.exception("Couldn't get connections.")
         status_code = 404
 
-    message = f"{user_name}: {event_body['msg']}".encode()  # utf-8
+    message = f"{user_name}: {event_body['message']}".encode()  # utf-8
     logger.info("Message: %s", message)
 
     for other_conn_id in connection_ids:
@@ -121,7 +128,7 @@ def handle_message(table, connection_id, event_body, apig_management_client):
         except apig_management_client.exceptions.GoneException:
             logger.info("Connection %s is gone, removing.", other_conn_id)
             try:
-                table.delete_item(Key={"connection_id": other_conn_id})
+                table.delete_item(Key={"connectionId": other_conn_id})
             except ClientError:
                 logger.exception("Couldn't remove connection %s.", other_conn_id)
 
@@ -149,24 +156,34 @@ def lambda_handler(event, context):
     :return: A response dict that contains an HTTP status code that indicates the
              result of handling the event.
     """
+    response = {}
+    print("Received event: %s", json.dumps(event))
     logger.info("Received event: %s", json.dumps(event))
     table_name = os.environ["table_name"]
     route_key = event.get("requestContext", {}).get("routeKey")
-    connection_id = event.get("requestContext", {}).get("connectionId")
+    connection_id = event.get("requestContext", {}).get("connectionId", "12345")
     if table_name is None or route_key is None or connection_id is None:
         return {"statusCode": 400}
+
+    query_parameters = event.get("queryStringParameters", {})
 
     table = boto3.resource("dynamodb").Table(table_name)
     logger.info("Request: %s, use table %s.", route_key, table.name)
 
     if route_key == "$connect":
-        user_name = event.get("queryStringParameters", {"name": "guest"}).get("name")
-        response["statusCode"] = handle_connect(user_name, table, connection_id)
+        user_name = query_parameters.get("name", "guest")
+        room = query_parameters.get("room", "default")
+        response["statusCode"] = handle_connect(room, user_name, table, connection_id)
     elif route_key == "$disconnect":
         response["statusCode"] = handle_disconnect(table, connection_id)
-    elif route_key == "sendmessage":
+    elif route_key == "MESSAGE":
         body = event.get("body")
-        body = json.loads(body if body is not None else '{"msg": ""}')
+        body = json.loads(
+            body
+            if body is not None
+            else '{"message": "default message", "room": "default"}'
+        )
+        room = body.get("room", "default")
         domain = event.get("requestContext", {}).get("domainName")
         stage = event.get("requestContext", {}).get("stage")
         if domain is None or stage is None:
@@ -178,13 +195,15 @@ def lambda_handler(event, context):
             )
             response["statusCode"] = 400
         else:
+            logger.info("Sending message to all connections at %s/%s.", domain, stage)
             apig_management_client = boto3.client(
                 "apigatewaymanagementapi", endpoint_url=f"https://{domain}/{stage}"
             )
             response["statusCode"] = handle_message(
-                table, connection_id, body, apig_management_client
+                room, table, connection_id, body, apig_management_client
             )
     else:
+        logger.warning("Unknown route key: %s", route_key)
         response["statusCode"] = 404
 
     return response
