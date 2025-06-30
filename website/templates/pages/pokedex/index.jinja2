@@ -7,23 +7,47 @@
     <div class="inner">
         <h1>Pokédex</h1>
         <p>
-            I'm building a Pokédex!
+            Websocket test page :)
         </p>
 
-        <div class="list">
-            <div class="list-header">Here's what I've done so far:</div>
-            <ul>
-                <li>
-                    {{ macros.link_to('pokedex/build', 'Build') }}
-                </li>
-                <li>
-                    {{ macros.link_to('pokedex/software', 'Software') }}
-                </li>
-            </ul>
-        </div>
-        <p>
-            And this is what it looks like right now:
-        </p>
-        {{ macros.captioned_image('mame/build/just_functional.jpg') }}
+        <input type="text" id="roomInput" placeholder="Enter room name" />
+        <button id="joinRoom">Join Room</button>
+
+        <input type="text" id="messageText" placeholder="Type your message here" />
+        <button id="sendMessage">Send Message</button>
     </div>
+{% endblock %}
+
+{% block include_js %}
+    <script>
+        window.aseaman.ready(function(exports) {
+            document.getElementById('joinRoom').onclick = () => {
+                const roomName = document.getElementById('roomInput').value;
+                console.log('Joining room:', roomName);
+                // Here you would typically send a request to join the room
+                // For now, we just log it
+                console.log("Connecting websocket");
+                const ws = new WebSocket(
+                    'wss://buhsox5cb5.execute-api.us-east-1.amazonaws.com/develop/' + "?room_id=" + roomName
+                );
+                console.log("dun dun dun");
+
+                ws.onopen = (e) => console.log('opened', e);
+                ws.onclose = (e) => console.log('closed', e);
+
+                document.getElementById('sendMessage').onclick = () => {
+                    const message = {
+                        action: 'MESSAGE',
+                        message: document.getElementById('messageText').value,
+                        room_id: roomName
+                    };
+                    console.log('sending message', message);
+                    ws.send(JSON.stringify(message));
+                }
+
+                ws.onmessage = (e) => console.log(e);
+            };
+
+        });
+    </script>
 {% endblock %}
