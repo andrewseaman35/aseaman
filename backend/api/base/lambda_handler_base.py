@@ -12,7 +12,7 @@ from .api_exceptions import (
     MethodNotAllowedException,
 )
 from .token_decoder import decode_token
-from .aws import AWSConfig, DynamoDBConfig, S3Config, SSMConfig, AWS, S3BucketConfig
+from .aws import AWSConfig, DynamoDBConfig, S3Config, SSMConfig, AWS, DynamoDB, SSM, S3
 from .s3 import S3Bucket
 
 
@@ -61,7 +61,11 @@ class APILambdaHandlerBase(object):
             else boto3.session.Session()
         )
 
-        self.aws = AWS()
+        self.aws = AWS(
+            dynamodb=DynamoDB(client=None, tables={}),
+            s3=S3(client=None, buckets={}),
+            ssm=SSM(client=None),
+        )
         self.aws.ssm.client = self.ssm_client = self.aws_session.client(
             "ssm", region_name=self.region
         )
@@ -122,10 +126,11 @@ class APILambdaHandlerBase(object):
         print(" --                --")
 
         params = {}
-        if self.event["httpMethod"] in {"GET", "DELETE"}:
+        http_method: str = event.get("httpMethod", None)
+        if http_method in {"GET", "DELETE"}:
             params = self.event["multiValueQueryStringParameters"] or {}
             params.update(self.event["queryStringParameters"] or {})
-        elif self.event["httpMethod"] in {"POST", "PUT"}:
+        elif http_method in {"POST", "PUT"}:
             if isinstance(self.event["body"], dict):
                 params = self.event["body"]
             else:
@@ -139,6 +144,8 @@ class APILambdaHandlerBase(object):
         return {k: v for k, v in self.params.items() if k in keys}
 
     def __decode_token(self):
+        if "headers" not in self.event:
+            return
         authorization = self.event["headers"].get("Authorization")
         if not authorization:
             return
@@ -213,6 +220,11 @@ class APILambdaHandlerBase(object):
             response = APIException().to_json_response()
 
         return response
+
+    def handle_ws(self, event, context):
+        print(self.event)
+        self.__before_run()
+        return self._handle_ws(event, context)
 
     def _handle_api_error(self, e):
         print("API error!")

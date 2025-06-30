@@ -59,5 +59,5 @@ variable "layers" {
 variable "table_name" {
   type        = string
   description = "DynamoDB table name"
-  default     = "ws-api-demo-ConnectionsTable8000B8A1-4SFME98PPNDF"
+  default     = "ws_connection_stage"
 }

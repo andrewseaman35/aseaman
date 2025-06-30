@@ -616,3 +616,41 @@ class SaltLevelDDBItem(DynamoDBItem):
 
 class SaltLevelTable(DynamoDBTable):
     ItemClass = SaltLevelDDBItem
+
+
+class WSConnectionDDBItem(DynamoDBItem):
+    _config = {
+        "connection_id": DynamoDBItemValueConfig("S"),
+        "room_id": DynamoDBItemValueConfig("S"),
+        "username": DynamoDBItemValueConfig("S"),
+        "time_created": DynamoDBItemValueConfig("N", default=get_timestamp),
+        "time_updated": DynamoDBItemValueConfig("N", default=None, optional=True),
+    }
+
+    @classmethod
+    def build_ddb_key(
+        cls, *args, connection_id=None, room_id=None, **kwargs
+    ) -> dict[str, dict[str, str]]:
+        assert connection_id is not None, "connection_id required to build ddb key"
+        assert room_id is not None, "room_id required to build ddb key"
+        return {
+            "connection_id": {
+                "S": connection_id,
+            },
+            "room_id": {
+                "S": room_id,
+            },
+        }
+
+    # def validate_ownership(self, user=None):
+    #     if user is None:
+    #         raise UnauthorizedException("not logged in")
+
+    #     owner_username = self.owner
+    #     if not user["username"] or user["username"] != owner_username:
+    #         raise UnauthorizedException("Link not owned")
+
+
+class WSConnectionTable(DynamoDBTable):
+    ItemClass = WSConnectionDDBItem
+    validate_owner = False
