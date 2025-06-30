@@ -1,15 +1,17 @@
 import json
+from typing import Any
 
 
 class BaseAPIException(Exception):
-    DEFAULT_MESSAGE = "error"
+    DEFAULT_MESSAGE: str = "error"
+    STATUS_CODE: int = 500
 
-    def __init__(self, message=None):
+    def __init__(self, message: str | None = None):
         self.message = message or self.DEFAULT_MESSAGE
         super(BaseAPIException, self).__init__(message)
 
     @property
-    def body(self):
+    def body(self) -> str:
         return json.dumps(
             {
                 "message": self.message,
@@ -20,7 +22,7 @@ class BaseAPIException(Exception):
     def headers(self):
         return {"Access-Control-Allow-Origin": "*"}
 
-    def to_json_response(self):
+    def to_json_response(self) -> dict[str, Any]:
         return {
             "isBase64Encoded": False,
             "statusCode": self.STATUS_CODE,
