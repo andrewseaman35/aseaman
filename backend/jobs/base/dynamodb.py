@@ -642,14 +642,6 @@ class WSConnectionDDBItem(DynamoDBItem):
             },
         }
 
-    # def validate_ownership(self, user=None):
-    #     if user is None:
-    #         raise UnauthorizedException("not logged in")
-
-    #     owner_username = self.owner
-    #     if not user["username"] or user["username"] != owner_username:
-    #         raise UnauthorizedException("Link not owned")
-
 
 class WSConnectionTable(DynamoDBTable):
     ItemClass = WSConnectionDDBItem

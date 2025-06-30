@@ -25,10 +25,8 @@ EMPTY_RESPONSE = {
 }
 
 
-class APILambdaHandlerBase(object):
-    rest_enabled = True
+class LambdaHandlerBase(object):
     region = "us-east-1"
-
     aws_config = AWSConfig(
         dynamodb=DynamoDBConfig(enabled=False),
         s3=S3Config(enabled=False),
@@ -44,12 +42,6 @@ class APILambdaHandlerBase(object):
         self.user = {
             "username": None,
             "groups": None,
-        }
-        self.handlers_by_method = {
-            "GET": self.handle_get,
-            "POST": self.handle_post,
-            "PUT": self.handle_put,
-            "DELETE": self.handle_delete,
         }
         self._init()
 
@@ -101,22 +93,22 @@ class APILambdaHandlerBase(object):
     def is_local(self):
         return os.environ.get("IN_DOCKER_API") == "true"
 
-    def build_table_name(self, table_name):
+    def build_table_name(self, table_name: str) -> str:
         if self.env == "live":
             return table_name
         return f"{table_name}_{self.env}"
 
     @property
-    def user_pool_id_ssm_key(self):
+    def user_pool_id_ssm_key(self) -> str:
         env = "stage" if self.env == "local" else self.env
         return f"/aseaman/{env}/cognito/user_pool_id"
 
     @property
-    def user_pool_client_id_ssm_key(self):
+    def user_pool_client_id_ssm_key(self) -> str:
         env = "stage" if self.env == "local" else self.env
         return f"/aseaman/{env}/cognito/user_pool_client_id"
 
-    def get_from_ssm(self, key):
+    def get_from_ssm(self, key: str) -> str:
         response = self.aws.ssm.client.get_parameter(Name=key)
         return response["Parameter"]["Value"]
 
@@ -189,18 +181,6 @@ class APILambdaHandlerBase(object):
     def get_headers(self):
         return self.event["headers"]
 
-    def handle_get(self):
-        raise MethodNotAllowedException("GET not supported")
-
-    def handle_post(self):
-        raise MethodNotAllowedException("POST not supported")
-
-    def handle_put(self):
-        raise MethodNotAllowedException("PUT not supported")
-
-    def handle_delete(self):
-        raise MethodNotAllowedException("DELETE not supported")
-
     def handle(self):
         print(self.event)
 
@@ -235,3 +215,27 @@ class APILambdaHandlerBase(object):
         print("Uh oh, error!")
         print("error: {}".format(e))
         traceback.print_exc()
+
+
+class APILambdaHandlerBase(LambdaHandlerBase):
+    def __init__(self, event, context):
+        super().__init__(event, context)
+
+        self.handlers_by_method = {
+            "GET": self.handle_get,
+            "POST": self.handle_post,
+            "PUT": self.handle_put,
+            "DELETE": self.handle_delete,
+        }
+
+    def handle_get(self):
+        raise MethodNotAllowedException("GET not supported")
+
+    def handle_post(self):
+        raise MethodNotAllowedException("POST not supported")
+
+    def handle_put(self):
+        raise MethodNotAllowedException("PUT not supported")
+
+    def handle_delete(self):
+        raise MethodNotAllowedException("DELETE not supported")

@@ -51,7 +51,6 @@ def _jobs_s3_key_prefix():
 
 class DrawJasperLambdaHandler(APILambdaHandlerBase):
     action = "handle_upload"
-    rest_enabled = False
 
     aws_config = AWSConfig(
         s3=S3Config(

@@ -13,7 +13,6 @@ CREATION_EVENT_NAME = "ObjectCreated:Put"
 
 
 class JobLambdaHandlerBase(object):
-    rest_enabled = True
     region = "us-east-1"
 
     aws_config = AWSConfig(
