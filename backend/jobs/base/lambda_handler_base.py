@@ -83,7 +83,7 @@ class JobLambdaHandlerBase(object):
 
         return changes
 
-    def __before_run(self):
+    def _before_run(self):
         self.__init_aws()
         return self.__parse_event(self.event)
 
@@ -91,7 +91,7 @@ class JobLambdaHandlerBase(object):
         print(self.event)
 
         try:
-            changes = self.__before_run()
+            changes = self._before_run()
             self._run(changes)
         except Exception as e:
             self._handle_error(e)

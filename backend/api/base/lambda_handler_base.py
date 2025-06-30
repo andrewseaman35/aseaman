@@ -3,6 +3,7 @@ import datetime
 import json
 import os
 import traceback
+from typing import Any, Callable
 
 import boto3
 
@@ -16,7 +17,7 @@ from .aws import AWSConfig, DynamoDBConfig, S3Config, SSMConfig, AWS, DynamoDB, 
 from .s3 import S3Bucket
 
 
-EMPTY_RESPONSE = {
+EMPTY_RESPONSE: dict[str, Any] = {
     "isBase64Encoded": False,
     "statusCode": 200,
     "headers": {"Access-Control-Allow-Origin": "*"},
@@ -33,7 +34,7 @@ class LambdaHandlerBase(object):
         ssm=SSMConfig(enabled=True),
     )
 
-    def __init__(self, event, context):
+    def __init__(self, event: dict[Any, Any], context: dict[Any, Any]) -> None:
         self.event = event
         self.context = context
         self.env = os.environ.get("ENV")
@@ -112,13 +113,13 @@ class LambdaHandlerBase(object):
         response = self.aws.ssm.client.get_parameter(Name=key)
         return response["Parameter"]["Value"]
 
-    def __parse_event(self, event):
+    def __parse_event(self, event: dict[Any, Any]) -> None:
         print(" -- Received event --")
         # print(json.dumps(event, indent=4))
         print(" --                --")
 
-        params = {}
-        http_method: str = event.get("httpMethod", None)
+        params: dict[Any, Any] = {}
+        http_method: str | None = event.get("httpMethod", None)
         if http_method in {"GET", "DELETE"}:
             params = self.event["multiValueQueryStringParameters"] or {}
             params.update(self.event["queryStringParameters"] or {})
@@ -132,7 +133,7 @@ class LambdaHandlerBase(object):
                     params = {"body": self.event["body"]}
         self.params = params
 
-    def get_query_params(self, keys):
+    def get_query_params(self, keys: list[str]) -> dict[str, Any]:
         return {k: v for k, v in self.params.items() if k in keys}
 
     def __decode_token(self):
@@ -164,7 +165,7 @@ class LambdaHandlerBase(object):
         self.user["username"] = decoded["cognito:username"]
         self.user["groups"] = decoded.get("cognito:groups", [])
 
-    def __before_run(self):
+    def _before_run(self):
         self._init()
         self.__preinit_aws()
         self.__decode_token()
@@ -181,47 +182,25 @@ class LambdaHandlerBase(object):
     def get_headers(self):
         return self.event["headers"]
 
-    def handle(self):
-        print(self.event)
+    def handle(self) -> dict[str, Any]:
+        raise NotImplementedError("handle method must be implemented in subclasses")
 
-        response = {**EMPTY_RESPONSE}
-        try:
-            self.__before_run()
-            handler = self.handlers_by_method.get(self.event.get("httpMethod"), None)
-            if handler:
-                response = handler()
-            else:
-                raise MethodNotAllowedException("method not supported")
-        except BaseAPIException as e:
-            self._handle_api_error(e)
-            response = e.to_json_response()
-        except Exception as e:
-            self._handle_error(e)
-            response = APIException().to_json_response()
-
-        return response
-
-    def handle_ws(self, event, context):
-        print(self.event)
-        self.__before_run()
-        return self._handle_ws(event, context)
-
-    def _handle_api_error(self, e):
+    def _handle_api_error(self, e: Exception) -> None:
         print("API error!")
         print("API error: {}".format(e))
         traceback.print_exc()
 
-    def _handle_error(self, e):
+    def _handle_error(self, e: Exception) -> None:
         print("Uh oh, error!")
         print("error: {}".format(e))
         traceback.print_exc()
 
 
 class APILambdaHandlerBase(LambdaHandlerBase):
-    def __init__(self, event, context):
+    def __init__(self, event: dict[Any, Any], context: dict[Any, Any]):
         super().__init__(event, context)
 
-        self.handlers_by_method = {
+        self.handlers_by_method: dict[str, Callable[..., dict[Any, Any]]] = {
             "GET": self.handle_get,
             "POST": self.handle_post,
             "PUT": self.handle_put,
@@ -239,3 +218,31 @@ class APILambdaHandlerBase(LambdaHandlerBase):
 
     def handle_delete(self):
         raise MethodNotAllowedException("DELETE not supported")
+
+    def handle(self) -> dict[str, Any]:
+        print(self.event)
+
+        response: dict[str, Any] = {**EMPTY_RESPONSE}
+        if "httpMethod" not in self.event:
+            response["statusCode"] = 400
+            response["body"] = json.dumps({"error": "httpMethod not provided"})
+            return response
+
+        http_method: str = self.event["httpMethod"]
+        try:
+            self._before_run()
+            handler: Callable[..., dict[Any, Any]] | None = self.handlers_by_method.get(
+                http_method, None
+            )
+            if handler:
+                response = handler()
+            else:
+                raise MethodNotAllowedException("method not supported")
+        except BaseAPIException as e:
+            self._handle_api_error(e)
+            response = e.to_json_response()
+        except Exception as e:
+            self._handle_error(e)
+            response = APIException().to_json_response()
+
+        return response
