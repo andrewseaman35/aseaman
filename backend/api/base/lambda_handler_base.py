@@ -136,7 +136,7 @@ class LambdaHandlerBase(object):
     def get_query_params(self, keys: list[str]) -> dict[str, Any]:
         return {k: v for k, v in self.params.items() if k in keys}
 
-    def __decode_token(self):
+    def __decode_token(self) -> None:
         if "headers" not in self.event:
             return
         authorization = self.event["headers"].get("Authorization")

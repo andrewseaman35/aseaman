@@ -6,7 +6,7 @@ class BaseAPIException(Exception):
     DEFAULT_MESSAGE: str = "error"
     STATUS_CODE: int = 500
 
-    def __init__(self, message: str | None = None):
+    def __init__(self, message: str | None = None) -> None:
         self.message = message or self.DEFAULT_MESSAGE
         super(BaseAPIException, self).__init__(message)
 
@@ -19,7 +19,7 @@ class BaseAPIException(Exception):
         )
 
     @property
-    def headers(self):
+    def headers(self) -> dict[str, str]:
         return {"Access-Control-Allow-Origin": "*"}
 
     def to_json_response(self) -> dict[str, Any]:

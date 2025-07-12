@@ -17,12 +17,12 @@ LINK_ID_LENGTH = 6
 
 
 class UserGroup:
-    ADMIN = "admin"
-    BUDGET = "budget-manager"
-    LINK_MANAGER = "link-manager"
+    ADMIN: str = "admin"
+    BUDGET: str = "budget-manager"
+    LINK_MANAGER: str = "link-manager"
 
 
-def get_expression_id(used_ids=set()):
+def get_expression_id(used_ids: set[str] = set()) -> str:
     for _ in range(10):
         expr_id = generate_alpha_id(2)
         if expr_id not in used_ids:
@@ -38,7 +38,7 @@ def get_timestamp():
     return str(int(time.time()))
 
 
-def generate_alpha_id(length):
+def generate_alpha_id(length: int) -> str:
     return "".join(
         random.choices(
             string.ascii_lowercase,
@@ -47,7 +47,7 @@ def generate_alpha_id(length):
     )
 
 
-def generate_chess_game_id():
+def generate_chess_game_id() -> str:
     return generate_alphanumeric_id(CHESS_GAME_ID_LENGTH, lower=False)
 
 
@@ -59,7 +59,9 @@ def ddb_item_required(key):
     return partial(raise_key_required, key)
 
 
-def generate_alphanumeric_id(length=8, lower=True, upper=True):
+def generate_alphanumeric_id(
+    length: int = 8, lower: bool = True, upper: bool = True
+) -> str:
     choices = [*string.digits]
     if lower:
         choices.extend(string.ascii_lowercase)

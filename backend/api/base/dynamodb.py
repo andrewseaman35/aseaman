@@ -23,7 +23,13 @@ class DynamoDBUnauthorizedException(Exception):
 
 
 class DynamoDBItemValueConfig:
-    def __init__(self, data_type, default=None, optional=False, internal=False):
+    def __init__(
+        self,
+        data_type: str,
+        default=None,
+        optional: bool = False,
+        internal: bool = False,
+    ):
         self.data_type = data_type
         self.default = default
         self.optional = optional
@@ -226,7 +232,7 @@ class DynamoDBTable:
     ItemClass = None
     validate_owner = True
 
-    def __init__(self, table_name, ddb_client, user=None):
+    def __init__(self, table_name: str, ddb_client, user=None) -> None:
         self.table_name = table_name
         self.ddb_client = ddb_client
         self.user = user
