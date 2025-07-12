@@ -63,7 +63,7 @@ resource "aws_lambda_function" "job_lambda_function" {
 
   layers = var.layers
 
-  runtime = "python3.9"
+  runtime = "python3.13"
   timeout = var.lambda_timeout
 
   environment {
