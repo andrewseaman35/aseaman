@@ -41,6 +41,11 @@ class AWSConfig:
     s3: S3Config
     ssm: SSMConfig
 
+    def __init__(self, **kwargs: Any) -> None:
+        self.dynamodb = kwargs.get("dynamodb", DynamoDBConfig())
+        self.s3 = kwargs.get("s3", S3Config())
+        self.ssm = kwargs.get("ssm", SSMConfig())
+
 
 @dataclass
 class DynamoDB:
