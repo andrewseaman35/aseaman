@@ -22,7 +22,14 @@ PUBLIC_BUCKET_NAME = "aseaman-public-bucket"
 class MameHighscoreLambdaHandler(APILambdaHandlerBase):
     aws_config = AWSConfig(
         s3=S3Config(
-            enabled=True, buckets={"public": S3BucketConfig(name=PUBLIC_BUCKET_NAME)}
+            enabled=True,
+            buckets=[
+                S3BucketConfig(
+                    name="public",
+                    bucket_name=PUBLIC_BUCKET_NAME,
+                    prefix="hi/",
+                )
+            ],
         )
     )
 
