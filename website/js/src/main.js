@@ -26,6 +26,7 @@ import {
     initMameHighscore,
     initNavigation,
     initSaltLevel,
+    initSplitomatic,
 } from './entry';
 
 const modules = {
@@ -41,6 +42,7 @@ const modules = {
     initMameHighscore,
     initSaltLevel,
     initMultiImageContainers,
+    initSplitomatic,
     auth,
     config,
     constants,

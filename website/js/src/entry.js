@@ -7,6 +7,7 @@ import BudgetPage from './budget/index';
 import LinksTable from './linker/LinksTable';
 import MameHighscore from './MameHighscore';
 import SaltLevel from './SaltLevel';
+import Splitomatic from './splitomatic/Splitomatic';
 
 import Lightbox from './components/Lightbox';
 import Navigation from './components/navigation/Navigation';
@@ -15,6 +16,14 @@ function initLightbox() {
     ReactDOM.render(
         <Lightbox />,
         document.getElementById('lightbox'),
+    );
+}
+
+
+function initSplitomatic(elementId) {
+    ReactDOM.render(
+        <Splitomatic />,
+        document.getElementById(elementId),
     );
 }
 
@@ -98,4 +107,5 @@ module.exports = {
     initMameHighscore,
     initNavigation,
     initSaltLevel,
+    initSplitomatic,
 };
