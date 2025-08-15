@@ -224,6 +224,33 @@ module "budget_iam_role_policy" {
   api_name   = "budget-api"
 }
 
+module "splitomatic_api" {
+  source     = "../serverless_api"
+  zip_file   = "../../api/packages/splitomatic_api.zip"
+  api_name   = "splitomatic-api"
+  path_part  = "splitomatic"
+  deploy_env = var.deploy_env
+  hostname   = var.hostname
+  lambda_timeout = 30
+
+  cognito_user_pool_arn = var.cognito_user_pool_arn
+  cognito_user_pool_id  = var.cognito_user_pool_id
+
+  rest_api_root_resource_id         = aws_api_gateway_rest_api.rest_api.root_resource_id
+  rest_api_id                       = aws_api_gateway_rest_api.rest_api.id
+  get_method_authorization       = "NONE"
+  get_proxy_method_authorization = "NONE"
+  post_method_authorization       = "NONE"
+  post_proxy_method_authorization = "NONE"
+}
+
+module "splitomatic_iam_role_policy" {
+  source     = "../roles/splitomatic"
+  role       = module.splitomatic_api.api_role_id
+  deploy_env = var.deploy_env
+  api_name   = "splitomatic-api"
+}
+
 resource "aws_api_gateway_deployment" "api_gateway_deployment" {
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
 
@@ -237,6 +264,7 @@ resource "aws_api_gateway_deployment" "api_gateway_deployment" {
       chess_api          = module.chess_api.api_resource_module_ids
       linker_api         = module.linker_api.api_resource_module_ids
       budget_api         = module.budget_api.api_resource_module_ids
+      splitomatic_api         = module.splitomatic_api.api_resource_module_ids
     }))
   }
 
@@ -268,6 +296,9 @@ resource "aws_api_gateway_deployment" "api_gateway_deployment" {
 
     module.budget_api.aws_api_gateway_method,
     module.budget_api.aws_api_gateway_integration,
+
+    module.splitomatic_api.aws_api_gateway_method,
+    module.splitomatic_api.aws_api_gateway_integration,
   ]
 }
 
