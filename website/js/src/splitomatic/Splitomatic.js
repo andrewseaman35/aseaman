@@ -27,31 +27,26 @@ class Splitomatic extends React.Component {
                 view: InitialView,
                 description: "Initial state of the Splitomatic. Allows the user to create a new event or join an existing one.",
                 actions: {
-                    createEvent: () => {
+                    createEvent: ({ eventName }) => {
                         console.log("Event created in initial state");
 
-                        createEvent().then((response) => {
+                        createEvent({ eventName }).then((response) => {
                             console.log("Event created successfully:", response);
                             const eventId = response.id; // Assuming the response contains the event ID
-                            this.transitionTo('eventCreation', { eventId });
+                            this.transitionTo('eventHome', { eventId });
                         }).catch((error) => {
                             console.error("Error creating event:", error);
                         });
                     },
-                    joinEvent: () => {
-                        console.log("Event joined in initial state");
-                        this.transitionTo('eventHome');
+                    joinEvent: ({ joinCode }) => {
+                        console.log("Event joined in initial state: " + joinCode);
+                        fetchEvent(joinCode).then((response) => {
+                            console.log("Event fetched successfully:", response);
+                            this.transitionTo('eventHome', { eventId: response.id });
+                        }).catch((error) => {
+                            console.error("Error fetching event:", error);
+                        });
                     },
-                }
-            },
-            eventCreation: {
-                view: CreateEventView,
-                description: "Enable the creation of a new event. Asks for initial user name and event name.",
-                actions: {
-                    saveEvent: () => {
-                        console.log("Event saved in create state");
-                        this.transitionTo('eventHome');
-                    }
                 }
             },
             eventHome: {

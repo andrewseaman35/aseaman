@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const EventHomeView = ({ actions }) => {
+const EventHomeView = ({ actions, eventId }) => {
   const [showShareModal, setShowShareModal] = useState(false);
   const [showUpload, setShowUpload] = useState(false);
 
@@ -16,6 +16,7 @@ return (
             position: 'relative',
         }}
     >
+        <h1 style={{ marginTop: '2em', fontSize: '2em', color: '#333' }}>Event Home: {`${eventId}`}</h1>
         <h2 style={{ marginTop: '2em', marginBottom: '1em', fontSize: '1.5em' }}>Receipts</h2>
         <div style={{
             width: '350px',

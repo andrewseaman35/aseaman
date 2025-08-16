@@ -44,7 +44,7 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
 
         item = None
         if resource == "event":
-            item = SplitomaticEventDDBItem.from_dict({})
+            item = SplitomaticEventDDBItem.from_dict({"name": self.params.get("name")})
             item = self.aws.dynamodb.tables["splitomatic_event"].put(item)
         else:
             raise NotImplementedError("Resource not implemented: {}".format(resource))

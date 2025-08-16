@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 const InitialView = ({ actions }) => {
   const [joinCode, setJoinCode] = useState('');
+  const [eventName, setEventName] = useState('');
 
 
   return (
@@ -15,17 +16,39 @@ const InitialView = ({ actions }) => {
         background: '#f5f5f5',
       }}
     >
-      <button
-        style={{
-          padding: '1em 2em',
-          marginBottom: '2em',
-          fontSize: '1.2em',
-        }}
-        onClick={() => actions.createEvent()}
-      >
-        Create event
-      </button>
+
       <div style={{ display: 'flex', alignItems: 'center' }}>
+        <input
+          type="text"
+          value={eventName}
+          onChange={e => setEventName(e.target.value)}
+          placeholder="New event name"
+          style={{
+            padding: '0.8em',
+            fontSize: '1em',
+            marginRight: '1em',
+            borderRadius: '4px',
+            border: '1px solid #ccc',
+          }}
+        />
+        <button
+          disabled={!eventName}
+          onClick={() => actions.createEvent({eventName})}
+          style={{
+            padding: '0.8em 2em',
+            fontSize: '1em',
+            background: !eventName ? '#ccc' : '#007bff',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: !eventName ? 'not-allowed' : 'pointer',
+          }}
+        >
+          Create Event
+        </button>
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px'}}>
         <input
           type="text"
           value={joinCode}
@@ -41,7 +64,7 @@ const InitialView = ({ actions }) => {
         />
         <button
           disabled={!joinCode}
-          onClick={() => actions.joinEvent(joinCode)}
+          onClick={() => actions.joinEvent({ joinCode })}
           style={{
             padding: '0.8em 2em',
             fontSize: '1em',
