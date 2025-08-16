@@ -23,11 +23,9 @@ const InitialView = ({ actions }) => {
           style={{
             padding: '0.8em 2em',
             fontSize: '1em',
-            background: !eventName ? '#ccc' : '#007bff',
-            color: 'white',
             border: 'none',
             borderRadius: '4px',
-            cursor: !eventName ? 'not-allowed' : 'pointer',
+            background: '#007bff',
           }}
         >
           Create Event

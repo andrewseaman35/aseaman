@@ -4,7 +4,12 @@ import json
 from base.lambda_handler_base import APILambdaHandlerBase
 from base.aws import AWSConfig, DynamoDBConfig, DynamoDBTableConfig
 
-from base.dynamodb import SplitomaticEventDDBItem, SplitomaticEventTable
+from base.dynamodb import (
+    SplitomaticEventDDBItem,
+    SplitomaticEventTable,
+    SplitomaticUserTable,
+    SplitomaticUserDDBItem,
+)
 
 
 class SplitomaticLambdaHandler(APILambdaHandlerBase):
@@ -15,6 +20,10 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
                 DynamoDBTableConfig(
                     "splitomatic_event",
                     SplitomaticEventTable,
+                ),
+                DynamoDBTableConfig(
+                    "splitomatic_user",
+                    SplitomaticUserTable,
                 ),
             ],
         )
@@ -44,8 +53,26 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
 
         item = None
         if resource == "event":
+            users = (
+                self.params.get("users", "").split(",")
+                if self.params.get("users")
+                else []
+            )
+            if not users:
+                raise ValueError("Users parameter is required for creating an event.")
+
+            lower_users = [user.lower() for user in users]
+            if len(lower_users) != len(set(lower_users)):
+                raise ValueError("Users must be unique.")
+
             item = SplitomaticEventDDBItem.from_dict({"name": self.params.get("name")})
             item = self.aws.dynamodb.tables["splitomatic_event"].put(item)
+
+            for user in users:
+                user_ddb_item = SplitomaticUserDDBItem.from_dict(
+                    {"name": user, "event_id": item.id}
+                )
+                self.aws.dynamodb.tables["splitomatic_user"].put(user_ddb_item)
         else:
             raise NotImplementedError("Resource not implemented: {}".format(resource))
 

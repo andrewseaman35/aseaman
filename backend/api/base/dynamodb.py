@@ -655,6 +655,38 @@ class SplitomaticEventTable(DynamoDBTable):
     ItemClass = SplitomaticEventDDBItem
 
 
+class SplitomaticUserDDBItem(DynamoDBItem):
+    _config = {
+        "id": DynamoDBItemValueConfig("S", default=generate_id),
+        "event_id": DynamoDBItemValueConfig("S"),
+        "time_created": DynamoDBItemValueConfig("N", default=get_timestamp),
+        "time_updated": DynamoDBItemValueConfig("N", default=None, optional=True),
+        "name": DynamoDBItemValueConfig("S", default=None, optional=True),
+    }
+
+    @classmethod
+    def build_ddb_key(
+        cls, *args, event_id=None, id=None, **kwargs
+    ) -> dict[str, dict[str, str]]:
+        assert event_id is not None, "event_id required to build ddb key"
+        assert id is not None, "id required to build ddb key"
+        return {
+            "event_id": {
+                "S": event_id,
+            },
+            "id": {
+                "S": id,
+            },
+        }
+
+    def validate_ownership(self, _=None):
+        return
+
+
+class SplitomaticUserTable(DynamoDBTable):
+    ItemClass = SplitomaticUserDDBItem
+
+
 class WSConnectionDDBItem(DynamoDBItem):
     _config = {
         "connection_id": DynamoDBItemValueConfig("S"),
