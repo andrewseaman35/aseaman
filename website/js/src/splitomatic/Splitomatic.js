@@ -5,7 +5,8 @@ import CreateEventView from './views/CreateEventView';
 import InitialView from './views/InitialView';
 import EventHomeView from './views/EventHomeView';
 import ReceiptDetailView from './views/ReceiptDetailView';
-import { description } from '../chip8/roms/airplane';
+
+import { createEvent, fetchEvent } from './api';
 
 class Splitomatic extends React.Component {
     constructor(props) {
@@ -28,7 +29,14 @@ class Splitomatic extends React.Component {
                 actions: {
                     createEvent: () => {
                         console.log("Event created in initial state");
-                        this.transitionTo('eventCreation');
+
+                        createEvent().then((response) => {
+                            console.log("Event created successfully:", response);
+                            const eventId = response.id; // Assuming the response contains the event ID
+                            this.transitionTo('eventCreation', { eventId });
+                        }).catch((error) => {
+                            console.error("Error creating event:", error);
+                        });
                     },
                     joinEvent: () => {
                         console.log("Event joined in initial state");

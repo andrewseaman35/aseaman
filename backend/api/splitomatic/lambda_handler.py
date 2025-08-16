@@ -21,21 +21,38 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
     )
 
     def handle_get(self):
+        resource = self.get_resource()
         response = self._empty_response()
 
-        event = self.aws.dynamodb.tables["splitomatic_event"].get(
-            id="6JDQMT",
-            quiet=True,
-        )
+        if resource == "event":
+            event_id = self.params.get("id")
+            item = self.aws.dynamodb.tables["splitomatic_event"].get(
+                id=event_id,
+                quiet=True,
+            )
+        else:
+            raise NotImplementedError("Resource not implemented: {}".format(resource))
 
         return {
             **response,
-            "body": json.dumps(event.to_dict() if event else {}),
+            "body": json.dumps(item.to_dict() if item else {}),
         }
 
     def handle_post(self):
+        resource = self.get_resource()
+        response = self._empty_response()
 
-        return {**self._empty_response(), "body": json.dumps({})}
+        item = None
+        if resource == "event":
+            item = SplitomaticEventDDBItem.from_dict({})
+            item = self.aws.dynamodb.tables["splitomatic_event"].put(item)
+        else:
+            raise NotImplementedError("Resource not implemented: {}".format(resource))
+
+        return {
+            **self._empty_response(),
+            "body": json.dumps(item.to_dict() if item else {"nuthing": "created"}),
+        }
 
     def handle_put(self):
         return {**self._empty_response(), "body": json.dumps({})}

@@ -274,6 +274,7 @@ class DynamoDBTable:
             TableName=self.table_name,
             Item=item.to_ddb_item(),
         )
+        return item
 
     def bulk_put(self, items):
         put_requests = [{"PutRequest": {"Item": item.to_ddb_item()}} for item in items]
@@ -630,9 +631,10 @@ class SaltLevelTable(DynamoDBTable):
 
 class SplitomaticEventDDBItem(DynamoDBItem):
     _config = {
-        "id": DynamoDBItemValueConfig("S"),
-        "creator": DynamoDBItemValueConfig("S", default=None, optional=True),
-        "time_created": DynamoDBItemValueConfig("N", default=None, optional=True),
+        "id": DynamoDBItemValueConfig("S", default=generate_id),
+        "creator": DynamoDBItemValueConfig("S", default="andrew", optional=True),
+        "time_created": DynamoDBItemValueConfig("N", default=get_timestamp),
+        "time_updated": DynamoDBItemValueConfig("N", default=None, optional=True),
         "name": DynamoDBItemValueConfig("S", default=None, optional=True),
     }
 
