@@ -1,13 +1,13 @@
 boto3==1.9.188
 botocore==1.12.188
-Click==7.0
+Click
 docutils==0.14
 Flask==2.2.5
 Flask-Cors==6.0.0
-itsdangerous==1.1.0
+itsdangerous
 Jinja2==3.1.6
 jmespath==0.9.4
-MarkupSafe==1.1.1
+MarkupSafe
 python-dateutil==2.8.0
 s3transfer==0.2.1
 six==1.12.0

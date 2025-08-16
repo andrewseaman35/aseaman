@@ -69,7 +69,7 @@ class BudgetLambdaHandler(APILambdaHandlerBase):
         ),
     )
 
-    def load_config(self, refresh=False):
+    def load_config(self):
         config_record = self.aws.dynamodb.tables["budget_file_config"].get(
             owner=self.user["username"],
             quiet=True,

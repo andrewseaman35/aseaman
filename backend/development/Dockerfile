@@ -1,7 +1,6 @@
-FROM python:3.13-slim-buster
+FROM python:3.13
 
-RUN apt-get update -y && \
-    apt-get install -y python-pip python-dev
+RUN apt-get update -y
 
 COPY local_requirements.txt /app/requirements.txt
 

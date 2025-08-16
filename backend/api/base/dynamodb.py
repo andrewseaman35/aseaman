@@ -65,7 +65,8 @@ class DynamoDBItem:
     def ddb_key(self):
         return self.build_ddb_key(id=self.id)
 
-    def build_ddb_key(self, *args, **kwargs):
+    @classmethod
+    def build_ddb_key(cls, *args, **kwargs):
         return NotImplemented
 
     @classmethod
@@ -239,6 +240,11 @@ class DynamoDBTable:
         if self.validate_owner and not self.user:
             raise DynamoDBUnauthorizedException
 
+        print("Tablename" + self.table_name)
+        print("Tablename" + self.table_name)
+        print("Tablename" + self.table_name)
+        print("Tablename" + self.table_name)
+        print("Tablename" + self.table_name)
         ddb_item = self.ddb_client.get_item(
             TableName=self.table_name, Key=self.ItemClass.build_ddb_key(**kwargs)
         )
@@ -620,6 +626,31 @@ class SaltLevelDDBItem(DynamoDBItem):
 
 class SaltLevelTable(DynamoDBTable):
     ItemClass = SaltLevelDDBItem
+
+
+class SplitomaticEventDDBItem(DynamoDBItem):
+    _config = {
+        "id": DynamoDBItemValueConfig("S"),
+        "creator": DynamoDBItemValueConfig("S", default=None, optional=True),
+        "time_created": DynamoDBItemValueConfig("N", default=None, optional=True),
+        "name": DynamoDBItemValueConfig("S", default=None, optional=True),
+    }
+
+    @classmethod
+    def build_ddb_key(cls, *args, id=None, **kwargs) -> dict[str, dict[str, str]]:
+        assert id is not None, "id required to build ddb key"
+        return {
+            "id": {
+                "S": id,
+            }
+        }
+
+    def validate_ownership(self, _=None):
+        return
+
+
+class SplitomaticEventTable(DynamoDBTable):
+    ItemClass = SplitomaticEventDDBItem
 
 
 class WSConnectionDDBItem(DynamoDBItem):

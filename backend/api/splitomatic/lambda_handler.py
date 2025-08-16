@@ -2,23 +2,35 @@ import json
 
 
 from base.lambda_handler_base import APILambdaHandlerBase
-from base.aws import AWSConfig, DynamoDBConfig
+from base.aws import AWSConfig, DynamoDBConfig, DynamoDBTableConfig
+
+from base.dynamodb import SplitomaticEventDDBItem, SplitomaticEventTable
 
 
 class SplitomaticLambdaHandler(APILambdaHandlerBase):
     aws_config = AWSConfig(
         dynamodb=DynamoDBConfig(
             enabled=True,
-            tables=[],
+            tables=[
+                DynamoDBTableConfig(
+                    "splitomatic_event",
+                    SplitomaticEventTable,
+                ),
+            ],
         )
     )
 
     def handle_get(self):
         response = self._empty_response()
 
+        event = self.aws.dynamodb.tables["splitomatic_event"].get(
+            id="6JDQMT",
+            quiet=True,
+        )
+
         return {
             **response,
-            "body": json.dumps({}),
+            "body": json.dumps(event.to_dict() if event else {}),
         }
 
     def handle_post(self):

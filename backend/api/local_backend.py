@@ -133,6 +133,18 @@ def budget(resource):
     return convert_to_response(result)
 
 
+@app.route(
+    "/splitomatic/",
+    methods=["GET", "POST", "PUT", "DELETE"],
+    defaults={"resource": None},
+)
+@app.route("/splitomatic/<resource>/", methods=["GET", "POST"])
+def splitomatic(resource):
+    payload = get_payload(request)
+    result = make_lambda_request("splitomatic", request, payload, None)
+    return convert_to_response(result)
+
+
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", metavar="N", default=8099)
