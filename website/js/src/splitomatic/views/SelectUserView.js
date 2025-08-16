@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const SelectUserView = ({ actions, users = [] }) => {
+const SelectUserView = ({ actions, eventId, eventName, users }) => {
   const [selected, setSelected] = useState(users[0] || '');
 
   return (
@@ -14,6 +14,10 @@ const SelectUserView = ({ actions, users = [] }) => {
         background: '#f5f5f5',
       }}
     >
+        <h1 style={{ marginBottom: '1.5em', fontSize: '2em', color: '#333' }}>
+            Joining Event: {eventName}
+        </h1>
+        <div>Event id: {eventId}</div>
       <div style={{ width: '300px', marginBottom: '2em' }}>
         <label style={{ display: 'block', marginBottom: '0.5em', fontSize: '1em' }}>
           Select User
@@ -31,7 +35,7 @@ const SelectUserView = ({ actions, users = [] }) => {
           }}
         >
           {users.map((user, idx) => (
-            <option key={idx} value={user}>{user}</option>
+            <option key={idx} value={user.id}>{user.name}</option>
           ))}
         </select>
         <button

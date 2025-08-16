@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
-const EventHomeView = ({ actions, eventId }) => {
+const EventHomeView = ({ actions, eventId, eventName, user }) => {
   const [showShareModal, setShowShareModal] = useState(false);
   const [showUpload, setShowUpload] = useState(false);
-  console.log(`Viewing event home for ID: ${eventId}`);
+  console.log(`Viewing event home for ID: ${eventName}`);
 
 return (
     <div
@@ -17,7 +17,27 @@ return (
             position: 'relative',
         }}
     >
-        <h1 style={{ marginTop: '2em', fontSize: '2em', color: '#333' }}>Event Home: {`${eventId}`}</h1>
+        <h1 style={{ marginTop: '2em', fontSize: '2em', color: '#333' }}>Event Home: {`${eventName}`}</h1>
+        <div style={{ marginBottom: '1.5em', fontSize: '1.2em', color: '#555' }}>
+            Event ID: {eventId}
+        </div>
+        <div style={{
+            width: '350px',
+            background: 'white',
+            borderRadius: '8px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
+            padding: '1em',
+            marginBottom: '2em',
+        }}>
+            <div style={{
+                borderBottom: '1px solid #eee',
+                paddingBottom: '0.8em',
+                marginBottom: '0.8em',
+            }}>
+                <strong>Logged in as: </strong>
+                <div style={{ fontSize: '0.95em', color: '#555' }}>{user}</div>
+            </div>
+        </div>
         <h2 style={{ marginTop: '2em', marginBottom: '1em', fontSize: '1.5em' }}>Receipts</h2>
         <div style={{
             width: '350px',

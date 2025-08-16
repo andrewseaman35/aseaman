@@ -12,7 +12,7 @@ import { getCookie, setCookie } from '../utils';
 
 const COOKIES = Object.freeze({
     EVENT_ID: 'splitomaticEventId',
-    USER: 'splitomaticUser',
+    USER_ID: 'splitomaticUserId',
 });
 
 class Splitomatic extends React.Component {
@@ -24,29 +24,65 @@ class Splitomatic extends React.Component {
             user: null,
         };
 
+        this.usersById = {};
+
         // this.refreshCookies();
         this.refreshCurrentState();
     }
 
+    reset() {
+        console.log("Resetting Splitomatic state");
+        setCookie(COOKIES.EVENT_ID, null, null);
+        setCookie(COOKIES.USER_ID, null, null);
+
+        this.usersById = {};
+        this.setState({
+            currentState: 'initial',
+            eventId: null,
+            user: null,
+        });
+    }
+
+    setupForEvent(eventId, userId) {
+        console.log("Setting up Splitomatic for event:", eventId, "and user:", userId);
+        fetchEvent(eventId).then((response) => {
+            if (!response || !response.id) {
+                console.error("Invalid response from fetchEvent:", response);
+                return;
+            }
+
+            console.log("Event fetched successfully:", response);
+            this.usersById = response.users.reduce((acc, user) => {
+                acc[user.id] = user;
+                return acc;
+            }, {});
+            console.log("Users by ID:", this.usersById);
+
+            const currentState = userId ? 'eventHome' : 'selectUser';
+
+            setCookie(COOKIES.EVENT_ID, response.id, null);
+            this.setState({
+                currentState: currentState,
+                eventId: response.id,
+                eventName: response.name,
+                userId: userId,
+                users: response.users
+            });
+        }).catch((error) => {
+            console.error("Error fetching event:", error);
+        });
+    }
+
     refreshCurrentState() {
         const eventId = getCookie(COOKIES.EVENT_ID);
-        const user = getCookie(COOKIES.USER);
-        console.log(eventId, user);
-        if (eventId) {
-            console.log("Restoring eventhome state from cookies");
-            this.state = {
-                currentState: 'eventHome',
-                eventId: eventId,
-                user: user,
-            };
-        } else {
-            console.log("No eventId or user found in cookies, starting in initial state.");
-            this.state = {
-                currentState: 'initial',
-                eventId: null,
-                user: null,
-            };
+        const userId = getCookie(COOKIES.USER_ID);
+
+        console.log(eventId, userId);
+        if (!eventId) {
+            return this.reset();
         }
+
+        this.setupForEvent(eventId, userId);
     }
 
     refreshCookies() {
@@ -54,7 +90,7 @@ class Splitomatic extends React.Component {
         console.log("Current cookies:", getCookie(COOKIES.EVENT_ID));
         this.setState({
             eventId: getCookie(COOKIES.EVENT_ID),
-            user: getCookie(COOKIES.USER),
+            user: getCookie(COOKIES.USER_ID),
         });
     }
 
@@ -77,18 +113,7 @@ class Splitomatic extends React.Component {
                     },
                     joinEvent: ({ joinCode }) => {
                         console.log("Event joined in initial state: " + joinCode);
-                        fetchEvent(joinCode).then((response) => {
-                            if (!response || !response.id) {
-                                console.error("Invalid response from fetchEvent:", response);
-                                return;
-                            }
-                            console.log("Event fetched successfully:", response);
-                            setCookie(COOKIES.EVENT_ID, response.id, null);
-                            this.setState({ eventId: response.id });
-                            this.transitionTo('selectUser');
-                        }).catch((error) => {
-                            console.error("Error fetching event:", error);
-                        });
+                        this.setupForEvent(joinCode, null);
                     },
                 }
             },
@@ -114,7 +139,7 @@ class Splitomatic extends React.Component {
                 actions: {
                     selectUser: (userId) => {
                         console.log("User selected: " + userId);
-                        setCookie(COOKIES.USER, userId, null);
+                        setCookie(COOKIES.USER_ID, userId, null);
                         this.setState({ user: userId });
                         this.transitionTo('eventHome');
                     }
