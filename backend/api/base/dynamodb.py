@@ -669,14 +669,10 @@ class SplitomaticUserDDBItem(DynamoDBItem):
         cls, *args, event_id=None, id=None, **kwargs
     ) -> dict[str, dict[str, str]]:
         assert event_id is not None, "event_id required to build ddb key"
-        assert id is not None, "id required to build ddb key"
         return {
             "event_id": {
                 "S": event_id,
-            },
-            "id": {
-                "S": id,
-            },
+            }
         }
 
     def validate_ownership(self, _=None):

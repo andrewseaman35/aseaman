@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 const EventHomeView = ({ actions, eventId }) => {
   const [showShareModal, setShowShareModal] = useState(false);
   const [showUpload, setShowUpload] = useState(false);
+  console.log(`Viewing event home for ID: ${eventId}`);
 
 return (
     <div

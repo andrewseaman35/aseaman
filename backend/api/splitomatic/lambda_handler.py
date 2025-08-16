@@ -35,16 +35,21 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
 
         if resource == "event":
             event_id = self.params.get("id")
-            item = self.aws.dynamodb.tables["splitomatic_event"].get(
+            event = self.aws.dynamodb.tables["splitomatic_event"].get(
                 id=event_id,
                 quiet=True,
             )
+            users = self.aws.dynamodb.tables["splitomatic_user"].scan(
+                {"event_id": event_id},
+            )
+            item = event.to_dict() if event else {}
+            item["users"] = [user.to_dict() for user in users]
         else:
             raise NotImplementedError("Resource not implemented: {}".format(resource))
 
         return {
             **response,
-            "body": json.dumps(item.to_dict() if item else {}),
+            "body": json.dumps(item),
         }
 
     def handle_post(self):
