@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 
+import SimpleListEntry from '../../components/SimpleListEntry';
+
 const CreateEventView = ({ actions }) => {
   const [userName, setUserName] = useState('');
   const [eventName, setEventName] = useState('');
+  const [users, setUsers] = useState([]);
 
   return (
     <div
@@ -50,6 +53,7 @@ const CreateEventView = ({ actions }) => {
           }}
         />
       </div>
+      <SimpleListEntry value={users.join('\n')} onUpdate={(e) => {setUsers(e); console.log(e)}} />
       <button
         style={{
           padding: '1em 2em',
@@ -60,7 +64,7 @@ const CreateEventView = ({ actions }) => {
           borderRadius: '4px',
           cursor: 'pointer',
         }}
-        onClick={() => {actions.saveEvent();}}
+        onClick={() => {actions.createEvent({eventName, users});}}
       >
         Let's go
       </button>

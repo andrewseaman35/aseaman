@@ -27,16 +27,9 @@ class Splitomatic extends React.Component {
                 view: InitialView,
                 description: "Initial state of the Splitomatic. Allows the user to create a new event or join an existing one.",
                 actions: {
-                    createEvent: ({ eventName }) => {
+                    createEvent: () => {
                         console.log("Event created in initial state");
-
-                        createEvent({ eventName }).then((response) => {
-                            console.log("Event created successfully:", response);
-                            const eventId = response.id; // Assuming the response contains the event ID
-                            this.transitionTo('eventHome', { eventId });
-                        }).catch((error) => {
-                            console.error("Error creating event:", error);
-                        });
+                        this.transitionTo('createEvent');
                     },
                     joinEvent: ({ joinCode }) => {
                         console.log("Event joined in initial state: " + joinCode);
@@ -47,6 +40,21 @@ class Splitomatic extends React.Component {
                             console.error("Error fetching event:", error);
                         });
                     },
+                }
+            },
+            createEvent: {
+                view: CreateEventView,
+                description: "Create a new event. Allows users to input the event name and create it.",
+                actions: {
+                    createEvent: ({ eventName, users }) => {
+                        console.log("Creating event with name: " + eventName);
+                        createEvent({ eventName, users }).then((response) => {
+                            console.log("Event created successfully:", response);
+                            this.transitionTo('eventHome', { eventId: response.id });
+                        }).catch((error) => {
+                            console.error("Error creating event:", error);
+                        });
+                    }
                 }
             },
             eventHome: {

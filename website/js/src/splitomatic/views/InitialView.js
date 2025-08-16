@@ -18,21 +18,7 @@ const InitialView = ({ actions }) => {
     >
 
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <input
-          type="text"
-          value={eventName}
-          onChange={e => setEventName(e.target.value)}
-          placeholder="New event name"
-          style={{
-            padding: '0.8em',
-            fontSize: '1em',
-            marginRight: '1em',
-            borderRadius: '4px',
-            border: '1px solid #ccc',
-          }}
-        />
         <button
-          disabled={!eventName}
           onClick={() => actions.createEvent({eventName})}
           style={{
             padding: '0.8em 2em',

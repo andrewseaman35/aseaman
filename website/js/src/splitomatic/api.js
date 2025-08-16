@@ -3,7 +3,7 @@ import $ from 'jquery';
 import { getAPIUrl } from '../utils';
 import { getToken } from '../auth';
 
-function createEvent({eventName}) {
+function createEvent({eventName, users}) {
     return $.ajax({
         type: 'POST',
         url: getAPIUrl('splitomatic/event'),
@@ -12,7 +12,8 @@ function createEvent({eventName}) {
             Authorization: getToken(),
         },
         data: JSON.stringify({
-            name: eventName
+            name: eventName,
+            users: users.join(','),
         }),
     }).promise();
 }
