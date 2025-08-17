@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const mockItems = [
   { name: 'Burger', price: 8.99, quantity: 2, total: 17.98, claimedBy: null },
@@ -13,10 +13,12 @@ const mockTaxItems = [
   { label: 'Service Fee', value: '$1.00' },
 ];
 
-const ReceiptDetailView = ({ receiptId, actions }) => {
+const ReceiptDetailView = ({ receiptsById, receiptId, actions }) => {
   const [showModal, setShowModal] = useState(false);
 
+  const receipt = receiptsById[receiptId];
   console.log(`Viewing receipt detail for ID: ${receiptId}`);
+
 
   return (
     <div
@@ -47,7 +49,21 @@ const ReceiptDetailView = ({ receiptId, actions }) => {
           }}
           onClick={() => setShowModal(true)}
         >
-          Receipt Thumbnail
+            {receipt.presigned_url ? (
+                <img
+                    src={receipt.presigned_url}
+                    alt="Receipt thumbnail"
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        borderRadius: '6px',
+                        display: 'block',
+                    }}
+                />
+            ) : (
+                <span style={{ color: '#888', fontSize: '0.9em' }}>No Image</span>
+            )}
         </div>
 
         {showModal && (
@@ -68,22 +84,17 @@ const ReceiptDetailView = ({ receiptId, actions }) => {
               textAlign: 'center',
               minWidth: '300px',
             }}>
-              <div
-                style={{
-                  width: '250px',
-                  height: '350px',
-                  background: '#ddd',
-                  borderRadius: '8px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '1.2em',
-                  color: '#888',
-                  marginBottom: '1em',
-                }}
-              >
-                Full Receipt Image
-              </div>
+                <img
+                    src={receipt.presigned_url}
+                    alt="Receipt thumbnail"
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        borderRadius: '6px',
+                        display: 'block',
+                    }}
+                />
               <button
                 style={{
                   padding: '0.6em 1.5em',
@@ -194,6 +205,7 @@ const ReceiptDetailView = ({ receiptId, actions }) => {
             borderRadius: '4px',
             cursor: 'pointer',
           }}
+          onClick={() => actions.returnToEventHome()}
         >
           Return to event
         </button>

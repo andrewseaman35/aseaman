@@ -107,16 +107,22 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
             if len(lower_users) != len(set(lower_users)):
                 raise ValueError("Users must be unique.")
 
-            item = SplitomaticEventDDBItem.from_dict({"name": self.params.get("name")})
-            item = self.aws.dynamodb.tables["splitomatic_event"].put(item)
+            event = SplitomaticEventDDBItem.from_dict({"name": self.params.get("name")})
+            event_item = self.aws.dynamodb.tables["splitomatic_event"].put(event)
 
+            user_items = []
             for user in users:
                 user_ddb_item = SplitomaticUserDDBItem.from_dict(
-                    {"name": user, "event_id": item.id}
+                    {"name": user, "event_id": event_item.id}
                 )
-                self.aws.dynamodb.tables["splitomatic_user"].put(user_ddb_item)
+                user_items.append(
+                    self.aws.dynamodb.tables["splitomatic_user"].put(user_ddb_item)
+                )
 
-            response = item.to_dict()
+            response = event_item.to_dict()
+            response["users"] = [user.to_dict() for user in user_items]
+            response["receipts"] = []
+
         elif resource == "receipt_upload":
             event_id = self.get_secondary_resource()
             if not event_id:

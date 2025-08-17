@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 
 import FileUploader from '../../components/FileUploader';
+import ReceiptItem from '../components/ReceiptItem';
 
-const EventHomeView = ({ actions, eventId, eventName, user, uploadReceipt }) => {
+const EventHomeView = ({ actions, usersById, eventId, eventName, userId, uploadReceipt, receipts }) => {
   const [showShareModal, setShowShareModal] = useState(false);
   const [showUpload, setShowUpload] = useState(false);
+  const user = usersById[userId] || { name: 'Unknown User' };
   console.log(`Viewing event home for ID: ${eventName}`);
+  console.log(`Receipts: `, receipts);
 
 return (
     <div
@@ -37,7 +40,7 @@ return (
                 marginBottom: '0.8em',
             }}>
                 <strong>Logged in as: </strong>
-                <div style={{ fontSize: '0.95em', color: '#555' }}>{user}</div>
+                <div style={{ fontSize: '0.95em', color: '#555' }}>{user.name}</div>
             </div>
         </div>
         <h2 style={{ marginTop: '2em', marginBottom: '1em', fontSize: '1.5em' }}>Receipts</h2>
@@ -49,33 +52,18 @@ return (
             padding: '1em',
             marginBottom: '2em',
         }}>
-            <div style={{
-                borderBottom: '1px solid #eee',
-                paddingBottom: '0.8em',
-                marginBottom: '0.8em',
-            }}>
-                <strong>Receipt #1</strong>
-                <div style={{ fontSize: '0.95em', color: '#555' }}>Stub details for receipt 1</div>
-                <button
-                    style={{
-                        marginTop: '0.5em',
-                        padding: '0.5em 1em',
-                        fontSize: '1em',
-                        background: '#007bff',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                    }}
-                    onClick={() => { actions.viewReceipt(); }}
-                >
-                    View Receipt
-                </button>
-            </div>
-            <div>
-                <strong>Receipt #2</strong>
-                <div style={{ fontSize: '0.95em', color: '#555' }}>Stub details for receipt 2</div>
-            </div>
+            {
+                receipts.map((receipt) => (
+                    <ReceiptItem
+                        name={receipt.name || "Untitled Receipt"}
+                        status={receipt.status}
+                        presignedUrl={receipt.presigned_url}
+                        timeCreated={receipt.time_created}
+                        uploader="John Doe"
+                        viewReceipt={() => actions.viewReceipt(receipt.id)}
+                    />
+                ))
+            }
         </div>
 
         <div style={{ display: 'flex', gap: '1em', marginBottom: '2em' }}>
@@ -165,24 +153,6 @@ return (
                 </div>
             </div>
         )}
-
-        <button
-            style={{
-                position: 'absolute',
-                bottom: '2em',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                padding: '1em 2em',
-                fontSize: '1.2em',
-                background: '#dc3545',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-            }}
-        >
-            Exit
-        </button>
     </div>
 );
 };

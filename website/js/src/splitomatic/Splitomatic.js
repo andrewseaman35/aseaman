@@ -25,6 +25,7 @@ class Splitomatic extends React.Component {
         };
 
         this.usersById = {};
+        this.receiptsById = {};
 
         // this.refreshCookies();
         this.refreshCurrentState();
@@ -57,6 +58,11 @@ class Splitomatic extends React.Component {
                 return acc;
             }, {});
             console.log("Users by ID:", this.usersById);
+            this.receiptsById = response.receipts.reduce((acc, receipt) => {
+                acc[receipt.id] = receipt;
+                return acc;
+            }, {});
+            console.log("Receipts by ID:", this.receiptsById);
 
             const currentState = userId ? 'eventHome' : 'selectUser';
 
@@ -66,7 +72,8 @@ class Splitomatic extends React.Component {
                 eventId: response.id,
                 eventName: response.name,
                 userId: userId,
-                users: response.users
+                users: response.users,
+                receipts: response.receipts,
             });
         }).catch((error) => {
             console.error("Error fetching event:", error);
@@ -137,10 +144,11 @@ class Splitomatic extends React.Component {
                 view: SelectUserView,
                 description: "Select a user to associate with the event. Loads all associated Users to prepopulate the dropdown.",
                 actions: {
-                    selectUser: (userId) => {
-                        console.log("User selected: " + userId);
-                        setCookie(COOKIES.USER_ID, userId, null);
-                        this.setState({ user: userId });
+                    selectUser: (user) => {
+                        console.log(user)
+                        console.log("User selected: " + user.id);
+                        setCookie(COOKIES.USER_ID, user.id, null);
+                        this.setState({ userId: user.id });
                         this.transitionTo('eventHome');
                     }
                 }
@@ -161,12 +169,17 @@ class Splitomatic extends React.Component {
                             .then((response) => {
                                 console.log("Receipt uploaded successfully");
                                 console.log(response);
-                                // Optionally, refresh the event data or transition to another state
+                                this.refreshCurrentState();
                             })
                             .catch((error) => {
                                 console.error("Error uploading receipt:", error);
                             });
                         // Logic to upload a receipt
+                    },
+                    viewReceipt: (receiptId) => {
+                        console.log("Viewing receipt " + receiptId);
+                        this.setState({ receiptId: receiptId });
+                        this.transitionTo('receiptDetail');
                     },
                     reset: () => {
                         console.log("Resetting Splitomatic state");
@@ -178,6 +191,11 @@ class Splitomatic extends React.Component {
                 view: ReceiptDetailView,
                 description: "View details of a specific receipt. Allows users to claim items.",
                 actions: {
+                    returnToEventHome: () => {
+                        console.log("Returning to event home");
+                        this.setState({ receiptId: null });
+                        this.transitionTo('eventHome');
+                    },
                     claimItem: (itemId) => {
                         console.log("Claiming item " + itemId);
                         // Logic to claim the item
@@ -208,6 +226,8 @@ class Splitomatic extends React.Component {
                 <ViewComponent
                     transitionTo={this.transitionTo.bind(this)}
                     actions={state.actions}
+                    usersById={this.usersById}
+                    receiptsById={this.receiptsById}
                     {...state}
                     {...this.state}  // Pass current state data to the view
                 />
