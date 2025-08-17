@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 
+import FileUploader from '../../components/FileUploader';
+import { uploadReceipt } from '../api';
+
 const EventHomeView = ({ actions, eventId, eventName, user }) => {
   const [showShareModal, setShowShareModal] = useState(false);
   const [showUpload, setShowUpload] = useState(false);
@@ -105,6 +108,11 @@ return (
             >
                 Upload
             </button>
+            <FileUploader
+                inputId="receipt-file"
+                upload={(content, filetype) => {uploadReceipt(eventId, content, filetype)}}
+                accept="image/png, image/jpeg, application/pdf"
+            />
         </div>
 
         {showUpload && (

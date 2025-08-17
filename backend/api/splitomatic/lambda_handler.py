@@ -9,6 +9,8 @@ from base.dynamodb import (
     SplitomaticEventTable,
     SplitomaticUserTable,
     SplitomaticUserDDBItem,
+    SplitomaticReceiptTable,
+    SplitomaticReceiptDDBItem,
 )
 
 
@@ -24,6 +26,10 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
                 DynamoDBTableConfig(
                     "splitomatic_user",
                     SplitomaticUserTable,
+                ),
+                DynamoDBTableConfig(
+                    "splitomatic_receipt",
+                    SplitomaticReceiptTable,
                 ),
             ],
         )
@@ -42,8 +48,12 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
             users = self.aws.dynamodb.tables["splitomatic_user"].scan(
                 {"event_id": event_id},
             )
+            receipts = self.aws.dynamodb.tables["splitomatic_receipt"].scan(
+                {"event_id": event_id},
+            )
             item = event.to_dict() if event else {}
             item["users"] = [user.to_dict() for user in users]
+            item["receipts"] = [receipt.to_dict() for receipt in receipts]
         else:
             raise NotImplementedError("Resource not implemented: {}".format(resource))
 
@@ -78,12 +88,28 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
                     {"name": user, "event_id": item.id}
                 )
                 self.aws.dynamodb.tables["splitomatic_user"].put(user_ddb_item)
+
+            response = item.to_dict()
+        elif resource == "receipt_upload":
+            event_id = self.get_secondary_resource()
+            if not event_id:
+                raise ValueError("Event ID is required for uploading a receipt.")
+
+            item = SplitomaticReceiptDDBItem.from_dict(
+                {
+                    "event_id": event_id,
+                    "status": "UPLOADED",
+                }
+            )
+            item = self.aws.dynamodb.tables["splitomatic_receipt"].put(item)
+            response = {"status": "OK!", "data": item.to_dict()}
+
         else:
             raise NotImplementedError("Resource not implemented: {}".format(resource))
 
         return {
             **self._empty_response(),
-            "body": json.dumps(item.to_dict() if item else {"nuthing": "created"}),
+            "body": json.dumps(response),
         }
 
     def handle_put(self):

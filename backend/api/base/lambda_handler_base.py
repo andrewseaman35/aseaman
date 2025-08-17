@@ -179,6 +179,10 @@ class LambdaHandlerBase(object):
         path_parts = self.event["path"].strip("/").split("/")
         return path_parts[1] if len(path_parts) > 1 else None
 
+    def get_secondary_resource(self):
+        path_parts = self.event["path"].strip("/").split("/")
+        return path_parts[2] if len(path_parts) > 2 else None
+
     def get_headers(self):
         return self.event["headers"]
 

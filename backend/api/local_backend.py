@@ -52,16 +52,22 @@ def get_payload(request):
             }
         )
     else:
-        if request.json:
-            body = json.dumps({**request.json})
-        elif request.form:
-            body = request.form.to_dict()
-        elif request.files:
+        headers = request.headers
+        if headers["Content-Type"] == "image/png":
             body = request.files.to_dict()
-        elif request.data:
-            body = request.data
         else:
-            raise NotImplementedError("payload type not found")
+            if request.files:
+                body = request.files.to_dict()
+            elif request.json:
+                body = json.dumps({**request.json})
+            elif request.form:
+                body = request.form.to_dict()
+            elif request.files:
+                body = request.files.to_dict()
+            elif request.data:
+                body = request.data
+            else:
+                raise NotImplementedError("payload type not found")
 
         payload.update({"body": body})
     return payload
@@ -136,10 +142,11 @@ def budget(resource):
 @app.route(
     "/splitomatic/",
     methods=["GET", "POST", "PUT", "DELETE"],
-    defaults={"resource": None},
+    defaults={"resource": None, "pk": None},
 )
-@app.route("/splitomatic/<resource>/", methods=["GET", "POST"])
-def splitomatic(resource):
+@app.route("/splitomatic/<resource>/", methods=["GET", "POST"], defaults={"pk": None})
+@app.route("/splitomatic/<resource>/<pk>/", methods=["GET", "POST"])
+def splitomatic(resource=None, pk=None):
     payload = get_payload(request)
     result = make_lambda_request("splitomatic", request, payload, None)
     return convert_to_response(result)

@@ -18,6 +18,26 @@ function createEvent({eventName, users}) {
     }).promise();
 }
 
+function uploadReceipt(eventId, content, filetype) {
+    console.log("Uploading receipt for event:", eventId);
+    $.ajax({
+        url: getAPIUrl(`splitomatic/receipt_upload/${eventId}`),
+        type: "POST",
+        headers: {
+            Authorization: getToken(),
+        },
+        contentType: filetype,
+        data: content,
+        processData: false,
+        success: function (data) {
+            console.log(data)
+        },
+        error: function (xhr, status, error) {
+            console.log(error)
+        }
+    });
+}
+
 function fetchEvent(eventId) {
     const payload = {};
     if (eventId) {
@@ -33,4 +53,5 @@ function fetchEvent(eventId) {
 module.exports = {
     createEvent,
     fetchEvent,
+    uploadReceipt,
 };

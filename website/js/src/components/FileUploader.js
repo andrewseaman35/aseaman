@@ -2,6 +2,7 @@ import React from 'react';
 
 
 const FileUploader = (props) => {
+    const accept = props.accept || "text/csv, application/pdf";
     const upload = () => {
         let file = document.getElementById(props.inputId).files[0];
         var fr = new FileReader();
@@ -19,7 +20,7 @@ const FileUploader = (props) => {
                 id={props.inputId}
                 type="file"
                 name="file"
-                accept="text/csv, application/pdf"
+                accept={accept}
             ></input>
             <button onClick={upload}>Upload</button>
         </>

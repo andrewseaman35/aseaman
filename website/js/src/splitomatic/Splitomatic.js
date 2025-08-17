@@ -152,7 +152,11 @@ class Splitomatic extends React.Component {
                     viewReceipt: (receiptId) => {
                         console.log("Viewing receipt " + receiptId);
                         this.transitionTo('receiptDetail');
-                    }
+                    },
+                    uploadReceipt: () => {
+                        console.log("Uploading receipt");
+                        // Logic to upload a receipt
+                    },
                 }
             },
             receiptDetail: {
@@ -181,6 +185,7 @@ class Splitomatic extends React.Component {
             return <div>Error: State not found</div>;
         }
         console.log(`Rendering view: ${state.view.name} with state data:`, state);
+        console.log(this.state)
         const ViewComponent = state.view;
 
         return (
