@@ -20,7 +20,7 @@ function createEvent({eventName, users}) {
 
 function uploadReceipt(eventId, content, filetype) {
     console.log("Uploading receipt for event:", eventId);
-    $.ajax({
+    return $.ajax({
         url: getAPIUrl(`splitomatic/receipt_upload/${eventId}`),
         type: "POST",
         headers: {
@@ -29,13 +29,7 @@ function uploadReceipt(eventId, content, filetype) {
         contentType: filetype,
         data: content,
         processData: false,
-        success: function (data) {
-            console.log(data)
-        },
-        error: function (xhr, status, error) {
-            console.log(error)
-        }
-    });
+    }).promise();
 }
 
 function fetchEvent(eventId) {

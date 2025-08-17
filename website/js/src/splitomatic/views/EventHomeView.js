@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 
 import FileUploader from '../../components/FileUploader';
-import { uploadReceipt } from '../api';
 
-const EventHomeView = ({ actions, eventId, eventName, user }) => {
+const EventHomeView = ({ actions, eventId, eventName, user, uploadReceipt }) => {
   const [showShareModal, setShowShareModal] = useState(false);
   const [showUpload, setShowUpload] = useState(false);
   console.log(`Viewing event home for ID: ${eventName}`);
@@ -110,7 +109,7 @@ return (
             </button>
             <FileUploader
                 inputId="receipt-file"
-                upload={(content, filetype) => {uploadReceipt(eventId, content, filetype)}}
+                upload={(content, filetype) => {actions.uploadReceipt(eventId, content, filetype)}}
                 accept="image/png, image/jpeg, application/pdf"
             />
         </div>

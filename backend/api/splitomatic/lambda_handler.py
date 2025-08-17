@@ -2,7 +2,13 @@ import json
 
 
 from base.lambda_handler_base import APILambdaHandlerBase
-from base.aws import AWSConfig, DynamoDBConfig, DynamoDBTableConfig
+from base.aws import (
+    AWSConfig,
+    DynamoDBConfig,
+    DynamoDBTableConfig,
+    S3Config,
+    S3BucketConfig,
+)
 
 from base.dynamodb import (
     SplitomaticEventDDBItem,
@@ -12,6 +18,12 @@ from base.dynamodb import (
     SplitomaticReceiptTable,
     SplitomaticReceiptDDBItem,
 )
+
+ACCEPTED_CONTENT_TYPES = {
+    "image/png",
+    "image/jpeg",
+    "application/pdf",
+}
 
 
 class SplitomaticLambdaHandler(APILambdaHandlerBase):
@@ -32,7 +44,13 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
                     SplitomaticReceiptTable,
                 ),
             ],
-        )
+        ),
+        s3=S3Config(
+            enabled=True,
+            buckets=[
+                S3BucketConfig("receipts", "aseaman-protected", "splitomatic/receipts"),
+            ],
+        ),
     )
 
     def handle_get(self):
@@ -63,6 +81,7 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
         }
 
     def handle_post(self):
+        headers = self.get_headers()
         resource = self.get_resource()
         response = self._empty_response()
 
@@ -101,6 +120,16 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
                     "status": "UPLOADED",
                 }
             )
+            content_type = headers["Content-Type"]
+            if content_type not in ACCEPTED_CONTENT_TYPES:
+                raise ValueError(f"unsupported content type {content_type}")
+
+            key = self.aws.s3.buckets["receipts"].put(
+                file_bytes=self.params["body"],
+                filename=f"{self.env}/{event_id}/{item.id}",
+                content_type=content_type,
+            )
+            item.set_attribute("s3_key", key)
             item = self.aws.dynamodb.tables["splitomatic_receipt"].put(item)
             response = {"status": "OK!", "data": item.to_dict()}
 

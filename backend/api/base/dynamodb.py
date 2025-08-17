@@ -58,6 +58,11 @@ class DynamoDBItem:
     def __setstate__(self, d):
         self.__dict__.update(d)
 
+    def set_attribute(self, key, value):
+        if key not in self._config:
+            raise ValueError(f"key {key} not found in config")
+        self._item[key] = value
+
     def config(self, config_key):
         return self._config[config_key]
 
@@ -687,6 +692,7 @@ class SplitomaticReceiptDDBItem(DynamoDBItem):
     _config = {
         "event_id": DynamoDBItemValueConfig("S"),
         "id": DynamoDBItemValueConfig("S", default=generate_id),
+        "s3_key": DynamoDBItemValueConfig("S", default=None, optional=True),
         "time_created": DynamoDBItemValueConfig("N", default=get_timestamp),
         "time_updated": DynamoDBItemValueConfig("N", default=None, optional=True),
         "name": DynamoDBItemValueConfig("S", default=None, optional=True),

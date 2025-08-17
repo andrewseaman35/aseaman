@@ -54,7 +54,7 @@ def get_payload(request):
     else:
         headers = request.headers
         if headers["Content-Type"] == "image/png":
-            body = request.files.to_dict()
+            body = request.data
         else:
             if request.files:
                 body = request.files.to_dict()

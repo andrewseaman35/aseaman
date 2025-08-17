@@ -7,7 +7,7 @@ import EventHomeView from './views/EventHomeView';
 import ReceiptDetailView from './views/ReceiptDetailView';
 import SelectUserView from './views/SelectUserView';
 
-import { createEvent, fetchEvent } from './api';
+import { createEvent, fetchEvent, uploadReceipt } from './api';
 import { getCookie, setCookie } from '../utils';
 
 const COOKIES = Object.freeze({
@@ -153,8 +153,19 @@ class Splitomatic extends React.Component {
                         console.log("Viewing receipt " + receiptId);
                         this.transitionTo('receiptDetail');
                     },
-                    uploadReceipt: () => {
+                    uploadReceipt: (eventId, content, fileType) => {
                         console.log("Uploading receipt");
+                        console.log("Event ID: " + eventId);
+                        console.log("File Type: " + fileType);
+                        uploadReceipt(eventId, content, fileType)
+                            .then((response) => {
+                                console.log("Receipt uploaded successfully");
+                                console.log(response);
+                                // Optionally, refresh the event data or transition to another state
+                            })
+                            .catch((error) => {
+                                console.error("Error uploading receipt:", error);
+                            });
                         // Logic to upload a receipt
                     },
                 }
