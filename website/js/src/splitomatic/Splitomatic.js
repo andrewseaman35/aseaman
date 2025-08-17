@@ -168,6 +168,10 @@ class Splitomatic extends React.Component {
                             });
                         // Logic to upload a receipt
                     },
+                    reset: () => {
+                        console.log("Resetting Splitomatic state");
+                        this.reset();
+                    }
                 }
             },
             receiptDetail: {

@@ -71,7 +71,15 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
             )
             item = event.to_dict() if event else {}
             item["users"] = [user.to_dict() for user in users]
-            item["receipts"] = [receipt.to_dict() for receipt in receipts]
+            item["receipts"] = [
+                receipt.to_dict(
+                    include_computed=True,
+                    compute_services={
+                        "s3_bucket": self.aws.s3.buckets["receipts"],
+                    },
+                )
+                for receipt in receipts
+            ]
         else:
             raise NotImplementedError("Resource not implemented: {}".format(resource))
 
@@ -128,10 +136,17 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
                 file_bytes=self.params["body"],
                 filename=f"{self.env}/{event_id}/{item.id}",
                 content_type=content_type,
+                remove_prefix=False,
             )
             item.set_attribute("s3_key", key)
             item = self.aws.dynamodb.tables["splitomatic_receipt"].put(item)
-            response = {"status": "OK!", "data": item.to_dict()}
+            response = {
+                "status": "OK Go!",
+                "data": item.to_dict(
+                    include_computed=True,
+                    compute_services={"s3_bucket": self.aws.s3.buckets["receipts"]},
+                ),
+            }
 
         else:
             raise NotImplementedError("Resource not implemented: {}".format(resource))

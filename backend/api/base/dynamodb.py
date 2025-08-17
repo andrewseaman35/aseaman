@@ -37,6 +37,7 @@ class DynamoDBItemValueConfig:
 class DynamoDBItem:
     _timestamp_key = "time_updated"
     _config = None
+    _computed = None
 
     def __init__(self, item):
         self._item = item
@@ -108,15 +109,25 @@ class DynamoDBItem:
         for key, props in self._config.items():
             if props.internal:
                 del _dict[key]
-        return json.dumps(self.to_dict(include_internal=False))
+        return json.dumps(self.to_dict(include_internal=False, include_computed=True))
 
-    def to_dict(self, include_internal=True):
+    def to_dict(
+        self,
+        include_internal: bool = True,
+        include_computed: bool = True,
+        compute_services=None,
+    ):
         _dict = {**self._item}
-        if include_internal:
-            return _dict
-        for key, props in self._config.items():
-            if props.internal and key in _dict:
-                del _dict[key]
+        if not include_internal:
+            for key, props in self._config.items():
+                if props.internal and key in _dict:
+                    del _dict[key]
+
+        if include_computed:
+            _compute_services = compute_services or {}
+            _computed = self._computed or []
+            for key in _computed:
+                _dict[key] = self.__getattribute__(f"get_{key}")(**_compute_services)
         return _dict
 
     def to_ddb_item(self):
@@ -698,6 +709,13 @@ class SplitomaticReceiptDDBItem(DynamoDBItem):
         "name": DynamoDBItemValueConfig("S", default=None, optional=True),
         "status": DynamoDBItemValueConfig("S", default=None, optional=True),
     }
+
+    _computed = ["presigned_url"]
+
+    def get_presigned_url(self, s3_bucket=None, **kwargs) -> str:
+        return s3_bucket.presigned_url(
+            key=self.s3_key,
+        )
 
     @classmethod
     def build_ddb_key(

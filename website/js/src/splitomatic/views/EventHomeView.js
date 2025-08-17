@@ -103,9 +103,9 @@ return (
                     borderRadius: '4px',
                     cursor: 'pointer',
                 }}
-                onClick={() => setShowUpload(!showUpload)}
+                onClick={() => actions.reset()}
             >
-                Upload
+                Reset
             </button>
             <FileUploader
                 inputId="receipt-file"
