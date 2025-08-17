@@ -17,6 +17,8 @@ from base.dynamodb import (
     SplitomaticUserDDBItem,
     SplitomaticReceiptTable,
     SplitomaticReceiptDDBItem,
+    SplitomaticReceiptItemTable,
+    SplitomaticReceiptItemDDBItem,
 )
 
 ACCEPTED_CONTENT_TYPES = {
@@ -42,6 +44,10 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
                 DynamoDBTableConfig(
                     "splitomatic_receipt",
                     SplitomaticReceiptTable,
+                ),
+                DynamoDBTableConfig(
+                    "splitomatic_receipt_item",
+                    SplitomaticReceiptItemTable,
                 ),
             ],
         ),
@@ -153,6 +159,21 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
                     compute_services={"s3_bucket": self.aws.s3.buckets["receipts"]},
                 ),
             }
+
+            stub_receipt_items = [
+                SplitomaticReceiptItemDDBItem.from_dict(
+                    {
+                        "receipt_id": item.id,
+                        "name": f"Stub Item {item_number}",
+                        "amount": item_number,
+                        "quantity": item_number,
+                    }
+                )
+                for item_number in range(1, 4)
+            ]
+            self.aws.dynamodb.tables["splitomatic_receipt_item"].bulk_put(
+                stub_receipt_items
+            )
 
         else:
             raise NotImplementedError("Resource not implemented: {}".format(resource))

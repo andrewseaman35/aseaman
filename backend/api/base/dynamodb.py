@@ -741,6 +741,42 @@ class SplitomaticReceiptTable(DynamoDBTable):
     ItemClass = SplitomaticReceiptDDBItem
 
 
+class SplitomaticReceiptItemDDBItem(DynamoDBItem):
+    _config = {
+        "event_id": DynamoDBItemValueConfig("S"),
+        "receipt_id": DynamoDBItemValueConfig("S"),
+        "id": DynamoDBItemValueConfig("S", default=generate_id),
+        "item_name": DynamoDBItemValueConfig("S", default=None, optional=True),
+    }
+
+    @classmethod
+    def build_ddb_key(
+        cls, *args, event_id=None, receipt_id=None, id=None, **kwargs
+    ) -> dict[str, dict[str, str]]:
+        assert event_id is not None, "event_id required to build ddb key"
+        ddb_key = {
+            "event_id": {
+                "S": event_id,
+            }
+        }
+        if receipt_id is not None:
+            ddb_key["receipt_id"] = {
+                "S": receipt_id,
+            }
+        if id is not None:
+            ddb_key["id"] = {
+                "S": id,
+            }
+        return ddb_key
+
+    def validate_ownership(self, _=None):
+        return
+
+
+class SplitomaticReceiptItemTable(DynamoDBTable):
+    ItemClass = SplitomaticReceiptItemDDBItem
+
+
 class WSConnectionDDBItem(DynamoDBItem):
     _config = {
         "connection_id": DynamoDBItemValueConfig("S"),
