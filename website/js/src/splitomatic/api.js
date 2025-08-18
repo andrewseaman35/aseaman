@@ -44,8 +44,37 @@ function fetchEvent(eventId) {
     }).promise();
 }
 
+function fetchReceipt(eventId, receiptId) {
+    const payload = {
+        event_id: eventId,
+        id: receiptId,
+    };
+    return $.ajax({
+        type: 'GET',
+        url: getAPIUrl('splitomatic/receipt'),
+        data: payload,
+    }).promise();
+}
+
+function claimItem(receiptId, itemId, userId, claim) {
+    const payload = {
+        receipt_id: receiptId,
+        item_id: itemId,
+        user_id: userId,
+        claim: claim,
+    };
+    return $.ajax({
+        type: 'POST',
+        url: getAPIUrl('splitomatic/claim'),
+        contentType: 'application/json',
+        data: JSON.stringify(payload),
+    }).promise();
+}
+
 module.exports = {
     createEvent,
     fetchEvent,
     uploadReceipt,
+    fetchReceipt,
+    claimItem,
 };

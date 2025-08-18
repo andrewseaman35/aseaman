@@ -7,7 +7,7 @@ import EventHomeView from './views/EventHomeView';
 import ReceiptDetailView from './views/ReceiptDetailView';
 import SelectUserView from './views/SelectUserView';
 
-import { createEvent, fetchEvent, uploadReceipt } from './api';
+import { createEvent, fetchEvent, uploadReceipt, claimItem } from './api';
 import { getCookie, setCookie } from '../utils';
 
 const COOKIES = Object.freeze({
@@ -21,7 +21,10 @@ class Splitomatic extends React.Component {
         this.state = {
             currentState: 'initial',
             eventId: null,
-            user: null,
+            eventName: null,
+            userId: null,
+            users: null,
+            receipts: null,
         };
 
         this.usersById = {};
@@ -37,10 +40,14 @@ class Splitomatic extends React.Component {
         setCookie(COOKIES.USER_ID, null, null);
 
         this.usersById = {};
+        this.receiptsById = {};
         this.setState({
             currentState: 'initial',
             eventId: null,
-            user: null,
+            eventName: null,
+            userId: null,
+            users: [],
+            receipts: [],
         });
     }
 
@@ -133,6 +140,7 @@ class Splitomatic extends React.Component {
                         createEvent({ eventName, users }).then((response) => {
                             console.log("Event created successfully:", response);
                             setCookie(COOKIES.EVENT_ID, response.id, null);
+                            setCookie(COOKIES.USER_ID, response.users[0].id, null);
                             this.transitionTo('eventHome');
                         }).catch((error) => {
                             console.error("Error creating event:", error);
@@ -196,14 +204,17 @@ class Splitomatic extends React.Component {
                         this.setState({ receiptId: null });
                         this.transitionTo('eventHome');
                     },
-                    claimItem: (itemId) => {
-                        console.log("Claiming item " + itemId);
-                        // Logic to claim the item
+                    claimItem: (receiptId, itemId, claim) => {
+                        const verb = claim ? "claim" : "unclaim";
+                        console.log(verb + "ing item " + itemId + " for receipt " + receiptId);
+                        claimItem(receiptId, itemId, this.state.userId, claim)
+                            .then((response) => {
+                                console.log(verb + " successful:", response);
+                            })
+                            .catch((error) => {
+                                console.error("Error " + verb + "ing item:", error);
+                            });
                     },
-                    unclaimItem: (itemId) => {
-                        console.log("Unclaiming item " + itemId);
-                        // Logic to unclaim the item
-                    }
                 }
             }
         };

@@ -61,7 +61,7 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
 
     def handle_get(self):
         resource = self.get_resource()
-        response = self._empty_response()
+        empty_response = self._empty_response()
 
         if resource == "event":
             event_id = self.params.get("id")
@@ -75,9 +75,9 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
             receipts = self.aws.dynamodb.tables["splitomatic_receipt"].scan(
                 {"event_id": event_id},
             )
-            item = event.to_dict() if event else {}
-            item["users"] = [user.to_dict() for user in users]
-            item["receipts"] = [
+            response = event.to_dict() if event else {}
+            response["users"] = [user.to_dict() for user in users]
+            response["receipts"] = [
                 receipt.to_dict(
                     include_computed=True,
                     compute_services={
@@ -86,12 +86,39 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
                 )
                 for receipt in receipts
             ]
+        elif resource == "receipt":
+            event_id = self.params.get("event_id")
+            receipt_id = self.params.get("id")
+            if not event_id or not receipt_id:
+                raise ValueError("Event id and receipt id required.")
+
+            receipt = self.aws.dynamodb.tables["splitomatic_receipt"].get(
+                event_id=event_id,
+                id=receipt_id,
+                quiet=True,
+            )
+            if not receipt:
+                raise ValueError(
+                    f"Receipt with event id {event_id} and receipt id {receipt_id} not found."
+                )
+
+            receipt_items = self.aws.dynamodb.tables["splitomatic_receipt_item"].scan(
+                {"receipt_id": receipt.id},
+            )
+
+            response = receipt.to_dict(
+                include_computed=True,
+                compute_services={"s3_bucket": self.aws.s3.buckets["receipts"]},
+            )
+            response["items"] = [
+                receipt_item.to_dict() for receipt_item in receipt_items
+            ]
         else:
             raise NotImplementedError("Resource not implemented: {}".format(resource))
 
         return {
-            **response,
-            "body": json.dumps(item),
+            **empty_response,
+            "body": json.dumps(response),
         }
 
     def handle_post(self):
@@ -163,10 +190,11 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
             stub_receipt_items = [
                 SplitomaticReceiptItemDDBItem.from_dict(
                     {
+                        "event_id": event_id,
                         "receipt_id": item.id,
-                        "name": f"Stub Item {item_number}",
-                        "amount": item_number,
-                        "quantity": item_number,
+                        "item_name": f"Stub Item {item_number}",
+                        "cost": "4.50",
+                        "claimed_by": [],
                     }
                 )
                 for item_number in range(1, 4)
@@ -174,6 +202,59 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
             self.aws.dynamodb.tables["splitomatic_receipt_item"].bulk_put(
                 stub_receipt_items
             )
+        elif resource == "claim":
+            receipt_id = self.params.get("receipt_id")
+            item_id = self.params.get("item_id")
+            user_id = self.params.get("user_id")
+            claim = self.params.get("claim", False)
+
+            if claim:
+                update_dict = {
+                    "claimed_by": {
+                        "value": [{"S": user_id}],
+                        "operation": "list_append",
+                    },
+                }
+
+                receipt_item = self.aws.dynamodb.tables[
+                    "splitomatic_receipt_item"
+                ].update(
+                    SplitomaticReceiptItemDDBItem.build_ddb_key(
+                        receipt_id=receipt_id, id=item_id
+                    ),
+                    update_dict,
+                )
+            else:
+                receipt_item = self.aws.dynamodb.tables["splitomatic_receipt_item"].get(
+                    receipt_id=receipt_id,
+                    id=item_id,
+                )
+                update_dict = {
+                    "claimed_by": {
+                        "value": [
+                            {"S": uid}
+                            for uid in receipt_item.claimed_by
+                            if uid != user_id
+                        ],
+                        "operation": "SET",
+                    },
+                }
+
+                receipt_item = self.aws.dynamodb.tables[
+                    "splitomatic_receipt_item"
+                ].update(
+                    SplitomaticReceiptItemDDBItem.build_ddb_key(
+                        receipt_id=receipt_id, id=item_id
+                    ),
+                    update_dict,
+                )
+
+            receipt_item = self.aws.dynamodb.tables["splitomatic_receipt_item"].get(
+                receipt_id=receipt_id,
+                id=item_id,
+            )
+
+            response = receipt_item.to_dict()
 
         else:
             raise NotImplementedError("Resource not implemented: {}".format(resource))

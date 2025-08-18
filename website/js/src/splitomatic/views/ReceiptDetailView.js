@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
+
+import { fetchReceipt } from '../api';
 
 const mockItems = [
-  { name: 'Burger', price: 8.99, quantity: 2, total: 17.98, claimedBy: null },
-  { name: 'Fries', price: 3.49, quantity: 1, total: 3.49, claimedBy: 'Alice' },
-  { name: 'Soda', price: 2.00, quantity: 3, total: 6.00, claimedBy: null },
-  { name: 'Salad', price: 5.50, quantity: 1, total: 5.50, claimedBy: 'Bob' },
-  { name: 'Pie', price: 4.25, quantity: 2, total: 8.50, claimedBy: null },
+  { name: 'Burger', price: 8.99, quantity: 2, total: 17.98, claimed_by: null },
+  { name: 'Fries', price: 3.49, quantity: 1, total: 3.49, claimed_by: 'Alice' },
+  { name: 'Soda', price: 2.00, quantity: 3, total: 6.00, claimed_by: null },
+  { name: 'Salad', price: 5.50, quantity: 1, total: 5.50, claimed_by: 'Bob' },
+  { name: 'Pie', price: 4.25, quantity: 2, total: 8.50, claimed_by: null },
 ];
 
 const mockTaxItems = [
@@ -13,11 +15,24 @@ const mockTaxItems = [
   { label: 'Service Fee', value: '$1.00' },
 ];
 
-const ReceiptDetailView = ({ receiptsById, receiptId, actions }) => {
+const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, usersById }) => {
   const [showModal, setShowModal] = useState(false);
+  const [items, setItems] = useState(null);
 
   const receipt = receiptsById[receiptId];
   console.log(`Viewing receipt detail for ID: ${receiptId}`);
+
+  useEffect(() => {
+    console.log("Fetching receipt with ID: ", receiptId);
+    fetchReceipt(eventId, receiptId).then((fetchedReceipt) => {
+    if (fetchedReceipt) {
+        console.log("Fetched receipt:", fetchedReceipt);
+        setItems(fetchedReceipt.items);
+    } else {
+        console.error("Failed to fetch receipt with ID:", receiptId);
+    }
+    });
+  }, []);
 
 
   return (
@@ -114,52 +129,54 @@ const ReceiptDetailView = ({ receiptsById, receiptId, actions }) => {
         )}
 
         <h3 style={{ marginBottom: '0.5em', fontSize: '1.1em' }}>Items</h3>
-        <table style={{
-          width: '100%',
-          background: 'white',
-          borderRadius: '8px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
-          marginBottom: '1.5em',
-          borderCollapse: 'collapse',
-        }}>
-          <thead>
-            <tr style={{ background: '#f0f0f0', fontWeight: 'bold' }}>
-              <td style={{ padding: '0.5em' }}>Name</td>
-              <td style={{ padding: '0.5em' }}>Price</td>
-              <td style={{ padding: '0.5em' }}>Qty</td>
-              <td style={{ padding: '0.5em' }}>Total</td>
-              <td style={{ padding: '0.5em' }}>Claim</td>
-            </tr>
-          </thead>
-          <tbody>
-            {mockItems.map((item, idx) => (
-              <tr key={idx} style={{ borderBottom: '1px solid #eee' }}>
-                <td style={{ padding: '0.5em' }}>{item.name}</td>
-                <td style={{ padding: '0.5em' }}>${item.price.toFixed(2)}</td>
-                <td style={{ padding: '0.5em' }}>{item.quantity}</td>
-                <td style={{ padding: '0.5em' }}>${item.total.toFixed(2)}</td>
-                <td style={{ padding: '0.5em', textAlign: 'center' }}>
-                  {item.claimedBy
-                    ? <span style={{ color: '#007bff', fontWeight: 'bold' }}>{item.claimedBy}</span>
-                    : <button
-                        style={{
-                          padding: '0.3em 1em',
-                          fontSize: '0.95em',
-                          background: '#28a745',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '4px',
-                          cursor: 'pointer',
-                        }}
-                      >
-                        Claim
-                      </button>
-                  }
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {
+            items !== null ? (
+                <table style={{
+                width: '100%',
+                background: 'white',
+                borderRadius: '8px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
+                marginBottom: '1.5em',
+                borderCollapse: 'collapse',
+                }}>
+                <thead>
+                    <tr style={{ background: '#f0f0f0', fontWeight: 'bold' }}>
+                    <td style={{ padding: '0.5em' }}>Name</td>
+                    <td style={{ padding: '0.5em' }}>Cost</td>
+                    <td style={{ padding: '0.5em' }}>Claims</td>
+                    </tr>
+                </thead>
+                    <tbody>
+                        {items.map((item, idx) => (
+                        <tr key={idx} style={{ borderBottom: '1px solid #eee' }}>
+                            <td style={{ padding: '0.5em' }}>{item.item_name}</td>
+                            <td style={{ padding: '0.5em' }}>{item.cost}</td>
+                            <td style={{ padding: '0.5em', textAlign: 'center' }}>
+                            {item.claimed_by.length > 0
+                                ? <span style={{ color: '#007bff', fontWeight: 'bold' }}>{usersById[item.claimed_by].name}</span>
+                                : null}
+                                <button
+                                    style={{
+                                        padding: '0.3em 1em',
+                                        fontSize: '0.95em',
+                                        background: '#28a745',
+                                        color: 'white',
+                                        border: 'none',
+                                        borderRadius: '4px',
+                                        cursor: 'pointer',
+                                    }}
+                                    onClick={() => actions.claimItem(receiptId, item.id, !item.claimed_by.includes(userId))}
+                                >
+                                    Claim
+                                </button>
+                            </td>
+                        </tr>
+                        ))}
+                    </tbody>
+                </table>
+            ) : (
+                <div>loading...</div>
+            )}
 
         <h3 style={{ marginBottom: '0.5em', fontSize: '1.1em' }}>Taxes & Fees</h3>
         <table style={{

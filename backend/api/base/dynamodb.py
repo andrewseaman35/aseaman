@@ -118,10 +118,14 @@ class DynamoDBItem:
         compute_services=None,
     ):
         _dict = {**self._item}
-        if not include_internal:
-            for key, props in self._config.items():
-                if props.internal and key in _dict:
-                    del _dict[key]
+        for key, props in self._config.items():
+            if not include_internal and props.internal and key in _dict:
+                del _dict[key]
+            if props.data_type == "L":
+                result = []
+                for nested in _dict[key]:
+                    result.append(nested[list(nested.keys())[0]])
+                _dict[key] = result
 
         if include_computed:
             _compute_services = compute_services or {}
@@ -747,22 +751,20 @@ class SplitomaticReceiptItemDDBItem(DynamoDBItem):
         "receipt_id": DynamoDBItemValueConfig("S"),
         "id": DynamoDBItemValueConfig("S", default=generate_id),
         "item_name": DynamoDBItemValueConfig("S", default=None, optional=True),
+        "cost": DynamoDBItemValueConfig("S", default="0.00", optional=False),
+        "claimed_by": DynamoDBItemValueConfig("L", default=[]),
     }
 
     @classmethod
     def build_ddb_key(
-        cls, *args, event_id=None, receipt_id=None, id=None, **kwargs
+        cls, *args, receipt_id=None, id=None, **kwargs
     ) -> dict[str, dict[str, str]]:
-        assert event_id is not None, "event_id required to build ddb key"
+        assert receipt_id is not None, "receipt_id required to build ddb key"
         ddb_key = {
-            "event_id": {
-                "S": event_id,
-            }
-        }
-        if receipt_id is not None:
-            ddb_key["receipt_id"] = {
+            "receipt_id": {
                 "S": receipt_id,
             }
+        }
         if id is not None:
             ddb_key["id"] = {
                 "S": id,
