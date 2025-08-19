@@ -11,23 +11,19 @@ const EventHomeView = ({ actions, usersById, eventId, eventName, userId, uploadR
   console.log(`Receipts: `, receipts);
 
 return (
-    <div
-        className="event-home-view"
-    >
+    <div className="event-home-view">
         <h1>Event Home: {`${eventName}`}</h1>
         <div className="event-home-event-id">
             Event ID: {eventId}
         </div>
-        <div
-        className="logged-in-container">
-            <div
-                className="logged-in-inner"
-            >
+        <div className="logged-in-container">
+            <div className="logged-in-inner">
                 <strong>Logged in as: </strong>
-                <div style={{ fontSize: '0.95em', color: '#555' }}>{user.name}</div>
+                <div className="user-name">{user.name}</div>
             </div>
         </div>
-        <h2 style={{ marginTop: '2em', marginBottom: '1em', fontSize: '1.5em' }}>Receipts</h2>
+
+        <h2>Receipts</h2>
         <div className="receipts-container">
             {
                 receipts.map((receipt) => (
@@ -43,7 +39,7 @@ return (
             }
         </div>
 
-        <div style={{ display: 'flex', gap: '1em', marginBottom: '2em' }}>
+        <div className="bottom-bar">
             <button className="splitomatic-button"
                 onClick={() => setShowShareModal(true)}
             >

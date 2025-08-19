@@ -6,27 +6,12 @@ const InitialView = ({ actions }) => {
 
 
   return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        background: '#f5f5f5',
-      }}
-    >
+    <div className="initial-view">
 
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div className="top-button-container">
         <button
           onClick={() => actions.createEvent({eventName})}
-          style={{
-            padding: '0.8em 2em',
-            fontSize: '1em',
-            border: 'none',
-            borderRadius: '4px',
-            background: '#007bff',
-          }}
+          className="splitomatic-button"
         >
           Create Event
         </button>
@@ -35,29 +20,15 @@ const InitialView = ({ actions }) => {
       <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px'}}>
         <input
           type="text"
+          className="splitomatic-input"
           value={joinCode}
           onChange={e => setJoinCode(e.target.value)}
           placeholder="Enter event code"
-          style={{
-            padding: '0.8em',
-            fontSize: '1em',
-            marginRight: '1em',
-            borderRadius: '4px',
-            border: '1px solid #ccc',
-          }}
         />
         <button
           disabled={!joinCode}
           onClick={() => actions.joinEvent({ joinCode })}
-          style={{
-            padding: '0.8em 2em',
-            fontSize: '1em',
-            background: !joinCode ? '#ccc' : '#007bff',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: !joinCode ? 'not-allowed' : 'pointer',
-          }}
+          className="splitomatic-button"
         >
           Join Event
         </button>
