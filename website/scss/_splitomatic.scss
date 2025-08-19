@@ -197,3 +197,40 @@
         }
     }
 }
+
+.receipt-item-table {
+    width: 100%;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    margin-bottom: 1.5em;
+    border-collapse: collapse;
+
+    thead {
+        tr {
+            background: #f0f0f0;
+            font-weight: bold;
+        }
+        td {
+            padding: 0.5em;
+        }
+    }
+
+    .receipt-item-row {
+        border-bottom: 1px solid #eee;
+
+        td {
+            padding: 0.5em;
+        }
+
+        td.claimed-by-cell {
+            .claimed-item {
+                margin-right: 6px;
+            }
+        }
+
+        button.unclaim-button {
+            background-color: #ff6347;
+        }
+    }
+}

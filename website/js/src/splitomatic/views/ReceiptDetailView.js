@@ -1,14 +1,7 @@
 import React, { use, useEffect, useState } from 'react';
 
 import { fetchReceipt } from '../api';
-
-const mockItems = [
-  { name: 'Burger', price: 8.99, quantity: 2, total: 17.98, claimed_by: null },
-  { name: 'Fries', price: 3.49, quantity: 1, total: 3.49, claimed_by: 'Alice' },
-  { name: 'Soda', price: 2.00, quantity: 3, total: 6.00, claimed_by: null },
-  { name: 'Salad', price: 5.50, quantity: 1, total: 5.50, claimed_by: 'Bob' },
-  { name: 'Pie', price: 4.25, quantity: 2, total: 8.50, claimed_by: null },
-];
+import ReceiptItemRow from '../components/ReceiptItemRow';
 
 const mockTaxItems = [
   { label: 'Sales Tax', value: '$2.50' },
@@ -18,6 +11,7 @@ const mockTaxItems = [
 const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, usersById }) => {
   const [showModal, setShowModal] = useState(false);
   const [items, setItems] = useState(null);
+  const [refresh, setRefresh] = useState(0);
 
   const receipt = receiptsById[receiptId];
   console.log(`Viewing receipt detail for ID: ${receiptId}`);
@@ -32,8 +26,18 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
         console.error("Failed to fetch receipt with ID:", receiptId);
     }
     });
-  }, []);
+  }, [refresh]);
 
+  const triggerRefresh = () => {
+    console.log("Triggering refresh for receipt items");
+    setRefresh(prev => prev + 1);
+  }
+
+  const onClaimItem = (receiptId, itemId, claim) => {
+    console.log(`Claiming item with claim: ${claim}`);
+    actions.claimItem(receiptId, itemId, claim)
+    triggerRefresh();
+  }
 
   return (
     <div
@@ -131,47 +135,26 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
         <h3 style={{ marginBottom: '0.5em', fontSize: '1.1em' }}>Items</h3>
         {
             items !== null ? (
-                <table style={{
-                width: '100%',
-                background: 'white',
-                borderRadius: '8px',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
-                marginBottom: '1.5em',
-                borderCollapse: 'collapse',
-                }}>
-                <thead>
-                    <tr style={{ background: '#f0f0f0', fontWeight: 'bold' }}>
-                    <td style={{ padding: '0.5em' }}>Name</td>
-                    <td style={{ padding: '0.5em' }}>Cost</td>
-                    <td style={{ padding: '0.5em' }}>Claims</td>
-                    </tr>
-                </thead>
-                    <tbody>
-                        {items.map((item, idx) => (
-                        <tr key={idx} style={{ borderBottom: '1px solid #eee' }}>
-                            <td style={{ padding: '0.5em' }}>{item.item_name}</td>
-                            <td style={{ padding: '0.5em' }}>{item.cost}</td>
-                            <td style={{ padding: '0.5em', textAlign: 'center' }}>
-                            {item.claimed_by.length > 0
-                                ? item.claimed_by.map((claimer) => <span style={{ color: '#007bff', fontWeight: 'bold', marginRight: '6px' }}>{usersById[claimer].name}</span>)
-                                : null}
-                                <button
-                                    style={{
-                                        padding: '0.3em 1em',
-                                        fontSize: '0.95em',
-                                        background: '#28a745',
-                                        color: 'white',
-                                        border: 'none',
-                                        borderRadius: '4px',
-                                        cursor: 'pointer',
-                                    }}
-                                    onClick={() => actions.claimItem(receiptId, item.id, !item.claimed_by.includes(userId))}
-                                >
-                                    {`${item.claimed_by.includes(userId) ? "Unclaim" : "Claim"}`}
-                                </button>
-                            </td>
+                <table className="receipt-item-table">
+                    <thead>
+                        <tr>
+                            <td>Name</td>
+                            <td>Cost</td>
+                            <td>Claims</td>
                         </tr>
-                        ))}
+                    </thead>
+                    <tbody>
+                        {
+                            items.map((item, idx) => (
+                                <ReceiptItemRow
+                                    item={item}
+                                    userId={userId}
+                                    key={idx}
+                                    usersById={usersById}
+                                    onClaim={(claim) => onClaimItem(receiptId, item.id, claim)}
+                                />
+                            ))
+                        }
                     </tbody>
                 </table>
             ) : (
