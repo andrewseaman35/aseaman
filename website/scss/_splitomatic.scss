@@ -198,6 +198,20 @@
     }
 }
 
+.last-updated {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    width: 100%;
+    margin: 0 auto 8px;
+    gap: 2em;
+
+    .last-updated-text {
+        font-size: 0.9em;
+        color: #666;
+    }
+}
+
 .receipt-item-table {
     width: 100%;
     background: white;

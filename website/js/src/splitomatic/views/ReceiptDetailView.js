@@ -12,6 +12,7 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
   const [showModal, setShowModal] = useState(false);
   const [items, setItems] = useState(null);
   const [refresh, setRefresh] = useState(0);
+  const [lastUpdated, setLastUpdated] = useState(Date.now());
 
   const receipt = receiptsById[receiptId];
   console.log(`Viewing receipt detail for ID: ${receiptId}`);
@@ -22,6 +23,7 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
     if (fetchedReceipt) {
         console.log("Fetched receipt:", fetchedReceipt);
         setItems(fetchedReceipt.items);
+        setLastUpdated(Date.now());
     } else {
         console.error("Failed to fetch receipt with ID:", receiptId);
     }
@@ -50,6 +52,12 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
         background: '#f5f5f5',
       }}
     >
+        <div className="last-updated">
+            <span className="last-updated-text">
+                Last updated: {new Date(lastUpdated).toLocaleString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })}
+            </span>
+            <button className="splitomatic-button" onClick={triggerRefresh}>Refresh</button>
+        </div>
       <div style={{ marginBottom: '1.5em', width: '350px' }}>
         <div
           style={{
