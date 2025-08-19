@@ -12,46 +12,23 @@ const EventHomeView = ({ actions, usersById, eventId, eventName, userId, uploadR
 
 return (
     <div
-        style={{
-            height: '100vh',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-            background: '#f5f5f5',
-            position: 'relative',
-        }}
+        className="event-home-view"
     >
-        <h1 style={{ marginTop: '2em', fontSize: '2em', color: '#333' }}>Event Home: {`${eventName}`}</h1>
-        <div style={{ marginBottom: '1.5em', fontSize: '1.2em', color: '#555' }}>
+        <h1>Event Home: {`${eventName}`}</h1>
+        <div className="event-home-event-id">
             Event ID: {eventId}
         </div>
-        <div style={{
-            width: '350px',
-            background: 'white',
-            borderRadius: '8px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
-            padding: '1em',
-            marginBottom: '2em',
-        }}>
-            <div style={{
-                borderBottom: '1px solid #eee',
-                paddingBottom: '0.8em',
-                marginBottom: '0.8em',
-            }}>
+        <div
+        className="logged-in-container">
+            <div
+                className="logged-in-inner"
+            >
                 <strong>Logged in as: </strong>
                 <div style={{ fontSize: '0.95em', color: '#555' }}>{user.name}</div>
             </div>
         </div>
         <h2 style={{ marginTop: '2em', marginBottom: '1em', fontSize: '1.5em' }}>Receipts</h2>
-        <div style={{
-            width: '350px',
-            background: 'white',
-            borderRadius: '8px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
-            padding: '1em',
-            marginBottom: '2em',
-        }}>
+        <div className="receipts-container">
             {
                 receipts.map((receipt) => (
                     <ReceiptItem
@@ -67,30 +44,13 @@ return (
         </div>
 
         <div style={{ display: 'flex', gap: '1em', marginBottom: '2em' }}>
-            <button
-                style={{
-                    padding: '0.8em 2em',
-                    fontSize: '1em',
-                    background: '#007bff',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                }}
+            <button className="splitomatic-button"
                 onClick={() => setShowShareModal(true)}
             >
                 Share
             </button>
             <button
-                style={{
-                    padding: '0.8em 2em',
-                    fontSize: '1em',
-                    background: '#28a745',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                }}
+                className="splitomatic-button"
                 onClick={() => actions.reset()}
             >
                 Reset
@@ -102,50 +62,13 @@ return (
             />
         </div>
 
-        {showUpload && (
-            <div style={{ marginBottom: '2em' }}>
-                <input
-                    type="file"
-                    accept=".js"
-                    style={{
-                        padding: '0.8em',
-                        fontSize: '1em',
-                        borderRadius: '4px',
-                        border: '1px solid #ccc',
-                    }}
-                />
-            </div>
-        )}
-
         {showShareModal && (
-            <div style={{
-                position: 'fixed',
-                top: 0, left: 0, right: 0, bottom: 0,
-                background: 'rgba(0,0,0,0.3)',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                zIndex: 1000,
-            }}>
-                <div style={{
-                    background: 'white',
-                    padding: '2em 3em',
-                    borderRadius: '8px',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                    textAlign: 'center',
-                }}>
-                    <h3 style={{ marginBottom: '1em' }}>Share</h3>
-                    <div style={{ marginBottom: '2em', fontSize: '1.1em' }}>Share</div>
+            <div className="share-modal">
+                <div className="share-modal-inner">
+                    <h3>Share</h3>
+                    <div className="modal-body-text" >Share</div>
                     <button
-                        style={{
-                            padding: '0.6em 1.5em',
-                            fontSize: '1em',
-                            background: '#007bff',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                        }}
+                        className="splitomatic-button"
                         onClick={() => setShowShareModal(false)}
                     >
                         Close

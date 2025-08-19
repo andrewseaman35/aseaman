@@ -91,4 +91,7 @@ body {
     &.budget {
         @import "budget.scss";
     }
+    &.splitomatic {
+        @import "splitomatic.scss";
+    }
 }

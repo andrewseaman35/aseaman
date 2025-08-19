@@ -153,7 +153,7 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
                             <td style={{ padding: '0.5em' }}>{item.cost}</td>
                             <td style={{ padding: '0.5em', textAlign: 'center' }}>
                             {item.claimed_by.length > 0
-                                ? <span style={{ color: '#007bff', fontWeight: 'bold' }}>{usersById[item.claimed_by].name}</span>
+                                ? item.claimed_by.map((claimer) => <span style={{ color: '#007bff', fontWeight: 'bold', marginRight: '6px' }}>{usersById[claimer].name}</span>)
                                 : null}
                                 <button
                                     style={{
@@ -167,7 +167,7 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
                                     }}
                                     onClick={() => actions.claimItem(receiptId, item.id, !item.claimed_by.includes(userId))}
                                 >
-                                    Claim
+                                    {`${item.claimed_by.includes(userId) ? "Unclaim" : "Claim"}`}
                                 </button>
                             </td>
                         </tr>

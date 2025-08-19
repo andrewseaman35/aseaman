@@ -208,7 +208,15 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
             user_id = self.params.get("user_id")
             claim = self.params.get("claim", False)
 
-            if claim:
+            receipt_item = self.aws.dynamodb.tables["splitomatic_receipt_item"].get(
+                receipt_id=receipt_id,
+                id=item_id,
+            )
+            claimed_by = (
+                [c["S"] for c in receipt_item.claimed_by] if receipt_item else []
+            )
+
+            if claim and user_id not in claimed_by:
                 update_dict = {
                     "claimed_by": {
                         "value": [{"S": user_id}],
@@ -224,18 +232,10 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
                     ),
                     update_dict,
                 )
-            else:
-                receipt_item = self.aws.dynamodb.tables["splitomatic_receipt_item"].get(
-                    receipt_id=receipt_id,
-                    id=item_id,
-                )
+            elif not claim and user_id in claimed_by:
                 update_dict = {
                     "claimed_by": {
-                        "value": [
-                            {"S": uid}
-                            for uid in receipt_item.claimed_by
-                            if uid != user_id
-                        ],
+                        "value": [{"S": uid} for uid in claimed_by if uid != user_id],
                         "operation": "SET",
                     },
                 }
