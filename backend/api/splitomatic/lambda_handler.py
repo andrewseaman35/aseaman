@@ -113,6 +113,55 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
             response["items"] = [
                 receipt_item.to_dict() for receipt_item in receipt_items
             ]
+        elif resource == "summary":
+            event_id = self.params.get("event_id")
+            if not event_id:
+                raise ValueError("Event id is required for summary.")
+
+            receipts = self.aws.dynamodb.tables["splitomatic_receipt"].scan(
+                {"event_id": event_id},
+            )
+            receipt_items = self.aws.dynamodb.tables["splitomatic_receipt_item"].scan(
+                {"event_id": event_id},
+            )
+            users = self.aws.dynamodb.tables["splitomatic_user"].scan(
+                {"event_id": event_id},
+            )
+
+            claimed_by_user = {}
+            for receipt_item in receipt_items:
+                for user_id in [c["S"] for c in receipt_item.claimed_by]:
+                    if user_id not in claimed_by_user:
+                        claimed_by_user[user_id] = []
+                    claimed_by_user[user_id].append(receipt_item.id)
+
+            totals = {}
+            for user in users:
+                totals[user.id] = {
+                    "claimed_item_count": 0,
+                    "total": 0,
+                }
+                claimed_items = claimed_by_user[user.id]
+                for receipt_item in receipt_items:
+                    if receipt_item.id in claimed_items:
+                        totals[user.id]["claimed_item_count"] += 1
+                        totals[user.id]["total"] += float(receipt_item.cost)
+
+            response = {
+                "event_id": event_id,
+                "receipts": [
+                    receipt.to_dict(
+                        include_computed=True,
+                        compute_services={"s3_bucket": self.aws.s3.buckets["receipts"]},
+                    )
+                    for receipt in receipts
+                ],
+                "receipt_items": [
+                    receipt_item.to_dict() for receipt_item in receipt_items
+                ],
+                "users": [user.to_dict() for user in users],
+                "totals": totals,
+            }
         else:
             raise NotImplementedError("Resource not implemented: {}".format(resource))
 

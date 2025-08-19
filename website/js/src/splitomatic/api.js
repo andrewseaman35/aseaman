@@ -56,6 +56,18 @@ function fetchReceipt(eventId, receiptId) {
     }).promise();
 }
 
+function fetchSummary(userId, eventId) {
+    const payload = {
+        event_id: eventId,
+        user_id: userId,
+    };
+    return $.ajax({
+        type: 'GET',
+        url: getAPIUrl('splitomatic/summary'),
+        data: payload,
+    }).promise();
+}
+
 function claimItem(receiptId, itemId, userId, claim) {
     const payload = {
         receipt_id: receiptId,
@@ -77,4 +89,5 @@ module.exports = {
     uploadReceipt,
     fetchReceipt,
     claimItem,
+    fetchSummary,
 };

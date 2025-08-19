@@ -2,13 +2,21 @@ import React, { useState } from 'react';
 
 import FileUploader from '../../components/FileUploader';
 import ReceiptItem from '../components/ReceiptItem';
+import SummaryModal from '../components/SummaryModal';
+import { fetchSummary } from '../api'; // Assuming this is the correct path for the API function
 
 const EventHomeView = ({ actions, usersById, eventId, eventName, userId, uploadReceipt, receipts }) => {
   const [showShareModal, setShowShareModal] = useState(false);
-  const [showUpload, setShowUpload] = useState(false);
+  const [showStatusModal, setShowStatusModal] = useState(false);
   const user = usersById[userId] || { name: 'Unknown User' };
   console.log(`Viewing event home for ID: ${eventName}`);
   console.log(`Receipts: `, receipts);
+
+  if(showStatusModal) {
+    fetchSummary(userId, eventId).then((summary) => {
+        console.log("Fetched summary:", summary);
+    });
+  }
 
 return (
     <div className="event-home-view">
@@ -45,6 +53,11 @@ return (
             >
                 Share
             </button>
+            <button className="splitomatic-button"
+                onClick={() => setShowStatusModal(true)}
+            >
+                Status
+            </button>
             <button
                 className="splitomatic-button"
                 onClick={() => actions.reset()}
@@ -71,6 +84,15 @@ return (
                     </button>
                 </div>
             </div>
+        )}
+
+        {showStatusModal && (
+            <SummaryModal
+                usersById={usersById}
+                userId={userId}
+                eventId={eventId}
+                onClose={() => setShowStatusModal(false)}
+            />
         )}
     </div>
 );
