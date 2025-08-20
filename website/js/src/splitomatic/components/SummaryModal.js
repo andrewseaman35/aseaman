@@ -40,10 +40,10 @@ const SummaryModal = ({ usersById, userId, eventId, onClose }) => {
               </div>
               <div className="summary-user-items" style={{ flex: 2 }}>
                 {(summary && summary.totals[uid]) ? (
-                  Object.entries(summary.totals[uid]).map((value, label) => (
-                    <div key={label} className="summary-user-item" style={{ marginBottom: '0.5em' }}>
-                      <span className="summary-item-label" style={{ fontWeight: 'bold' }}>{label}:</span>
-                      <span className="summary-item-value" style={{ marginLeft: '0.5em' }}>{value}</span>
+                  Object.entries(summary.totals[uid]).map((value, idx) => (
+                    <div key={idx} className="summary-user-item" style={{ marginBottom: '0.5em' }}>
+                      <span className="summary-item-label" style={{ fontWeight: 'bold' }}>{value[0]}:</span>
+                      <span className="summary-item-value" style={{ marginLeft: '0.5em' }}>{value[1]}</span>
                     </div>
                   ))
                 ) : (

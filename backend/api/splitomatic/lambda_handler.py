@@ -102,17 +102,21 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
                     f"Receipt with event id {event_id} and receipt id {receipt_id} not found."
                 )
 
-            receipt_items = self.aws.dynamodb.tables["splitomatic_receipt_item"].scan(
-                {"receipt_id": receipt.id},
-            )
+            receipt["items"] = []
+            if receipt.status in {"PROCESSED"}:
+                receipt_items = self.aws.dynamodb.tables[
+                    "splitomatic_receipt_item"
+                ].scan(
+                    {"receipt_id": receipt.id},
+                )
 
-            response = receipt.to_dict(
-                include_computed=True,
-                compute_services={"s3_bucket": self.aws.s3.buckets["receipts"]},
-            )
-            response["items"] = [
-                receipt_item.to_dict() for receipt_item in receipt_items
-            ]
+                response = receipt.to_dict(
+                    include_computed=True,
+                    compute_services={"s3_bucket": self.aws.s3.buckets["receipts"]},
+                )
+                response["items"] = [
+                    receipt_item.to_dict() for receipt_item in receipt_items
+                ]
         elif resource == "summary":
             event_id = self.params.get("event_id")
             if not event_id:
@@ -213,7 +217,9 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
             item = SplitomaticReceiptDDBItem.from_dict(
                 {
                     "event_id": event_id,
-                    "status": "UPLOADED",
+                    "uploader_user_id": self.params.get("user_id", "unknown"),
+                    "payer_user_id": self.params.get("payer_user_id", "unknown"),
+                    "status": "PENDING",
                 }
             )
             content_type = headers["Content-Type"]
@@ -236,6 +242,7 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
                 ),
             }
 
+            ## REMOVE: for easy testing only.
             stub_receipt_items = [
                 SplitomaticReceiptItemDDBItem.from_dict(
                     {

@@ -19,9 +19,9 @@ const ReceiptItem = ({ name, status, presignedUrl, uploader, viewReceipt, timeCr
                 <div className="detail">Status: {status}</div>
                 <div className="detail">Uploader: {uploader}</div>
                 <div className="detail">Created: {formattedDate}</div>
-                <button className="view-receipt-button" onClick={viewReceipt}>
+                {status === "PROCESSED" && <button className="view-receipt-button" onClick={viewReceipt}>
                     View Receipt
-                </button>
+                </button>}
             </div>
         </div>
     );

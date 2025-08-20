@@ -712,6 +712,8 @@ class SplitomaticReceiptDDBItem(DynamoDBItem):
         "time_updated": DynamoDBItemValueConfig("N", default=None, optional=True),
         "name": DynamoDBItemValueConfig("S", default=None, optional=True),
         "status": DynamoDBItemValueConfig("S", default=None, optional=True),
+        "uploader_user_id": DynamoDBItemValueConfig("S", default=None, optional=True),
+        "payer_user_id": DynamoDBItemValueConfig("S", default=None, optional=True),
     }
 
     _computed = ["presigned_url"]
