@@ -29,16 +29,16 @@ class VeryfiClient:
         print(payload)
         print("HEADERFS")
         print(self.get_headers())
-        # response = requests.post(VERIFY_URL, headers=self.get_headers(), json=payload)
-        # return response.json()
+        response = requests.post(VERIFY_URL, headers=self.get_headers(), json=payload)
+        return response.json()
 
-        import json
+        # import json
 
-        with open(
-            "/Users/andrewseaman/repos/aseaman/backend/jobs/splitomatic/mock_response.json",
-            "r",
-        ) as f:
-            response = json.loads(f.read())
+        # with open(
+        #     "/Users/andrewseaman/repos/aseaman/backend/jobs/splitomatic/mock_response.json",
+        #     "r",
+        # ) as f:
+        #     response = json.loads(f.read())
 
         return response
 

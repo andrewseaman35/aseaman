@@ -261,10 +261,6 @@ class DynamoDBTable:
             raise DynamoDBUnauthorizedException
 
         print("Tablename" + self.table_name)
-        print("Tablename" + self.table_name)
-        print("Tablename" + self.table_name)
-        print("Tablename" + self.table_name)
-        print("Tablename" + self.table_name)
         ddb_item = self.ddb_client.get_item(
             TableName=self.table_name, Key=self.ItemClass.build_ddb_key(**kwargs)
         )
@@ -745,6 +741,7 @@ class SplitomaticReceiptDDBItem(DynamoDBItem):
 
 class SplitomaticReceiptTable(DynamoDBTable):
     ItemClass = SplitomaticReceiptDDBItem
+    validate_owner = False
 
 
 class SplitomaticReceiptItemDDBItem(DynamoDBItem):

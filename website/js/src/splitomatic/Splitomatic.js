@@ -141,6 +141,7 @@ class Splitomatic extends React.Component {
                             console.log("Event created successfully:", response);
                             setCookie(COOKIES.EVENT_ID, response.id, null);
                             setCookie(COOKIES.USER_ID, response.users[0].id, null);
+                            this.setupForEvent(response.id, response.users[0].id)
                             this.transitionTo('eventHome');
                         }).catch((error) => {
                             console.error("Error creating event:", error);

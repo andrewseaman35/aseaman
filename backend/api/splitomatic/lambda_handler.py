@@ -242,21 +242,21 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
             }
 
             ## REMOVE: for easy testing only.
-            stub_receipt_items = [
-                SplitomaticReceiptItemDDBItem.from_dict(
-                    {
-                        "event_id": event_id,
-                        "receipt_id": item.id,
-                        "item_name": f"Stub Item {item_number}",
-                        "cost": "4.50",
-                        "claimed_by": [],
-                    }
-                )
-                for item_number in range(1, 4)
-            ]
-            self.aws.dynamodb.tables["splitomatic_receipt_item"].bulk_put(
-                stub_receipt_items
-            )
+            # stub_receipt_items = [
+            #     SplitomaticReceiptItemDDBItem.from_dict(
+            #         {
+            #             "event_id": event_id,
+            #             "receipt_id": item.id,
+            #             "item_name": f"Stub Item {item_number}",
+            #             "cost": "4.50",
+            #             "claimed_by": [],
+            #         }
+            #     )
+            #     for item_number in range(1, 4)
+            # ]
+            # self.aws.dynamodb.tables["splitomatic_receipt_item"].bulk_put(
+            #     stub_receipt_items
+            # )
         elif resource == "claim":
             receipt_id = self.params.get("receipt_id")
             item_id = self.params.get("item_id")

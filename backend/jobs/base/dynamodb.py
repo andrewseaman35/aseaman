@@ -260,6 +260,7 @@ class DynamoDBTable:
         if self.validate_owner and not self.user:
             raise DynamoDBUnauthorizedException
 
+        print("Tablename" + self.table_name)
         ddb_item = self.ddb_client.get_item(
             TableName=self.table_name, Key=self.ItemClass.build_ddb_key(**kwargs)
         )
