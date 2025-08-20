@@ -1,6 +1,7 @@
 PACKAGE_DIR = packages
 
 BUDGET_FILE_JOB_NAME := budget_file
+SPLITOMATIC_JOB_NAME := splitomatic
 
 deploy_venv: requirements.txt
 	virtualenv deploy_venv --python=python3 --no-site-packages
@@ -26,5 +27,10 @@ package: copy_aws_files package_dir
 	cp -r budget_file/* $(PACKAGE_DIR)/$(BUDGET_FILE_JOB_NAME)
 	cp -r base $(PACKAGE_DIR)/$(BUDGET_FILE_JOB_NAME)
 	cd $(PACKAGE_DIR)/$(BUDGET_FILE_JOB_NAME) && zip -r ../$(BUDGET_FILE_JOB_NAME).zip * > /dev/null
+
+	pip install -r splitomatic/requirements.txt -t $(PACKAGE_DIR)/$(SPLITOMATIC_JOB_NAME)
+	cp -r splitomatic/* $(PACKAGE_DIR)/$(SPLITOMATIC_JOB_NAME)
+	cp -r base $(PACKAGE_DIR)/$(SPLITOMATIC_JOB_NAME)
+	cd $(PACKAGE_DIR)/$(SPLITOMATIC_JOB_NAME) && zip -r ../$(SPLITOMATIC_JOB_NAME).zip * > /dev/null
 
 .PHONY: package_dir package copy_aws_files

@@ -53,7 +53,7 @@ def get_payload(request):
         )
     else:
         headers = request.headers
-        if headers["Content-Type"] == "image/png":
+        if headers["Content-Type"] in {"image/png", "image/jpeg", "image/jpg"}:
             body = request.data
         else:
             if request.files:

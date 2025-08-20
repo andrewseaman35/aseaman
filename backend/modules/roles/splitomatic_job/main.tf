@@ -1,3 +1,4 @@
+
 data "aws_region" "current" {}
 
 data "aws_caller_identity" "current" {}
@@ -11,8 +12,8 @@ locals {
   receipt_item_table_name     = "${var.deploy_env == "live" ? "splitomatic_receipt_item" : "splitomatic_receipt_item_${var.deploy_env}"}"
 }
 
-resource "aws_iam_role_policy" "api_role" {
-  name = "${var.api_name}_role"
+resource "aws_iam_role_policy" "job_role" {
+  name = "${var.job_name}_job_role"
   role = var.role
 
   policy = jsonencode({
@@ -28,10 +29,25 @@ resource "aws_iam_role_policy" "api_role" {
       {
         Effect = "Allow"
         Action = [
+          "s3:PutObject",
+          "s3:ListBucket",
+          "s3:GetObject"
+        ]
+        Resource = [
+          "arn:aws:s3:::aseaman-protected",
+          "arn:aws:s3:::aseaman-protected/splitomatic/receipts/${var.deploy_env}/*"
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
           "dynamodb:GetItem",
           "dynamodb:PutItem",
           "dynamodb:UpdateItem",
-          "dynamodb:Scan"
+          "dynamodb:Scan",
+          "dynamodb:BatchGetItem",
+          "dynamodb:BatchWriteItem",
+          "dynamodb:Query",
         ]
         Resource = [
           "arn:aws:dynamodb:${local.aws_region}:${local.aws_account_id}:table/${local.event_table_name}",
@@ -39,13 +55,6 @@ resource "aws_iam_role_policy" "api_role" {
           "arn:aws:dynamodb:${local.aws_region}:${local.aws_account_id}:table/${local.receipt_table_name}",
           "arn:aws:dynamodb:${local.aws_region}:${local.aws_account_id}:table/${local.receipt_item_table_name}"
         ]
-      },
-      {
-        Effect = "Allow"
-        Action = [
-          "ssm:GetParameter"
-        ]
-        Resource = "arn:aws:ssm:${local.aws_region}:${local.aws_account_id}:parameter/*"
       }
     ]
   })

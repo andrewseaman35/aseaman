@@ -25,7 +25,7 @@ class S3Bucket:
             return key.split(f"{self.prefix}/")[1]
         return key
 
-    def put(self, file_bytes, filename, content_type=None):
+    def put(self, file_bytes, filename, content_type=None, remove_prefix=True):
         key = self._generate_s3_key(filename)
         kwargs = {
             "Body": file_bytes,
@@ -35,7 +35,9 @@ class S3Bucket:
         if content_type is not None:
             kwargs["ContentType"] = content_type
         self.s3_client.put_object(**kwargs)
-        return self._remove_prefix(key)
+        if remove_prefix:
+            return self._remove_prefix(key)
+        return key
 
     def head(self, key):
         return self.s3_client.head_object(
@@ -60,4 +62,13 @@ class S3Bucket:
     def list_objects(self, path):
         return self.s3_client.list_objects_v2(
             Bucket=self._bucket_name, MaxKeys=50, Prefix=self._generate_s3_key(path)
+        )
+
+    def presigned_url(self, key: str, expires_in: int = 3600) -> str:
+        if not key:
+            return None
+        return self.s3_client.generate_presigned_url(
+            "get_object",
+            Params={"Bucket": self._bucket_name, "Key": key},
+            ExpiresIn=expires_in,
         )

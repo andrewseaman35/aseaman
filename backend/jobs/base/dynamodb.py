@@ -37,6 +37,7 @@ class DynamoDBItemValueConfig:
 class DynamoDBItem:
     _timestamp_key = "time_updated"
     _config = None
+    _computed = None
 
     def __init__(self, item):
         self._item = item
@@ -58,6 +59,11 @@ class DynamoDBItem:
     def __setstate__(self, d):
         self.__dict__.update(d)
 
+    def set_attribute(self, key, value):
+        if key not in self._config:
+            raise ValueError(f"key {key} not found in config")
+        self._item[key] = value
+
     def config(self, config_key):
         return self._config[config_key]
 
@@ -65,7 +71,8 @@ class DynamoDBItem:
     def ddb_key(self):
         return self.build_ddb_key(id=self.id)
 
-    def build_ddb_key(self, *args, **kwargs):
+    @classmethod
+    def build_ddb_key(cls, *args, **kwargs):
         return NotImplemented
 
     @classmethod
@@ -102,15 +109,29 @@ class DynamoDBItem:
         for key, props in self._config.items():
             if props.internal:
                 del _dict[key]
-        return json.dumps(self.to_dict(include_internal=False))
+        return json.dumps(self.to_dict(include_internal=False, include_computed=True))
 
-    def to_dict(self, include_internal=True):
+    def to_dict(
+        self,
+        include_internal: bool = True,
+        include_computed: bool = True,
+        compute_services=None,
+    ):
         _dict = {**self._item}
-        if include_internal:
-            return _dict
         for key, props in self._config.items():
-            if props.internal and key in _dict:
+            if not include_internal and props.internal and key in _dict:
                 del _dict[key]
+            if props.data_type == "L":
+                result = []
+                for nested in _dict[key]:
+                    result.append(nested[list(nested.keys())[0]])
+                _dict[key] = result
+
+        if include_computed:
+            _compute_services = compute_services or {}
+            _computed = self._computed or []
+            for key in _computed:
+                _dict[key] = self.__getattribute__(f"get_{key}")(**_compute_services)
         return _dict
 
     def to_ddb_item(self):
@@ -268,6 +289,7 @@ class DynamoDBTable:
             TableName=self.table_name,
             Item=item.to_ddb_item(),
         )
+        return item
 
     def bulk_put(self, items):
         put_requests = [{"PutRequest": {"Item": item.to_ddb_item()}} for item in items]
@@ -620,6 +642,139 @@ class SaltLevelDDBItem(DynamoDBItem):
 
 class SaltLevelTable(DynamoDBTable):
     ItemClass = SaltLevelDDBItem
+
+
+class SplitomaticEventDDBItem(DynamoDBItem):
+    _config = {
+        "id": DynamoDBItemValueConfig("S", default=generate_id),
+        "creator": DynamoDBItemValueConfig("S", default="andrew", optional=True),
+        "time_created": DynamoDBItemValueConfig("N", default=get_timestamp),
+        "time_updated": DynamoDBItemValueConfig("N", default=None, optional=True),
+        "name": DynamoDBItemValueConfig("S", default=None, optional=True),
+    }
+
+    @classmethod
+    def build_ddb_key(cls, *args, id=None, **kwargs) -> dict[str, dict[str, str]]:
+        assert id is not None, "id required to build ddb key"
+        return {
+            "id": {
+                "S": id,
+            }
+        }
+
+    def validate_ownership(self, _=None):
+        return
+
+
+class SplitomaticEventTable(DynamoDBTable):
+    ItemClass = SplitomaticEventDDBItem
+
+
+class SplitomaticUserDDBItem(DynamoDBItem):
+    _config = {
+        "id": DynamoDBItemValueConfig("S", default=generate_id),
+        "event_id": DynamoDBItemValueConfig("S"),
+        "time_created": DynamoDBItemValueConfig("N", default=get_timestamp),
+        "time_updated": DynamoDBItemValueConfig("N", default=None, optional=True),
+        "name": DynamoDBItemValueConfig("S", default=None, optional=True),
+    }
+
+    @classmethod
+    def build_ddb_key(
+        cls, *args, event_id=None, id=None, **kwargs
+    ) -> dict[str, dict[str, str]]:
+        assert event_id is not None, "event_id required to build ddb key"
+        return {
+            "event_id": {
+                "S": event_id,
+            }
+        }
+
+    def validate_ownership(self, _=None):
+        return
+
+
+class SplitomaticUserTable(DynamoDBTable):
+    ItemClass = SplitomaticUserDDBItem
+
+
+class SplitomaticReceiptDDBItem(DynamoDBItem):
+    _config = {
+        "event_id": DynamoDBItemValueConfig("S"),
+        "id": DynamoDBItemValueConfig("S", default=generate_id),
+        "s3_key": DynamoDBItemValueConfig("S", default=None, optional=True),
+        "time_created": DynamoDBItemValueConfig("N", default=get_timestamp),
+        "time_updated": DynamoDBItemValueConfig("N", default=None, optional=True),
+        "name": DynamoDBItemValueConfig("S", default=None, optional=True),
+        "status": DynamoDBItemValueConfig("S", default=None, optional=True),
+        "uploader_user_id": DynamoDBItemValueConfig("S", default=None, optional=True),
+        "payer_user_id": DynamoDBItemValueConfig("S", default=None, optional=True),
+    }
+
+    _computed = ["presigned_url"]
+
+    def get_presigned_url(self, s3_bucket=None, **kwargs) -> str:
+        return s3_bucket.presigned_url(
+            key=self.s3_key,
+        )
+
+    @classmethod
+    def build_ddb_key(
+        cls, *args, event_id=None, id=None, **kwargs
+    ) -> dict[str, dict[str, str]]:
+        assert event_id is not None, "event_id required to build ddb key"
+        ddb_key = {
+            "event_id": {
+                "S": event_id,
+            }
+        }
+        if id is not None:
+            ddb_key["id"] = {
+                "S": id,
+            }
+        return ddb_key
+
+    def validate_ownership(self, _=None):
+        return
+
+
+class SplitomaticReceiptTable(DynamoDBTable):
+    ItemClass = SplitomaticReceiptDDBItem
+    validate_owner = False
+
+
+class SplitomaticReceiptItemDDBItem(DynamoDBItem):
+    _config = {
+        "event_id": DynamoDBItemValueConfig("S"),
+        "receipt_id": DynamoDBItemValueConfig("S"),
+        "id": DynamoDBItemValueConfig("S", default=generate_id),
+        "item_name": DynamoDBItemValueConfig("S", default=None, optional=True),
+        "cost": DynamoDBItemValueConfig("S", default="0.00", optional=False),
+        "claimed_by": DynamoDBItemValueConfig("L", default=[]),
+    }
+
+    @classmethod
+    def build_ddb_key(
+        cls, *args, receipt_id=None, id=None, **kwargs
+    ) -> dict[str, dict[str, str]]:
+        assert receipt_id is not None, "receipt_id required to build ddb key"
+        ddb_key = {
+            "receipt_id": {
+                "S": receipt_id,
+            }
+        }
+        if id is not None:
+            ddb_key["id"] = {
+                "S": id,
+            }
+        return ddb_key
+
+    def validate_ownership(self, _=None):
+        return
+
+
+class SplitomaticReceiptItemTable(DynamoDBTable):
+    ItemClass = SplitomaticReceiptItemDDBItem
 
 
 class WSConnectionDDBItem(DynamoDBItem):

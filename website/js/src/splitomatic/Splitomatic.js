@@ -80,7 +80,7 @@ class Splitomatic extends React.Component {
                 eventName: response.name,
                 userId: userId,
                 users: response.users,
-                receipts: response.receipts,
+                receipts: Object.values(this.receiptsById),
             });
         }).catch((error) => {
             console.error("Error fetching event:", error);

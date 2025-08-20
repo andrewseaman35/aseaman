@@ -102,7 +102,6 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
                     f"Receipt with event id {event_id} and receipt id {receipt_id} not found."
                 )
 
-            receipt["items"] = []
             if receipt.status in {"PROCESSED"}:
                 receipt_items = self.aws.dynamodb.tables[
                     "splitomatic_receipt_item"

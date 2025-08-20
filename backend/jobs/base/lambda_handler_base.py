@@ -5,7 +5,7 @@ import traceback
 
 import boto3
 
-from .aws import AWSConfig, DynamoDBConfig, S3Config, SSMConfig, AWS, S3BucketConfig
+from .aws import AWSConfig, DynamoDBConfig, S3Config, SSMConfig, AWS, DynamoDB, SSM, S3
 from .s3 import S3Bucket
 
 
@@ -31,7 +31,11 @@ class JobLambdaHandlerBase(object):
     def __init_aws(self):
         self.aws_session = boto3.session.Session()
 
-        self.aws = AWS()
+        self.aws = AWS(
+            dynamodb=DynamoDB(client=None, tables={}),
+            s3=S3(client=None, buckets={}),
+            ssm=SSM(client=None),
+        )
         if self.aws_config.dynamodb.enabled:
             self.aws.dynamodb.client = self.aws_session.client(
                 "dynamodb", region_name="us-east-1"
@@ -79,7 +83,7 @@ class JobLambdaHandlerBase(object):
 
             name = record["s3"]["object"]["key"]
             print(name)
-            changes[CREATION_EVENT_NAME].append(name.split(self.prefix)[1].lstrip("/"))
+            changes[CREATION_EVENT_NAME].append(name)
 
         return changes
 
@@ -95,6 +99,7 @@ class JobLambdaHandlerBase(object):
             self._run(changes)
         except Exception as e:
             self._handle_error(e)
+            raise e
 
         return {}
 
