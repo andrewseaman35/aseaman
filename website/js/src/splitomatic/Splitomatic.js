@@ -153,11 +153,10 @@ class Splitomatic extends React.Component {
                 view: SelectUserView,
                 description: "Select a user to associate with the event. Loads all associated Users to prepopulate the dropdown.",
                 actions: {
-                    selectUser: (user) => {
-                        console.log(user)
-                        console.log("User selected: " + user.id);
-                        setCookie(COOKIES.USER_ID, user.id, null);
-                        this.setState({ userId: user.id });
+                    selectUser: (userId) => {
+                        console.log(userId)
+                        setCookie(COOKIES.USER_ID, userId, null);
+                        this.setState({ userId: userId });
                         this.transitionTo('eventHome');
                     }
                 }

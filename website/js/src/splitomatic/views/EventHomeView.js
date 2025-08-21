@@ -37,6 +37,7 @@ return (
                 receipts.map((receipt) => (
                     <ReceiptItem
                         name={receipt.name || "Untitled Receipt"}
+                        date={receipt.date}
                         status={receipt.status}
                         presignedUrl={receipt.presigned_url}
                         timeCreated={receipt.time_created}

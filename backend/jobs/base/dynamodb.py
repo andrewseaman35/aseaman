@@ -710,6 +710,10 @@ class SplitomaticReceiptDDBItem(DynamoDBItem):
         "status": DynamoDBItemValueConfig("S", default=None, optional=True),
         "uploader_user_id": DynamoDBItemValueConfig("S", default=None, optional=True),
         "payer_user_id": DynamoDBItemValueConfig("S", default=None, optional=True),
+        "tax": DynamoDBItemValueConfig("S", default=None, optional=True),
+        "tip": DynamoDBItemValueConfig("S", default=None, optional=True),
+        "total": DynamoDBItemValueConfig("S", default=None, optional=True),
+        "date": DynamoDBItemValueConfig("S", default=None, optional=True),
     }
 
     _computed = ["presigned_url"]
@@ -750,7 +754,8 @@ class SplitomaticReceiptItemDDBItem(DynamoDBItem):
         "receipt_id": DynamoDBItemValueConfig("S"),
         "id": DynamoDBItemValueConfig("S", default=generate_id),
         "item_name": DynamoDBItemValueConfig("S", default=None, optional=True),
-        "cost": DynamoDBItemValueConfig("S", default="0.00", optional=False),
+        "total": DynamoDBItemValueConfig("S", default="0.00", optional=True),
+        "quantity": DynamoDBItemValueConfig("S", default="1", optional=True),
         "claimed_by": DynamoDBItemValueConfig("L", default=[]),
     }
 

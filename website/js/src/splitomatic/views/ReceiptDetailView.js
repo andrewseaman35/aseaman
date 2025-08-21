@@ -2,19 +2,17 @@ import React, { use, useEffect, useState } from 'react';
 
 import { fetchReceipt } from '../api';
 import ReceiptItemRow from '../components/ReceiptItemRow';
+import Loading from '../components/Loading';
 
-const mockTaxItems = [
-  { label: 'Sales Tax', value: '$2.50' },
-  { label: 'Service Fee', value: '$1.00' },
-];
 
 const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, usersById }) => {
   const [showModal, setShowModal] = useState(false);
   const [items, setItems] = useState(null);
+  const [receipt, setReceipt] = useState(null);
   const [refresh, setRefresh] = useState(0);
   const [lastUpdated, setLastUpdated] = useState(Date.now());
+  const [loading, setLoading] = useState(true);
 
-  const receipt = receiptsById[receiptId];
   console.log(`Viewing receipt detail for ID: ${receiptId}`);
 
   useEffect(() => {
@@ -22,23 +20,32 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
     fetchReceipt(eventId, receiptId).then((fetchedReceipt) => {
     if (fetchedReceipt) {
         console.log("Fetched receipt:", fetchedReceipt);
+        setReceipt(fetchedReceipt)
         setItems(fetchedReceipt.items);
         setLastUpdated(Date.now());
+        setLoading(false);
     } else {
         console.error("Failed to fetch receipt with ID:", receiptId);
     }
     });
   }, [refresh]);
 
-  const triggerRefresh = () => {
+  const triggerRefresh = (showLoading) => {
     console.log("Triggering refresh for receipt items");
+    if (showLoading) {
+      setLoading(true);
+    }
     setRefresh(prev => prev + 1);
   }
 
   const onClaimItem = (receiptId, itemId, claim) => {
     console.log(`Claiming item with claim: ${claim}`);
     actions.claimItem(receiptId, itemId, claim)
-    triggerRefresh();
+    triggerRefresh(false);
+  }
+
+  if (loading) {
+    return <Loading label="Loading receipt..." />;
   }
 
   return (
@@ -52,12 +59,12 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
         background: '#f5f5f5',
       }}
     >
-        <div className="last-updated">
-            <span className="last-updated-text">
-                Last updated: {new Date(lastUpdated).toLocaleString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })}
-            </span>
-            <button className="splitomatic-button" onClick={triggerRefresh}>Refresh</button>
-        </div>
+      <div className="last-updated">
+        <span className="last-updated-text">
+          Last updated: {new Date(lastUpdated).toLocaleString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })}
+        </span>
+        <button className="splitomatic-button" onClick={triggerRefresh}>Refresh</button>
+      </div>
       <div style={{ marginBottom: '1.5em', width: '350px' }}>
         <div
           style={{
@@ -76,21 +83,21 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
           }}
           onClick={() => setShowModal(true)}
         >
-            {receipt.presigned_url ? (
-                <img
-                    src={receipt.presigned_url}
-                    alt="Receipt thumbnail"
-                    style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        borderRadius: '6px',
-                        display: 'block',
-                    }}
-                />
-            ) : (
-                <span style={{ color: '#888', fontSize: '0.9em' }}>No Image</span>
-            )}
+          {receipt.presigned_url ? (
+            <img
+              src={receipt.presigned_url}
+              alt="Receipt thumbnail"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                borderRadius: '6px',
+                display: 'block',
+              }}
+            />
+          ) : (
+            <span style={{ color: '#888', fontSize: '0.9em' }}>No Image</span>
+          )}
         </div>
 
         {showModal && (
@@ -105,23 +112,32 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
           }}>
             <div style={{
               background: 'white',
-              padding: '2em 3em',
+              padding: '2em 3em 1em 3em',
               borderRadius: '8px',
               boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
               textAlign: 'center',
               minWidth: '300px',
+              maxWidth: '85vw',
+              maxHeight: '85vh',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              overflow: 'auto',
             }}>
-                <img
-                    src={receipt.presigned_url}
-                    alt="Receipt thumbnail"
-                    style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        borderRadius: '6px',
-                        display: 'block',
-                    }}
-                />
+              <img
+                src={receipt.presigned_url}
+                alt="Receipt thumbnail"
+                style={{
+                  maxWidth: '80vw',
+                  maxHeight: '70vh',
+                  width: 'auto',
+                  height: 'auto',
+                  objectFit: 'contain',
+                  borderRadius: '6px',
+                  display: 'block',
+                  marginBottom: '1em',
+                }}
+              />
               <button
                 style={{
                   padding: '0.6em 1.5em',
@@ -131,6 +147,8 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
                   border: 'none',
                   borderRadius: '4px',
                   cursor: 'pointer',
+                  alignSelf: 'center',
+                  marginTop: '0.5em',
                 }}
                 onClick={() => setShowModal(false)}
               >
@@ -141,33 +159,43 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
         )}
 
         <h3 style={{ marginBottom: '0.5em', fontSize: '1.1em' }}>Items</h3>
-        {
+        <div style={{
+          maxHeight: '50vh',
+          overflowY: 'auto',
+          marginBottom: '1em',
+          borderRadius: '8px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
+          background: 'white',
+        }}>
+          {
             items !== null ? (
-                <table className="receipt-item-table">
-                    <thead>
-                        <tr>
-                            <td>Name</td>
-                            <td>Cost</td>
-                            <td>Claims</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            items.map((item, idx) => (
-                                <ReceiptItemRow
-                                    item={item}
-                                    userId={userId}
-                                    key={idx}
-                                    usersById={usersById}
-                                    onClaim={(claim) => onClaimItem(receiptId, item.id, claim)}
-                                />
-                            ))
-                        }
-                    </tbody>
-                </table>
+              <table className="receipt-item-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr>
+                    <td>Name</td>
+                    <td>Cost</td>
+                    <td>Claims</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  {
+                    items.map((item, idx) => (
+                      <ReceiptItemRow
+                        item={item}
+                        userId={userId}
+                        key={idx}
+                        usersById={usersById}
+                        onClaim={(claim) => onClaimItem(receiptId, item.id, claim)}
+                      />
+                    ))
+                  }
+                </tbody>
+              </table>
             ) : (
-                <div>loading...</div>
-            )}
+              <div>loading...</div>
+            )
+          }
+        </div>
 
         <h3 style={{ marginBottom: '0.5em', fontSize: '1.1em' }}>Taxes & Fees</h3>
         <table style={{
@@ -179,12 +207,31 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
           borderCollapse: 'collapse',
         }}>
           <tbody>
-            {mockTaxItems.map((tax, idx) => (
-              <tr key={idx} style={{ borderBottom: idx === mockTaxItems.length - 1 ? 'none' : '1px solid #eee' }}>
-                <td style={{ padding: '0.5em' }}>{tax.label}</td>
-                <td style={{ padding: '0.5em', textAlign: 'right' }}>{tax.value}</td>
-              </tr>
-            ))}
+            <tr key="tip" style={{ borderBottom: '1px solid #eee' }}>
+              <td style={{ padding: '0.5em' }}>Tip</td>
+              <td style={{ padding: '0.5em', textAlign: 'right' }}>{receipt.tip}</td>
+            </tr>
+            <tr key="tax" style={{ borderBottom: 'none' }}>
+              <td style={{ padding: '0.5em' }}>Taxes</td>
+              <td style={{ padding: '0.5em', textAlign: 'right' }}>{receipt.tax}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3 style={{ marginBottom: '0.5em', fontSize: '1.1em' }}>Total</h3>
+        <table style={{
+          width: '100%',
+          background: 'white',
+          borderRadius: '8px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
+          marginBottom: '2em',
+          borderCollapse: 'collapse',
+        }}>
+          <tbody>
+            <tr>
+              <td style={{ padding: '0.5em' }}>Total</td>
+              <td style={{ padding: '0.5em', textAlign: 'right' }}>{receipt.tip}</td>
+            </tr>
           </tbody>
         </table>
       </div>

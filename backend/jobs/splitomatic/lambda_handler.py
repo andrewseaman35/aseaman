@@ -60,7 +60,11 @@ class SplitomaticLambdaHandler(JobLambdaHandlerBase):
         )
         print("Download url:", download_url)
 
-        parsed_receipt = self.verify_client.extract_via_verify(download_url)
+        import json
+
+        with open("./mock_response.json", "r") as f:
+            # parsed_receipt = self.verify_client.extract_via_verify(download_url)
+            parsed_receipt = json.loads(f.read())
         print(parsed_receipt)
 
         receipt_items = [
@@ -76,19 +80,34 @@ class SplitomaticLambdaHandler(JobLambdaHandlerBase):
             )
             for item in parsed_receipt["line_items"]
         ]
+        print(receipt_items)
 
         self.aws.dynamodb.tables["splitomatic_receipt_item"].bulk_put(receipt_items)
         print(f"{len(receipt_items)} items stored")
 
-        receipt = self.aws.dynamodb.tables["splitomatic_receipt"].get(
-            event_id=event_id,
-            id=receipt_id,
-            quiet=True,
-        )
-
         update_dict = {
             "status": {
                 "value": "PROCESSED",
+                "operation": "SET",
+            },
+            "tax": {
+                "value": str(parsed_receipt["tax"]),
+                "operation": "SET",
+            },
+            "tip": {
+                "value": str(parsed_receipt["tip"]),
+                "operation": "SET",
+            },
+            "total": {
+                "value": str(parsed_receipt["total"]),
+                "operation": "SET",
+            },
+            "date": {
+                "value": str(parsed_receipt["date"]),
+                "operation": "SET",
+            },
+            "name": {
+                "value": parsed_receipt["vendor"]["name"],
                 "operation": "SET",
             },
         }

@@ -131,11 +131,9 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
                 {"event_id": event_id},
             )
 
-            claimed_by_user = {}
+            claimed_by_user = {user.id: [] for user in users}
             for receipt_item in receipt_items:
                 for user_id in [c["S"] for c in receipt_item.claimed_by]:
-                    if user_id not in claimed_by_user:
-                        claimed_by_user[user_id] = []
                     claimed_by_user[user_id].append(receipt_item.id)
 
             totals = {}
@@ -148,7 +146,7 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
                 for receipt_item in receipt_items:
                     if receipt_item.id in claimed_items:
                         totals[user.id]["claimed_item_count"] += 1
-                        totals[user.id]["total"] += float(receipt_item.cost)
+                        totals[user.id]["total"] += float(receipt_item.total)
 
             response = {
                 "event_id": event_id,
@@ -241,22 +239,6 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
                 ),
             }
 
-            ## REMOVE: for easy testing only.
-            # stub_receipt_items = [
-            #     SplitomaticReceiptItemDDBItem.from_dict(
-            #         {
-            #             "event_id": event_id,
-            #             "receipt_id": item.id,
-            #             "item_name": f"Stub Item {item_number}",
-            #             "cost": "4.50",
-            #             "claimed_by": [],
-            #         }
-            #     )
-            #     for item_number in range(1, 4)
-            # ]
-            # self.aws.dynamodb.tables["splitomatic_receipt_item"].bulk_put(
-            #     stub_receipt_items
-            # )
         elif resource == "claim":
             receipt_id = self.params.get("receipt_id")
             item_id = self.params.get("item_id")
@@ -294,6 +276,7 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
                         "operation": "SET",
                     },
                 }
+                print(update_dict)
 
                 receipt_item = self.aws.dynamodb.tables[
                     "splitomatic_receipt_item"
