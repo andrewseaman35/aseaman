@@ -7,21 +7,21 @@ import Loading from '../components/Loading';
 
 const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, usersById }) => {
   const [showModal, setShowModal] = useState(false);
-  const [items, setItems] = useState(null);
   const [receipt, setReceipt] = useState(null);
   const [refresh, setRefresh] = useState(0);
   const [lastUpdated, setLastUpdated] = useState(Date.now());
   const [loading, setLoading] = useState(true);
 
   console.log(`Viewing receipt detail for ID: ${receiptId}`);
+  console.log("Users by id", usersById)
 
   useEffect(() => {
     console.log("Fetching receipt with ID: ", receiptId);
+    setReceipt(null);
     fetchReceipt(eventId, receiptId).then((fetchedReceipt) => {
     if (fetchedReceipt) {
         console.log("Fetched receipt:", fetchedReceipt);
         setReceipt(fetchedReceipt)
-        setItems(fetchedReceipt.items);
         setLastUpdated(Date.now());
         setLoading(false);
     } else {
@@ -47,6 +47,8 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
   if (loading) {
     return <Loading label="Loading receipt..." />;
   }
+
+  console.log(receipt)
 
   return (
     <div
@@ -167,34 +169,28 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
           boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
           background: 'white',
         }}>
-          {
-            items !== null ? (
-              <table className="receipt-item-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead>
-                  <tr>
-                    <td>Name</td>
-                    <td>Cost</td>
-                    <td>Claims</td>
-                  </tr>
-                </thead>
-                <tbody>
-                  {
-                    items.map((item, idx) => (
-                      <ReceiptItemRow
-                        item={item}
-                        userId={userId}
-                        key={idx}
-                        usersById={usersById}
-                        onClaim={(claim) => onClaimItem(receiptId, item.id, claim)}
-                      />
-                    ))
-                  }
-                </tbody>
-              </table>
-            ) : (
-              <div>loading...</div>
-            )
-          }
+            <table className="receipt-item-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr>
+                  <td>Name</td>
+                  <td>Cost</td>
+                  <td>Claims</td>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  receipt.items.map((item, idx) => (
+                    <ReceiptItemRow
+                      item={item}
+                      userId={userId}
+                      key={idx}
+                      usersById={usersById}
+                      onClaim={(claim) => onClaimItem(receiptId, item.id, claim)}
+                    />
+                  ))
+                }
+              </tbody>
+            </table>
         </div>
 
         <h3 style={{ marginBottom: '0.5em', fontSize: '1.1em' }}>Taxes & Fees</h3>

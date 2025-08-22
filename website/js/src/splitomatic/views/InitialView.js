@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const InitialView = ({ actions }) => {
+const InitialView = ({ actions, errorMessage }) => {
   const [joinCode, setJoinCode] = useState('');
   const [eventName, setEventName] = useState('');
 
@@ -17,7 +17,7 @@ const InitialView = ({ actions }) => {
         </button>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px'}}>
+      <div className="join-event-container">
         <input
           type="text"
           className="splitomatic-input"
@@ -33,6 +33,12 @@ const InitialView = ({ actions }) => {
           Join Event
         </button>
       </div>
+
+      {errorMessage && (
+        <div className="splitomatic-error-message" style={{ color: 'red', marginTop: '1em' }}>
+          {errorMessage}
+        </div>
+      )}
     </div>
   );
 };

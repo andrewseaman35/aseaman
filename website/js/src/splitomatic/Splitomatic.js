@@ -25,6 +25,8 @@ class Splitomatic extends React.Component {
             userId: null,
             users: null,
             receipts: null,
+
+            errorMessage: null,
         };
 
         this.usersById = {};
@@ -53,37 +55,40 @@ class Splitomatic extends React.Component {
 
     setupForEvent(eventId, userId) {
         console.log("Setting up Splitomatic for event:", eventId, "and user:", userId);
-        fetchEvent(eventId).then((response) => {
-            if (!response || !response.id) {
-                console.error("Invalid response from fetchEvent:", response);
-                return;
+        this.setState({
+            errorMessage: null,
+        });
+        fetchEvent(eventId).then(
+            (response) => {
+                console.log("Event fetched successfully:", response);
+                this.usersById = response.users.reduce((acc, user) => {
+                    acc[user.id] = user;
+                    return acc;
+                }, {});
+                console.log("Users by ID:", this.usersById);
+                this.receiptsById = response.receipts.reduce((acc, receipt) => {
+                    acc[receipt.id] = receipt;
+                    return acc;
+                }, {});
+                console.log("Receipts by ID:", this.receiptsById);
+
+                const currentState = userId ? 'eventHome' : 'selectUser';
+
+                setCookie(COOKIES.EVENT_ID, response.id, null);
+                this.setState({
+                    currentState: currentState,
+                    eventId: response.id,
+                    eventName: response.name,
+                    userId: userId,
+                    users: response.users,
+                    receipts: Object.values(this.receiptsById),
+                });
             }
-
-            console.log("Event fetched successfully:", response);
-            this.usersById = response.users.reduce((acc, user) => {
-                acc[user.id] = user;
-                return acc;
-            }, {});
-            console.log("Users by ID:", this.usersById);
-            this.receiptsById = response.receipts.reduce((acc, receipt) => {
-                acc[receipt.id] = receipt;
-                return acc;
-            }, {});
-            console.log("Receipts by ID:", this.receiptsById);
-
-            const currentState = userId ? 'eventHome' : 'selectUser';
-
-            setCookie(COOKIES.EVENT_ID, response.id, null);
-            this.setState({
-                currentState: currentState,
-                eventId: response.id,
-                eventName: response.name,
-                userId: userId,
-                users: response.users,
-                receipts: Object.values(this.receiptsById),
-            });
-        }).catch((error) => {
+        ).catch((error) => {
             console.error("Error fetching event:", error);
+            this.setState({
+                errorMessage: error.responseJSON.message,
+            });
         });
     }
 

@@ -9,6 +9,7 @@ from base.aws import (
     S3Config,
     S3BucketConfig,
 )
+from base.api_exceptions import BadRequestException, NotFoundException
 
 from base.dynamodb import (
     SplitomaticEventDDBItem,
@@ -19,6 +20,7 @@ from base.dynamodb import (
     SplitomaticReceiptDDBItem,
     SplitomaticReceiptItemTable,
     SplitomaticReceiptItemDDBItem,
+    DynamoDBNotFoundException,
 )
 
 ACCEPTED_CONTENT_TYPES = {
@@ -59,38 +61,46 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
         ),
     )
 
+    def _get_event_json(self, event_id: str) -> dict:
+        event = self.aws.dynamodb.tables["splitomatic_event"].get(
+            id=event_id,
+        )
+        users = self.aws.dynamodb.tables["splitomatic_user"].scan(
+            {"event_id": event_id},
+        )
+        receipts = self.aws.dynamodb.tables["splitomatic_receipt"].scan(
+            {"event_id": event_id},
+        )
+        response = event.to_dict() if event else {}
+        response["users"] = [user.to_dict() for user in users]
+        response["receipts"] = [
+            receipt.to_dict(
+                include_computed=True,
+                compute_services={
+                    "s3_bucket": self.aws.s3.buckets["receipts"],
+                },
+            )
+            for receipt in receipts
+        ]
+        return response
+
     def handle_get(self):
         resource = self.get_resource()
         empty_response = self._empty_response()
 
         if resource == "event":
             event_id = self.params.get("id")
-            event = self.aws.dynamodb.tables["splitomatic_event"].get(
-                id=event_id,
-                quiet=True,
-            )
-            users = self.aws.dynamodb.tables["splitomatic_user"].scan(
-                {"event_id": event_id},
-            )
-            receipts = self.aws.dynamodb.tables["splitomatic_receipt"].scan(
-                {"event_id": event_id},
-            )
-            response = event.to_dict() if event else {}
-            response["users"] = [user.to_dict() for user in users]
-            response["receipts"] = [
-                receipt.to_dict(
-                    include_computed=True,
-                    compute_services={
-                        "s3_bucket": self.aws.s3.buckets["receipts"],
-                    },
-                )
-                for receipt in receipts
-            ]
+            if not event_id:
+                raise BadRequestException("`event_id` required.")
+            try:
+                response = self._get_event_json(event_id)
+            except DynamoDBNotFoundException:
+                raise NotFoundException(f"Event with id {event_id} not found")
         elif resource == "receipt":
             event_id = self.params.get("event_id")
             receipt_id = self.params.get("id")
             if not event_id or not receipt_id:
-                raise ValueError("Event id and receipt id required.")
+                raise BadRequestException("`event_id` and `receipt_id` required.")
 
             receipt = self.aws.dynamodb.tables["splitomatic_receipt"].get(
                 event_id=event_id,
@@ -98,8 +108,8 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
                 quiet=True,
             )
             if not receipt:
-                raise ValueError(
-                    f"Receipt with event id {event_id} and receipt id {receipt_id} not found."
+                raise DynamoDBNotFoundException(
+                    f"Receipt with event_id {event_id} and receipt_id {receipt_id} not found."
                 )
 
             if receipt.status in {"PROCESSED"}:
