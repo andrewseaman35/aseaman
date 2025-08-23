@@ -44,6 +44,20 @@
         font-size: 1.1em;
     }
 
+    &.loading-small {
+        height: unset;
+
+        .splitomatic-loading-icon {
+            width: 16px;
+            height: 16px;
+            border: 4px solid #eee;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0px;
+        }
+    }
+
     @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }

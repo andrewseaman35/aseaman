@@ -17,7 +17,6 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
 
   useEffect(() => {
     console.log("Fetching receipt with ID: ", receiptId);
-    setReceipt(null);
     fetchReceipt(eventId, receiptId).then((fetchedReceipt) => {
     if (fetchedReceipt) {
         console.log("Fetched receipt:", fetchedReceipt);
@@ -40,8 +39,9 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
 
   const onClaimItem = (receiptId, itemId, claim) => {
     console.log(`Claiming item with claim: ${claim}`);
-    actions.claimItem(receiptId, itemId, claim)
-    triggerRefresh(false);
+    return actions.claimItem(receiptId, itemId, claim).then(() => {
+      triggerRefresh(false);
+    });
   }
 
   if (loading) {

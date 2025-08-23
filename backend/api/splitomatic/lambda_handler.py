@@ -91,7 +91,7 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
         if resource == "event":
             event_id = self.params.get("id")
             if not event_id:
-                raise BadRequestException("`event_id` required.")
+                raise BadRequestException("`id` required.")
             try:
                 response = self._get_event_json(event_id)
             except DynamoDBNotFoundException:
@@ -263,39 +263,31 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
                 [c["S"] for c in receipt_item.claimed_by] if receipt_item else []
             )
 
-            if claim and user_id not in claimed_by:
+            if claim:
                 update_dict = {
                     "claimed_by": {
                         "value": [{"S": user_id}],
                         "operation": "list_append",
                     },
                 }
+            else:
+                new_claimed_by_user_ids = [uid for uid in claimed_by]
+                if user_id in new_claimed_by_user_ids:
+                    new_claimed_by_user_ids.remove(user_id)
 
-                receipt_item = self.aws.dynamodb.tables[
-                    "splitomatic_receipt_item"
-                ].update(
-                    SplitomaticReceiptItemDDBItem.build_ddb_key(
-                        receipt_id=receipt_id, id=item_id
-                    ),
-                    update_dict,
-                )
-            elif not claim and user_id in claimed_by:
                 update_dict = {
                     "claimed_by": {
-                        "value": [{"S": uid} for uid in claimed_by if uid != user_id],
+                        "value": [{"S": uid} for uid in new_claimed_by_user_ids],
                         "operation": "SET",
                     },
                 }
-                print(update_dict)
 
-                receipt_item = self.aws.dynamodb.tables[
-                    "splitomatic_receipt_item"
-                ].update(
-                    SplitomaticReceiptItemDDBItem.build_ddb_key(
-                        receipt_id=receipt_id, id=item_id
-                    ),
-                    update_dict,
-                )
+            receipt_item = self.aws.dynamodb.tables["splitomatic_receipt_item"].update(
+                SplitomaticReceiptItemDDBItem.build_ddb_key(
+                    receipt_id=receipt_id, id=item_id
+                ),
+                update_dict,
+            )
 
             receipt_item = self.aws.dynamodb.tables["splitomatic_receipt_item"].get(
                 receipt_id=receipt_id,

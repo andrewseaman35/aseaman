@@ -147,6 +147,7 @@ class Splitomatic extends React.Component {
                             setCookie(COOKIES.EVENT_ID, response.id, null);
                             setCookie(COOKIES.USER_ID, response.users[0].id, null);
                             this.setupForEvent(response.id, response.users[0].id)
+                            this.setState({ eventId: response.id });
                             this.transitionTo('eventHome');
                         }).catch((error) => {
                             console.error("Error creating event:", error);
@@ -158,10 +159,11 @@ class Splitomatic extends React.Component {
                 view: SelectUserView,
                 description: "Select a user to associate with the event. Loads all associated Users to prepopulate the dropdown.",
                 actions: {
-                    selectUser: (userId) => {
-                        console.log(userId)
-                        setCookie(COOKIES.USER_ID, userId, null);
-                        this.setState({ userId: userId });
+                    selectUser: (user) => {
+                        console.log("Selectd User")
+                        console.log(user.id)
+                        setCookie(COOKIES.USER_ID, user.id, null);
+                        this.setState({ userId: user.id });
                         this.transitionTo('eventHome');
                     }
                 }
@@ -209,16 +211,10 @@ class Splitomatic extends React.Component {
                         this.setState({ receiptId: null });
                         this.transitionTo('eventHome');
                     },
-                    claimItem: (receiptId, itemId, claim) => {
+                    claimItem: async (receiptId, itemId, claim) => {
                         const verb = claim ? "claim" : "unclaim";
                         console.log(verb + "ing item " + itemId + " for receipt " + receiptId);
-                        claimItem(receiptId, itemId, this.state.userId, claim)
-                            .then((response) => {
-                                console.log(verb + " successful:", response);
-                            })
-                            .catch((error) => {
-                                console.error("Error " + verb + "ing item:", error);
-                            });
+                        return claimItem(receiptId, itemId, this.state.userId, claim).promise();
                     },
                 }
             }
