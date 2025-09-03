@@ -3,6 +3,8 @@ import os
 
 VERIFY_URL = "https://api.veryfi.com/api/v8/partner/documents"
 
+STUB_RESPONSE = True
+
 
 class VeryfiClient:
     """
@@ -29,18 +31,17 @@ class VeryfiClient:
         print(payload)
         print("HEADERFS")
         print(self.get_headers())
+
+        if STUB_RESPONSE:
+            with open("mock_response.json", "r") as f:
+                response = json.loads(f.read())
+
+            return response
+
         response = requests.post(VERIFY_URL, headers=self.get_headers(), json=payload)
         return response.json()
 
-        # import json
-
-        # with open(
-        #     "/Users/andrewseaman/repos/aseaman/backend/jobs/splitomatic/mock_response.json",
-        #     "r",
-        # ) as f:
-        #     response = json.loads(f.read())
-
-        return response
+        import json
 
 
 if __name__ == "__main__":

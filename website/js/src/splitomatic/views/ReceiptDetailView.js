@@ -50,10 +50,35 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
 
   console.log(receipt)
 
+  const costsByUserId = {};
+  let unclaimedCount = 0;
+  let totalCostAccountedFor = 0;
+  let totalTotal = 0;
+  for (let item of receipt.items) {
+    const itemTotal = Number(item.total);
+    totalTotal += itemTotal;
+    const itemNumSplit = item.claimed_by.length;
+    if (itemNumSplit > 0) {
+      const pricePerPortion = itemTotal / itemNumSplit;
+      for (let claimerUserId of item.claimed_by) {
+        if (!(claimerUserId in costsByUserId)) {
+          costsByUserId[claimerUserId] = 0;
+        }
+        costsByUserId[claimerUserId] += pricePerPortion;
+        totalCostAccountedFor += pricePerPortion;
+      }
+    } else {
+      unclaimedCount += 1;
+    }
+  }
+
+  const yourTip = (Number(receipt.tip) / totalTotal) * costsByUserId[userId];
+  const yourTax = (Number(receipt.tax) / totalTotal) * costsByUserId[userId];
+  const yourTotal = costsByUserId[userId] + yourTip + yourTax;
+
   return (
     <div
       style={{
-        height: '100vh',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -67,39 +92,29 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
         </span>
         <button className="splitomatic-button" onClick={triggerRefresh}>Refresh</button>
       </div>
-      <div style={{ marginBottom: '1.5em', width: '350px' }}>
-        <div
-          style={{
-            width: '100%',
-            height: '120px',
-            background: '#eee',
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            marginBottom: '1em',
-            fontSize: '1.1em',
-            color: '#888',
-            border: '1px solid #ccc',
-          }}
-          onClick={() => setShowModal(true)}
-        >
-          {receipt.presigned_url ? (
-            <img
-              src={receipt.presigned_url}
-              alt="Receipt thumbnail"
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                borderRadius: '6px',
-                display: 'block',
-              }}
-            />
-          ) : (
-            <span style={{ color: '#888', fontSize: '0.9em' }}>No Image</span>
-          )}
+      <div style={{ marginBottom: '1.5em', width: '500px' }}>
+        <div className="splitomatic-receipt-detail-hero">
+          <div className="splitomatic-receipt-detail-hero-details">
+            <h2>{receipt.name}</h2>
+            <div className="gap"></div>
+            <div><strong>Date:</strong> {receipt.date ? new Date(receipt.date).toLocaleDateString() : 'N/A'}</div>
+            <div><strong>Payor:</strong> {receipt.payer_user_id && usersById[receipt.payer_user_id] ? usersById[receipt.payer_user_id].name : 'N/A'}</div>
+            <div><strong>Uploader:</strong> {receipt.uploader_user_id && usersById[receipt.uploader_user_id] ? usersById[receipt.uploader_user_id].name : 'N/A'}</div>
+            <div><strong>Status:</strong> {receipt.status || 'N/A'}</div>
+          </div>
+          <div
+            className="thumbnail-container"
+            onClick={() => setShowModal(true)}
+          >
+            {receipt.presigned_url ? (
+              <img
+                src={receipt.presigned_url}
+                alt="Receipt thumbnail"
+              />
+            ) : (
+              <span style={{ color: '#888', fontSize: '0.9em' }}>No Image</span>
+            )}
+          </div>
         </div>
 
         {showModal && (
@@ -175,6 +190,7 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
                   <td>Name</td>
                   <td>Cost</td>
                   <td>Claims</td>
+                  <td>Breakdown</td>
                 </tr>
               </thead>
               <tbody>
@@ -194,27 +210,29 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
         </div>
 
         <h3 style={{ marginBottom: '0.5em', fontSize: '1.1em' }}>Taxes & Fees</h3>
-        <table style={{
-          width: '100%',
-          background: 'white',
-          borderRadius: '8px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
-          marginBottom: '2em',
-          borderCollapse: 'collapse',
-        }}>
+        <table className="receipt-item-table">
+          <thead>
+            <tr>
+              <td>Item</td>
+              <td>Total</td>
+              <td>Your Portion</td>
+            </tr>
+          </thead>
           <tbody>
             <tr key="tip" style={{ borderBottom: '1px solid #eee' }}>
               <td style={{ padding: '0.5em' }}>Tip</td>
-              <td style={{ padding: '0.5em', textAlign: 'right' }}>{receipt.tip}</td>
+              <td style={{ padding: '0.5em', textAlign: 'right' }}>${receipt.tip}</td>
+              <td style={{ padding: '0.5em', textAlign: 'right' }}>${yourTip.toFixed(2)}</td>
             </tr>
             <tr key="tax" style={{ borderBottom: 'none' }}>
               <td style={{ padding: '0.5em' }}>Taxes</td>
-              <td style={{ padding: '0.5em', textAlign: 'right' }}>{receipt.tax}</td>
+              <td style={{ padding: '0.5em', textAlign: 'right' }}>${receipt.tax}</td>
+              <td style={{ padding: '0.5em', textAlign: 'right' }}>${yourTax.toFixed(2)}</td>
             </tr>
           </tbody>
         </table>
 
-        <h3 style={{ marginBottom: '0.5em', fontSize: '1.1em' }}>Total</h3>
+        <h3 style={{ marginBottom: '0.5em', fontSize: '1.1em' }}>Summary</h3>
         <table style={{
           width: '100%',
           background: 'white',
@@ -225,8 +243,16 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
         }}>
           <tbody>
             <tr>
-              <td style={{ padding: '0.5em' }}>Total</td>
-              <td style={{ padding: '0.5em', textAlign: 'right' }}>{receipt.tip}</td>
+              <td style={{ padding: '0.5em' }}>Unclaimed Items</td>
+              <td style={{ padding: '0.5em', textAlign: 'right' }}>{unclaimedCount}</td>
+            </tr>
+            <tr>
+              <td style={{ padding: '0.5em' }}>Total Cost</td>
+              <td style={{ padding: '0.5em', textAlign: 'right' }}>${receipt.total}</td>
+            </tr>
+            <tr>
+              <td style={{ padding: '0.5em' }}>You owe for this receipt</td>
+              <td style={{ padding: '0.5em', textAlign: 'right' }}>${yourTotal.toFixed(2)}</td>
             </tr>
           </tbody>
         </table>

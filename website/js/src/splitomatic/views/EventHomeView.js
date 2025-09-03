@@ -44,14 +44,6 @@ const EventHomeView = ({ actions, usersById, eventId, eventName, userId }) => {
     return <Loading label="Loading event..." />;
   }
 
-  if(showStatusModal) {
-    setLoading(true);
-    fetchSummary(userId, eventId).then((summary) => {
-        console.log("Fetched summary:", summary);
-        setLoading(false);
-    });
-  }
-
     return (
         <div className="event-home-view">
             <h1>Event Home: {`${event.name}`}</h1>
