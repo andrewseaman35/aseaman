@@ -63,8 +63,8 @@ class SplitomaticLambdaHandler(JobLambdaHandlerBase):
         import json
 
         with open("./mock_response.json", "r") as f:
-            # parsed_receipt = self.verify_client.extract_via_verify(download_url)
             parsed_receipt = json.loads(f.read())
+            # parsed_receipt = self.verify_client.extract_via_verify(download_url)
         print(parsed_receipt)
 
         receipt_items = [

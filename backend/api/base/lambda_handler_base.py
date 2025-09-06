@@ -37,7 +37,7 @@ class LambdaHandlerBase(object):
     def __init__(self, event: dict[Any, Any], context: dict[Any, Any]) -> None:
         self.event = event
         self.context = context
-        self.env = os.environ.get("ENV")
+        self.env = os.environ.get("ENV", "local")
         self.hostname = os.environ.get("HOSTNAME")
         self.site_url = f"http{'' if self.env == 'local' else 's'}://{self.hostname}"
         self.user = {
