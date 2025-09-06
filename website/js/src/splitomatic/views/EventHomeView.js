@@ -19,7 +19,6 @@ const EventHomeView = ({ actions, usersById, eventId, eventName, userId }) => {
 
   useEffect(() => {
     console.log("Fetching event with ID: ", eventId);
-    setEvent(null);
     fetchEvent(eventId).then((event) => {
         if (!event || !event.id) {
             console.error("Failed to fetch event");
@@ -36,8 +35,15 @@ const EventHomeView = ({ actions, usersById, eventId, eventName, userId }) => {
     console.log("Triggering refresh for event");
     if (showLoading) {
       setLoading(true);
+      setEvent(null);
     }
     setRefresh(prev => prev + 1);
+  }
+
+  const uploadReceipt = (content, filetype) => {
+    actions.uploadReceipt(eventId, content, filetype).then(() => {
+        triggerRefresh(false);
+    })
   }
 
   if (loading) {
@@ -93,7 +99,7 @@ const EventHomeView = ({ actions, usersById, eventId, eventName, userId }) => {
                 </button>
                 <FileUploader
                     inputId="receipt-file"
-                    upload={(content, filetype) => {actions.uploadReceipt(eventId, content, filetype)}}
+                    upload={(content, filetype) => uploadReceipt(content, filetype)}
                     accept="image/png, image/jpeg, application/pdf"
                 />
             </div>

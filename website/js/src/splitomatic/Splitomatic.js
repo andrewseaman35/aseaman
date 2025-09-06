@@ -180,15 +180,7 @@ class Splitomatic extends React.Component {
                         console.log("Uploading receipt");
                         console.log("Event ID: " + eventId);
                         console.log("File Type: " + fileType);
-                        uploadReceipt(eventId, content, fileType)
-                            .then((response) => {
-                                console.log("Receipt uploaded successfully");
-                                console.log(response);
-                                this.refreshCurrentState();
-                            })
-                            .catch((error) => {
-                                console.error("Error uploading receipt:", error);
-                            });
+                        return uploadReceipt(eventId, content, fileType).promise();
                         // Logic to upload a receipt
                     },
                     viewReceipt: (receiptId) => {
