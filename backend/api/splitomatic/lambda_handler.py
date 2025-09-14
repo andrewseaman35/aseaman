@@ -141,25 +141,55 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
                 {"event_id": event_id},
             )
 
+            receipt_item_by_receipt_id = {}
+            for receipt_item in receipt_items:
+                receipt_id = receipt_item.receipt_id
+                if receipt_id not in receipt_item_by_receipt_id:
+                    receipt_item_by_receipt_id[receipt_id] = []
+                receipt_item_by_receipt_id[receipt_id].append(receipt_item)
+
             claimed_by_user = {user.id: [] for user in users}
             for receipt_item in receipt_items:
                 for user_id in [c["S"] for c in receipt_item.claimed_by]:
                     claimed_by_user[user_id].append(receipt_item.id)
 
+            event_total: float = 0
             totals = {}
+            user_summaries = []
             for user in users:
+                summary = {
+                    "total_owed": 0,
+                    "claimed_item_count": 0,
+                    "receipts": [{"receipt_id": None, "claimed_items": []}],
+                }
                 totals[user.id] = {
                     "claimed_item_count": 0,
                     "total": 0,
                 }
                 claimed_items = claimed_by_user[user.id]
                 for receipt_item in receipt_items:
+                    item_total = float(receipt_item.total or 0)
+                    event_total += item_total
                     if receipt_item.id in claimed_items:
                         totals[user.id]["claimed_item_count"] += 1
-                        totals[user.id]["total"] += float(receipt_item.total)
+                        totals[user.id]["total"] += item_total
+
+            # summary_by_user = {user.id: {
+            #     "total_owed": 0,
+            #     "claimed_item_count": 0,
+            #     "receipts": []
+            # } for user in users}
+            # for receipt_id, receipt_items in receipt_item_by_receipt_id.items():
+            #     for user in users:
 
             response = {
                 "event_id": event_id,
+                "event_summary": {
+                    "event_total": event_total,
+                    "receipt_count": len(receipts),
+                    "item_count": len(receipt_items),
+                },
+                "user_summaries": [],
                 "receipts": [
                     receipt.to_dict(
                         include_computed=True,
@@ -296,7 +326,7 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
 
             response = receipt_item.to_dict()
 
-        if resource == "item":
+        elif resource == "item":
             receipt_id = self.params.get("receipt_id")
             item_id = self.params.get("item_id")
             quantity = self.params.get("quantity")

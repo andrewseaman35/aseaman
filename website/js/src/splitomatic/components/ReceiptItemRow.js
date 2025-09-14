@@ -61,6 +61,7 @@ const ReceiptItemRow = ({ item, userId, onClaim, usersById, onUpdate }) => {
         setPrevQuantity(quantity);
 
         onUpdate({ quantity }).then(() => {
+            // Optionally handle success feedback here
         }).catch(() => {
             setQuantity(oldQuantity);
             setPrevQuantity(oldQuantity);
@@ -124,49 +125,53 @@ const ReceiptItemRow = ({ item, userId, onClaim, usersById, onUpdate }) => {
                 onDoubleClick={() => setEditingName(true)}
                 style={{ cursor: 'pointer', minWidth: '10em' }}
             >
-                {editingName ? (
-                    <input
-                        type="text"
-                        value={name}
-                        style={{
-                            width: '10em',
-                            padding: '0.3em',
-                            fontSize: '1em',
-                            borderRadius: '4px',
-                            border: '1px solid #ccc',
-                        }}
-                        onChange={handleNameChange}
-                        onBlur={handleNameBlur}
-                        autoFocus
-                    />
-                ) : (
-                    name
-                )}
+                <Tooltip content={item.original_item_name || ""} delay={2}>
+                    {editingName ? (
+                        <input
+                            type="text"
+                            value={name}
+                            style={{
+                                width: '10em',
+                                padding: '0.3em',
+                                fontSize: '1em',
+                                borderRadius: '4px',
+                                border: '1px solid #ccc',
+                            }}
+                            onChange={handleNameChange}
+                            onBlur={handleNameBlur}
+                            autoFocus
+                        />
+                    ) : (
+                        name
+                    )}
+                </Tooltip>
             </td>
             <td
                 onDoubleClick={() => setEditingQuantity(true)}
                 style={{ cursor: 'pointer', minWidth: '3em', textAlign: 'center' }}
             >
-                {editingQuantity ? (
-                    <input
-                        type="number"
-                        min={1}
-                        value={quantity}
-                        style={{
-                            width: '3em',
-                            padding: '0.3em',
-                            fontSize: '1em',
-                            borderRadius: '4px',
-                            border: '1px solid #ccc',
-                            textAlign: 'center'
-                        }}
-                        onChange={handleQuantityChange}
-                        onBlur={handleQuantityBlur}
-                        autoFocus
-                    />
-                ) : (
-                    quantity
-                )}
+                <Tooltip content={item.original_quantity != null ? String(item.original_quantity) : ""} delay={2}>
+                    {editingQuantity ? (
+                        <input
+                            type="number"
+                            min={1}
+                            value={quantity}
+                            style={{
+                                width: '3em',
+                                padding: '0.3em',
+                                fontSize: '1em',
+                                borderRadius: '4px',
+                                border: '1px solid #ccc',
+                                textAlign: 'center'
+                            }}
+                            onChange={handleQuantityChange}
+                            onBlur={handleQuantityBlur}
+                            autoFocus
+                        />
+                    ) : (
+                        quantity
+                    )}
+                </Tooltip>
             </td>
             <td>${formattedTotal}</td>
             <td className="claimed-by-cell" style={{ position: 'relative' }}>

@@ -754,8 +754,10 @@ class SplitomaticReceiptItemDDBItem(DynamoDBItem):
         "receipt_id": DynamoDBItemValueConfig("S"),
         "id": DynamoDBItemValueConfig("S", default=generate_id),
         "item_name": DynamoDBItemValueConfig("S", default=None, optional=True),
+        "original_item_name": DynamoDBItemValueConfig("S", default=None, optional=True),
         "total": DynamoDBItemValueConfig("S", default="0.00", optional=True),
         "quantity": DynamoDBItemValueConfig("S", default="1", optional=True),
+        "original_quantity": DynamoDBItemValueConfig("S", default="1", optional=True),
         "claimed_by": DynamoDBItemValueConfig("L", default=[]),
     }
 

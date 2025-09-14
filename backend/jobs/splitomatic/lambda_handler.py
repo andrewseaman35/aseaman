@@ -72,10 +72,11 @@ class SplitomaticLambdaHandler(JobLambdaHandlerBase):
                 {
                     "event_id": event_id,
                     "receipt_id": receipt_id,
-                    "original_item_name": item["description"],
                     "item_name": item["description"],
+                    "original_item_name": item["description"],
                     "total": item["total"],
                     "quantity": item["quantity"],
+                    "original_quantity": item["quantity"],
                     "claimed_by": [],
                 }
             )

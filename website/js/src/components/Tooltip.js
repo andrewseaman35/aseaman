@@ -1,16 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
-const Tooltip = ({ children, content, placement = "top" }) => {
+const Tooltip = ({ children, content, placement = "top", delay = 0 }) => {
   const [visible, setVisible] = useState(false);
+  const timerRef = useRef(null);
+
+  const showTooltip = () => {
+    timerRef.current = setTimeout(() => {
+      setVisible(true);
+    }, delay * 1000);
+  };
+
+  const hideTooltip = () => {
+    clearTimeout(timerRef.current);
+    setVisible(false);
+  };
 
   return (
     <span
       className="splitomatic-tooltip-wrapper"
       style={{ position: 'relative', display: 'inline-block' }}
-      onMouseEnter={() => setVisible(true)}
-      onMouseLeave={() => setVisible(false)}
-      onFocus={() => setVisible(true)}
-      onBlur={() => setVisible(false)}
+      onMouseEnter={showTooltip}
+      onMouseLeave={hideTooltip}
+      onFocus={showTooltip}
+      onBlur={hideTooltip}
       tabIndex={0}
     >
       {children}
