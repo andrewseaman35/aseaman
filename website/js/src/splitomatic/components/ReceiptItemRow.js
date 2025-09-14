@@ -27,18 +27,19 @@ const ReceiptItemRow = ({ item, userId, onClaim, usersById, onUpdate }) => {
         })
     }
 
-    const youOwe = totalClaims > 0 ? (Number(item.total) / totalClaims) * claimCount : 0;
+    let youOwe = 0;
+    if (claimCount <= quantity) {
+        youOwe = (Number(item.total) / Number(item.quantity)) * claimCount;
+    } else {
+        youOwe = (Number(item.total) / totalClaims) * claimCount;
+    }
+
+    totalClaims > 0 ? (Number(item.total) / Number(item.quantity)) * claimCount : 0;
     const claimsByUser =
         claimedByNames.reduce((acc, name) => {
             acc[name] = (acc[name] || 0) + 1;
             return acc;
         }, {});
-    const claimedByText = claimedByNames.length > 0
-        ? Object.entries(claimsByUser)
-            .sort((a, b) => b[1] - a[1]) // Sort by count descending
-            .map(([name, count]) => count > 1 ? `${name} (x${count})` : name)
-            .join(', ')
-        : "No claims";
 
     const handleClaim = async (claim) => {
         setLoading(true);
@@ -172,6 +173,9 @@ const ReceiptItemRow = ({ item, userId, onClaim, usersById, onUpdate }) => {
                         quantity
                     )}
                 </Tooltip>
+            </td>
+            <td style={{ textAlign: 'right' }}>
+                ${quantity > 0 ? (Number(item.total) / quantity).toFixed(2) : "0.00"}
             </td>
             <td>${formattedTotal}</td>
             <td className="claimed-by-cell" style={{ position: 'relative' }}>

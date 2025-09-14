@@ -365,3 +365,122 @@
         }
     }
 }
+
+.splitomatic-receipt-detail-view {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #f5f5f5;
+}
+
+.splitomatic-receipt-detail-main {
+    margin-bottom: 1.5em;
+    width: 500px;
+}
+
+.splitomatic-modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.splitomatic-modal-content {
+    background: white;
+    padding: 2em 3em 1em 3em;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    text-align: center;
+    min-width: 300px;
+    max-width: 85vw;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: auto;
+}
+
+.splitomatic-modal-img {
+    max-width: 80vw;
+    max-height: 70vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 6px;
+    display: block;
+    margin-bottom: 1em;
+}
+
+.splitomatic-modal-close-btn {
+    padding: 0.6em 1.5em;
+    font-size: 1em;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    align-self: center;
+    margin-top: 0.5em;
+}
+
+.splitomatic-section-title {
+    margin-bottom: 0.5em;
+    font-size: 1.1em;
+}
+
+.splitomatic-items-table-container {
+    max-height: 50vh;
+    overflow-y: auto;
+    margin-bottom: 1em;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    background: white;
+}
+
+.splitomatic-summary-table {
+    width: 100%;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    margin-bottom: 2em;
+    border-collapse: collapse;
+}
+
+.splitomatic-bottom-bar {
+    display: flex;
+    gap: 1em;
+}
+
+.splitomatic-done-btn {
+    padding: 1em 2em;
+    font-size: 1.2em;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.splitomatic-return-btn {
+    padding: 1em 2em;
+    font-size: 1.2em;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.splitomatic-no-image {
+    color: #888;
+    font-size: 0.9em;
+}
+
+.splitomatic-breakdown-link {
+    cursor: help;
+    text-decoration: underline dotted;
+}
