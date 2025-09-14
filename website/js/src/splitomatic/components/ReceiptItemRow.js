@@ -2,8 +2,16 @@ import React, { useState } from 'react';
 
 import Tooltip from '../../components/Tooltip';
 
-const ReceiptItemRow = ({ item, userId, onClaim, usersById }) => {
+const ReceiptItemRow = ({ item, userId, onClaim, usersById, onUpdate }) => {
     const [loading, setLoading] = useState(false);
+    const [quantity, setQuantity] = useState(item.quantity || 1);
+    const [editingQuantity, setEditingQuantity] = useState(false);
+    const [prevQuantity, setPrevQuantity] = useState(item.quantity || 1);
+
+    const [name, setName] = useState(item.item_name || "");
+    const [editingName, setEditingName] = useState(false);
+    const [prevName, setPrevName] = useState(item.item_name || "");
+
     const claimed = item.claimed_by.includes(userId);
     const claimedByNames = [];
     let claimCount = 0;
@@ -35,12 +43,45 @@ const ReceiptItemRow = ({ item, userId, onClaim, usersById }) => {
     const handleClaim = async (claim) => {
         setLoading(true);
         onClaim(claim).then(() => {
-            console.log("Unloading")
-            // lmao
             setTimeout(() => {
                 setLoading(false);
             }, 750)
         })
+    };
+
+    const handleQuantityChange = (e) => {
+        const value = Math.max(1, Number(e.target.value));
+        setQuantity(value);
+    };
+
+    const handleQuantityBlur = async () => {
+        setEditingQuantity(false);
+        if (quantity === prevQuantity) return;
+        const oldQuantity = prevQuantity;
+        setPrevQuantity(quantity);
+
+        onUpdate({ quantity }).then(() => {
+        }).catch(() => {
+            setQuantity(oldQuantity);
+            setPrevQuantity(oldQuantity);
+        });
+    };
+
+    const handleNameChange = (e) => {
+        setName(e.target.value);
+    };
+
+    const handleNameBlur = async () => {
+        setEditingName(false);
+        if (name === prevName) return;
+        const oldName = prevName;
+        setPrevName(name);
+
+        onUpdate({ name }).then(() => {
+        }).catch(() => {
+            setName(oldName);
+            setPrevName(oldName);
+        });
     };
 
     const formattedTotal = Number(item.total).toFixed(2);
@@ -79,7 +120,54 @@ const ReceiptItemRow = ({ item, userId, onClaim, usersById }) => {
 
     return (
         <tr className="receipt-item-row">
-            <td>{item.item_name}</td>
+            <td
+                onDoubleClick={() => setEditingName(true)}
+                style={{ cursor: 'pointer', minWidth: '10em' }}
+            >
+                {editingName ? (
+                    <input
+                        type="text"
+                        value={name}
+                        style={{
+                            width: '10em',
+                            padding: '0.3em',
+                            fontSize: '1em',
+                            borderRadius: '4px',
+                            border: '1px solid #ccc',
+                        }}
+                        onChange={handleNameChange}
+                        onBlur={handleNameBlur}
+                        autoFocus
+                    />
+                ) : (
+                    name
+                )}
+            </td>
+            <td
+                onDoubleClick={() => setEditingQuantity(true)}
+                style={{ cursor: 'pointer', minWidth: '3em', textAlign: 'center' }}
+            >
+                {editingQuantity ? (
+                    <input
+                        type="number"
+                        min={1}
+                        value={quantity}
+                        style={{
+                            width: '3em',
+                            padding: '0.3em',
+                            fontSize: '1em',
+                            borderRadius: '4px',
+                            border: '1px solid #ccc',
+                            textAlign: 'center'
+                        }}
+                        onChange={handleQuantityChange}
+                        onBlur={handleQuantityBlur}
+                        autoFocus
+                    />
+                ) : (
+                    quantity
+                )}
+            </td>
             <td>${formattedTotal}</td>
             <td className="claimed-by-cell" style={{ position: 'relative' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>

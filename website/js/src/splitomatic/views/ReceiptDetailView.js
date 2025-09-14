@@ -44,6 +44,13 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
     });
   }
 
+  const onUpdateItem = (receiptId, itemId, updates) => {
+    console.log(`Updating item with updates: ${JSON.stringify(updates)}`);
+    return actions.updateItem(receiptId, itemId, updates).then(() => {
+      triggerRefresh(false);
+    });
+  }
+
   if (loading) {
     return <Loading label="Loading receipt..." />;
   }
@@ -188,6 +195,7 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
               <thead>
                 <tr>
                   <td>Name</td>
+                  <td>Quantity</td>
                   <td>Cost</td>
                   <td>Claims</td>
                   <td>Breakdown</td>
@@ -202,6 +210,7 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
                       key={idx}
                       usersById={usersById}
                       onClaim={(claim) => onClaimItem(receiptId, item.id, claim)}
+                      onUpdate={(updates) => onUpdateItem(receiptId, item.id, updates)}
                     />
                   ))
                 }

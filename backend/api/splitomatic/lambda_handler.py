@@ -296,6 +296,42 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
 
             response = receipt_item.to_dict()
 
+        if resource == "item":
+            receipt_id = self.params.get("receipt_id")
+            item_id = self.params.get("item_id")
+            quantity = self.params.get("quantity")
+            name = self.params.get("name")
+
+            update_dict = {}
+            if quantity and int(quantity) > 0:
+                update_dict["quantity"] = {
+                    "value": str(quantity),
+                    "operation": "SET",
+                }
+            if name is not None:
+                update_dict["item_name"] = {
+                    "value": name,
+                    "operation": "SET",
+                }
+            if not update_dict:
+                raise BadRequestException(
+                    "At least one of `quantity` or `name` is required."
+                )
+
+            receipt_item = self.aws.dynamodb.tables["splitomatic_receipt_item"].update(
+                SplitomaticReceiptItemDDBItem.build_ddb_key(
+                    receipt_id=receipt_id, id=item_id
+                ),
+                update_dict,
+            )
+
+            receipt_item = self.aws.dynamodb.tables["splitomatic_receipt_item"].get(
+                receipt_id=receipt_id,
+                id=item_id,
+            )
+
+            response = receipt_item.to_dict()
+
         else:
             raise NotImplementedError("Resource not implemented: {}".format(resource))
 

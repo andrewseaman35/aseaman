@@ -7,7 +7,7 @@ import EventHomeView from './views/EventHomeView';
 import ReceiptDetailView from './views/ReceiptDetailView';
 import SelectUserView from './views/SelectUserView';
 
-import { createEvent, fetchEvent, uploadReceipt, claimItem } from './api';
+import { createEvent, fetchEvent, uploadReceipt, claimItem, updateItem } from './api';
 import { getCookie, setCookie } from '../utils';
 
 const COOKIES = Object.freeze({
@@ -181,7 +181,6 @@ class Splitomatic extends React.Component {
                         console.log("Event ID: " + eventId);
                         console.log("File Type: " + fileType);
                         return uploadReceipt(eventId, content, fileType).promise();
-                        // Logic to upload a receipt
                     },
                     viewReceipt: (receiptId) => {
                         console.log("Viewing receipt " + receiptId);
@@ -208,6 +207,10 @@ class Splitomatic extends React.Component {
                         console.log(verb + "ing item " + itemId + " for receipt " + receiptId);
                         return claimItem(receiptId, itemId, this.state.userId, claim).promise();
                     },
+                    updateItem: async (receiptId, itemId, updates) => {
+                        console.log(`Updating item ${itemId} for receipt ${receiptId} with updates: ${JSON.stringify(updates)}`);
+                        return updateItem(receiptId, itemId, updates).promise();
+                    }
                 }
             }
         };
