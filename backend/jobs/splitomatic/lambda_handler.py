@@ -72,8 +72,8 @@ class SplitomaticLambdaHandler(JobLambdaHandlerBase):
                 {
                     "event_id": event_id,
                     "receipt_id": receipt_id,
-                    "item_name": item["description"],
                     "original_item_name": item["description"],
+                    "item_name": item["description"],
                     "total": item["total"],
                     "quantity": item["quantity"],
                     "original_quantity": item["quantity"],
@@ -154,6 +154,40 @@ class SplitomaticLambdaHandler(JobLambdaHandlerBase):
 def lambda_handler(event, context):
     return SplitomaticLambdaHandler(event, context).handle()
 
+
+# event = {
+#     "Records": [
+#         {
+#             "eventVersion": "2.1",
+#             "eventSource": "aws:s3",
+#             "awsRegion": "us-east-1",
+#             "eventTime": "2025-08-20T03:49:58.444Z",
+#             "eventName": "ObjectCreated:Put",
+#             "userIdentity": {"principalId": "AWS:AIDAJDNB5MJJIJIUWHFYC"},
+#             "requestParameters": {"sourceIPAddress": "75.11.10.172"},
+#             "responseElements": {
+#                 "x-amz-request-id": "9VRT8VSETX6J1Z6S",
+#                 "x-amz-id-2": "XTiH6g0xkZznchOtOMlmDFW98ko9oIaqjUZiUHqNqM372uzxkQcDd0d7HCWVmzc3CLZ8fhOQ9RebM/Mx/R/eKPzbD/asozUs",
+#             },
+#             "s3": {
+#                 "s3SchemaVersion": "1.0",
+#                 "configurationId": "tf-s3-lambda-20250820032154096500000001",
+#                 "bucket": {
+#                     "name": "aseaman-protected",
+#                     "ownerIdentity": {"principalId": "A3QM71HR4ZP65N"},
+#                     "arn": "arn:aws:s3:::aseaman-protected",
+#                 },
+#                 "object": {
+#                     "key": "splitomatic/receipts/local/25543dc325a14f9fa81c470bd7326b50/0f49238022c7433bb6f9399a3ce64736",
+#                     "size": 2016010,
+#                     "eTag": "b08c74586efaad3751ff83006b74468e",
+#                     "versionId": "hkhlu9dP_SeZ9hqlAWH4kZYfcMFljApB",
+#                     "sequencer": "0068A545E5569EA304",
+#                 },
+#             },
+#         }
+#     ]
+# }
 
 event = {
     "Records": [

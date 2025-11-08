@@ -84,7 +84,13 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
   const yourTax = (Number(receipt.tax) / totalTotal) * costsByUserId[userId];
   const yourTotal = costsByUserId[userId] + yourTip + yourTax;
 
-  const breakdownInstructions = "If there are fewer claims than quantity, each claim corresponds to one unit.\nIf there are more claims than quantity, the total cost is split evenly among all claimants."
+  const breakdownInstructions = (
+    <span>
+      If there are fewer claims than quantity, each claim corresponds to one unit.
+      <br/>
+      If there are more claims than quantity, the total cost is split evenly among all claimants.
+    </span>
+  );
 
   return (
   <div className="splitomatic-receipt-detail-view">
@@ -227,6 +233,6 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
       </button>
     </div>
   </div>
-};
+)};
 
 export default ReceiptDetailView;

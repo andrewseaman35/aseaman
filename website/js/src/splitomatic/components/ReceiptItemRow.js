@@ -223,7 +223,7 @@ const ReceiptItemRow = ({ item, userId, onClaim, usersById, onUpdate }) => {
             <td>
                 {
                     claimCount > 0 ? (
-                        <Tooltip content={claimedTooltipContent}>
+                        <Tooltip content={claimedTooltipContent} delay={2}>
                             {formattedYouOwe}
                         </Tooltip>
                     ) : (
