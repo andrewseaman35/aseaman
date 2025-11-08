@@ -2,7 +2,6 @@ import json
 import os
 import tempfile
 import time
-import os
 import sys
 
 # Required to support absolute imports when running locally and on lambda

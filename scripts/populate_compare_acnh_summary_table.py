@@ -10,14 +10,14 @@ from base import BaseScript
 def chunks(lst, n):
     """Yield successive n-sized chunks from lst."""
     for i in range(0, len(lst), n):
-        yield lst[i:i + n]
+        yield lst[i : i + n]
 
 
 def toItem(vid):
     return {
-        'villager_id': { 'S': vid },
-        'wins': { 'N': "0" },
-        'losses': { 'N': "0" },
+        "villager_id": {"S": vid},
+        "wins": {"N": "0"},
+        "losses": {"N": "0"},
     }
 
 
@@ -37,23 +37,20 @@ class PopulateCompareACNHSummaryTable(BaseScript):
         super(PopulateCompareACNHSummaryTable, self)._validate_args()
         self.table = self.args.table
         if not self.table:
-            raise Exception('need table')
+            raise Exception("need table")
         self.commit = self.args.commit
 
     def _batch_write_villagers(self, villager_id_batch):
         requests = [
             {
-                'PutRequest': {
-                    'Item': toItem(villager_id),
+                "PutRequest": {
+                    "Item": toItem(villager_id),
                 },
-            } for villager_id in villager_id_batch
+            }
+            for villager_id in villager_id_batch
         ]
         if self.commit:
-            ddb_client.batch_write_item(
-                RequestItems={
-                    table: requests
-                }
-            )
+            ddb_client.batch_write_item(RequestItems={table: requests})
         return len(requests)
 
     def _run(self):
@@ -71,5 +68,5 @@ class PopulateCompareACNHSummaryTable(BaseScript):
         print("  Requests: {}".format(request_count))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     PopulateCompareACNHSummaryTable().run()

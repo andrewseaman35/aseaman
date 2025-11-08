@@ -94,8 +94,8 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
                 raise BadRequestException("`id` required.")
             try:
                 response = self._get_event_json(event_id)
-            except DynamoDBNotFoundException:
-                raise NotFoundException(f"Event with id {event_id} not found")
+            except DynamoDBNotFoundException as e:
+                raise NotFoundException(f"Event with id {event_id} not found") from e
         elif resource == "receipt":
             event_id = self.params.get("event_id")
             receipt_id = self.params.get("id")
@@ -301,7 +301,7 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
                     },
                 }
             else:
-                new_claimed_by_user_ids = [uid for uid in claimed_by]
+                new_claimed_by_user_ids = list(claimed_by)
                 if user_id in new_claimed_by_user_ids:
                     new_claimed_by_user_ids.remove(user_id)
 

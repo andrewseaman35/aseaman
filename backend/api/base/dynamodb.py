@@ -131,7 +131,7 @@ class DynamoDBItem:
             _compute_services = compute_services or {}
             _computed = self._computed or []
             for key in _computed:
-                _dict[key] = self.__getattribute__(f"get_{key}")(**_compute_services)
+                _dict[key] = self.getattr(f"get_{key}")(**_compute_services)
         return _dict
 
     def to_ddb_item(self):
@@ -279,10 +279,10 @@ class DynamoDBTable:
 
     def batch_get(self, request_keys):
         result = self.ddb_client.batch_get_item(
-            RequestItems={self.summary_table_name: {"Keys": request_keys}}
+            RequestItems={self.table_name: {"Keys": request_keys}}
         )
 
-        ddb_items = result.get("Responses", {}).get(self.summary_table_name, [])
+        ddb_items = result.get("Responses", {}).get(self.table_name, [])
         return [self.ItemClass.from_ddb_item(ddb_item) for ddb_item in ddb_items]
 
     def put(self, item):

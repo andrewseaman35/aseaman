@@ -1,10 +1,9 @@
 import json
 import logging
+from typing import Any
 
 import boto3
 from botocore.exceptions import ClientError
-
-from typing import Any
 
 from base.lambda_handler_base import LambdaHandlerBase
 from base.aws import (
@@ -78,7 +77,9 @@ class WSLambdaHandler(LambdaHandlerBase):
         username = "guest"
         try:
             logger.info(
-                f"Getting user name for connection {connection_id} in room {room_id}."
+                "Getting user name for connection %s in room %s.",
+                connection_id,
+                room_id,
             )
             connection = self.aws.dynamodb.tables["ws_connection"].get(
                 connection_id=connection_id, room_id=room_id

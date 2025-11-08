@@ -42,6 +42,9 @@ deploy_shared:
 watch: #venv
 	$(VENV_PYTHON) scripts/run_watchers.py
 
+lint:
+	$(VENV_PYTHON) -m black .
+
 clean:
 	rm -rf venv
 	make -C backend clean

@@ -22,7 +22,9 @@ class UserGroup:
     LINK_MANAGER: str = "link-manager"
 
 
-def get_expression_id(used_ids: set[str] = set()) -> str:
+def get_expression_id(used_ids: set[str] = None) -> str:
+    if used_ids is None:
+        used_ids = set()
     for _ in range(10):
         expr_id = generate_alpha_id(2)
         if expr_id not in used_ids:
@@ -95,7 +97,7 @@ def requires_user_group(user_group, exclude_admin=False):
             if not exclude_admin:
                 required_user_groups.add(UserGroup.ADMIN)
 
-            if not (required_user_groups & set(s.user["groups"])):
+            if not required_user_groups & set(s.user["groups"]):
                 raise ForbiddenException(f'{user_group} not in {s.user["groups"]}')
 
             return func(s, *args, **kwargs)

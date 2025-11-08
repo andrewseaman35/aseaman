@@ -13,15 +13,15 @@ RUNNING_AVERAGE_COUNT = 10
 def chunks(lst, n):
     """Yield successive n-sized chunks from lst."""
     for i in range(0, len(lst), n):
-        yield lst[i:i + n]
+        yield lst[i : i + n]
 
 
 def toItem(vid, vidto):
     return {
-        'v_id': { 'S': vid },
-        'v_id2': { 'S': vidto },
-        'wins': { 'N': "0" },
-        'losses': { 'N': "0" },
+        "v_id": {"S": vid},
+        "v_id2": {"S": vidto},
+        "wins": {"N": "0"},
+        "losses": {"N": "0"},
     }
 
 
@@ -42,24 +42,22 @@ class PopulateCompareACNHResultsTable(BaseScript):
         super(PopulateCompareACNHResultsTable, self)._validate_args()
         self.table = self.args.table
         if not self.table:
-            raise Exception('need table')
+            raise Exception("need table")
         self.commit = self.args.commit
         self.start = self.args.start
 
     def _batch_write_second_villagers(self, villager_id, villager_batch):
         requests = [
             {
-                'PutRequest': {
-                    'Item': toItem(villager_id, villager_id_to),
+                "PutRequest": {
+                    "Item": toItem(villager_id, villager_id_to),
                 },
-            } for villager_id_to in villager_batch if villager_id_to != villager_id
+            }
+            for villager_id_to in villager_batch
+            if villager_id_to != villager_id
         ]
         if self.commit:
-            ddb_client.batch_write_item(
-                RequestItems={
-                    table: requests
-                }
-            )
+            ddb_client.batch_write_item(RequestItems={table: requests})
         return len(requests)
 
     def _run(self):
@@ -77,11 +75,17 @@ class PopulateCompareACNHResultsTable(BaseScript):
             populated_count += 1
             villager_start_time = round(time.time(), 2)
 
-            print("Populating villager {}/{}: `{}`".format(populated_count, len(villager_ids), villager_id))
+            print(
+                "Populating villager {}/{}: `{}`".format(
+                    populated_count, len(villager_ids), villager_id
+                )
+            )
             for villager_batch in chunks(self.all_villagers, 25):
-                sys.stdout.write('.')
+                sys.stdout.write(".")
                 sys.stdout.flush()
-                row_count += self._batch_write_second_villagers(villager_id, villager_batch)
+                row_count += self._batch_write_second_villagers(
+                    villager_id, villager_batch
+                )
                 request_count += 1
 
             villager_end_time = round(time.time(), 2)
@@ -111,5 +115,5 @@ class PopulateCompareACNHResultsTable(BaseScript):
         print("requests: {}".format(request_count))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     PopulateCompareACNHResultsTable().run()

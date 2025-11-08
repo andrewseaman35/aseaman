@@ -1,6 +1,7 @@
 """
 Scrapes game data from mamedb.com
 """
+
 import json
 import os
 import requests

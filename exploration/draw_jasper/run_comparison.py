@@ -4,6 +4,7 @@ import cv2
 import os
 import numpy as np
 
+
 def resize_with_aspect_ratio(image, width=None, height=None, inter=cv2.INTER_AREA):
     dim = None
     (h, w) = image.shape[:2]
@@ -19,6 +20,7 @@ def resize_with_aspect_ratio(image, width=None, height=None, inter=cv2.INTER_ARE
 
     return cv2.resize(image, dim, interpolation=inter)
 
+
 def resize_by_height_with_aspect_ratio(image, height):
     (h, w) = image.shape[:2]
     ratio = height / float(h)
@@ -31,23 +33,28 @@ def crop_to_content(img, invert=True):
     """
     Crops image to fit content
     """
-    inverted_image = cv2.bitwise_not(img) if invert else img  # invert image -- black background (zeroes)
+    inverted_image = (
+        cv2.bitwise_not(img) if invert else img
+    )  # invert image -- black background (zeroes)
     coords = cv2.findNonZero(inverted_image)  # find coordinates of all non-zero values
     x, y, w, h = cv2.boundingRect(coords)  # find bounding box of non-zero coordinates
-    return img[y:y+h, x:x+w]  # return image, cropped
+    return img[y : y + h, x : x + w]  # return image, cropped
+
 
 def convert_to_black_and_white(img):
-    """
-    """
+    """ """
     inverted = cv2.bitwise_not(img)  # invert image
     return_val, thresholded = cv2.threshold(
-        inverted, 1, 255, cv2.THRESH_BINARY_INV)  # apply threshold
+        inverted, 1, 255, cv2.THRESH_BINARY_INV
+    )  # apply threshold
     return cv2.bitwise_not(thresholded)
 
+
 def fillOutline(img):
-    x,y,w,h = cv2.boundingRect(img)
+    x, y, w, h = cv2.boundingRect(img)
     cv2.floodFill(img, None, (int(x + w / 2), int(y + h / 2)), 255)
     return img
+
 
 def getShapesForComparison(theirs, ours):
     # Crop both to content
@@ -64,6 +71,7 @@ def getShapesForComparison(theirs, ours):
     # their_filled = fillOutline(their_drawing_bw)
 
     return (sized_their_drawing, sized_our_drawing)
+
 
 def compare_outlines(their_file, our_file):
     their_drawing = cv2.imread(their_file, cv2.IMREAD_GRAYSCALE)
@@ -94,10 +102,26 @@ def compare_outlines(their_file, our_file):
     padding_left = math.floor((larger_width - smaller_width) / 2)
     padding_right = math.ceil((larger_width - smaller_width) / 2)
     if larger_width == theirs_width:
-        ours_padded = cv2.copyMakeBorder(ours_sized, 0, 0, padding_left, padding_right, cv2.BORDER_CONSTANT, value=[0,0,0])
+        ours_padded = cv2.copyMakeBorder(
+            ours_sized,
+            0,
+            0,
+            padding_left,
+            padding_right,
+            cv2.BORDER_CONSTANT,
+            value=[0, 0, 0],
+        )
         theirs_padded = theirs_sized
     else:
-        theirs_padded = cv2.copyMakeBorder(theirs_sized, 0, 0, padding_left, padding_right, cv2.BORDER_CONSTANT, value=[0,0,0])
+        theirs_padded = cv2.copyMakeBorder(
+            theirs_sized,
+            0,
+            0,
+            padding_left,
+            padding_right,
+            cv2.BORDER_CONSTANT,
+            value=[0, 0, 0],
+        )
         ours_padded = ours_sized
 
     difference = cv2.subtract(ours_padded, theirs_padded)
@@ -105,7 +129,7 @@ def compare_outlines(their_file, our_file):
     both_differences = cv2.add(difference, difference_2)
     non_zero_count = cv2.countNonZero(both_differences)
 
-    out = './out/{}'
+    out = "./out/{}"
     cv2.imshow("1", ours_padded)
     cv2.imshow("2", theirs_padded)
     cv2.imshow("3", difference)
@@ -113,23 +137,24 @@ def compare_outlines(their_file, our_file):
     cv2.imshow("5", both_differences)
 
     saves = [
-        ('ours.png', ours_padded),
-        ('theirs.png', theirs_padded),
-        ('difference.png', difference),
-        ('difference2.png', difference_2),
-        ('both_difference.png', both_differences),
+        ("ours.png", ours_padded),
+        ("theirs.png", theirs_padded),
+        ("difference.png", difference),
+        ("difference2.png", difference_2),
+        ("both_difference.png", both_differences),
     ]
-    for (fname, f) in saves:
+    for fname, f in saves:
         with open(out.format(fname), "wb") as fh:
-            img_bytes = cv2.imencode('.png', f)[1].tobytes()
+            img_bytes = cv2.imencode(".png", f)[1].tobytes()
             fh.write(img_bytes)
 
     return both_differences, non_zero_count
 
+
 name = "input_drawing"
-input_file_format = './inputs/{}.png'
-mask_file_format = './masks/{}.png'
-out = './out/{}.png'
+input_file_format = "./inputs/{}.png"
+mask_file_format = "./masks/{}.png"
+out = "./out/{}.png"
 
 input_file = input_file_format.format(name)
 counts = []
@@ -139,7 +164,6 @@ print(mask_file)
 diff, count = compare_outlines(input_file, mask_file)
 # cv2.waitKey(0)
 # cv2.destroyAllWindows()
-
 
 
 # print(min(counts))
