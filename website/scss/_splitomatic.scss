@@ -1,3 +1,5 @@
+$SPLITOMATIC_WIDTH: 750px;
+
 .splitomatic-container {
     h1 {
         margin-top: 2em;
@@ -132,7 +134,7 @@
     }
 
     .logged-in-container {
-        width: 500px;
+        width: $SPLITOMATIC_WIDTH;
         background: white;
         border-radius: 8px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.07);
@@ -150,7 +152,7 @@
         }
     }
     .receipts-container {
-        width: 500px;
+        width: $SPLITOMATIC_WIDTH;
         background: white;
         border-radius: 8px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.07);
@@ -376,7 +378,7 @@
 
 .splitomatic-receipt-detail-main {
     margin-bottom: 1.5em;
-    width: 500px;
+    width: $SPLITOMATIC_WIDTH;
 }
 
 .splitomatic-modal-overlay {
@@ -434,6 +436,7 @@
 
 .splitomatic-items-table-container {
     max-height: 50vh;
+    overflow-x: visible;
     overflow-y: auto;
     margin-bottom: 1em;
     border-radius: 8px;
