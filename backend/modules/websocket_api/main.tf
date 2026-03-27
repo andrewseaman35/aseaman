@@ -114,6 +114,7 @@ resource "aws_lambda_function" "api_lambda_function" {
 
   runtime = "python3.13"
   timeout = var.lambda_timeout
+  reserved_concurrent_executions = 10
 
   environment {
     variables = {
