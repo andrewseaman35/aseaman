@@ -1,15 +1,10 @@
 import React from 'react';
 
-const SimpleListEntry = ({ value = '', onUpdate }) => {
-  const handleChange = (e) => {
-    const lines = e.target.value.split('\n');
-    onUpdate(lines);
-  };
-
+const SimpleListEntry = ({ value = '', onUpdate, placeholder = 'Enter items, one per line' }) => {
   return (
     <textarea
       value={value}
-      onChange={handleChange}
+      onChange={e => onUpdate(e.target.value)}
       rows={6}
       style={{
         width: '100%',
@@ -19,7 +14,7 @@ const SimpleListEntry = ({ value = '', onUpdate }) => {
         border: '1px solid #ccc',
         resize: 'vertical',
       }}
-      placeholder="Enter items, one per line"
+      placeholder={placeholder}
     />
   );
 };

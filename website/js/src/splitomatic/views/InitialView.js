@@ -2,22 +2,26 @@ import React, { useState } from 'react';
 
 const InitialView = ({ actions, errorMessage }) => {
   const [joinCode, setJoinCode] = useState('');
-  const [eventName, setEventName] = useState('');
 
 
   return (
     <div className="initial-view">
 
-      <div className="top-button-container">
+      <div className="initial-view-top">
+        <h1 className="splitomatic-title">Splitomatic</h1>
         <button
-          onClick={() => actions.createEvent({eventName})}
+          onClick={() => actions.navigateToCreate()}
           className="splitomatic-button"
         >
           Create Event
         </button>
       </div>
 
-      <div className="join-event-container">
+      <div className="join-event-divider">
+        <span>OR</span>
+      </div>
+
+      <div className="initial-view-bottom">
         <input
           type="text"
           className="splitomatic-input"
@@ -32,13 +36,13 @@ const InitialView = ({ actions, errorMessage }) => {
         >
           Join Event
         </button>
-      </div>
 
-      {errorMessage && (
-        <div className="splitomatic-error-message" style={{ color: 'red', marginTop: '1em' }}>
-          {errorMessage}
-        </div>
-      )}
+        {errorMessage && (
+          <div className="splitomatic-error-message">
+            {errorMessage}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

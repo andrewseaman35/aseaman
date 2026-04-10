@@ -126,8 +126,7 @@ class Splitomatic extends React.Component {
                 view: InitialView,
                 description: "Initial state of the Splitomatic. Allows the user to create a new event or join an existing one.",
                 actions: {
-                    createEvent: () => {
-                        console.log("Event created in initial state");
+                    navigateToCreate: () => {
                         this.transitionTo('createEvent');
                     },
                     joinEvent: ({ joinCode }) => {
@@ -140,17 +139,19 @@ class Splitomatic extends React.Component {
                 view: CreateEventView,
                 description: "Create a new event. Allows users to input the event name and create it.",
                 actions: {
+                    back: () => {
+                        this.transitionTo('initial');
+                    },
                     createEvent: ({ eventName, users }) => {
-                        console.log("Creating event with name: " + eventName);
-                        createEvent({ eventName, users }).then((response) => {
-                            console.log("Event created successfully:", response);
+                        return createEvent({ eventName, users }).then((response) => {
                             setCookie(COOKIES.EVENT_ID, response.id, null);
                             setCookie(COOKIES.USER_ID, response.users[0].id, null);
-                            this.setupForEvent(response.id, response.users[0].id)
-                            this.setState({ eventId: response.id });
-                            this.transitionTo('eventHome');
+                            this.setupForEvent(response.id, response.users[0].id);
                         }).catch((error) => {
-                            console.error("Error creating event:", error);
+                            this.setState({
+                                errorMessage: error.responseJSON?.message || 'Failed to create event.',
+                            });
+                            throw error;
                         });
                     }
                 }
