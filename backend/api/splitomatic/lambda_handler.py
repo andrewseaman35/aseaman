@@ -226,7 +226,19 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
         response = self._empty_response()
 
         item = None
-        if resource == "event":
+        if resource == "user":
+            event_id = self.params.get("event_id")
+            name = self.params.get("name")
+            if not event_id or not name:
+                raise BadRequestException("`event_id` and `name` required.")
+
+            user = SplitomaticUserDDBItem.from_dict(
+                {"name": name, "event_id": event_id}
+            )
+            user_item = self.aws.dynamodb.tables["splitomatic_user"].put(user)
+            response = user_item.to_dict()
+
+        elif resource == "event":
             users = (
                 self.params.get("users", "").split(",")
                 if self.params.get("users")

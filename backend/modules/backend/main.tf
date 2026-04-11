@@ -232,6 +232,7 @@ module "splitomatic_api" {
   deploy_env = var.deploy_env
   hostname   = var.hostname
   lambda_timeout          = 30
+  memory_size             = 512
   provisioned_concurrency = 1
 
   cognito_user_pool_arn = var.cognito_user_pool_arn

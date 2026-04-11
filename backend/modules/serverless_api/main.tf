@@ -64,9 +64,10 @@ resource "aws_lambda_function" "api_lambda_function" {
 
   layers = var.layers
 
-  runtime = "python3.13"
-  timeout = var.lambda_timeout
-  publish = true
+  runtime     = "python3.13"
+  timeout     = var.lambda_timeout
+  memory_size = var.memory_size
+  publish     = true
   reserved_concurrent_executions = 10
 
   environment {
@@ -270,7 +271,16 @@ module "options_proxy_method" {
 resource "aws_lambda_permission" "api_invoke_function" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
-  function_name = var.provisioned_concurrency > 0 ? aws_lambda_alias.warm[0].arn : aws_lambda_function.api_lambda_function.function_name
+  function_name = aws_lambda_function.api_lambda_function.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "arn:aws:execute-api:${local.aws_region}:${local.aws_account_id}:${var.rest_api_id}/*"
+}
+
+resource "aws_lambda_permission" "api_invoke_function_alias" {
+  count         = var.provisioned_concurrency > 0 ? 1 : 0
+  statement_id  = "AllowExecutionFromAPIGatewayWarm"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_alias.warm[0].arn
   principal     = "apigateway.amazonaws.com"
   source_arn    = "arn:aws:execute-api:${local.aws_region}:${local.aws_account_id}:${var.rest_api_id}/*"
 }
@@ -306,5 +316,6 @@ output "api_resource_module_ids" {
     module.put_proxy_method.integration_id,
     module.delete_proxy_method.integration_id,
     module.options_proxy_method.integration_id,
+    local.invoke_arn,
   ]
 }

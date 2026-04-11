@@ -31,6 +31,12 @@ variable "lambda_timeout" {
   default     = 5
 }
 
+variable "memory_size" {
+  description = "Lambda function memory size in MB"
+  type        = number
+  default     = 128
+}
+
 variable "cognito_user_pool_arn" {
   type        = string
   description = "arn of cognito user pool for authorization"

@@ -31,13 +31,15 @@ resource "aws_iam_role_policy" "api_role" {
           "dynamodb:GetItem",
           "dynamodb:PutItem",
           "dynamodb:UpdateItem",
-          "dynamodb:Scan"
+          "dynamodb:Scan",
+          "dynamodb:Query"
         ]
         Resource = [
           "arn:aws:dynamodb:${local.aws_region}:${local.aws_account_id}:table/${local.event_table_name}",
           "arn:aws:dynamodb:${local.aws_region}:${local.aws_account_id}:table/${local.user_table_name}",
           "arn:aws:dynamodb:${local.aws_region}:${local.aws_account_id}:table/${local.receipt_table_name}",
-          "arn:aws:dynamodb:${local.aws_region}:${local.aws_account_id}:table/${local.receipt_item_table_name}"
+          "arn:aws:dynamodb:${local.aws_region}:${local.aws_account_id}:table/${local.receipt_item_table_name}",
+          "arn:aws:dynamodb:${local.aws_region}:${local.aws_account_id}:table/${local.receipt_item_table_name}/index/*"
         ]
       },
       {
