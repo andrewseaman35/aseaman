@@ -43,6 +43,14 @@ resource "aws_iam_role_policy" "api_role" {
       {
         Effect = "Allow"
         Action = [
+          "s3:PutObject",
+          "s3:GetObject"
+        ]
+        Resource = "arn:aws:s3:::aseaman-protected/splitomatic/receipts/*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
           "ssm:GetParameter"
         ]
         Resource = "arn:aws:ssm:${local.aws_region}:${local.aws_account_id}:parameter/*"

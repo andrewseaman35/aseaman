@@ -92,3 +92,9 @@ variable "layers" {
   default = []
   description = "list of arns of the layers to apply"
 }
+
+variable "provisioned_concurrency" {
+  description = "Number of provisioned concurrent executions (0 = disabled)"
+  type        = number
+  default     = 0
+}

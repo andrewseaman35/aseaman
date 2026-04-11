@@ -68,6 +68,16 @@ package: venv package_dir
 	cd $(PACKAGE_DIR)/$(SPLITOMATIC_API_NAME) && zip -r ../$(SPLITOMATIC_API_NAME).zip * > /dev/null
 	cd $(PACKAGE_DIR)/$(WS_API_NAME) && zip -r ../$(WS_API_NAME).zip * > /dev/null
 
+package_single: venv
+	@if [ "$(API)" = "" ]; then echo "API not set. Usage: make package_single API=<api_name>"; exit 2; fi
+	rm -rf $(PACKAGE_DIR)/$(API)_api $(PACKAGE_DIR)/$(API)_api.zip
+	mkdir -p $(PACKAGE_DIR)/$(API)_api
+	pip install -r $(API)/requirements.txt -t $(PACKAGE_DIR)/$(API)_api
+	cp -r $(API)/* $(PACKAGE_DIR)/$(API)_api
+	cp -r base $(PACKAGE_DIR)/$(API)_api
+	cd $(PACKAGE_DIR) && find $(API)_api -maxdepth 6 -type f -name "*.pyc" -delete
+	cd $(PACKAGE_DIR)/$(API)_api && zip -r ../$(API)_api.zip * > /dev/null
+
 test:
 	@if [ "$(IN_DOCKER_API)" = "true" ]; then\
 		python -m unittest;\

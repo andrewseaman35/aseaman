@@ -131,7 +131,7 @@ class DynamoDBItem:
             _compute_services = compute_services or {}
             _computed = self._computed or []
             for key in _computed:
-                _dict[key] = self.getattr(f"get_{key}")(**_compute_services)
+                _dict[key] = getattr(self, f"get_{key}")(**_compute_services)
         return _dict
 
     def to_ddb_item(self):
@@ -221,7 +221,7 @@ class DynamoDBItem:
         )
 
     @classmethod
-    def build_query_attributes(cls, key_dict, attributes):
+    def build_query_attributes(cls, key_dict, attributes=None):
         k = list(key_dict.keys())[0]
         expr_id = get_expression_id(set())
         key_condition_expression = f"#{expr_id} = :{expr_id}"
@@ -231,7 +231,7 @@ class DynamoDBItem:
         expression_attribute_names = {f"#{expr_id}": k}
         filter_expression = []
 
-        for key, value in attributes.items():
+        for key, value in (attributes or {}).items():
             expr_id = get_expression_id(set())
             expression_attribute_names[f"#{expr_id}"] = key
             expression_attribute_values[f":{expr_id}"] = {
@@ -350,7 +350,7 @@ class DynamoDBTable:
             Key=key,
         )
 
-    def query(self, key, query_dict=None):
+    def query(self, key, query_dict=None, index_name=None):
         (
             key_condition_expression,
             expression_attribute_names,
@@ -358,15 +358,21 @@ class DynamoDBTable:
             filter_expression,
         ) = self.ItemClass.build_query_attributes(key, query_dict)
 
-        result = self.ddb_client.query(
-            TableName=self.table_name,
-            Select="ALL_ATTRIBUTES",
-            ConsistentRead=False,
-            KeyConditionExpression=key_condition_expression,
-            ExpressionAttributeValues=expression_attribute_values,
-            ExpressionAttributeNames=expression_attribute_names,
-            FilterExpression=filter_expression,
-        )
+        kwargs = {
+            "TableName": self.table_name,
+            "Select": "ALL_ATTRIBUTES",
+            "ConsistentRead": False,
+            "KeyConditionExpression": key_condition_expression,
+            "ExpressionAttributeValues": expression_attribute_values,
+            "ExpressionAttributeNames": expression_attribute_names,
+        }
+        if filter_expression:
+            kwargs["FilterExpression"] = filter_expression
+        if index_name:
+            kwargs["IndexName"] = index_name
+            kwargs["ConsistentRead"] = False  # GSIs don't support consistent reads
+
+        result = self.ddb_client.query(**kwargs)
         ddb_items = result.get("Items", [])
         return [self.ItemClass.from_ddb_item(ddb_item) for ddb_item in ddb_items]
 
@@ -704,7 +710,9 @@ class SplitomaticReceiptDDBItem(DynamoDBItem):
         "event_id": DynamoDBItemValueConfig("S"),
         "id": DynamoDBItemValueConfig("S", default=generate_id),
         "s3_key": DynamoDBItemValueConfig("S", default=None, optional=True),
-        "time_created": DynamoDBItemValueConfig("N", default=get_timestamp),
+        "time_created": DynamoDBItemValueConfig(
+            "N", default=get_timestamp, optional=True
+        ),
         "time_updated": DynamoDBItemValueConfig("N", default=None, optional=True),
         "name": DynamoDBItemValueConfig("S", default=None, optional=True),
         "status": DynamoDBItemValueConfig("S", default=None, optional=True),

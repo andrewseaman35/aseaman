@@ -42,6 +42,7 @@ resource "aws_iam_instance_profile" "api_instance_profile" {
 locals {
   lambda_function_package_md5 = filemd5("${var.zip_file}")
   cognito_user_groups         = var.cognito_user_groups
+  invoke_arn                  = var.provisioned_concurrency > 0 ? aws_lambda_alias.warm[0].invoke_arn : aws_lambda_function.api_lambda_function.invoke_arn
 }
 resource "aws_s3_bucket_object" "lambda_function_package" {
   bucket = "aseaman-lambda-functions"
@@ -65,6 +66,7 @@ resource "aws_lambda_function" "api_lambda_function" {
 
   runtime = "python3.13"
   timeout = var.lambda_timeout
+  publish = true
   reserved_concurrent_executions = 10
 
   environment {
@@ -81,6 +83,20 @@ resource "aws_lambda_function" "api_lambda_function" {
   tags = {
     Service = var.api_name
   }
+}
+
+resource "aws_lambda_alias" "warm" {
+  count            = var.provisioned_concurrency > 0 ? 1 : 0
+  name             = "warm"
+  function_name    = aws_lambda_function.api_lambda_function.arn
+  function_version = aws_lambda_function.api_lambda_function.version
+}
+
+resource "aws_lambda_provisioned_concurrency_config" "warm" {
+  count                             = var.provisioned_concurrency > 0 ? 1 : 0
+  function_name                     = aws_lambda_function.api_lambda_function.function_name
+  qualifier                         = aws_lambda_alias.warm[0].name
+  provisioned_concurrent_executions = var.provisioned_concurrency
 }
 
 resource "aws_cognito_user_group" "cognito_user_accounts" {
@@ -113,7 +129,7 @@ module "get_method" {
   authorization   = var.get_method_authorization
   authorizer_id   = aws_api_gateway_authorizer.cognito.id
   http_method     = "GET"
-  integration_uri = aws_lambda_function.api_lambda_function.invoke_arn
+  integration_uri = local.invoke_arn
 
   depends_on = [
     aws_api_gateway_authorizer.cognito
@@ -129,7 +145,7 @@ module "post_method" {
   authorization   = var.post_method_authorization
   authorizer_id   = aws_api_gateway_authorizer.cognito.id
   http_method     = "POST"
-  integration_uri = aws_lambda_function.api_lambda_function.invoke_arn
+  integration_uri = local.invoke_arn
 
   depends_on = [
     aws_api_gateway_authorizer.cognito
@@ -145,7 +161,7 @@ module "put_method" {
   authorization   = var.put_method_authorization
   authorizer_id   = aws_api_gateway_authorizer.cognito.id
   http_method     = "PUT"
-  integration_uri = aws_lambda_function.api_lambda_function.invoke_arn
+  integration_uri = local.invoke_arn
 
   depends_on = [
     aws_api_gateway_authorizer.cognito
@@ -161,7 +177,7 @@ module "delete_method" {
   authorization   = var.delete_method_authorization
   authorizer_id   = aws_api_gateway_authorizer.cognito.id
   http_method     = "DELETE"
-  integration_uri = aws_lambda_function.api_lambda_function.invoke_arn
+  integration_uri = local.invoke_arn
 
   depends_on = [
     aws_api_gateway_authorizer.cognito
@@ -190,7 +206,7 @@ module "get_proxy_method" {
   authorization   = var.get_proxy_method_authorization
   authorizer_id   = aws_api_gateway_authorizer.cognito.id
   http_method     = "GET"
-  integration_uri = aws_lambda_function.api_lambda_function.invoke_arn
+  integration_uri = local.invoke_arn
 
   depends_on = [
     aws_api_gateway_authorizer.cognito
@@ -206,7 +222,7 @@ module "post_proxy_method" {
   authorization   = var.post_proxy_method_authorization
   authorizer_id   = aws_api_gateway_authorizer.cognito.id
   http_method     = "POST"
-  integration_uri = aws_lambda_function.api_lambda_function.invoke_arn
+  integration_uri = local.invoke_arn
 
   depends_on = [
     aws_api_gateway_authorizer.cognito
@@ -222,7 +238,7 @@ module "put_proxy_method" {
   authorization   = var.put_proxy_method_authorization
   authorizer_id   = aws_api_gateway_authorizer.cognito.id
   http_method     = "PUT"
-  integration_uri = aws_lambda_function.api_lambda_function.invoke_arn
+  integration_uri = local.invoke_arn
 
   depends_on = [
     aws_api_gateway_authorizer.cognito
@@ -238,7 +254,7 @@ module "delete_proxy_method" {
   authorization   = var.delete_proxy_method_authorization
   authorizer_id   = aws_api_gateway_authorizer.cognito.id
   http_method     = "DELETE"
-  integration_uri = aws_lambda_function.api_lambda_function.invoke_arn
+  integration_uri = local.invoke_arn
 
   depends_on = [
     aws_api_gateway_authorizer.cognito
@@ -254,7 +270,7 @@ module "options_proxy_method" {
 resource "aws_lambda_permission" "api_invoke_function" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.api_lambda_function.function_name
+  function_name = var.provisioned_concurrency > 0 ? aws_lambda_alias.warm[0].arn : aws_lambda_function.api_lambda_function.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "arn:aws:execute-api:${local.aws_region}:${local.aws_account_id}:${var.rest_api_id}/*"
 }

@@ -40,8 +40,12 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
 
   const onClaimItem = (receiptId, itemId, claim) => {
     console.log(`Claiming item with claim: ${claim}`);
-    return actions.claimItem(receiptId, itemId, claim).then(() => {
-      triggerRefresh(false);
+    return actions.claimItem(receiptId, itemId, claim).then((updatedItem) => {
+      setReceipt(prev => ({
+        ...prev,
+        items: prev.items.map(item => item.id === itemId ? updatedItem : item),
+      }));
+      setLastUpdated(Date.now());
     });
   }
 

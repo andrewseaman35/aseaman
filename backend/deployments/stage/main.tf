@@ -67,6 +67,37 @@ module "backend" {
   depends_on = [module.auth]
 }
 
+module "splitomatic_job" {
+  source         = "../../modules/s3_lambda_function"
+  zip_file       = "../../jobs/packages/splitomatic.zip"
+  job_name       = "splitomatic"
+  deploy_env     = var.deploy_env
+  bucket_name    = "aseaman-protected"
+  bucket_arn     = "arn:aws:s3:::aseaman-protected"
+  prefix         = "splitomatic/receipts/${var.deploy_env}/"
+
+  lambda_timeout = 30
+}
+
+module "splitomatic_job_iam_role_policy" {
+  source     = "../../modules/roles/splitomatic_job"
+  role       = module.splitomatic_job.job_role_id
+  deploy_env = var.deploy_env
+  job_name   = "splitomatic"
+}
+
+resource "aws_ssm_parameter" "splitomatic_job_lambda_arn" {
+  name = "/aseaman/${var.deploy_env}/lambda/splitomatic_job_lambda_arn"
+  type = "String"
+  value = module.splitomatic_job.lambda_function_arn
+}
+
+resource "aws_ssm_parameter" "splitomatic_job_prefix" {
+  name = "/aseaman/${var.deploy_env}/lambda/splitomatic_job_prefix"
+  type = "String"
+  value = module.splitomatic_job.prefix
+}
+
 module "exports" {
   source                          = "../../modules/exports"
   env                             = var.deploy_env

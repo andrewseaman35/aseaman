@@ -206,11 +206,11 @@ class Splitomatic extends React.Component {
                     claimItem: async (receiptId, itemId, claim) => {
                         const verb = claim ? "claim" : "unclaim";
                         console.log(verb + "ing item " + itemId + " for receipt " + receiptId);
-                        return claimItem(receiptId, itemId, this.state.userId, claim).promise();
+                        return claimItem(receiptId, itemId, this.state.userId, claim);
                     },
                     updateItem: async (receiptId, itemId, updates) => {
                         console.log(`Updating item ${itemId} for receipt ${receiptId} with updates: ${JSON.stringify(updates)}`);
-                        return updateItem(receiptId, itemId, updates).promise();
+                        return updateItem(receiptId, itemId, updates);
                     }
                 }
             }

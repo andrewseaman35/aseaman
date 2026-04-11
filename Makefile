@@ -36,6 +36,35 @@ deploy_website: website
 deploy: assert_deploy_vars deploy_api deploy_website deploy_shared
 	make -C website local
 
+# Deploy only the IAM role policy for a single API (no packaging required).
+# Note: salt_level is an exception — its module is named salt_level_api_iam_role_policy.
+# Usage: DEPLOY_ENV=<env> API=<api_name> make deploy_infra
+deploy_infra: assert_deploy_vars
+	@if [ "$(API)" = "" ]; then echo "API not set. Usage: DEPLOY_ENV=<env> API=<api_name> make deploy_infra"; exit 2; fi
+	cd backend/deployments/$(DEPLOY_ENV) && terraform apply \
+		-target=module.backend.module.$(API)_iam_role_policy \
+		-auto-approve
+
+deploy_lambda: assert_deploy_vars
+	@if [ "$(API)" = "" ]; then echo "API not set. Usage: DEPLOY_ENV=<env> API=<api_name> make deploy_lambda"; exit 2; fi
+	make -C backend/api package_single API=$(API)
+	aws lambda update-function-code \
+		--function-name $(API)-api-$(DEPLOY_ENV) \
+		--zip-file fileb://backend/api/packages/$(API)_api.zip \
+		--profile aseaman \
+		--region us-east-1 > /dev/null
+	@echo "Deployed $(API)-api-$(DEPLOY_ENV)"
+
+deploy_job: assert_deploy_vars
+	@if [ "$(JOB)" = "" ]; then echo "JOB not set. Usage: DEPLOY_ENV=<env> JOB=<job_name> make deploy_job"; exit 2; fi
+	make -C backend/jobs package_single JOB=$(JOB)
+	aws lambda update-function-code \
+		--function-name $(JOB)-$(DEPLOY_ENV) \
+		--zip-file fileb://backend/jobs/packages/$(JOB).zip \
+		--profile aseaman \
+		--region us-east-1 > /dev/null
+	@echo "Deployed $(JOB)-$(DEPLOY_ENV)"
+
 deploy_shared:
 	make -C backend tfapply_shared
 
@@ -50,4 +79,4 @@ clean:
 	make -C backend clean
 	make -C website clean
 
-.PHONY: deploy_api deploy_website deploy clean website
+.PHONY: deploy_api deploy_website deploy deploy_lambda deploy_job deploy_infra clean website

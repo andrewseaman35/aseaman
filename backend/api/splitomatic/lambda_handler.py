@@ -1,5 +1,5 @@
 import json
-
+from concurrent.futures import ThreadPoolExecutor
 
 from base.lambda_handler_base import APILambdaHandlerBase
 from base.aws import (
@@ -62,15 +62,22 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
     )
 
     def _get_event_json(self, event_id: str) -> dict:
-        event = self.aws.dynamodb.tables["splitomatic_event"].get(
-            id=event_id,
-        )
-        users = self.aws.dynamodb.tables["splitomatic_user"].scan(
-            {"event_id": event_id},
-        )
-        receipts = self.aws.dynamodb.tables["splitomatic_receipt"].scan(
-            {"event_id": event_id},
-        )
+        with ThreadPoolExecutor(max_workers=3) as executor:
+            f_event = executor.submit(
+                self.aws.dynamodb.tables["splitomatic_event"].get, id=event_id
+            )
+            f_users = executor.submit(
+                self.aws.dynamodb.tables["splitomatic_user"].query,
+                {"event_id": event_id},
+            )
+            f_receipts = executor.submit(
+                self.aws.dynamodb.tables["splitomatic_receipt"].query,
+                {"event_id": event_id},
+            )
+        event = f_event.result()
+        users = f_users.result()
+        receipts = f_receipts.result()
+
         response = event.to_dict() if event else {}
         response["users"] = [user.to_dict() for user in users]
         response["receipts"] = [
@@ -115,7 +122,7 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
             if receipt.status in {"PROCESSED"}:
                 receipt_items = self.aws.dynamodb.tables[
                     "splitomatic_receipt_item"
-                ].scan(
+                ].query(
                     {"receipt_id": receipt.id},
                 )
 
@@ -131,15 +138,24 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
             if not event_id:
                 raise ValueError("Event id is required for summary.")
 
-            receipts = self.aws.dynamodb.tables["splitomatic_receipt"].scan(
-                {"event_id": event_id},
-            )
-            receipt_items = self.aws.dynamodb.tables["splitomatic_receipt_item"].scan(
-                {"event_id": event_id},
-            )
-            users = self.aws.dynamodb.tables["splitomatic_user"].scan(
-                {"event_id": event_id},
-            )
+            with ThreadPoolExecutor(max_workers=3) as executor:
+                f_receipts = executor.submit(
+                    self.aws.dynamodb.tables["splitomatic_receipt"].query,
+                    {"event_id": event_id},
+                )
+                f_receipt_items = executor.submit(
+                    self.aws.dynamodb.tables["splitomatic_receipt_item"].query,
+                    {"event_id": event_id},
+                    None,
+                    "event_id_idx",
+                )
+                f_users = executor.submit(
+                    self.aws.dynamodb.tables["splitomatic_user"].query,
+                    {"event_id": event_id},
+                )
+            receipts = f_receipts.result()
+            receipt_items = f_receipt_items.result()
+            users = f_users.result()
 
             receipt_item_by_receipt_id = {}
             for receipt_item in receipt_items:
@@ -153,26 +169,19 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
                 for user_id in [c["S"] for c in receipt_item.claimed_by]:
                     claimed_by_user[user_id].append(receipt_item.id)
 
-            event_total: float = 0
+            event_total: float = sum(float(ri.total or 0) for ri in receipt_items)
             totals = {}
             user_summaries = []
             for user in users:
-                summary = {
-                    "total_owed": 0,
-                    "claimed_item_count": 0,
-                    "receipts": [{"receipt_id": None, "claimed_items": []}],
-                }
                 totals[user.id] = {
                     "claimed_item_count": 0,
                     "total": 0,
                 }
                 claimed_items = claimed_by_user[user.id]
                 for receipt_item in receipt_items:
-                    item_total = float(receipt_item.total or 0)
-                    event_total += item_total
                     if receipt_item.id in claimed_items:
                         totals[user.id]["claimed_item_count"] += 1
-                        totals[user.id]["total"] += item_total
+                        totals[user.id]["total"] += float(receipt_item.total or 0)
 
             # summary_by_user = {user.id: {
             #     "total_owed": 0,
@@ -233,14 +242,15 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
             event = SplitomaticEventDDBItem.from_dict({"name": self.params.get("name")})
             event_item = self.aws.dynamodb.tables["splitomatic_event"].put(event)
 
-            user_items = []
-            for user in users:
-                user_ddb_item = SplitomaticUserDDBItem.from_dict(
+            user_ddb_items = [
+                SplitomaticUserDDBItem.from_dict(
                     {"name": user, "event_id": event_item.id}
                 )
-                user_items.append(
-                    self.aws.dynamodb.tables["splitomatic_user"].put(user_ddb_item)
-                )
+                for user in users
+            ]
+            user_items = self.aws.dynamodb.tables["splitomatic_user"].bulk_put(
+                user_ddb_items
+            )
 
             response = event_item.to_dict()
             response["users"] = [user.to_dict() for user in user_items]
@@ -259,7 +269,7 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
                     "status": "PENDING",
                 }
             )
-            content_type = headers["Content-Type"]
+            content_type = headers.get("Content-Type") or headers.get("content-type")
             if content_type not in ACCEPTED_CONTENT_TYPES:
                 raise ValueError(f"unsupported content type {content_type}")
 
@@ -285,14 +295,6 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
             user_id = self.params.get("user_id")
             claim = self.params.get("claim", False)
 
-            receipt_item = self.aws.dynamodb.tables["splitomatic_receipt_item"].get(
-                receipt_id=receipt_id,
-                id=item_id,
-            )
-            claimed_by = (
-                [c["S"] for c in receipt_item.claimed_by] if receipt_item else []
-            )
-
             if claim:
                 update_dict = {
                     "claimed_by": {
@@ -301,6 +303,13 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
                     },
                 }
             else:
+                receipt_item = self.aws.dynamodb.tables["splitomatic_receipt_item"].get(
+                    receipt_id=receipt_id,
+                    id=item_id,
+                )
+                claimed_by = (
+                    [c["S"] for c in receipt_item.claimed_by] if receipt_item else []
+                )
                 new_claimed_by_user_ids = list(claimed_by)
                 if user_id in new_claimed_by_user_ids:
                     new_claimed_by_user_ids.remove(user_id)
@@ -317,11 +326,6 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
                     receipt_id=receipt_id, id=item_id
                 ),
                 update_dict,
-            )
-
-            receipt_item = self.aws.dynamodb.tables["splitomatic_receipt_item"].get(
-                receipt_id=receipt_id,
-                id=item_id,
             )
 
             response = receipt_item.to_dict()
@@ -353,11 +357,6 @@ class SplitomaticLambdaHandler(APILambdaHandlerBase):
                     receipt_id=receipt_id, id=item_id
                 ),
                 update_dict,
-            )
-
-            receipt_item = self.aws.dynamodb.tables["splitomatic_receipt_item"].get(
-                receipt_id=receipt_id,
-                id=item_id,
             )
 
             response = receipt_item.to_dict()

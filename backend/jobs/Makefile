@@ -33,4 +33,13 @@ package: copy_aws_files package_dir
 	cp -r base $(PACKAGE_DIR)/$(SPLITOMATIC_JOB_NAME)
 	cd $(PACKAGE_DIR)/$(SPLITOMATIC_JOB_NAME) && zip -r ../$(SPLITOMATIC_JOB_NAME).zip * > /dev/null
 
-.PHONY: package_dir package copy_aws_files
+package_single: copy_aws_files
+	@if [ "$(JOB)" = "" ]; then echo "JOB not set. Usage: make package_single JOB=<job_name>"; exit 2; fi
+	rm -rf $(PACKAGE_DIR)/$(JOB) $(PACKAGE_DIR)/$(JOB).zip
+	mkdir -p $(PACKAGE_DIR)/$(JOB)
+	pip install -r $(JOB)/requirements.txt -t $(PACKAGE_DIR)/$(JOB)
+	cp -r $(JOB)/* $(PACKAGE_DIR)/$(JOB)
+	cp -r base $(PACKAGE_DIR)/$(JOB)
+	cd $(PACKAGE_DIR)/$(JOB) && zip -r ../$(JOB).zip * > /dev/null
+
+.PHONY: package_dir package copy_aws_files package_single
