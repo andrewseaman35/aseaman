@@ -68,6 +68,15 @@ function fetchSummary(userId, eventId) {
     }).promise();
 }
 
+function addUser(eventId, name) {
+    return $.ajax({
+        type: 'POST',
+        url: getAPIUrl('splitomatic/user'),
+        contentType: 'application/json',
+        data: JSON.stringify({ event_id: eventId, name }),
+    }).promise();
+}
+
 function claimItem(receiptId, itemId, userId, claim) {
     const payload = {
         receipt_id: receiptId,
@@ -105,4 +114,5 @@ module.exports = {
     claimItem,
     fetchSummary,
     updateItem,
+    addUser,
 };

@@ -1,7 +1,9 @@
 import React, { use, useEffect, useState } from 'react';
 
 import { fetchReceipt } from '../api';
+import { calcItemCost } from '../claimUtils';
 import ReceiptItemRow from '../components/ReceiptItemRow';
+import ReceiptItemCard from '../components/ReceiptItemCard';
 import Loading from '../components/Loading';
 import Tooltip from '../../components/Tooltip';
 
@@ -64,20 +66,21 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
 
   const costsByUserId = {};
   let unclaimedCount = 0;
-  let totalCostAccountedFor = 0;
   let totalTotal = 0;
   for (let item of receipt.items) {
     const itemTotal = Number(item.total);
     totalTotal += itemTotal;
-    const itemNumSplit = item.claimed_by.length;
-    if (itemNumSplit > 0) {
-      const pricePerPortion = itemTotal / itemNumSplit;
+    const totalClaims = item.claimed_by.length;
+    if (totalClaims > 0) {
+      const claimCountByUser = {};
       for (let claimerUserId of item.claimed_by) {
+        claimCountByUser[claimerUserId] = (claimCountByUser[claimerUserId] || 0) + 1;
+      }
+      for (let [claimerUserId, claimCount] of Object.entries(claimCountByUser)) {
         if (!(claimerUserId in costsByUserId)) {
           costsByUserId[claimerUserId] = 0;
         }
-        costsByUserId[claimerUserId] += pricePerPortion;
-        totalCostAccountedFor += pricePerPortion;
+        costsByUserId[claimerUserId] += calcItemCost(itemTotal, item.quantity, claimCount, totalClaims);
       }
     } else {
       unclaimedCount += 1;
@@ -148,27 +151,27 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
       )}
 
       <h3 className="splitomatic-section-title">Items</h3>
-      <div className="splitomatic-items-table-container">
-        <table className="receipt-item-table">
-          <thead>
-            <tr>
-              <td>Name</td>
-              <td>Quantity</td>
-              <td>Cost Per</td>
-              <td>Cost</td>
-              <td>Claims</td>
-              <td>
-                <Tooltip content={breakdownInstructions}>
-                  <span className="splitomatic-breakdown-link">
-                    Breakdown
-                  </span>
-                </Tooltip>
-              </td>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              receipt.items.map((item, idx) => (
+      <div className="receipt-items-table-wrapper">
+        <div className="splitomatic-items-table-container">
+          <table className="receipt-item-table">
+            <thead>
+              <tr>
+                <td>Name</td>
+                <td>Quantity</td>
+                <td>Cost Per</td>
+                <td>Cost</td>
+                <td>Claims</td>
+                <td>
+                  <Tooltip content={breakdownInstructions}>
+                    <span className="splitomatic-breakdown-link">
+                      Breakdown
+                    </span>
+                  </Tooltip>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              {receipt.items.map((item, idx) => (
                 <ReceiptItemRow
                   item={item}
                   userId={userId}
@@ -177,10 +180,22 @@ const ReceiptDetailView = ({ eventId, receiptsById, receiptId, userId, actions, 
                   onClaim={(claim) => onClaimItem(receiptId, item.id, claim)}
                   onUpdate={(updates) => onUpdateItem(receiptId, item.id, updates)}
                 />
-              ))
-            }
-          </tbody>
-        </table>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div className="receipt-items-cards-wrapper">
+        {receipt.items.map((item, idx) => (
+          <ReceiptItemCard
+            item={item}
+            userId={userId}
+            key={idx}
+            usersById={usersById}
+            onClaim={(claim) => onClaimItem(receiptId, item.id, claim)}
+            onUpdate={(updates) => onUpdateItem(receiptId, item.id, updates)}
+          />
+        ))}
       </div>
 
       <h3 className="splitomatic-section-title">Taxes & Fees</h3>

@@ -7,7 +7,8 @@ import EventHomeView from './views/EventHomeView';
 import ReceiptDetailView from './views/ReceiptDetailView';
 import SelectUserView from './views/SelectUserView';
 
-import { createEvent, fetchEvent, uploadReceipt, claimItem, updateItem } from './api';
+import { createEvent, fetchEvent, uploadReceipt, claimItem, updateItem, addUser } from './api';
+import Loading from './components/Loading';
 import { getCookie, setCookie } from '../utils';
 
 const COOKIES = Object.freeze({
@@ -19,7 +20,7 @@ class Splitomatic extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentState: 'initial',
+            currentState: getCookie(COOKIES.EVENT_ID) ? 'loading' : 'initial',
             eventId: null,
             eventName: null,
             userId: null,
@@ -29,7 +30,6 @@ class Splitomatic extends React.Component {
             errorMessage: null,
         };
 
-        this.usersById = {};
         this.receiptsById = {};
 
         // this.refreshCookies();
@@ -41,7 +41,6 @@ class Splitomatic extends React.Component {
         setCookie(COOKIES.EVENT_ID, null, null);
         setCookie(COOKIES.USER_ID, null, null);
 
-        this.usersById = {};
         this.receiptsById = {};
         this.setState({
             currentState: 'initial',
@@ -61,12 +60,7 @@ class Splitomatic extends React.Component {
         fetchEvent(eventId).then(
             (response) => {
                 console.log("Event fetched successfully:", response);
-                this.usersById = response.users.reduce((acc, user) => {
-                    acc[user.id] = user;
-                    return acc;
-                }, {});
-                console.log("Users by ID:", this.usersById);
-                this.receiptsById = response.receipts.reduce((acc, receipt) => {
+                        this.receiptsById = response.receipts.reduce((acc, receipt) => {
                     acc[receipt.id] = receipt;
                     return acc;
                 }, {});
@@ -87,7 +81,8 @@ class Splitomatic extends React.Component {
         ).catch((error) => {
             console.error("Error fetching event:", error);
             this.setState({
-                errorMessage: error.responseJSON.message,
+                currentState: 'initial',
+                errorMessage: error.responseJSON?.message,
             });
         });
     }
@@ -160,13 +155,22 @@ class Splitomatic extends React.Component {
                 view: SelectUserView,
                 description: "Select a user to associate with the event. Loads all associated Users to prepopulate the dropdown.",
                 actions: {
-                    selectUser: (user) => {
-                        console.log("Selectd User")
-                        console.log(user.id)
-                        setCookie(COOKIES.USER_ID, user.id, null);
-                        this.setState({ userId: user.id });
+                    selectUser: (userId) => {
+                        setCookie(COOKIES.USER_ID, userId, null);
+                        this.setState({ userId: userId });
                         this.transitionTo('eventHome');
-                    }
+                    },
+                    addUser: (eventId, name) => {
+                        return addUser(eventId, name).then((newUser) => {
+                            this.setState((prev) => ({
+                                users: [...prev.users, newUser],
+                            }));
+                            return newUser;
+                        });
+                    },
+                    back: () => {
+                        this.reset();
+                    },
                 }
             },
             eventHome: {
@@ -219,6 +223,13 @@ class Splitomatic extends React.Component {
 
     render() {
         console.log("Splitomatic component rendered: ", this.state);
+        if (this.state.currentState === 'loading') {
+            return (
+                <div className="splitomatic-container">
+                    <Loading label="Loading event..." />
+                </div>
+            );
+        }
         const state = this.stateMachine()[this.state.currentState];
         console.log(`Current state: ${this.state.currentState}`);
         if (!state) {
@@ -229,12 +240,17 @@ class Splitomatic extends React.Component {
         console.log(this.state)
         const ViewComponent = state.view;
 
+        const usersById = (this.state.users || []).reduce((acc, user) => {
+            acc[user.id] = user;
+            return acc;
+        }, {});
+
         return (
             <div className="splitomatic-container">
                 <ViewComponent
                     transitionTo={this.transitionTo.bind(this)}
                     actions={state.actions}
-                    usersById={this.usersById}
+                    usersById={usersById}
                     receiptsById={this.receiptsById}
                     {...state}
                     {...this.state}  // Pass current state data to the view

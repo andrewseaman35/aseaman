@@ -1,8 +1,19 @@
 import React, { useState } from 'react';
 
+import Loading from '../components/Loading';
+
 const InitialView = ({ actions, errorMessage }) => {
   const [joinCode, setJoinCode] = useState('');
+  const [joining, setJoining] = useState(false);
 
+  const handleJoin = () => {
+    setJoining(true);
+    actions.joinEvent({ joinCode });
+  };
+
+  if (joining && !errorMessage) {
+    return <Loading label="Loading event..." />;
+  }
 
   return (
     <div className="initial-view">
@@ -31,7 +42,7 @@ const InitialView = ({ actions, errorMessage }) => {
         />
         <button
           disabled={!joinCode}
-          onClick={() => actions.joinEvent({ joinCode })}
+          onClick={handleJoin}
           className="splitomatic-button"
         >
           Join Event

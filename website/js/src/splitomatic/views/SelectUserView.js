@@ -1,56 +1,89 @@
 import React, { useState } from 'react';
 
+const ADD_USER_VALUE = '__add_user__';
+
 const SelectUserView = ({ actions, eventId, eventName, users }) => {
-  const [selected, setSelected] = useState(users[0] || '');
+  const [selected, setSelected] = useState(users[0]?.id || '');
+  const [addingUser, setAddingUser] = useState(false);
+  const [newUserName, setNewUserName] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  const handleSelectChange = (e) => {
+    if (e.target.value === ADD_USER_VALUE) {
+      setAddingUser(true);
+      setSelected('');
+    } else {
+      setSelected(e.target.value);
+      setAddingUser(false);
+    }
+  };
+
+  const handleAddUser = () => {
+    if (!newUserName.trim()) return;
+    setSaving(true);
+    actions.addUser(eventId, newUserName.trim()).then((newUser) => {
+      setSelected(newUser.id);
+      setAddingUser(false);
+      setNewUserName('');
+      setSaving(false);
+    }).catch(() => {
+      setSaving(false);
+    });
+  };
 
   return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        background: '#f5f5f5',
-      }}
-    >
-        <h1 style={{ marginBottom: '1.5em', fontSize: '2em', color: '#333' }}>
-            Joining Event: {eventName}
-        </h1>
-        <div>Event id: {eventId}</div>
-      <div style={{ width: '300px', marginBottom: '2em' }}>
-        <label style={{ display: 'block', marginBottom: '0.5em', fontSize: '1em' }}>
+    <div className="select-user-view">
+      <h1 className="splitomatic-title">Joining Event: {eventName}</h1>
+      <div className="select-user-event-id">Event ID: {eventId}</div>
+      <div className="select-user-view-header">
+        <label className="splitomatic-label" htmlFor="user-select">
           Select User
         </label>
         <select
-          value={selected}
-          onChange={e => setSelected(e.target.value)}
-          style={{
-            width: '100%',
-            padding: '0.8em',
-            fontSize: '1em',
-            borderRadius: '4px',
-            border: '1px solid #ccc',
-            marginBottom: '1em',
-          }}
+          id="user-select"
+          className="splitomatic-input"
+          value={addingUser ? ADD_USER_VALUE : selected}
+          onChange={handleSelectChange}
         >
           {users.map((user, idx) => (
             <option key={idx} value={user.id}>{user.name}</option>
           ))}
+          <option value={ADD_USER_VALUE}>+ Add User</option>
         </select>
+
+        {addingUser && (
+          <div className="select-user-add-user">
+            <input
+              className="splitomatic-input"
+              type="text"
+              value={newUserName}
+              onChange={e => setNewUserName(e.target.value)}
+              placeholder="Enter name"
+              autoFocus
+              onKeyDown={e => e.key === 'Enter' && handleAddUser()}
+            />
+            <button
+              className="splitomatic-button"
+              style={{ width: '100%' }}
+              onClick={handleAddUser}
+              disabled={!newUserName.trim() || saving}
+            >
+              {saving ? 'Adding...' : 'Add'}
+            </button>
+          </div>
+        )}
+      </div>
+      <div className="select-user-view-actions">
         <button
-          style={{
-            padding: '1em 2em',
-            fontSize: '1.2em',
-            background: '#007bff',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            width: '100%',
-          }}
+          className="splitomatic-secondary-button"
+          onClick={() => actions.back()}
+        >
+          Back
+        </button>
+        <button
+          className="splitomatic-button"
           onClick={() => actions.selectUser(selected)}
-          disabled={!selected}
+          disabled={!selected || addingUser}
         >
           Continue
         </button>

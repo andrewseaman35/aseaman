@@ -173,6 +173,37 @@ $SPLITOMATIC_WIDTH: 750px;
     }
 }
 
+.select-user-view {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #f5f5f5;
+
+    .select-user-view-header {
+        margin-bottom: 1.5em;
+        width: 300px;
+    }
+
+    .select-user-view-actions {
+        display: flex;
+        gap: 1em;
+        width: 300px;
+    }
+
+    .select-user-event-id {
+        font-size: 0.9em;
+        color: #888;
+        margin-top: -0.75em;
+        margin-bottom: 1.5em;
+    }
+
+    .select-user-add-user {
+        margin-top: -0.5em;
+    }
+}
+
 .splitomatic-title {
     font-size: 2.5em;
     font-weight: bold;
@@ -224,19 +255,12 @@ $SPLITOMATIC_WIDTH: 750px;
     .logged-in-container {
         width: 100%;
         max-width: $SPLITOMATIC_WIDTH;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-        padding: 1em;
-        margin-bottom: 2em;
-        box-sizing: border-box;
+        margin-bottom: 1em;
 
         .logged-in-inner {
-            border-bottom: 1px solid #eee;
-            padding-bottom: 0.8em;
-            margin-bottom: 0.8em;
-        }
-        .user-name {
+            display: flex;
+            gap: 0.4em;
+            align-items: center;
             font-size: 0.95em;
             color: #555;
         }
@@ -471,11 +495,14 @@ $SPLITOMATIC_WIDTH: 750px;
     justify-content: center;
     align-items: center;
     background: #f5f5f5;
+    padding: 0 1em;
+    box-sizing: border-box;
 }
 
 .splitomatic-receipt-detail-main {
     margin-bottom: 1.5em;
-    width: $SPLITOMATIC_WIDTH;
+    width: 100%;
+    max-width: $SPLITOMATIC_WIDTH;
 }
 
 .splitomatic-modal-overlay {
@@ -533,7 +560,7 @@ $SPLITOMATIC_WIDTH: 750px;
 
 .splitomatic-items-table-container {
     max-height: 50vh;
-    overflow-x: visible;
+    overflow-x: auto;
     overflow-y: auto;
     margin-bottom: 1em;
     border-radius: 8px;
@@ -580,7 +607,277 @@ $SPLITOMATIC_WIDTH: 750px;
     font-size: 0.9em;
 }
 
+.receipt-items-table-wrapper {
+    display: none;
+}
+
+.receipt-items-cards-wrapper {
+    display: block;
+}
+
+.receipt-item-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    padding: 0.6em 0.8em;
+    margin-bottom: 0.5em;
+
+    .receipt-item-card-main {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 0.5em;
+    }
+
+    .receipt-item-card-name-row {
+        display: flex;
+        align-items: center;
+        gap: 0.3em;
+        min-width: 0;
+        flex: 1;
+    }
+
+    .receipt-item-card-name {
+        font-weight: 600;
+        font-size: 1em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .receipt-item-card-edit-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.5em;
+        color: #bbb;
+        padding: 0;
+        line-height: 1;
+        flex-shrink: 0;
+
+        &:hover {
+            color: #555;
+        }
+    }
+
+    .receipt-item-card-name-input {
+        flex: 1;
+        font-size: 1em;
+        font-weight: 600;
+        padding: 0.2em 0.4em;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        min-width: 0;
+    }
+
+    .receipt-item-card-qty-input {
+        width: 3.5em;
+        font-size: 0.85em;
+        padding: 0.1em 0.3em;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        text-align: center;
+    }
+
+    .receipt-item-card-edit-actions {
+        display: flex;
+        gap: 0.3em;
+        flex-shrink: 0;
+    }
+
+    .receipt-item-card-confirm-btn,
+    .receipt-item-card-cancel-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1em;
+        padding: 0 0.2em;
+        line-height: 1;
+    }
+
+    .receipt-item-card-confirm-btn {
+        color: #27ae60;
+    }
+
+    .receipt-item-card-cancel-btn {
+        color: #e74c3c;
+    }
+
+    .receipt-item-card-cost {
+        font-size: 1em;
+        white-space: nowrap;
+    }
+
+    .receipt-item-card-meta {
+        display: flex;
+        gap: 1em;
+        font-size: 0.8em;
+        color: #888;
+        margin-top: 0.2em;
+    }
+
+    .receipt-item-card-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 0.4em;
+    }
+
+    .receipt-item-card-claim-controls {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        border-radius: 20px;
+        overflow: hidden;
+
+        &::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 1.5px solid #ccc;
+            border-radius: 20px;
+            pointer-events: none;
+        }
+
+        .splitomatic-claim-count-button {
+            border-radius: 0;
+            padding: 5px 14px;
+            font-size: 1em;
+
+            &.decrease {
+                background-color: #f5f5f5;
+                color: #333;
+
+                &:disabled {
+                    background-color: #f5f5f5;
+                    color: #ccc;
+                    cursor: not-allowed;
+                }
+            }
+
+            &.increase {
+                background-color: #7eb8d9;
+
+                &:disabled {
+                    background-color: #c0dff0;
+                    cursor: not-allowed;
+                }
+            }
+        }
+
+        .splitomatic-claim-count {
+            min-width: 2em;
+            text-align: center;
+            margin: 0;
+            padding: 0 0.25em;
+            font-size: 0.95em;
+        }
+
+        .splitomatic-loading.loading-small {
+            min-width: 2em;
+            display: flex;
+            justify-content: center;
+            padding: 0 0.25em;
+        }
+    }
+
+    .receipt-item-card-you-owe-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 0.3em;
+    }
+
+    .receipt-item-card-you-owe {
+        font-size: 0.9em;
+        color: #333;
+    }
+
+    .receipt-item-card-breakdown-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 0.95em;
+        color: #aaa;
+        padding: 0;
+        line-height: 1;
+
+        &:hover {
+            color: #555;
+        }
+    }
+
+    .receipt-item-card-breakdown-popover {
+        position: absolute;
+        bottom: calc(100% + 0.5em);
+        right: 0;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+        padding: 0.75em;
+        z-index: 100;
+        white-space: nowrap;
+    }
+
+    .receipt-item-card-breakdown-table {
+        border-collapse: collapse;
+        font-size: 0.85em;
+
+        th {
+            padding: 2px 8px;
+            border-bottom: 1px solid #eee;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        td {
+            padding: 2px 8px;
+        }
+
+        td:last-child {
+            text-align: right;
+        }
+    }
+}
+
 .splitomatic-breakdown-link {
     cursor: help;
     text-decoration: underline dotted;
+}
+
+@media (max-width: 600px) {
+    .splitomatic-receipt-detail-hero {
+        flex-direction: column;
+
+        .thumbnail-container {
+            width: 100%;
+            height: 150px;
+
+            img {
+                height: 150px;
+            }
+        }
+
+        .splitomatic-receipt-detail-hero-details {
+            margin-left: 0;
+            margin-bottom: 1em;
+        }
+    }
+
+    .splitomatic-bottom-bar {
+        flex-direction: column;
+        width: 100%;
+        max-width: $SPLITOMATIC_WIDTH;
+
+        button {
+            width: 100%;
+        }
+    }
+
+    .last-updated {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.5em;
+    }
+
 }
